@@ -1,0 +1,107 @@
+系統分析與設計
+
+一、準備方向
+
+[原文提醒]
+- 這科重點較抽象，若不易掌握，可直接看歷屆題目，有出現再做筆記。
+- 有相關從業經驗會較容易理解，否則需靠名詞與比較題累積。
+
+二、系統分析與設計概論
+
+[必背] SDLC
+- Planning：規劃。
+- Analysis：需求分析。
+- Design：系統設計。
+- Implementation：實作。
+- Testing：測試。
+- Deployment：導入。
+- Maintenance：維護。
+
+[必背] SSDLC
+- Secure SDLC：在需求、設計、實作、測試、部署與維護各階段納入安全控制。
+- 常見活動：威脅建模、安全需求、程式碼掃描、滲透測試、弱點修補。
+
+三、結構化分析與設計
+
+[必背] Cohesion（內聚力）
+- 內聚力越高越好。
+- 由佳到差大致可記：
+  - Functional Cohesion：功能內聚。
+  - Sequential Cohesion：順序內聚。
+  - Communicational Cohesion：溝通內聚。
+  - Procedural Cohesion：程序內聚。
+  - Temporal Cohesion：暫時內聚。
+  - Logical Cohesion：邏輯內聚。
+  - Coincidental Cohesion：偶發內聚。
+
+[必背] Coupling（耦合力）
+- 耦合力越低越好。
+- 由低到高大致可記：
+  - Data Coupling：資料耦合。
+  - Stamp / Data Structure Coupling：資料結構耦合。
+  - Control Coupling：控制耦合。
+  - Common Coupling：共同耦合。
+  - Content Coupling：內容耦合。
+
+[補充]
+- DFD：Data Flow Diagram，描述資料流、處理程序、資料儲存與外部實體。
+- Data Dictionary：資料字典，定義資料項目。
+- Structure Chart：結構圖，描述模組層級與呼叫關係。
+
+四、物件導向
+
+[比較]
+- Dependency（相依）：一個類別短暫使用另一個類別。
+- Association（結合）：物件間有一般關聯。
+- Aggregation（聚合）：has-a 弱整體部分關係，部分可獨立存在。
+- Composition（組合）：has-a 強整體部分關係，部分生命週期依賴整體。
+
+[補充]
+- Generalization：一般化，常表示繼承。
+- Realization：實作介面。
+
+五、UML
+
+[必背]
+- Class Diagram：類別、屬性、方法與關係。
+- Use Case Diagram：使用者角色與系統功能。
+- Activity Diagram：流程、分支、平行活動。
+- Sequence Diagram：物件間訊息傳遞與時間順序。
+
+[補充]
+- State Diagram：狀態與事件轉換。
+- Component Diagram：元件與相依。
+- Deployment Diagram：部署節點與構件。
+
+六、專案管理
+
+[必背] 測試種類
+- 為什麼要測試：找缺陷、降低風險、驗證需求、提升品質。
+- Unit Test：單元測試。
+- Integration Test：整合測試。
+- Regression Test：迴歸測試。
+- Recovery Test：回復測試。
+- Security Test：安全測試。
+- Performance Test：效能測試。
+- Acceptance Test：驗收測試。
+- Alpha Test：內部或受控環境測試。
+- Beta Test：外部使用者測試。
+- White-box Test：白箱，知道內部結構。
+- Black-box Test：黑箱，只看輸入輸出。
+
+[比較] 系統導入方式
+- Direct Conversion：直接導入，速度快但風險高。
+- Parallel Conversion：新舊系統並行，風險低但成本高。
+- Pilot Conversion：先在部分單位試行。
+- Phased Conversion：分階段導入。
+
+[必背] PDCA
+- Plan：計畫。
+- Do：執行。
+- Check：檢查。
+- Act：改善行動。
+
+[補充]
+- 甘特圖：看時程。
+- PERT/CPM：看關鍵路徑。
+- 風險管理：識別、分析、應對、監控。

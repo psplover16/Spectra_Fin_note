@@ -1,473 +1,643 @@
-# 討論稿：建立國營資訊考試 PWA 的路由、Header 與主題頁骨架
+# 專業科目內容擴充討論稿
 
-來源：`_private/discuss.txt`
+來源：`_private/discuss.txt`  
+模式：`$spectra-discuss` assumptions mode  
+狀態：已依使用者回答補上回覆與定稿方向，後續可再交由 `$spectra-propose` 產生正式變更提案。
 
-本文件供後續作答使用。請直接在「待你確認的問題」區塊填入選項或補充說明；確認後可再用 `$spectra-propose` 轉成正式 Spectra change。
+## 目前理解
 
-## Discuss Mode
+本次需求不是單純調整排版，而是要把 `_private/` 內指定科目的文字資料轉成正式學習內容，並補足教學深度、路由、題目導向說明與程式範例。
 
-**模式**：Interview mode
+原始指定的科目與來源如下：
 
-**原因**：本專案目前尚未建立 `src/` 前端源碼，只有 `README.md`、`AGENTS.md`、`CLAUDE.md`、`openspec/config.yaml` 等文件，因此無法依既有實作列出強假設。不過已依你的要求讀取「日語學習」專案中和本次議題直接相關的檔案，可先整理出建議預設與需要你確認的問題。
+- 計概：`_private/計算機概論.txt`
+- 網概：`_private/網概.txt`
+- 資料庫：`_private/資料庫.txt`、`_private/資料結構與演算法.txt`
+- 資管：`_private/資訊管理.txt`
+- 程式：`_private/程式.txt`、`_private/系統分析與設計.txt`
+- 演算法：`_private/資料結構與演算法.txt`、`_private/國考常見演算法_Java遞迴非遞迴_時間複雜度.md`
 
-## 已讀取的脈絡
+依本輪回答後的定稿方向：
 
-### 本專案
+- `資料結構與演算法.txt` 暫定全部歸入「演算法」。
+- 「資料庫」第一批來源暫定只使用 `資料庫.txt`。
+- `程式語言_all.pdf` 第一批不納入。
+- 全部專業科目都在正式提案範圍內，但實作與內容匯入需要分批完成。
+- 正式 `tasks.md` 的任務數量無上限；不得為了讓任務清單變短而合併不同科目、不同 topic 或不同驗證工作。
+- 內容產製應大量運用副代理；主代理負責規則、整合與最終寫入，副代理負責分 topic 生成、校對與驗證。
 
-- `openspec/config.yaml`
-  - 技術棧：Vue 3、TypeScript、Tailwind CSS、Vue Router、Pinia、PWA。
-  - 架構慣例：`src/app/` 放 router/main/AppShell；`src/modules/<feature>/` 依功能分組。
-  - 科目分類：專業科目為計算機原理、網路概論、資訊管理、程式設計；共同科目為國文、英文。
-  - 使用情境：手機優先、PWA、可離線、375px 小螢幕需要照顧。
+核心要求：
 
-### 參考專案：「日語學習」
+- 每個指定的 txt/md 來源檔都必須先完整閱讀，再產生 topic；不得只依檔名、既有常識或摘要推測內容。
+- 每個來源檔包含考試大綱、需要記憶的內容、需要理解的內容；正式 topic 需區分「考試大綱」、「記憶重點」與「理解說明」。
+- 每個 txt 目前多半只有標題與重點，AI 需要補足「可自學」的教學內容。
+- 內容面向國考，必須降低錯誤率，並讓初學者能看懂。
+- 程式碼註解要說明答題意圖，不只是逐行翻譯。
+- 程式碼註解需讓考官看得出作答思路、想法與用意，不能只寫語法功能。
+- 演算法必須涵蓋排序：Bubble、Selection、Insertion、Merge、Quick、Heap、Shell。
+- 排序需整理最佳、平均、最差時間複雜度、穩定性與補充說明。
+- 每個排序演算法需要遞迴與非遞迴版本，以及時間複雜度。
+- `國考常見演算法_Java遞迴非遞迴_時間複雜度.md` 內既有的常見演算法都需納入盤點；不得只收後續列出的七個必收範例。
+- 演算法必收範例需包含：氣泡排序法、快速排序法、Fibonacci 序列、最大公因數、二元搜尋法、選擇排序法、插入排序法。
+- 二元搜尋法必須明確提醒「資料需先排序過才可使用」，否則演算法前提不成立。
+- 所有專有名詞都需提供中文與英文對照；標題、表格與首次出現時使用 `中文(English Term)` 格式，例如 `二元樹(Binary Tree)`。
+- 任務拆分數量無上限；每個科目、topic、來源整理、草稿產生、verifier 檢查、正式匯入與驗收都可拆成獨立 task。
+- 後續執行需大量運用副代理，尤其是內容生成副代理、內容驗證副代理與整合檢查副代理。
+- 讀者定位為新手自學者；內容需手把手、清楚、通俗，不能假設讀者已懂前置觀念。
+- 英文、中文可維持不同處理方式，其餘科目的風格應一致。
 
-路徑：`C:\Users\Gary\Documents\Spectra-Learning-Japanese`
+## 已偵測到的現況
 
-已讀取重點檔案：
+目前專案已有科目學習 app shell，但專業科目內容仍偏骨架。
 
-- `src/app/router.ts`
-  - 使用 Vue Router。
-  - 主要路由透過 `routeComponentLoaders` lazy load。
-- `src/app/AppShell.vue`
-  - 外層背景、header、`RouteTabs`、`RouterView`、`KeepAlive`、PWA toast 都集中在 AppShell。
-  - 啟動後會在 idle 時預載主要 route component。
-- `src/app/routePreload.ts`
-  - 定義主要 route path、loader registry、hover/focus/touch 預載、idle 預載。
-- `src/shared/components/RouteTabs.vue`
-  - header route tab 的主要排列方式。
-  - tab 在 hover/focus/touchstart 時會預載對應 route。
-- `src/modules/grammar/components/GrammarLevelSwitcher.vue`
-  - 「N5 文法」類型的 header 下拉選單邏輯。
-  - 若目前已在文法路由，點擊會開關下拉選單；不在文法路由時會導向目前選定的文法等級。
-- `src/shared/components/RouteSubMenu.vue`
-  - 下拉選單共用元件。
-  - 支援 overlay 點擊關閉、Escape 關閉、`role="menu"` / `role="menuitem"`。
-- `src/modules/n5Grammar/views/N5GrammarView.vue`
-  - N5 文法頁分成未完成區與已完成區。
-  - 每個 section 有完成 checkbox、閱讀位置書籤、展開內容。
-  - 完成後會從未完成區移到已完成區；已完成區不顯示書籤。
-- `src/modules/n5Grammar/components/N5GrammarSectionCard.vue`
-  - 每個主題卡片的 header 包含左側書籤、右側 checkbox、置中標題。
-  - 點標題展開/收合詳細內容。
-  - 完成的 section 會自動收合。
-- `src/styles/main.css`
-  - header、route tab、submenu、N5 grammar section 都有專用樣式。
-  - 有 `@media (max-width: 375px)` 專門調整 tab padding/font-size、N5 文法內容內距與字級。
-- `tailwind.config.ts`
-  - 色票：`ink #2f1f18`、`clay #b45a32`、`parchment #f6f0e8`、`sand #e7d6c6`、`moss #7c8567`、`pine #3f5a49`。
-  - 陰影：`soft`。
-- `package.json`
-  - Vue 3、Vue Router、Tailwind、Vite、Vitest、Playwright、vite-plugin-pwa、workbox-window。
-  - scripts 包含 `lint`、`typecheck`、`test:unit`、`test:e2e`、`build`、`test:ci`。
-- `.github/workflows/ci.yml`
-  - Node 22。
-  - `npm ci`、lint、typecheck、unit test、build、Playwright e2e。
-  - 失敗時上傳 Playwright diagnostics。
-- `.github/workflows/cd.yml`
-  - dev/main 推送觸發。
-  - main 發 production，dev 發 staging。
-  - 輸出到 `gh-pages`，以 `scripts/publishPages.mjs` 同步 `dist`。
+相關檔案觀察：
 
-## 目前可先收斂的方向
+- `src/app/router.ts` 目前有 `/computer-principles`、`/networking`、`/information-management`、`/programming`、`/english`、`/chinese`。
+- 目前尚未看到 `/database` 與 `/algorithms` 兩個獨立路由。
+- `src/modules/subjectTopics/types/subjectTopic.ts` 的 `SubjectKey` 目前不包含 `database` 或 `algorithms`。
+- `src/modules/subjectTopics/data/placeholderTopics.ts` 目前仍是 placeholder 內容。
+- `src/modules/subjectTopics/components/SubjectTopicPage.vue` 已負責主題清單、未完成/已完成區、閱讀進度與收藏。
+- 先前需求已移除每個 section 的 `subTitle`，後續內容結構不應再把 section subtitle 放回 UI。
 
-**暫定結論**：本專案應先建立「與日語學習專案一致的 Vue PWA app shell」，再在此骨架上建立國營資訊考試的科目路由與主題頁互動。
+## 目前假設
 
-**核心取捨**：要沿用日語學習的成熟 header、route preload、PWA、N5 文法主題卡互動，但不能把日語內容模型硬套到本專案。專業科目的詳細內容會更像教學講義，排版差異後續再補，因此本次應先抽出「外殼與互動」而不是固定所有內文模板。
+### 假設 1：需要新增「資料庫」與「演算法」專業路由
 
-**建議 capture to**：
+做法：
 
-- `proposal.md`：建立 app shell、科目路由、header、共同科目下拉、CI/CD 對齊。
-- `design.md`：說明與日語學習專案的對齊範圍、路由設計、共享 topic card 邊界、PWA/375px 策略、CI/CD base path。
-- `tasks.md`：拆出前端骨架、route tabs、共同科目下拉、主題卡、progress storage、PWA、CI/CD、測試。
-- `specs/app-shell/spec.md`：AppShell、header、路由、PWA 基本行為。
-- `specs/subject-topic-page/spec.md`：每個科目頁的主題卡、書籤、checkbox、展開/收合、手機寬度行為。
-- `specs/mobile-code-example/spec.md`：小螢幕程式範例排版與註解可讀性。
+- 新增 `/database` 與 `/algorithms`。
+- `SubjectKey` 增加 `database`、`algorithms`。
+- 首頁或導覽需能進入這兩個科目。
 
-建議 change name：
+依據：
 
-```text
-establish-subject-learning-app-shell
+- `_private/discuss.txt` 把「資料庫」與「演算法」列成獨立專業科目。
+- 現有路由沒有這兩項，若直接塞進既有科目會讓資料歸屬不清。
+
+如果此假設錯誤：
+
+- 可以改成把資料庫放入「資管」，演算法放入「程式」。
+- 但這會讓單一科目內容過大，且後續查找與進度追蹤較不直覺。
+
+### 假設 2：需要先定義內容資料結構，再大量產生內容
+
+做法：
+
+- 不建議直接把長篇 Markdown 全部塞進 placeholder data。
+- 應先決定 topic block 是否要支援：觀念說明、考點提醒、記憶法、範例、易錯點、複雜度表、Java 程式碼、驗證註記。
+
+依據：
+
+- 現有 block 只有 `paragraph` 與 `teachingCode`，不足以承載國考導向的深度內容。
+- 演算法內容需要複雜度、穩定性、遞迴/非遞迴比較，單純段落會很難維護。
+
+如果此假設錯誤：
+
+- 可先用現有 block 寫入內容，但未來若要調整呈現方式，會有大量資料重工。
+
+### 假設 3：需要建立受控的內容產製流程
+
+做法：
+
+- 每個科目或 topic 先在 `_TMP/` 產生暫存稿。
+- 暫存稿需包含來源檔、涵蓋章節、生成日期、驗證清單、待查問題。
+- 由 generator 副代理依 topic 產生草稿，再由 verifier 副代理檢查錯誤、補強說明、確認 Java 程式碼與複雜度。
+- 通過後再由主流程整合進 app。
+- 主代理不得把副代理輸出直接當成正式內容；主代理需負責最後整合、風格一致性與檔案寫入。
+
+依據：
+
+- 使用者明確提出 generator agent、verifier agent 與 `_TMP/` 的流程構想。
+- 使用者強調「禁止任何錯誤」，因此需要可追蹤來源與審核紀錄。
+
+如果此假設錯誤：
+
+- 可以改成單一流程直接產生正式內容，但不利於追蹤、校對與分批接受。
+
+### 假設 4：演算法內容需要比一般科目更嚴格的模板
+
+做法：
+
+每個演算法 topic 建議至少包含：
+
+- 什麼時候會考。
+- 核心想法。
+- 手算步驟。
+- Java 非遞迴版本。
+- Java 遞迴版本。
+- 複雜度表。
+- 穩定性。
+- 國考常見陷阱。
+- 答題註解策略。
+
+依據：
+
+- `_private/discuss.txt` 對演算法提出最具體要求。
+- 排序演算法若沒有統一模板，很容易漏掉穩定性、最佳情境或遞迴版本的定位。
+
+如果此假設錯誤：
+
+- 可把演算法也視為一般觀念科目，但會削弱國考作答導向。
+
+## 發現的問題與風險
+
+1. 現有 app 沒有「資料庫」與「演算法」路由  
+   需要確認是否新增獨立路由，否則內容只能暫時併入資管或程式。
+
+2. `資料結構與演算法.txt` 同時被列入資料庫與演算法  
+   需要定義切分規則，避免同一份內容被重複產生或放錯科目。
+
+3. `系統分析與設計.txt` 被列入程式  
+   系統分析與設計概念上可能也接近資管，需確認是否仍歸入程式。
+
+4. 「每個排序演算法都要遞迴與非遞迴版本」可能需要註明教學定位  
+   Bubble、Selection、Insertion、Shell 通常以迭代寫法為主；若提供遞迴版，建議標示為「教學用變形」，避免誤導成考場標準寫法。
+
+5. 「禁止任何錯誤」不能只靠單次生成達成  
+   建議至少要求：來源對應、複雜度交叉檢查、Java 程式碼檢查、verifier 審核、待查問題不得直接進正式內容。
+
+   排序複雜度尤其要以 discuss.txt 的基準表為驗證來源，不能由生成內容自由改寫。
+
+6. 內容量很大，不適合一次全部塞進單一變更  
+   建議先建立資料結構與匯入流程，再按科目或 topic 分批導入。
+
+7. `_TMP/` 若沒有命名規則與驗證清單，會變成不可追蹤的草稿區  
+   建議使用固定格式，例如 `_TMP/20260613-1530-algorithms-bubble-sort.md`。
+
+8. 現有 topic block 結構太淺  
+   若維持現狀，複雜度表、考點、錯誤提醒與多版本程式碼會混在 paragraph 內，後續難以維護。
+
+9. 先前已要求不應該有每個 section 的 subTitle  
+   後續新增內容時，應避免在 UI 或資料中重新引入 section subtitle 作為固定欄位。
+
+10. `_private/程式語言_all.pdf` 存在，但本次 discuss.txt 未列為來源  
+    需確認是否納入第一批內容，否則暫不讀取與使用。
+
+11. `_private/筆記.md` 存在，但目前未被指定  
+    依專案規則，除非明確要求，否則不讀取個人筆記與學習資料。
+
+12. 若正式提案限制任務數量，會提高錯誤與漏項風險  
+    本需求明確允許任務數量無上限，因此 `tasks.md` 應以「可驗收、可追蹤」為優先，不以任務數少為目標。
+
+13. 大量運用副代理需要明確邊界  
+    副代理可負責分 topic 生成與驗證，但主代理仍需負責任務拆分、來源規則、正式整合與最終審查，避免多個副代理產出互相衝突。
+
+14. 每個副代理應只處理單一 topic 後結束  
+    使用者原始流程要求每個 topic 開啟一個副代理，完成後關閉，避免下一個 topic 受到前一個上下文污染。
+
+## 建議結論
+
+建議不要直接進入「大量產生正式內容」。
+
+建議下一步建立一個正式 Spectra change，例如：
+
+`ingest-professional-subject-content`
+
+此 change 可分成五個階段：
+
+1. 建立內容來源 manifest  
+   定義每個科目使用哪些來源檔、哪些章節、哪些內容排除。
+
+2. 擴充內容資料模型  
+   支援國考導向的教學內容、考點、範例、複雜度表與程式碼。
+
+3. 新增或調整科目路由  
+   依使用者確認結果新增 `/database`、`/algorithms` 或採用合併方案。
+
+4. 建立 `_TMP/` 草稿與驗證流程  
+   每個 topic 先產生暫存稿，經 verifier 確認後才能匯入正式資料。
+
+5. 建立副代理工作契約  
+   大量運用 generator、verifier 與整合檢查副代理，但每個副代理必須有明確 topic 範圍、輸入來源、輸出檔案與驗收清單。
+
+6. 分批匯入正式內容  
+   優先處理演算法，因為需求最明確、最容易建立模板與驗證規則。
+
+正式 `tasks.md` 的 task 數量不設上限，應拆到每個 task 都能單獨檢查完成與否。
+
+## 介面深度檢查
+
+這次變更會碰到多個邊界，不宜只做表面資料填充。
+
+建議的主要邊界：
+
+- 路由邊界：`src/app/router.ts`
+- 科目鍵值邊界：`SubjectKey`
+- topic 資料邊界：`SubjectTopic` 與 block schema
+- 內容來源邊界：`_private/` 指定資料檔
+- 暫存草稿邊界：`_TMP/`
+- 正式內容匯入邊界：由審核後草稿轉成 app data
+
+建議避免：
+
+- 只新增一堆 paragraph，卻沒有結構化考點與驗證欄位。
+- 讓 `_TMP/` 產物直接變成不可追蹤的最終資料。
+- 產生內容時重新加入 section subtitle 類欄位。
+
+## 建議的 `_TMP/` 草稿格式
+
+```md
+---
+topic_id: algorithms-bubble-sort
+subject: algorithms
+source_files:
+  - _private/資料結構與演算法.txt
+  - _private/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+status: draft
+generated_at: 2026-06-13
+verified_by: pending
+---
+
+# Bubble Sort
+
+## 來源摘要
+
+## 教學內容
+
+## 國考考點
+
+## Java 非遞迴版本
+
+## Java 遞迴版本
+
+## 複雜度與穩定性
+
+## 易錯提醒
+
+## Verifier 檢查
+
+- [ ] 已完整閱讀指定來源檔，不是只依檔名或常識推測
+- [ ] 已對應來源中的考試大綱、記憶重點與理解重點
+- [ ] 來源對應正確
+- [ ] Java 程式碼可讀且語意正確
+- [ ] 程式碼註解已說明作答思路、想法與用意，考官能看出解題邏輯
+- [ ] 時間複雜度正確
+- [ ] 空間複雜度正確
+- [ ] 穩定性正確
+- [ ] 排序法複雜度與穩定性符合 discuss.txt 基準表
+- [ ] 沒有把教學用變形誤寫成標準考場寫法
+- [ ] 專有名詞已提供中文與英文對照，並符合 `中文(English Term)` 格式
+- [ ] 內容符合新手自學定位，能手把手照順序讀懂
 ```
 
-## 建議預設
+## 待確認問題
 
-### 1. 路由與 header
+請直接在每題下方作答。
 
-header 顯示 5 個主要按鈕：
+### Q1. 路由要怎麼安排？
 
-- `計概`
-- `網概`
-- `資管`
-- `程式`
-- `英文`（共同科目下拉按鈕，預設英文）
+建議選項：新增 `/database` 與 `/algorithms`，讓資料庫、演算法成為獨立專業科目。
 
-建議路由使用穩定英文 slug，header label 使用中文短名：
+其他可能：
 
-| Header | 對應科目 | 建議 route |
+- 把資料庫併入資管，演算法併入程式。
+- 只新增演算法，資料庫先併入資管。
+- 其他安排。
+
+你的回答：依你建議
+
+
+### Q2. `資料結構與演算法.txt` 要怎麼切分？
+
+建議選項：排序與常見演算法放入演算法；資料結構基礎依內容性質放入程式或計概，不直接放入資料庫。
+
+其他可能：
+
+- 全部放入演算法。
+- 資料結構放入資料庫，演算法放入演算法。
+- 其他切分方式。
+
+你的回答：全部放入演算法
+
+
+### Q3. `系統分析與設計.txt` 是否確定歸入程式？
+
+建議選項：先依使用者原始指定歸入程式，但 topic title 要清楚標示系統分析與設計。
+
+其他可能：
+
+- 改歸入資管。
+- 拆成資管與程式各一部分。
+
+你的回答： 依你建議
+
+
+### Q4. `_private/程式語言_all.pdf` 是否納入本次第一批來源？
+
+建議選項：第一批不納入，先處理 discuss.txt 明確列出的 txt/md 來源。
+
+其他可能：
+
+- 納入程式科目。
+- 只作為 verifier 參考。
+
+你的回答：不納入
+
+
+### Q5. 排序演算法的遞迴版本要怎麼處理？
+
+建議選項：每個排序都提供非遞迴標準版；遞迴版若不是常見標準寫法，明確標示為教學用變形。
+
+其他可能：
+
+- 每個排序都強制提供遞迴與非遞迴，不額外標示。
+- 只在 Merge Sort、Quick Sort 等自然遞迴演算法提供遞迴版。
+
+你的回答：做不到或難以做到的，就不提供 非遞迴。 這部分你先幫我看一下，有哪些會有、哪些不會有
+
+
+### Q6. 是否採用 `_TMP/` 草稿加 verifier 的流程？
+
+建議選項：採用。每個 topic 先進 `_TMP/`，通過檢查後再匯入 app。
+
+其他可能：
+
+- 不使用 `_TMP/`，直接產生正式資料。
+- 只對演算法使用 `_TMP/` 與 verifier。
+
+你的回答：採用
+
+
+### Q7. 第一批優先做哪個科目？
+
+建議選項：演算法。需求最明確，最適合先建立模板、驗證規則與匯入流程。
+
+其他可能：
+
+- 計概
+- 網概
+- 資料庫
+- 資管
+- 程式
+
+你的回答：全部都要
+
+
+### Q8. 正式內容是否需要保留來源註記？
+
+建議選項：需要。每個 topic 至少保留來源檔與來源章節摘要，方便日後校正。
+
+其他可能：
+
+- 只在 `_TMP/` 保留來源註記，正式 app 不顯示。
+- 完全不保留來源註記。
+
+你的回答：需要
+
+
+### Q9. placeholder topics 要怎麼處理？
+
+建議選項：在該科目正式內容通過驗證後，再逐步替換 placeholder。
+
+其他可能：
+
+- 一次全部移除 placeholder。
+- 保留 placeholder，正式內容另開資料檔。
+
+你的回答：依你建議
+
+
+### Q10. 後續正式提案名稱是否使用 `ingest-professional-subject-content`？
+
+建議選項：使用這個名稱。
+
+其他可能：
+
+- 使用其他 change id。
+
+你的回答：使用這個名稱
+
+
+## AI 回覆與定稿方向
+
+### Q1 回覆：新增資料庫與演算法路由
+
+採用原建議：
+
+- 新增 `/database`，顯示名稱為「資料庫」。
+- 新增 `/algorithms`，顯示名稱為「演算法」。
+- `SubjectKey` 需要新增 `database` 與 `algorithms`。
+- 導覽與 route preload 也要同步補上，避免新增頁面但使用者無法進入。
+
+這個安排最清楚，因為資料庫、演算法本身都是國考專業科目中的大塊內容，不適合全部塞進資管或程式。
+
+### Q2 回覆：`資料結構與演算法.txt` 全部放入演算法
+
+採用使用者回答。
+
+定稿：
+
+- `資料結構與演算法.txt` 全部歸入「演算法」。
+- 「資料庫」第一批不再使用 `資料結構與演算法.txt`。
+- 若 `資料結構與演算法.txt` 內有非常基礎、可支援資料庫理解的內容，正式 app 也不直接複製到資料庫；最多在資料庫 topic 以「延伸閱讀」或「相關觀念」指向演算法科目。
+
+這樣可以避免同一份來源被雙重匯入，降低日後維護與校對成本。
+
+### Q3 回覆：`系統分析與設計.txt` 先歸入程式
+
+採用原建議：
+
+- `系統分析與設計.txt` 先歸入「程式」。
+- topic title 需要明確標示「系統分析與設計」，避免讀者誤以為全部都是程式語法。
+- 若後續內容讀起來更偏資訊管理，可在第二階段再拆分或移轉。
+
+理由是使用者原始指定已把它列在程式下，先遵循原指定最穩；但 UI 與 topic 命名要把領域講清楚。
+
+### Q4 回覆：`程式語言_all.pdf` 第一批不納入
+
+採用使用者回答。
+
+定稿：
+
+- 第一批只處理 discuss.txt 明確列出的 txt/md 來源。
+- 不讀取、不引用、不匯入 `程式語言_all.pdf`。
+- 後續若要納入 PDF，應另開一輪討論或新 task，避免第一批內容來源失控。
+
+### Q5 回覆：排序演算法遞迴與非遞迴版本
+
+我先把你的回答判讀為：「不自然、難以正確教學、或容易誤導的版本，不要硬塞。」這裡比較像是在放寬「每個排序都必須有遞迴版」的要求；非遞迴版本身幾乎每個排序都能提供。
+
+建議定稿如下：
+
+| 排序法 | 非遞迴版 | 遞迴版 | 建議收錄方式 |
+| --- | --- | --- | --- |
+| Bubble Sort | 有，標準寫法 | 有，但屬教學用變形 | 收兩版；遞迴版標示「教學用，非考場主流」 |
+| Selection Sort | 有，標準寫法 | 有，但屬教學用變形 | 收兩版；遞迴版標示「教學用，非考場主流」 |
+| Insertion Sort | 有，標準寫法 | 有，常見於遞迴練習但非主流排序寫法 | 收兩版；遞迴版標示用途 |
+| Merge Sort | 有，bottom-up 迭代版 | 有，標準主流寫法 | 收兩版；遞迴版作為主要教學版本 |
+| Quick Sort | 有，使用 stack 的迭代版 | 有，標準主流寫法 | 收兩版；遞迴版作為主要教學版本 |
+| Heap Sort | 有，標準寫法 | 有，通常體現在 recursive heapify | 收兩版；需說明遞迴點在 heapify，不是把排序切成左右遞迴 |
+| Shell Sort | 有，標準寫法 | 不建議收正式遞迴版 | 只收非遞迴標準版；補一句「遞迴改寫不具國考代表性」 |
+
+排序複雜度與穩定性需以以下表格作為第一版基準：
+
+| 排序法 | 最佳時間 | 平均時間 | 最差時間 | 穩定性 | 備註 |
+| --- | --- | --- | --- | --- | --- |
+| 氣泡排序法(Bubble Sort) | O(n) | O(n^2) | O(n^2) | 穩定 | 若有 early stop，最好可到 O(n) |
+| 選擇排序法(Selection Sort) | O(n^2) | O(n^2) | O(n^2) | 通常不穩定 | 交換次數少 |
+| 插入排序法(Insertion Sort) | O(n) | O(n^2) | O(n^2) | 穩定 | 適合小資料或近乎排序資料 |
+| 合併排序法(Merge Sort) | O(n log n) | O(n log n) | O(n log n) | 穩定 | 需要額外空間 |
+| 快速排序法(Quick Sort) | O(n log n) | O(n log n) | O(n^2) | 不穩定 | pivot 選不好會退化 |
+| 堆積排序法(Heap Sort) | O(n log n) | O(n log n) | O(n log n) | 不穩定 | 原地排序，利用 heap |
+| 希爾排序法(Shell Sort) | 視 gap 而定 | 視 gap 而定 | 可到 O(n^2) | 不穩定 | 插入排序改良 |
+
+因此第一批建議：
+
+- Bubble、Selection、Insertion、Merge、Quick、Heap：提供非遞迴與遞迴版。
+- Shell：只提供非遞迴標準版，不提供正式遞迴版。
+
+若之後你堅持「七種排序都要有遞迴版」，Shell Sort 可以放在附錄或補充框中，但不建議放成主要考場寫法。
+
+### Q5 補充回覆：排序法與常見演算法必收範例
+
+使用者補充的清單應納入「演算法」第一批必收內容。
+
+定稿清單：
+
+| 題型 | 是否納入 | 收錄方式 |
 | --- | --- | --- |
-| 計概 | 計算機原理 | `/computer-principles` |
-| 網概 | 網路概論 | `/networking` |
-| 資管 | 資訊管理 | `/information-management` |
-| 程式 | 程式設計 | `/programming` |
-| 英文 | 英文 | `/english` |
-| 國文 | 國文 | `/chinese` |
+| 氣泡排序法 | 是 | 排序 topic；提供非遞迴標準版與遞迴教學版 |
+| 快速排序法 | 是 | 排序 topic；提供遞迴標準版與 stack 非遞迴版 |
+| Fibonacci 序列 | 是 | 常見遞迴/迭代 topic；提供遞迴版、迭代版，並提醒單純遞迴會重複計算 |
+| 最大公因數 | 是 | 常見演算法 topic；提供輾轉相除法，建議收遞迴與迭代兩版 |
+| 二元搜尋法 | 是 | 搜尋 topic；提供遞迴與迭代兩版，必須註明資料需先排序 |
+| 選擇排序法 | 是 | 排序 topic；提供非遞迴標準版與遞迴教學版 |
+| 插入排序法 | 是 | 排序 topic；提供非遞迴標準版與遞迴教學版 |
 
-共同科目下拉建議鏡像日語學習的 `GrammarLevelSwitcher + RouteSubMenu`：
+補充說明：
 
-- 預設選中英文。
-- 點「英文」按鈕時開啟下拉。
-- 下拉選單有 `英文`、`國文`。
-- 選 `國文` 後 route 導向 `/chinese`。
-- 是否讓 header 按鈕文字從 `英文` 變成 `國文`，需要你確認。
+- 使用者寫的 `Fabonacci` 正式文件中應統一寫作 `Fibonacci`。
+- 二元搜尋法的範例資料必須先呈現為已排序陣列，例如 `[1, 3, 5, 7, 9]`。
+- 若要示範「未排序資料不能直接二元搜尋」，可以放在易錯提醒，不建議放成主要程式範例。
 
-### 2. 主題頁互動
+### 全域補充回覆：專有名詞需中英並列
 
-每個科目頁先採與日語學習 N5 文法頁相同的互動骨架：
+採用使用者補充。
 
-```text
-科目 route
-└─ 多個主題 section
-   ├─ 書籤按鈕
-   ├─ checkbox
-   ├─ 標題
-   └─ 點標題展開詳細內容
-```
+定稿：
 
-建議先共享「主題卡外殼」，詳細內容用 slot 或 subject-specific renderer 保留彈性：
+- 所有專有名詞都要提供中文與英文對照。
+- 標題、表格欄位、重點清單與首次出現時，使用 `中文(English Term)` 格式。
+- 同一段後續重複出現時，可以只用中文簡稱，避免學習內容變得過度冗長。
+- 英文名詞採常見標準寫法與大小寫，例如 `二元樹(Binary Tree)`、`二元搜尋法(Binary Search)`、`快速排序法(Quick Sort)`。
+- 若中文翻譯可能有多種說法，正式內容應固定使用同一中文詞，並在第一次出現時補英文。
 
-- 共用：書籤、checkbox、標題、展開/收合、完成狀態、375px hit area。
-- 各科自訂：詳細內容排版、教學段落、表格、程式碼範例、公式、考古題連結。
+### Q6 回覆：採用 `_TMP/` 草稿加 verifier 流程
 
-### 3. 書籤與 checkbox 語意
+採用使用者回答。
 
-建議先沿用日語學習 N5 文法目前語意：
+定稿：
 
-- checkbox：表示「已學完」。
-- 書籤：表示「上次讀到的位置」。
-- 每個科目同時間只有一個書籤。
-- 被標記為已學完的主題會自動清掉書籤。
-- 已完成區不顯示書籤，減少視覺雜訊。
+- 每個 topic 先產生 `_TMP/` 草稿。
+- verifier 通過後才匯入 app data。
+- `_TMP/` 檔案需保留來源、topic id、生成日期、檢查清單與待查問題。
+- verifier 發現疑點時，不得直接用猜測補進正式內容。
 
-如果你想要「每個主題都能獨立收藏」，那書籤就不是閱讀位置，而是 favorite，資料結構與 UI 都要改。
+### Q6 補充回覆：任務數量無上限與大量運用副代理
 
-### 4. PWA 與 375px
+採用使用者原始要求，並補成正式執行規則。
 
-本次從一開始就應把 375px 當作驗收寬度：
+定稿：
 
-- header route tabs 必須可換行，不可水平 overflow。
-- 下拉選單不可被 header 或 viewport 裁切。
-- 主題卡的書籤與 checkbox hit area 需維持可點擊。
-- 展開內容不得擠壓到無法閱讀。
-- 初始骨架需可離線載入。
-- 已訪問 route 應被快取或保留，避免手機切換時明顯卡頓。
+- 任務數量無上限，`tasks.md` 不需要為了簡短而壓縮任務。
+- 每個科目可拆成：來源盤點、topic manifest、草稿生成、verifier 檢查、修正、正式匯入、UI 驗收、內容驗收。
+- 每個演算法 topic 可再拆成：概念說明、手算範例、Java 遞迴版、Java 非遞迴版、複雜度表、易錯提醒、專有名詞中英對照、verifier 檢查。
+- 後續執行應大量運用副代理，不建議由單一代理一次完成所有內容生成與驗證。
+- 每個內容生成副代理只處理一個 topic，完成後關閉，避免後續 topic 受到前一個上下文污染。
+- 每個內容驗證副代理也只驗證一個 topic；若發現問題，可直接修正同一份 `_TMP/` 草稿，並留下 verifier 結果。
 
-### 5. 程式範例與實作內容
+副代理建議分工：
 
-專業科目的程式範例建議建立獨立呈現規則，避免在 375px 小螢幕變成難讀的長行：
-
-- 優先使用短而清楚的 Java 範例。
-- 變數名稱要清楚但不冗長，例如 `dataBits`、`parityBit`、`sum`。
-- 每段範例控制在可閱讀的小片段，不一次放過長完整程式。
-- 註解要多，但避免每行尾巴塞很長註解。
-- 建議使用「註解在上一行」或「短行內註解」：
-
-```java
-// m 是資料位元數，r 是校驗位元數
-int m = 4;
-int r = 1;
-
-// 檢查 2^r 是否足夠放下資料、校驗位與整體檢查
-boolean enough = Math.pow(2, r) >= m + r + 1;
-```
-
-- 若一段程式必然很長，應拆成「概念版」與「完整版」，手機優先顯示概念版。
-- 程式碼區塊需驗證 375px 下不會讓主要閱讀流程崩掉；必要時允許水平捲動，但不要把學習重點藏在很右邊。
-
-### 6. CI/CD
-
-建議沿用日語學習設定：
-
-- GitHub Actions 使用 Node 22。
-- CI：`npm ci` → lint → typecheck → unit test → build → Playwright e2e。
-- CI 失敗時上傳 Playwright diagnostics。
-- CD：`dev` 發 staging、`main` 發 production。
-- 發佈到 `gh-pages`。
-
-需要確認的是 GitHub Pages base path。若 repo slug 是 `Spectra_Fin_note`，則可能是：
-
-```text
-production: /Spectra_Fin_note/
-staging:    /Spectra_Fin_note/staging/
-```
-
-若實際 GitHub repo 名稱不同，CD 需要用實際 repo slug。
-
-## Interface Depth Check
-
-本議題會建立新 module、新 route flow、PWA route preload，以及進度儲存，因此需要做 interface depth check。
-
-| 問題 | 建議答案 |
-| --- | --- |
-| Seam location | `src/app/router.ts` 擁有 route；`src/app/AppShell.vue` 擁有外殼；`src/shared/components/RouteSubMenu.vue` 可作下拉選單共用；`src/modules/subjectTopics/components/SubjectTopicCard.vue` 擁有主題卡互動；`src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts` 擁有書籤與完成狀態儲存；各科 `src/modules/<subject>/views/<Subject>View.vue` 擁有詳細內容呈現。 |
-| Adapter count | 儲存層只需要一個 adapter，不要在每科各包一層薄 wrapper。下拉選單可用一個 CommonSubjectSwitcher 包 RouteSubMenu，不要堆多層 pass-through。 |
-| Depth | `SubjectTopicCard` 不只是轉發 props，而是負責展開/收合、完成後收合、書籤按鈕、checkbox hit area、ARIA label、手機寬度互動。`subjectTopicProgressStorage` 負責 key schema、讀寫、容錯、預設值。 |
-| Deletion test | 刪掉 `SubjectTopicCard` 會讓所有科目失去一致的主題互動；刪掉 `subjectTopicProgressStorage` 會讓書籤與完成狀態無法持久化；刪掉 `CommonSubjectSwitcher` 會讓國文/英文下拉與預設英文行為消失。因此這些 seam 有實質行為，不是空轉發。 |
-
-## 待你確認的問題
-
-請直接在每題下方填答。
-
-### Q1. Route path 要用哪一種？
-
-| 選項 | 做法 | 影響 |
+| 副代理類型 | 負責內容 | 輸出 |
 | --- | --- | --- |
-| A（建議） | 使用英文 slug：`/computer-principles`、`/networking`、`/information-management`、`/programming`、`/english`、`/chinese` | URL 穩定、避免中文編碼問題、測試好寫。 |
-| B | 使用中文 path：`/計概`、`/網概`、`/資管`、`/程式`、`/英文`、`/國文` | 直覺，但 URL 會被瀏覽器編碼，CI/E2E 與分享連結比較麻煩。 |
-| C | 使用短英文 slug：`/cs`、`/net`、`/im`、`/code`、`/en`、`/zh` | 短，但可讀性較低。 |
+| 內容生成副代理 | 依單一 topic 與指定來源產生 `_TMP/` 草稿 | `_TMP/<timestamp>-<subject>-<topic>.md` |
+| 內容驗證副代理 | 檢查事實、複雜度、Java 程式碼、國考用語與中英名詞 | 在同一 `_TMP/` 檔補 verifier 結果 |
+| 整合檢查副代理 | 檢查多 topic 之間是否重複、矛盾、風格不一致 | 整合檢查報告或修正建議 |
+| 主代理 | 控制規則、拆 task、審查副代理輸出、寫入正式 app data | 正式專案檔案與最終驗收 |
 
-你的答案：A
+限制：
 
-```text
+- 副代理不應直接把內容寫入正式 app data。
+- 副代理不得讀取未被允許的個人筆記或受限資料夾。
+- 若副代理對內容正確性有疑問，必須留下待查問題，不得自行猜測補上。
+- 副代理完成單一 topic 後應結束，不沿用同一副代理處理下一個 topic。
+- 主代理最後需要統一術語、格式、資料來源與 UI 呈現。
 
+### Q7 回覆：全部科目都要，但要分批交付
+
+採用使用者回答的範圍：「全部都要」。
+
+但實作策略仍建議分批：
+
+1. 先完成 route、SubjectKey、資料模型與來源 manifest。
+2. 先用「演算法」建立內容模板與 verifier 標準，因為它最容易檢查正確性。
+3. 再依序匯入計概、網概、資料庫、資管、程式。
+4. 每個科目都要進正式提案範圍；分批只是降低錯誤率，不是縮小範圍。
+
+### Q8 回覆：正式內容需要保留來源註記
+
+採用使用者回答。
+
+定稿：
+
+- `_TMP/` 必須保留完整來源註記。
+- 正式 app data 至少保留來源檔與來源摘要。
+- UI 是否顯示來源註記可以後續決定，但資料層要保留，方便校正。
+
+### Q9 回覆：逐步替換 placeholder
+
+採用原建議：
+
+- 不一次清空 placeholder。
+- 每個科目的正式內容通過 verifier 後，再替換該科目的 placeholder。
+- 尚未完成的科目保留 placeholder，避免頁面突然空掉。
+
+### Q10 回覆：正式提案名稱
+
+採用使用者回答。
+
+正式 change id：
+
+`ingest-professional-subject-content`
+
+## Conclusion
+
+**Decision**：建立 `ingest-professional-subject-content` 變更，範圍包含計概、網概、資料庫、資管、程式、演算法；新增資料庫與演算法獨立路由；採用 `_TMP/` 草稿與 verifier 流程；任務數量無上限；後續執行需大量運用副代理；全部內容分批匯入。  
+**Rationale**：使用者需要全部專業科目，但內容量大且要求高度正確，因此應把「範圍完整」、「任務可無限拆分」、「副代理分工驗證」和「交付分批」分開處理。  
+**Capture to**：後續 `$spectra-propose` 應將此結論整理到 `openspec/changes/ingest-professional-subject-content/proposal.md`、`design.md`、`tasks.md` 與相關 spec delta。
+
+正式提案至少應捕捉這些需求：
+
+- 新增 `/database` 與 `/algorithms`。
+- `資料結構與演算法.txt` 全部歸入演算法。
+- `系統分析與設計.txt` 第一批歸入程式，topic 命名需明確。
+- `程式語言_all.pdf` 第一批不納入。
+- 每個指定 txt/md 來源檔都必須先完整閱讀；正式 topic 需對應考試大綱、記憶重點與理解重點。
+- 全部專業科目都要匯入，但任務需分批。
+- `tasks.md` 任務數量無上限，應拆到每個 task 可單獨驗收。
+- 後續執行需大量運用副代理，至少包含內容生成副代理、內容驗證副代理與整合檢查副代理。
+- 主代理負責規則、任務拆分、正式整合與最終審查；副代理不得直接寫入正式 app data。
+- 每個副代理只處理單一 topic，完成後關閉，避免上下文污染。
+- Shell Sort 第一批只收非遞迴標準版；其餘六種排序提供遞迴與非遞迴版。
+- 排序法複雜度與穩定性需以 discuss.txt 基準表為第一版標準。
+- `國考常見演算法_Java遞迴非遞迴_時間複雜度.md` 內既有的常見演算法都需納入盤點。
+- 演算法第一批必收範例包含：氣泡排序法、快速排序法、Fibonacci 序列、最大公因數、二元搜尋法、選擇排序法、插入排序法。
+- 二元搜尋法需明確標示前提：資料必須先排序。
+- 所有專有名詞需提供中文與英文對照；標題、表格與首次出現時使用 `中文(English Term)` 格式。
+- 程式碼註解需讓考官看出思路、想法與用意；內容需符合新手自學、手把手、通俗說明。
+- 正式資料層保留來源註記。
+- placeholder 依科目逐步替換。
+
+## 後續建議指令
+
+當本檔回答完畢後，可執行：
+
+```bash
+$spectra-propose 請讀取指定 Markdown 檔案 `@/_private/propose.md` 的內容。
 ```
 
-### Q2. 共同科目 header 按鈕文字是否跟著選項變？
+正式提案完成並確認後，再進入：
 
-| 選項 | 做法 | 影響 |
-| --- | --- | --- |
-| A（建議） | 預設顯示 `英文`；選國文後按鈕改顯示 `國文` | 最像日語學習的 N5/N4/N3 下拉邏輯，使用者知道目前在哪個共同科目。 |
-| B | 按鈕永遠顯示 `英文`，但可從下拉選 `國文` | 符合「最後一個英文按鈕」字面，但選到國文後會不直覺。 |
-| C | 按鈕顯示 `共同`，下拉選 `國文/英文` | 語意最準，但和你指定的 header 按鈕文案不同。 |
-
-你的答案：A
-
-```text
-
-```
-
-### Q3. 主題卡互動要共用一套元件嗎？
-
-| 選項 | 做法 | 影響 |
-| --- | --- | --- |
-| A（建議） | 共用 `SubjectTopicCard`，詳細內容用 slot/子元件自訂 | 書籤、checkbox、標題展開一致；內文排版仍可各科不同。 |
-| B | 每個科目各自寫卡片元件 | 最自由，但容易讓 checkbox、書籤、hit area、手機行為不一致。 |
-| C | 先複製日語學習 N5 元件，後續再抽共用 | 初期快，但容易累積重複與後續搬移成本。 |
-
-你的答案：A
-
-```text
-
-```
-
-### Q4. 書籤語意是什麼？
-
-| 選項 | 做法 | 影響 |
-| --- | --- | --- |
-| A（建議） | 閱讀位置：每個科目同時只有一個書籤 | 與日語學習 N5 文法現況一致，適合「上次讀到哪」。 |
-| B | 收藏：每個科目可有多個書籤 | 適合收藏重點，但不是閱讀位置；需要多筆 bookmark storage。 |
-| C | 兩者都要：閱讀位置 + 收藏 | 功能完整但複雜，第一版不建議。 |
-
-你的答案：A
-
-```text
-
-```
-
-### Q5. checkbox 勾選後主題要移到已完成區嗎？
-
-| 選項 | 做法 | 影響 |
-| --- | --- | --- |
-| A（建議） | 勾選後移到已完成區，並自動收合 | 與日語學習 N5 文法一致，未完成區保持乾淨。 |
-| B | 留在原位置，只顯示已完成樣式 | 章節順序穩定，但未完成與已完成混在一起。 |
-| C | 不做已完成區，只保留 checkbox 狀態 | 最簡單，但學習進度掃描性較差。 |
-
-你的答案：A
-
-```text
-
-```
-
-### Q6. 國文與英文第一版要做到什麼程度？
-
-| 選項 | 做法 | 影響 |
-| --- | --- | --- |
-| A（建議） | `英文`、`國文` route 都建立，但內容先用共同科目主題頁骨架與 placeholder topics | header/dropdown 完整，後續填內容容易。 |
-| B | 只建立英文 route；國文選項先不顯示 | 第一版更小，但不符合你指定的下拉選單。 |
-| C | 英文與國文都先放正式資料 | 範圍變大，需要立刻定義共同科目內容結構。 |
-
-你的答案：A
-
-```text
-
-```
-
-### Q7. CI/CD 的 GitHub Pages base path 是什麼？
-
-| 選項 | 做法 | 影響 |
-| --- | --- | --- |
-| A（暫定） | 使用 `/Spectra_Fin_note/` 與 `/Spectra_Fin_note/staging/` | 若 GitHub repo slug 就是 `Spectra_Fin_note`，可直接沿用。 |
-| B | 使用其他 repo slug | 需要你填入正確 slug，否則部署後資源路徑可能錯。 |
-| C | 暫不做 CD，只做 CI | 先確保品質，之後再補部署。 |
-
-你的答案：A
-
-```text
-
-```
-
-若選 B，repo slug：
-
-```text
-
-```
-
-### Q8. 第一版是否要建立專用的程式碼範例元件？
-
-| 選項 | 做法 | 影響 |
-| --- | --- | --- |
-| A（建議） | 建立 `TeachingCodeBlock` 或同等元件，專門處理 375px、註解、換行與複製 | 後續程式設計與計概範例品質會穩定。 |
-| B | 先用一般 Markdown/code block 樣式 | 初期快，但小螢幕可讀性風險高。 |
-| C | 暫不放程式範例元件，等內容頁正式設計再做 | 範圍小，但和你對程式範例可讀性的要求有落差。 |
-
-你的答案：A
-
-```text
-
-```
-
-### Q9. PWA 離線策略第一版要多完整？
-
-| 選項 | 做法 | 影響 |
-| --- | --- | --- |
-| A（建議） | 第一版即設定 PWA install metadata、service worker、route shell 離線可載入 | 符合專案原則，骨架階段就避免之後補洞。 |
-| B | 先做一般 SPA，PWA 下一個 change 再補 | 初期快，但違反目前 config 的「新功能先確保離線可用」。 |
-| C | 只做 PWA metadata，不做離線快取驗證 | 看起來像 PWA，但可靠度不足。 |
-
-你的答案：A
-
-```text
-
-```
-
-## 建議的 Scope
-
-### In Scope
-
-- 建立 Vue 3 + TypeScript + Vite + Tailwind 前端骨架。
-- 建立 AppShell、Router、RouteTabs、共同科目下拉。
-- 建立 6 個科目 route。
-- 建立與日語學習風格一致的色票、背景、header、tab、submenu。
-- 建立主題卡共用互動：書籤、checkbox、標題展開/收合。
-- 建立 375px 手機寬度的基本排版驗證。
-- 建立 PWA 基礎設定與離線 shell 驗證。
-- 建立與日語學習一致的 CI/CD。
-- 建立小螢幕程式範例排版規則或元件。
-
-### Out of Scope
-
-- 不在本 change 完成所有科目的正式講義內容。
-- 不在本 change 定義所有詳細內容排版差異。
-- 不導入伺服器、帳號、analytics 或外部 API。
-- 不把共同科目做成和專業科目同樣深度。
-- 不先做題庫或測驗流程，除非你另行指定。
-
-## Draft Spec Delta
-
-### Requirement: App shell shall expose exam subject routes
-
-The app shell SHALL show primary route controls for 計概、網概、資管、程式 and a common-subject dropdown defaulting to 英文.
-
-#### Scenario: Default common subject route
-
-- **GIVEN** the user opens the app for the first time
-- **WHEN** the header is rendered
-- **THEN** the common-subject control shows 英文 by default
-- **AND** the user can open a menu containing 英文 and 國文
-
-#### Scenario: Subject route navigation
-
-- **WHEN** the user taps 計概、網概、資管 or 程式
-- **THEN** the app navigates to the corresponding subject route
-- **AND** the header keeps the same visual style as the reference project
-
-### Requirement: Subject pages shall use topic sections
-
-Each subject page SHALL display multiple topic sections. Each section SHALL have a bookmark control, a completion checkbox, a title, and expandable detail content.
-
-#### Scenario: Expanding a topic
-
-- **WHEN** the user taps a topic title
-- **THEN** the topic detail content expands
-- **AND** tapping the title again collapses it
-
-#### Scenario: Completing a topic
-
-- **WHEN** the user checks a topic checkbox
-- **THEN** the topic is marked completed
-- **AND** the completion state persists after reload
-
-### Requirement: Mobile width shall be a first-class target
-
-The app SHALL be usable at 375px viewport width without horizontal page overflow.
-
-#### Scenario: Header on 375px
-
-- **GIVEN** the viewport width is 375px
-- **WHEN** the header renders all subject controls
-- **THEN** route tabs wrap or compress cleanly
-- **AND** no text overlaps another control
-- **AND** the common-subject dropdown remains usable
-
-### Requirement: Teaching code examples shall remain readable on small phones
-
-Code examples SHALL use clear variable names, short focused snippets, and enough Traditional Chinese comments for learning.
-
-#### Scenario: Java example on 375px
-
-- **GIVEN** a professional subject page contains a Java example
-- **WHEN** the viewport width is 375px
-- **THEN** the code block remains readable
-- **AND** comments explain the learning point without forcing the important code far off-screen
-
-### Requirement: CI/CD shall match the reference deployment pattern
-
-The project SHALL use CI and CD workflows equivalent to the reference project, with project-specific base paths.
-
-#### Scenario: CI validates a push
-
-- **WHEN** code is pushed or a pull request is opened
-- **THEN** CI runs install, lint, typecheck, unit tests, build, and e2e tests
-
-#### Scenario: CD publishes staging and production
-
-- **WHEN** `dev` is pushed
-- **THEN** CD publishes a staging build
-- **WHEN** `main` is pushed
-- **THEN** CD publishes a production build
-
-## 建議的 Tasks 草稿
-
-- [ ] 建立 Vue 3 + TypeScript + Vite + Tailwind 專案骨架。
-- [ ] 建立 `src/app/router.ts`、`src/app/routePreload.ts`、`src/app/AppShell.vue`。
-- [ ] 建立 route tabs：計概、網概、資管、程式、共同科目下拉。
-- [ ] 建立 common subject switcher：英文/國文，預設英文。
-- [ ] 建立 6 個 route view。
-- [ ] 建立 subject topic card 共用元件。
-- [ ] 建立 topic completion/bookmark progress storage。
-- [ ] 建立每個科目的 placeholder topic data。
-- [ ] 建立 375px header 與 topic card layout 測試。
-- [ ] 建立 PWA metadata、service worker 與離線 shell smoke test。
-- [ ] 建立 teaching code block 元件或樣式規則。
-- [ ] 建立 CI workflow。
-- [ ] 建立 CD workflow 與 project-specific base path。
-- [ ] 更新 `PROJECT_ARCHITECTURE.md`。
-- [ ] 補 AppShell、route ownership、topic card、PWA 離線與 CI/CD 相關測試。
-
-## 建議下一步
-
-請先在本文件的 Q1-Q9 作答。作答後可用：
-
-```text
-$spectra-propose 請讀取指定 Markdown 檔案 `@/_private/propose.md` 的內容，並以它作為唯一輸入建立 change proposal。
+```bash
+$spectra-apply <change-id>
 ```

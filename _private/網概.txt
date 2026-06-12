@@ -1,0 +1,433 @@
+網路通訊
+
+一、準備方向
+
+[原文提醒]
+- OSI 7 層一定要熟：各層功能、協定屬於哪一層、實體設備在哪一層。
+- 資訊安全近年幾乎每年必考，需多花時間準備。
+- 可注意與國營事業相關的資安事件，以及防範方法。
+- 資安、雲端相關政策也可以看。
+
+二、網路概論
+
+[比較] LAN / MAN / WAN
+- LAN：區域網路，範圍小，例如公司、校園。
+- MAN：都會網路，城市範圍。
+- WAN：廣域網路，跨城市或跨國，例如 Internet。
+
+[比較] Client-Server vs P2P
+- Client-Server：集中管理，伺服器提供服務，容易控管但伺服器可能成瓶頸。
+- P2P：節點彼此提供資源，擴充性高但管理與安全較難。
+
+[比較] HTTP vs HTTPS
+- HTTP：明文傳輸，預設 port 80。
+- HTTPS：HTTP over TLS，提供加密與憑證驗證，預設 port 443。
+
+[必背] Stateless
+- 定義：伺服器不保存每次請求間的狀態。
+- 優點：簡單、容易擴充。
+- 缺點：需靠 cookie、session、token 保存登入或購物車等狀態。
+
+[比較] Session vs Cookie
+- Cookie：存於 client，由瀏覽器帶給 server。
+- Session：狀態多存於 server，client 只保存 session id。
+- Token：常見於 API，例如 JWT，但需注意過期、簽章與撤銷問題。
+
+[比較] 網路拓樸
+- Bus：成本低，但主幹故障影響大。
+- Ring：資料依環傳遞，故障可能影響整環。
+- Star：以中心設備連接，易管理，中心故障影響大。
+- Mesh：可靠度高，成本高。
+
+三、網路設備與 OSI 層
+
+[必背]
+- Repeater：實體層，重生訊號。
+- Hub：實體層，多埠中繼，碰撞域大。
+- Bridge：資料鏈結層，依 MAC 分隔碰撞域。
+- L2 Switch：資料鏈結層，依 MAC address 轉送 frame。
+- L3 Switch：網路層，具路由功能。
+- Router：網路層，依 IP 選路。
+- Gateway：可跨不同協定或應用層轉換，視情況可在高層運作。
+- Firewall：常見於網路層、傳輸層、應用層，依型態不同。
+
+[比較] 功能、優缺點與適合場景
+
+設備 | 功能 | 優點 | 缺點 | 適合場景
+--- | --- | --- | --- | ---
+Repeater | 重生訊號、延長距離 | 簡單便宜 | 不分割碰撞域與廣播域 | 早期或特殊長距離實體連線
+Hub | 多埠訊號轉發 | 成本低 | 所有埠共享頻寬，碰撞多 | 幾乎只作歷史觀念題
+Bridge | 依 MAC 轉送 frame | 可分割碰撞域 | 埠數少、效能有限 | 早期 LAN segment 連接
+L2 Switch | 依 MAC table 交換 | 效能好、每埠獨立碰撞域 | 預設不切廣播域 | 一般 LAN 存取層
+L3 Switch | 交換加路由 | VLAN 間路由快 | 成本較高、功能視設備而定 | 企業核心或匯聚層
+Router | 依 IP 路由 | 分割廣播域、連接不同網路 | 處理延遲較交換高 | 連接不同網段、WAN、Internet
+Gateway | 協定或格式轉換 | 可跨異質系統 | 設定與維護較複雜 | 舊系統整合、應用層代理
+Firewall | 存取控制與防護 | 提升安全、可記錄與控管 | 規則錯誤會阻擋服務或放行風險 | 網路邊界、DMZ、內部分段
+
+[比較] LAN vs VLAN
+- LAN：實體或邏輯區域網路。
+- VLAN：在交換器上切分邏輯網段，可隔離廣播域並提高管理彈性。
+
+四、常見 Port Number
+
+[必背]
+- FTP：20/21 TCP。
+- SSH：22 TCP。
+- Telnet：23 TCP。
+- SMTP：25 TCP。
+- DNS：53 UDP/TCP。
+- DHCP：67/68 UDP。
+- HTTP：80 TCP。
+- POP3：110 TCP。
+- NTP：123 UDP。
+- IMAP：143 TCP。
+- SNMP：161/162 UDP。
+- HTTPS：443 TCP。
+- SMB：445 TCP。
+- RDP：3389 TCP/UDP。
+
+五、OSI 7 層與 TCP/IP 5 層
+
+[會畫] OSI 7 層
+1. Physical：bit，傳輸媒介、電氣訊號。
+2. Data Link：frame，MAC、switch、error detection。
+3. Network：packet，IP、routing、router。
+4. Transport：segment/datagram，TCP、UDP、port。
+5. Session：會談建立、維持、結束。
+6. Presentation：資料格式、加密、壓縮。
+7. Application：使用者服務，HTTP、DNS、SMTP 等。
+
+[會畫] TCP/IP 5 層
+- Application。
+- Transport。
+- Internet。
+- Data Link。
+- Physical。
+
+[易混淆]
+- TCP/IP 模型常把 OSI 的 Application、Presentation、Session 合併到 Application。
+
+六、實體層
+
+[比較] 傳輸媒介
+- 雙絞線：便宜、常見於乙太網路。
+- 同軸電纜：抗干擾較雙絞線好，早期網路與有線電視常用。
+- 光纖：速度快、距離長、抗電磁干擾，成本較高。
+- 紅外線：短距、需視線。
+- 雷射：方向性強。
+- 無線電波：可穿透、覆蓋廣。
+- 微波：高頻、方向性較強，常需視線。
+
+[必背] Bluetooth
+- 採用 IEEE 802.15.1 相關個人區域網路概念。
+- 使用 2.4 GHz ISM 頻段。
+- 特性：短距、低功耗、跳頻展頻。
+- 世代重點：
+  - Bluetooth 1.x：基本速率約 1 Mbps。
+  - Bluetooth 2.0 + EDR：約 3 Mbps。
+  - Bluetooth 3.0 + HS：可透過高速通道達約 24 Mbps。
+  - Bluetooth 4.0：導入 BLE，重視低功耗。
+  - Bluetooth 5.x：提升 BLE 速度、距離與廣播能力，LE 2M PHY 約 2 Mbps。
+  - Bluetooth 5.2：LE Audio 是常見重點。
+  - Bluetooth 6.0 / 6.1：近年重點含 Channel Sounding、隱私與位址更新等，考試若教材較舊可先掌握 4.x、5.x。
+
+[必背] 物聯網（IoT）
+- 定義：透過感測器、網路與平台讓物件可感測、傳輸、分析與控制。
+- 三層架構：
+  - 感知層：感測器、RFID、裝置。
+  - 網路層：有線/無線傳輸。
+  - 應用層：智慧家庭、智慧電網、工業控制、醫療等。
+
+[必背] 雲端運算
+- 定義：透過網路提供可擴充的運算、儲存與服務。
+- 特性：on-demand self-service、broad network access、resource pooling、rapid elasticity、measured service。
+- 服務模式：
+  - IaaS：提供 VM、網路、儲存。
+  - PaaS：提供開發與部署平台。
+  - SaaS：提供應用程式。
+- 部署模式：
+  - Public Cloud：公有雲。
+  - Private Cloud：私有雲。
+  - Community Cloud：社群雲。
+  - Hybrid Cloud：混合雲。
+
+[比較] 公有雲、私有雲、社群雲、混合雲
+
+模式 | 定義 | 優點 | 缺點 | 常見場景
+--- | --- | --- | --- | ---
+Public Cloud | 由雲端服務商提供給大眾或多租戶使用 | 彈性高、成本可按量計費、建置快 | 法遵與資料控管需評估 | 網站、測試環境、彈性運算
+Private Cloud | 單一組織專用雲環境 | 控制力高、安全與客製彈性高 | 建置與維運成本高 | 金融、政府、敏感資料系統
+Community Cloud | 多個有共同需求的組織共享 | 符合共同法遵或產業需求 | 治理與成本分攤較複雜 | 醫療、教育、政府共同平台
+Hybrid Cloud | 結合公有雲與私有雲 | 兼顧彈性與控管 | 整合、網路與資安管理較複雜 | 核心資料留私有雲，尖峰流量用公有雲
+
+[必背] Big Data
+- 定義：大量、多樣、快速產生且需特殊技術處理的資料。
+- 5V：Volume、Velocity、Variety、Veracity、Value。
+
+[必背] Wi-Fi
+- IEEE 802.11 系列。
+- 重要標準：
+  - 802.11b：2.4 GHz，最高 11 Mbps。
+  - 802.11a：5 GHz，最高 54 Mbps。
+  - 802.11g：2.4 GHz，最高 54 Mbps。
+  - 802.11n / Wi-Fi 4：2.4/5 GHz，MIMO，最高約 600 Mbps。
+  - 802.11ac / Wi-Fi 5：5 GHz，最高約 6.9 Gbps。
+  - 802.11ax / Wi-Fi 6：2.4/5 GHz，OFDMA、MU-MIMO，最高約 9.6 Gbps。
+  - Wi-Fi 6E：Wi-Fi 6 延伸到 6 GHz 頻段。
+  - 802.11be / Wi-Fi 7：重點是 320 MHz channel、4096-QAM、Multi-Link Operation，理論最高可到約 46 Gbps。
+- MIMO：Multiple Input Multiple Output，利用多天線提高吞吐與可靠性。
+
+[必背] RFID / NFC
+- RFID 組成：Tag、Reader、Backend System。
+- RFID 分類：主動式、被動式、半主動式。
+- 優點：非接觸、可批次讀取。
+- 缺點：隱私、安全與干擾問題。
+- NFC：近距離無線通訊，距離短，常用於行動支付、門禁。
+- NFC vs RFID：NFC 距離更短、常支援雙向互動；RFID 應用距離與型態較多。
+
+[必背] 行動網路 1G 到 5G
+- 1G：類比語音。
+- 2G：數位語音、簡訊，GSM。
+- 3G：行動資料、WCDMA/CDMA2000。
+- 4G：LTE，IP 化、高速資料。
+- 5G：eMBB、URLLC、mMTC，低延遲、高頻寬、大量連線。
+
+[比較] 技術標準、速度、功能與優缺點
+
+世代 | 技術標準例子 | 速度概念 | 主要功能 | 優點 | 缺點
+--- | --- | --- | --- | --- | ---
+1G | AMPS、TACS | Kbps 等級 | 類比語音 | 開啟行動通話 | 安全差、容量低、易受干擾
+2G | GSM、IS-95 CDMA | Kbps 到數百 Kbps | 數位語音、SMS、低速資料 | 容量與安全較 1G 好 | 資料速度低
+3G | WCDMA、CDMA2000、HSPA | Mbps 等級 | 行動上網、影音服務 | 支援較完整資料服務 | 延遲與速度不如 4G
+4G | LTE、LTE-Advanced | 數十到數百 Mbps，理論可更高 | All-IP 寬頻資料 | 高速、低延遲、適合串流 | 覆蓋與頻譜需求高
+5G | NR | Gbps 等級理論峰值 | eMBB、URLLC、mMTC | 高頻寬、低延遲、大量連線 | 建設成本高，高頻訊號覆蓋較受限
+
+[必背] 乙太網路
+- IEEE 802.3。
+- CSMA/CD 是傳統共享式乙太網重點；現代交換式全雙工環境較少碰撞。
+- 速度常見：10 Mbps、100 Mbps、1 Gbps、10 Gbps、40 Gbps、100 Gbps 以上。
+
+七、資料鏈結層
+
+[必背] 5-4-3 Rule
+- 傳統乙太網路中繼器規則：5 個 segment、4 個 repeater、最多 3 個 populated segment。
+- 現代交換式網路較少直接使用，但仍可能作為歷史觀念題。
+
+[必背]
+- 訊框化（Framing）：將 bit stream 切成 frame。
+- Error Detection：常見 CRC。
+- Flow Control：控制傳送速率。
+
+[比較] HDLC vs PPP
+- HDLC：位元導向資料鏈結協定。
+- PPP：點對點協定，常見於撥接、PPPoE，可支援認證。
+
+[比較] 傳輸方向
+- Simplex：單工，單向傳輸。
+- Half-duplex：半雙工，雙向但不能同時。
+- Full-duplex：全雙工，雙向可同時。
+
+[比較] 多重存取
+- 無競爭多重存取：Token Passing、輪詢。
+- 競爭多重存取：ALOHA、CSMA、CSMA/CD、CSMA/CA。
+
+[比較] CSMA / CSMA/CD / CSMA/CA
+- CSMA：先聽再傳。
+- CSMA/CD：偵測碰撞後停止並退避，傳統乙太網。
+- CSMA/CA：避免碰撞，常見於 Wi-Fi。
+
+[必背] ARQ
+- Stop-and-Wait ARQ。
+- Go-Back-N ARQ。
+- Selective Repeat ARQ。
+
+[比較] Bridge / Switch
+- Bridge：較早期，連接 LAN segment。
+- L2 Switch：多埠 bridge，依 MAC table 轉送。
+- L3 Switch：具 routing 功能，可在 VLAN 間轉送。
+
+八、網路層
+
+[比較] 靜態路由 vs 動態路由
+- 靜態路由：人工設定，簡單穩定，但維護成本高。
+- 動態路由：透過協定自動學習，適合大型網路。
+
+[必背] 路由協定
+- RIP：Distance Vector，hop count，最大 15 hops。
+- OSPF：Link State，使用 cost，收斂快。
+- BGP：Path Vector，Internet AS 間路由。
+
+[必背] IP
+- IPv4：32 bits，常用 dotted decimal。
+- IPv6：128 bits，十六進位冒號表示。
+- 公有 IP：可在 Internet 路由。
+- 私有 IP：
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+- 特殊 IP：
+  - 127.0.0.0/8：loopback，常見 127.0.0.1。
+  - 169.254.0.0/16：link-local / APIPA。
+  - 0.0.0.0：未指定位址或預設路由語境。
+  - 255.255.255.255：limited broadcast。
+  - 224.0.0.0/4：IPv4 multicast。
+
+[會算] 子網路、CIDR、網路遮罩
+- /24 表示前 24 bits 為 network prefix。
+- 可用主機數常見公式：2^host_bits - 2，但 /31、/32 有特殊用途。
+- 必練：給 IP 與 mask，求 network address、broadcast address、host range、可切幾個 subnet。
+
+[比較] IPv4 vs IPv6
+- IPv6 位址長度較長、header 較簡化、不使用 broadcast、支援 extension header。
+- IPv4 header 有 checksum；IPv6 header 不含 header checksum。
+
+[比較] Header 欄位差異
+- IPv4 常見 header 欄位：Version、IHL、Type of Service / DSCP、Total Length、Identification、Flags、Fragment Offset、TTL、Protocol、Header Checksum、Source Address、Destination Address、Options。
+- IPv6 固定 header 常見欄位：Version、Traffic Class、Flow Label、Payload Length、Next Header、Hop Limit、Source Address、Destination Address。
+- IPv6 把選用功能移到 extension headers，路由器處理固定 header 較單純。
+- IPv4 可由路由器分片；IPv6 分片主要由來源端透過 extension header 處理。
+
+[必背]
+- NAT：私有 IP 與公有 IP 轉換，常見 PAT 以 port 區分連線。
+- ARP：IPv4 位址轉 MAC address。
+- ARP Spoofing：偽造 ARP 回應進行中間人攻擊。
+- RARP：MAC 轉 IP，舊式協定。
+- ICMP：錯誤回報與診斷，ping 使用 ICMP echo。
+- IGMP：IPv4 multicast group 管理。
+- IPSec：網路層安全協定，可提供加密與認證。
+
+[必背] 網路指令
+- ping：測試連通性。
+- traceroute / tracert：追蹤路由路徑。
+- netstat：查看連線與 port。
+- ipconfig / ifconfig / ip：查看網路設定。
+- nslookup / dig：查 DNS。
+
+[比較]
+- Distance Vector：只知道到目的地距離與下一跳，例 RIP。
+- Link State：掌握拓樸資訊，例 OSPF。
+- MAC Address vs IP Address：
+  - MAC：資料鏈結層，硬體位址，區域網路內轉送。
+  - IP：網路層，邏輯位址，跨網路路由。
+- VLSM：Variable Length Subnet Mask，可依需求切不同大小子網路。
+
+九、傳輸層
+
+[比較] Circuit Switching vs Packet Switching
+- Circuit Switching：先建立固定通道，例如傳統電話。
+- Packet Switching：資料切成封包分別傳送，例如 Internet。
+
+[必背] Packet
+- 封包包含 header 與 payload。
+- Header 放位址、序號、控制資訊等。
+
+[必背] TCP
+- Connection-oriented。
+- Reliable delivery。
+- Flow control。
+- Congestion control。
+- Ordered delivery。
+
+[會畫] TCP 三方交握
+1. Client → Server：SYN。
+2. Server → Client：SYN + ACK。
+3. Client → Server：ACK。
+
+[會畫] TCP 四方交握
+1. FIN。
+2. ACK。
+3. FIN。
+4. ACK。
+
+[必背] SYN Flood Attack
+- 攻擊者大量送 SYN 但不完成握手，使 server 半開連線耗盡。
+- 防禦：SYN cookies、rate limiting、防火牆、調整 backlog。
+
+[必背] TCP Flow Control
+- 透過 sliding window 與 receiver window 避免接收端被塞爆。
+
+[必背] TCP Congestion Control
+- Slow Start、Congestion Avoidance、Fast Retransmit、Fast Recovery。
+
+[比較] TCP vs UDP
+- TCP：可靠、連線導向、較慢，適合 HTTP、FTP、SMTP。
+- UDP：不保證可靠、無連線、開銷小，適合 DNS、VoIP、串流、遊戲。
+
+十、應用層
+
+[必背]
+- DNS：網域名稱解析。
+- DHCP：自動分配 IP、mask、gateway、DNS。
+- FTP：檔案傳輸。
+- URL：定位網路資源，包含 scheme、host、path、query 等。
+- GET vs POST：
+  - GET：取得資源，參數常在 URL，應具冪等性。
+  - POST：提交資料，資料常在 body，不要求冪等。
+- SNMP：網路管理。
+- SDN：Software-Defined Networking，控制平面與資料平面分離。
+- RTP：即時傳輸音訊與視訊。
+- RTCP：RTP 控制協定。
+- RTSP：串流控制。
+- HTTP：Web 應用協定。
+- HTTPS：HTTP over TLS。
+- Gateway：協定轉換或應用層閘道。
+- CDN：內容傳遞網路，靠近使用者快取內容。
+- SMTP：寄信。
+- IMAP：收信並保留在伺服器同步。
+- POP3：收信，傳統上常下載到本機。
+
+十一、資訊安全
+
+[必背] 安全目標
+- Confidentiality：機密性。
+- Integrity：完整性。
+- Availability：可用性。
+- Non-repudiation：不可否認性。
+- Authentication / Authenticity：認證性或真實性。
+
+[比較] 防禦設備
+- Firewall：依規則允許或阻擋流量。
+- NGFW：加入應用識別、IPS、威脅情報等。
+- WAF：Web Application Firewall，防護 HTTP/HTTPS 應用攻擊。
+- IDS：偵測入侵並告警。
+- IPS：偵測並主動阻擋。
+
+[比較] 加密
+- 對稱式加密：同一把 key 加解密，速度快，key distribution 困難。
+- 非對稱式加密：public/private key，解決 key distribution，但速度較慢。
+- Hash：單向摘要，不是加密，常用於完整性檢查。
+
+[必背] 電子商務安全需求
+- 機密性、完整性、不可否認性、可驗證性、存取控制。
+
+[必背]
+- 數位簽章：用私鑰簽章，公鑰驗證，提供完整性、身分驗證與不可否認性。
+- Proxy Server：代理 client 或 server，可快取、過濾、匿名化或控管。
+- VPN：建立加密通道。
+- PPTP：早期 VPN 協定，安全性較弱，了解即可。
+- DMZ：隔離對外服務區，降低內網暴露。
+- EDR：Endpoint Detection and Response，端點偵測與回應。
+- MDR：Managed Detection and Response，委外或託管式偵測回應服務。
+- PKI：Public Key Infrastructure，包含 CA、憑證、CRL/OCSP。
+- NIST：美國國家標準與技術研究院，常見資安框架來源。
+- ISO 27001：資訊安全管理系統 ISMS 要求，現行主軸為 ISO/IEC 27001:2022。
+
+[必背] 常見網攻
+- 電腦病毒：需宿主程式，會感染檔案。
+- Worm：可自我複製並透過網路散播。
+- Trojan：偽裝成正常程式。
+- Ransomware：勒索軟體，加密資料要求贖金。
+- Phishing：釣魚，誘騙帳密或敏感資料。
+- XSS：跨站腳本攻擊。
+- SQL Injection：注入 SQL 指令。
+- CSRF：跨站請求偽造。
+- DoS / DDoS：阻斷服務。
+- Man-in-the-Middle：中間人攻擊。
+- ARP Spoofing、DNS Spoofing。
+
+[補充] 近年常見觀念
+- Zero Trust：永不信任、持續驗證、最小權限。
+- MFA：多因素認證。
+- Least Privilege：最小權限原則。
+- Defense in Depth：縱深防禦。
+- Backup 3-2-1：至少 3 份資料、2 種媒介、1 份異地。
