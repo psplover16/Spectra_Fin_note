@@ -157,6 +157,56 @@
     @apply m-0;
   }
 
+  .subject-topic-block {
+    @apply min-w-0 rounded border border-clay/10 bg-white/65 p-2;
+  }
+
+  .subject-topic-block h3 {
+    @apply m-0 mb-1 text-sm font-semibold text-ink;
+  }
+
+  .subject-topic-block p {
+    @apply m-0;
+  }
+
+  .subject-topic-block ul,
+  .subject-topic-block ol {
+    @apply m-0 pl-5;
+  }
+
+  .subject-topic-source-note {
+    @apply text-ink/75;
+  }
+
+  .subject-topic-term-list {
+    @apply m-0 grid gap-1;
+  }
+
+  .subject-topic-term-list dt {
+    @apply font-semibold text-ink;
+  }
+
+  .subject-topic-term-list dd {
+    @apply m-0 text-ink/70;
+  }
+
+  .subject-topic-table-wrap {
+    @apply max-w-full overflow-x-auto;
+  }
+
+  .subject-topic-table {
+    @apply min-w-max border-collapse text-left text-xs;
+  }
+
+  .subject-topic-table th,
+  .subject-topic-table td {
+    @apply border border-clay/15 px-2 py-1 align-top;
+  }
+
+  .subject-topic-table th {
+    @apply bg-sand/60 font-semibold text-ink;
+  }
+
   .topic-code-placeholder {
     @apply rounded border border-moss/25 bg-parchment p-2;
   }

@@ -7,6 +7,8 @@ const expectedSubjectKeys = [
   'networking',
   'informationManagement',
   'programming',
+  'database',
+  'algorithms',
   'english',
   'chinese'
 ] as const;
@@ -54,9 +56,11 @@ function expectBlockShape(block: SubjectTopicBlock) {
   }
 
   expect(block.kind).toBe('teachingCode');
-  expect(Object.keys(block).sort()).toEqual(expect.arrayContaining(allowedTeachingCodeBlockKeys));
-  expect(block.language).toBe('java');
-  expect(block.code).toEqual(expect.any(String));
+  if (block.kind === 'teachingCode') {
+    expect(Object.keys(block).sort()).toEqual(expect.arrayContaining(allowedTeachingCodeBlockKeys));
+    expect(block.language).toBe('java');
+    expect(block.code).toEqual(expect.any(String));
+  }
 }
 
 describe('placeholder topic data', () => {
@@ -93,6 +97,12 @@ describe('placeholder topic data', () => {
     );
     expect(getPlaceholderTopics('networking').map((topic) => topic.id)).toEqual(
       expect.arrayContaining(['osi-model', 'tcp-ip-basics'])
+    );
+    expect(getPlaceholderTopics('database').map((topic) => topic.id)).toEqual(
+      expect.arrayContaining(['database-foundations', 'relational-model-basics'])
+    );
+    expect(getPlaceholderTopics('algorithms').map((topic) => topic.id)).toEqual(
+      expect.arrayContaining(['sorting-overview', 'binary-search-placeholder'])
     );
   });
 });

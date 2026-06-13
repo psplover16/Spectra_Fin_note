@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createRoutePreloadRegistry } from '@/app/routePreload';
+import { createRoutePreloadRegistry, primaryRoutePaths, routeComponentLoaders } from '@/app/routePreload';
 
 describe('route preload registry', () => {
   it('reuses pending and completed preload work for the same path', async () => {
@@ -26,5 +26,12 @@ describe('route preload registry', () => {
 
     await expect(registry.preload('/unknown')).resolves.toBeUndefined();
     expect(registry.isLoaded('/unknown')).toBe(false);
+  });
+
+  it('includes database and algorithms in primary route preload loaders', () => {
+    expect(primaryRoutePaths).toContain('/database');
+    expect(primaryRoutePaths).toContain('/algorithms');
+    expect(routeComponentLoaders['/database']).toEqual(expect.any(Function));
+    expect(routeComponentLoaders['/algorithms']).toEqual(expect.any(Function));
   });
 });

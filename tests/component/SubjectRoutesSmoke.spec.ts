@@ -1,7 +1,9 @@
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import ChineseView from '@/modules/chinese/views/ChineseView.vue';
+import AlgorithmsView from '@/modules/algorithms/views/AlgorithmsView.vue';
 import ComputerPrinciplesView from '@/modules/computerPrinciples/views/ComputerPrinciplesView.vue';
+import DatabaseView from '@/modules/database/views/DatabaseView.vue';
 import EnglishView from '@/modules/english/views/EnglishView.vue';
 import InformationManagementView from '@/modules/informationManagement/views/InformationManagementView.vue';
 import NetworkingView from '@/modules/networking/views/NetworkingView.vue';
@@ -13,6 +15,8 @@ const subjectRouteCases = [
   [NetworkingView, 'subject-view-networking', 'subject-topic-list-networking', 'OSI 七層模型'],
   [InformationManagementView, 'subject-view-information-management', 'subject-topic-list-informationManagement', '資料庫正規化'],
   [ProgrammingView, 'subject-view-programming', 'subject-topic-list-programming', 'Java 流程控制'],
+  [DatabaseView, 'subject-view-database', 'subject-topic-list-database', '資料庫基本概念'],
+  [AlgorithmsView, 'subject-view-algorithms', 'subject-topic-list-algorithms', '排序法總覽'],
   [EnglishView, 'subject-view-english', 'subject-topic-list-english', '閱讀策略'],
   [ChineseView, 'subject-view-chinese', 'subject-topic-list-chinese', '文章結構']
 ] as const;
@@ -43,5 +47,15 @@ describe('subject route views', () => {
 
     expect(wrapper.get('[data-testid="subject-topic-empty-state"]').text()).toContain('測試科目尚未建立主題內容');
     expect(consoleError).not.toHaveBeenCalled();
+  });
+
+  it('loads bundled professional topics alongside remaining placeholders', () => {
+    const databaseWrapper = mount(DatabaseView);
+    const algorithmsWrapper = mount(AlgorithmsView);
+
+    expect(databaseWrapper.text()).toContain('資料庫(Database) 基本概念');
+    expect(databaseWrapper.text()).toContain('資料庫基本概念');
+    expect(algorithmsWrapper.text()).toContain('二元搜尋法(Binary Search)');
+    expect(algorithmsWrapper.text()).toContain('排序法總覽');
   });
 });

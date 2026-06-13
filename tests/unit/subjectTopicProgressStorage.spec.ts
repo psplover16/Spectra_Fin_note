@@ -64,4 +64,33 @@ describe('subjectTopicProgressStorage', () => {
     expect(storage.getItem(subjectTopicProgressStorageKey)).toBe('{malformed-json');
     expect(storage.removeItem).not.toHaveBeenCalled();
   });
+
+  it('normalizes old progress state by adding empty database and algorithms entries', () => {
+    const storage = createMemoryStorage({
+      [subjectTopicProgressStorageKey]: JSON.stringify({
+        version: 1,
+        subjects: {
+          computerPrinciples: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          networking: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          informationManagement: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          programming: {
+            completedTopicIds: ['java-loop-basics'],
+            bookmarkedTopicId: 'java-loop-basics',
+            updatedAt: '2026-06-13T02:00:00.000Z'
+          },
+          english: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          chinese: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' }
+        }
+      })
+    });
+
+    const state = readSubjectTopicProgress(storage);
+
+    expect(state.subjects.programming.completedTopicIds).toEqual(['java-loop-basics']);
+    expect(state.subjects.programming.bookmarkedTopicId).toBe('java-loop-basics');
+    expect(state.subjects.database.completedTopicIds).toEqual([]);
+    expect(state.subjects.database.bookmarkedTopicId).toBeNull();
+    expect(state.subjects.algorithms.completedTopicIds).toEqual([]);
+    expect(state.subjects.algorithms.bookmarkedTopicId).toBeNull();
+  });
 });

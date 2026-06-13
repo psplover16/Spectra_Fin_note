@@ -15,7 +15,9 @@ const primaryTabs = [
   { to: '/computer-principles', label: '計概', testId: 'route-tab-computer-principles' },
   { to: '/networking', label: '網概', testId: 'route-tab-networking' },
   { to: '/information-management', label: '資管', testId: 'route-tab-information-management' },
-  { to: '/programming', label: '程式', testId: 'route-tab-programming' }
+  { to: '/programming', label: '程式', testId: 'route-tab-programming' },
+  { to: '/database', label: '資料庫', testId: 'route-tab-database' },
+  { to: '/algorithms', label: '演算法', testId: 'route-tab-algorithms' }
 ] as const satisfies readonly RouteTab[];
 
 function prepareRoute(to: string) {

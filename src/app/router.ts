@@ -26,6 +26,16 @@ export default createRouter({
       meta: { title: '程式' }
     },
     {
+      path: '/database',
+      component: routeComponentLoaders['/database'],
+      meta: { title: '資料庫' }
+    },
+    {
+      path: '/algorithms',
+      component: routeComponentLoaders['/algorithms'],
+      meta: { title: '演算法' }
+    },
+    {
       path: '/english',
       component: routeComponentLoaders['/english'],
       meta: { title: '英文' }

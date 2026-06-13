@@ -1,0 +1,111 @@
+# 計概副代理工作拆分
+
+- source manifest: `_TMP/manifests/computer-principles-manifest.md`
+- draft filename contract: `_TMP/<timestamp>-computer-principles-<topic>.md`
+- required draft fields: sourceFiles, examOutline, memoryPoints, understandingNotes
+- rule: 每個 manifest topic 各自建立 generator、verifier、import task，不合併不同 topic。
+
+## generator tasks
+
+- [ ] generator cp-von-neumann-architecture -> `_TMP/<timestamp>-computer-principles-von-neumann-architecture.md`
+- [ ] generator cp-turing-machine-and-test -> `_TMP/<timestamp>-computer-principles-turing-machine-and-test.md`
+- [ ] generator cp-machine-instruction-cycle -> `_TMP/<timestamp>-computer-principles-machine-instruction-cycle.md`
+- [ ] generator cp-pipeline -> `_TMP/<timestamp>-computer-principles-pipeline.md`
+- [ ] generator cp-bus -> `_TMP/<timestamp>-computer-principles-bus.md`
+- [ ] generator cp-performance-formulas -> `_TMP/<timestamp>-computer-principles-performance-formulas.md`
+- [ ] generator cp-risc-cisc -> `_TMP/<timestamp>-computer-principles-risc-cisc.md`
+- [ ] generator cp-memory-hierarchy -> `_TMP/<timestamp>-computer-principles-memory-hierarchy.md`
+- [ ] generator cp-memory-classification -> `_TMP/<timestamp>-computer-principles-memory-classification.md`
+- [ ] generator cp-registers -> `_TMP/<timestamp>-computer-principles-registers.md`
+- [ ] generator cp-cache -> `_TMP/<timestamp>-computer-principles-cache.md`
+- [ ] generator cp-hazard -> `_TMP/<timestamp>-computer-principles-hazard.md`
+- [ ] generator cp-usb-speed -> `_TMP/<timestamp>-computer-principles-usb-speed.md`
+- [ ] generator cp-base-conversion -> `_TMP/<timestamp>-computer-principles-base-conversion.md`
+- [ ] generator cp-complement-conversion -> `_TMP/<timestamp>-computer-principles-complement-conversion.md`
+- [ ] generator cp-floating-point-conversion -> `_TMP/<timestamp>-computer-principles-floating-point-conversion.md`
+- [ ] generator cp-codes-and-check-codes -> `_TMP/<timestamp>-computer-principles-codes-and-check-codes.md`
+- [ ] generator cp-digital-logic-basics -> `_TMP/<timestamp>-computer-principles-digital-logic-basics.md`
+- [ ] generator cp-sop-pos -> `_TMP/<timestamp>-computer-principles-sop-pos.md`
+- [ ] generator cp-karnaugh-map -> `_TMP/<timestamp>-computer-principles-karnaugh-map.md`
+- [ ] generator cp-universal-gates -> `_TMP/<timestamp>-computer-principles-universal-gates.md`
+- [ ] generator cp-combinational-sequential-circuits -> `_TMP/<timestamp>-computer-principles-combinational-sequential-circuits.md`
+- [ ] generator cp-os-basics -> `_TMP/<timestamp>-computer-principles-os-basics.md`
+- [ ] generator cp-io-and-interrupts -> `_TMP/<timestamp>-computer-principles-io-and-interrupts.md`
+- [ ] generator cp-hardware-protection -> `_TMP/<timestamp>-computer-principles-hardware-protection.md`
+- [ ] generator cp-os-structure -> `_TMP/<timestamp>-computer-principles-os-structure.md`
+- [ ] generator cp-process -> `_TMP/<timestamp>-computer-principles-process.md`
+- [ ] generator cp-deadlock -> `_TMP/<timestamp>-computer-principles-deadlock.md`
+- [ ] generator cp-process-communication -> `_TMP/<timestamp>-computer-principles-process-communication.md`
+- [ ] generator cp-memory-management -> `_TMP/<timestamp>-computer-principles-memory-management.md`
+- [ ] generator cp-virtual-memory -> `_TMP/<timestamp>-computer-principles-virtual-memory.md`
+- [ ] generator cp-disk-management -> `_TMP/<timestamp>-computer-principles-disk-management.md`
+
+## verifier tasks
+
+- [ ] verifier cp-von-neumann-architecture
+- [ ] verifier cp-turing-machine-and-test
+- [ ] verifier cp-machine-instruction-cycle
+- [ ] verifier cp-pipeline
+- [ ] verifier cp-bus
+- [ ] verifier cp-performance-formulas
+- [ ] verifier cp-risc-cisc
+- [ ] verifier cp-memory-hierarchy
+- [ ] verifier cp-memory-classification
+- [ ] verifier cp-registers
+- [ ] verifier cp-cache
+- [ ] verifier cp-hazard
+- [ ] verifier cp-usb-speed
+- [ ] verifier cp-base-conversion
+- [ ] verifier cp-complement-conversion
+- [ ] verifier cp-floating-point-conversion
+- [ ] verifier cp-codes-and-check-codes
+- [ ] verifier cp-digital-logic-basics
+- [ ] verifier cp-sop-pos
+- [ ] verifier cp-karnaugh-map
+- [ ] verifier cp-universal-gates
+- [ ] verifier cp-combinational-sequential-circuits
+- [ ] verifier cp-os-basics
+- [ ] verifier cp-io-and-interrupts
+- [ ] verifier cp-hardware-protection
+- [ ] verifier cp-os-structure
+- [ ] verifier cp-process
+- [ ] verifier cp-deadlock
+- [ ] verifier cp-process-communication
+- [ ] verifier cp-memory-management
+- [ ] verifier cp-virtual-memory
+- [ ] verifier cp-disk-management
+
+## import tasks
+
+- [ ] import cp-von-neumann-architecture
+- [ ] import cp-turing-machine-and-test
+- [ ] import cp-machine-instruction-cycle
+- [ ] import cp-pipeline
+- [ ] import cp-bus
+- [ ] import cp-performance-formulas
+- [ ] import cp-risc-cisc
+- [ ] import cp-memory-hierarchy
+- [ ] import cp-memory-classification
+- [ ] import cp-registers
+- [ ] import cp-cache
+- [ ] import cp-hazard
+- [ ] import cp-usb-speed
+- [ ] import cp-base-conversion
+- [ ] import cp-complement-conversion
+- [ ] import cp-floating-point-conversion
+- [ ] import cp-codes-and-check-codes
+- [ ] import cp-digital-logic-basics
+- [ ] import cp-sop-pos
+- [ ] import cp-karnaugh-map
+- [ ] import cp-universal-gates
+- [ ] import cp-combinational-sequential-circuits
+- [ ] import cp-os-basics
+- [ ] import cp-io-and-interrupts
+- [ ] import cp-hardware-protection
+- [ ] import cp-os-structure
+- [ ] import cp-process
+- [ ] import cp-deadlock
+- [ ] import cp-process-communication
+- [ ] import cp-memory-management
+- [ ] import cp-virtual-memory
+- [ ] import cp-disk-management

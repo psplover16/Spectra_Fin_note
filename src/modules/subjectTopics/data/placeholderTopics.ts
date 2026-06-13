@@ -133,6 +133,58 @@ boolean enough = (1 << parityBits) >= dataBits + parityBits + 1;`
       ]
     }
   ],
+  database: [
+    {
+      id: 'database-foundations',
+      subjectKey: 'database',
+      title: '資料庫基本概念',
+      summary: '預留資料庫系統、資料模型與資料庫管理系統的整理區。',
+      blocks: [
+        {
+          kind: 'paragraph',
+          text: '這裡先建立資料庫專業科目的主題入口，正式內容會依 verified 草稿逐批匯入。'
+        }
+      ]
+    },
+    {
+      id: 'relational-model-basics',
+      subjectKey: 'database',
+      title: '關聯式資料模型',
+      summary: '預留資料表、鍵值、關聯與完整性限制的學習區。',
+      blocks: [
+        {
+          kind: 'paragraph',
+          text: '這個占位主題用來承接後續資料庫來源的正式講義與考點整理。'
+        }
+      ]
+    }
+  ],
+  algorithms: [
+    {
+      id: 'sorting-overview',
+      subjectKey: 'algorithms',
+      title: '排序法總覽',
+      summary: '預留氣泡、選擇、插入、合併、快速、堆積與希爾排序的比較表。',
+      blocks: [
+        {
+          kind: 'paragraph',
+          text: '這裡先建立演算法專業科目的入口，正式內容會保留複雜度、穩定性與 Java 範例。'
+        }
+      ]
+    },
+    {
+      id: 'binary-search-placeholder',
+      subjectKey: 'algorithms',
+      title: '二元搜尋法',
+      summary: '預留已排序資料、遞迴與非遞迴版本的學習區。',
+      blocks: [
+        {
+          kind: 'paragraph',
+          text: '這個占位主題提醒後續正式內容必須標示二元搜尋法只能用於已排序資料。'
+        }
+      ]
+    }
+  ],
   english: [
     {
       id: 'reading-strategy',

@@ -19,6 +19,8 @@ describe('AppShell smoke', () => {
     expect(wrapper.get('[data-testid="route-tabs"]').text()).toContain('網概');
     expect(wrapper.get('[data-testid="route-tabs"]').text()).toContain('資管');
     expect(wrapper.get('[data-testid="route-tabs"]').text()).toContain('程式');
+    expect(wrapper.get('[data-testid="route-tabs"]').text()).toContain('資料庫');
+    expect(wrapper.get('[data-testid="route-tabs"]').text()).toContain('演算法');
     expect(wrapper.get('[data-testid="route-tabs"]').text()).toContain('英文');
     expect(wrapper.get('[data-testid="app-main"]').text()).toContain('計算機原理');
   });

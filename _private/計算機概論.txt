@@ -348,15 +348,7 @@ USB4 Version 2.0 / USB 80Gbps | USB4 80Gbps | 80 Gbps
 五、組合與循序電路
 
 [原文提醒]
-- 原文提到半加器、全加器、正反器、編碼器、解碼器、多工器、解多工器，國營聯招似乎較少考，該次準備時全跳過。
-
-[整理建議]
-- 即使少考，建議至少會辨認功能：
-  - 半加器：輸入 A、B，輸出 Sum、Carry。
-  - 全加器：輸入 A、B、Cin，輸出 Sum、Cout。
-  - Flip-Flop：儲存 1 bit，常見 SR、D、JK、T。
-  - Encoder / Decoder：編碼與解碼。
-  - Multiplexer / Demultiplexer：多選一與一分多。
+- 半加器、全加器、正反器、編碼器、解碼器、多工器、解多工器、Flip-Flop、Encoder / Decoder、Multiplexer / Demultiplexer
 
 
 3c. 作業系統

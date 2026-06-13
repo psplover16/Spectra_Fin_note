@@ -14,6 +14,8 @@ describe('route config', () => {
         '/networking',
         '/information-management',
         '/programming',
+        '/database',
+        '/algorithms',
         '/english',
         '/chinese'
       ])
@@ -26,6 +28,8 @@ describe('route config', () => {
       '/networking',
       '/information-management',
       '/programming',
+      '/database',
+      '/algorithms',
       '/english',
       '/chinese'
     ]);

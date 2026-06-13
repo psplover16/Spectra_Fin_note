@@ -9,4 +9,39 @@ describe('project architecture document', () => {
       expect(documentText).toContain(requiredSection);
     }
   });
+
+  it('documents database and algorithms route ownership', () => {
+    const documentText = readFileSync('PROJECT_ARCHITECTURE.md', 'utf8');
+
+    for (const requiredText of [
+      '/database',
+      '/algorithms',
+      'src/modules/database/views/DatabaseView.vue',
+      'src/modules/algorithms/views/AlgorithmsView.vue',
+      'route preload registry',
+      'database',
+      'algorithms'
+    ]) {
+      expect(documentText).toContain(requiredText);
+    }
+  });
+
+  it('documents professional topic content model ownership', () => {
+    const documentText = readFileSync('PROJECT_ARCHITECTURE.md', 'utf8');
+
+    for (const requiredText of [
+      'professionalTopics.ts',
+      'subjectTopics.ts',
+      'sourceFiles',
+      'sourceSummary',
+      'examOutline',
+      'memoryPoints',
+      'understandingNotes',
+      'termList',
+      'complexityTable',
+      'sourceNote'
+    ]) {
+      expect(documentText).toContain(requiredText);
+    }
+  });
 });

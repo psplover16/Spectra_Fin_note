@@ -4,10 +4,10 @@ const isProductionPreview = Boolean(process.env.CI) || process.env.PLAYWRIGHT_US
 
 test.skip(!isProductionPreview, 'PWA offline shell requires a production preview server with service worker output.');
 
-test('production PWA shell loads offline after an online warmup', async ({ context, page, request }) => {
-  await page.goto('/programming');
+test('production PWA shell loads professional routes offline after an online warmup', async ({ context, page, request }) => {
+  await page.goto('/database');
   await expect(page.getByTestId('route-tabs')).toBeVisible();
-  await expect(page.getByTestId('subject-view-programming')).toBeVisible();
+  await expect(page.getByTestId('subject-view-database')).toBeVisible();
 
   const manifestResponse = await request.get('/manifest.webmanifest');
   expect(manifestResponse.ok()).toBe(true);
@@ -26,16 +26,20 @@ test('production PWA shell loads offline after an online warmup', async ({ conte
     return Boolean(registration.active);
   });
 
+  await page.goto('/algorithms');
+  await expect(page.getByTestId('route-tabs')).toBeVisible();
+  await expect(page.getByTestId('subject-view-algorithms')).toBeVisible();
+
   await page.reload({ waitUntil: 'networkidle' });
   await expect(page.getByTestId('route-tabs')).toBeVisible();
-  await expect(page.getByTestId('subject-view-programming')).toBeVisible();
+  await expect(page.getByTestId('subject-view-algorithms')).toBeVisible();
 
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
 
   await expect(page.getByTestId('route-tabs')).toBeVisible();
-  await expect(page.getByTestId('subject-view-programming')).toBeVisible();
-  await expect(page.getByTestId('topic-title-check-bit-formula')).toBeVisible();
+  await expect(page.getByTestId('subject-view-algorithms')).toBeVisible();
+  await expect(page.getByTestId('topic-title-sorting-overview')).toBeVisible();
 
   await context.setOffline(false);
 });

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import SubjectTopicPage from '@/modules/subjectTopics/components/SubjectTopicPage.vue';
-import { getPlaceholderTopics } from '@/modules/subjectTopics/data/placeholderTopics';
+import { getSubjectTopics } from '@/modules/subjectTopics/data/subjectTopics';
 
 const subjectKey = 'networking';
-const topics = getPlaceholderTopics(subjectKey);
+const topics = getSubjectTopics(subjectKey);
 </script>
 
 <template>
