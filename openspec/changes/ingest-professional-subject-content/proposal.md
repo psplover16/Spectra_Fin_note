@@ -14,6 +14,7 @@
 - 品質補救：_TMP 草稿不得以 manifest、任務表或簡短摘要充當 AI 生成講義；已匯入 topic 必須有實質教學草稿、verifier 結果與正式 app data 對應。
 - 品質補救：馮紐曼架構需補足專業科目深度，包含程式內儲、五大單元、指令週期、瓶頸、Harvard 比較、例子、易錯點與中英專有名詞。
 - 流程修正：所有專業路由都必須各自跑一套完整內容產製流程，從來源掃描、topic 標記、單一 topic prompt、副代理 draft、verifier verified、主流程匯入到測試與人工抽查，不得跨路由混批生成或直接由模板匯入正式 app data。
+- 流程修正：全域來源標記定義不得使用封閉清單；主流程需先掃描所有允許來源 txt/md 與本輪輔助來源，分類實際出現的方括號標記，排除程式碼陣列、索引與任務標記等非教材標記語法，再把每個有效標記定義寫入 `_private/TMP/source-label-definitions.md`。
 - 流程修正：為避免大量內容污染主流程，route source inventory、topic prompt、draft writing、draft verification、route integration audit 與 import readiness check 都優先由副代理處理；主流程只負責存取規則、route 邊界、派工、正式匯入、測試與最後回報。
 - 內容重做：第 16 組全路由教材重做時，現有 professionalTopics 內的專業科目正式教材內容一律視為 obsolete，不得當成匯入基底或 fallback；每個專業 route 的最終正式 topic list 只能由本輪 route tracking、`.verified.md` 與 import readiness 通過結果重建。
 
@@ -36,6 +37,7 @@
 ### Modified Capabilities
 
 - professional-topic-content: 補充 route-scoped content production workflow，要求每個專業路由獨立完成來源掃描、標記定義、教材 draft、verifier、正式匯入與抽查流程。
+- professional-topic-content: 補充 source-label discovery and classification，要求 route 產製前完整掃描、分類並定義所有有效來源標記，不得只使用 artifact 內列出的範例標記。
 - professional-topic-content: 補充 subagent-isolated route production，要求副代理只寫入 route-scoped temporary prompt、draft、verified、audit 與 readiness artifact，正式 app data 只能由主流程在 verified/readiness 通過後更新。
 - professional-topic-content: 補充 stale professional content removal，要求全路由重做時舊專業教材內容作廢，最終 formal app data 不得殘留沒有本輪 verified/import readiness 依據的 topic。
 

@@ -149,6 +149,57 @@ Each professional route SHALL run an independent content production workflow fro
 | cp-pipeline | draft | no | not imported; placeholder or pending state remains |
 | cp-cache | blocked | no | not imported; blocker remains in route tracking list |
 
+### Requirement: Source label discovery is exhaustive before route drafting
+
+The route content production workflow SHALL discover and classify every bracketed source-label candidate from approved route source files before generating topic prompts. The workflow SHALL NOT treat examples in this change proposal as a closed list. Each discovered candidate SHALL be classified as valid source label, auxiliary label, non-label syntax, or unknown label. Unknown labels MUST block verification until the label is categorized and defined.
+
+#### Scenario: Discovered valid labels are defined before prompts
+
+- **WHEN** approved source files contain labels beyond the seed examples, including [會做], [會寫], [必練], [會寫虛擬碼], or [原文考點]
+- **THEN** _private/TMP/source-label-definitions.md includes a definition, expansion rule, required draft structure, and verification assertion for each discovered valid label
+- **THEN** topic prompts include the definitions for every valid label used by that topic before draft generation
+
+##### Example: Discovered source-label seed set
+
+| Candidate label | Required classification |
+| --- | --- |
+| [必背] | valid source label |
+| [比較] | valid source label |
+| [會算] | valid source label |
+| [會畫] | valid source label |
+| [補充] | valid source label |
+| [易混淆] | valid source label |
+| [考點] | valid source label |
+| [建議] | valid source label |
+| [原文提醒] | valid source label |
+| [補充建議] | valid source label |
+| [會做] | valid source label |
+| [會寫] | valid source label |
+| [必練] | valid source label |
+| [會寫虛擬碼] | valid source label |
+| [原文考點] | valid source label |
+| [原文保留] | auxiliary label unless it appears in an approved route source |
+
+#### Scenario: Code and task tokens are excluded from label definitions
+
+- **WHEN** the bracket scan finds source text such as [i], [mid], [1, 2, 3], or [P]
+- **THEN** those candidates are classified as non-label syntax or code/task tokens
+- **THEN** those candidates are not required in source-label definitions and do not influence teaching draft structure
+
+#### Scenario: Unknown candidate blocks verification
+
+- **WHEN** a bracketed candidate appears source-like but cannot be classified as a valid source label, auxiliary label, or non-label syntax
+- **THEN** the affected topic remains draft or blocked
+- **THEN** the verifier does not produce a verified Markdown teaching file until the candidate is categorized and defined
+
+##### Example: Unknown candidate gate
+
+| Candidate | Initial classification | Expected verifier result |
+| --- | --- | --- |
+| [必整理] | unknown label | blocked until defined in source-label definitions |
+| [會算] | valid source label | verification can continue after expansion checks |
+| [mid] | non-label syntax/code token | ignored by teaching label rules |
+
 ### Requirement: Subagents isolate route production work from main integration
 
 The route content production workflow SHALL delegate route source inventory, topic prompt generation, draft writing, draft verification, route-level audit, and import-readiness checks to bounded subagents. The main integration flow SHALL retain ownership of source access rules, route boundaries, dispatch, formal app data import, automated test execution, and final reporting.

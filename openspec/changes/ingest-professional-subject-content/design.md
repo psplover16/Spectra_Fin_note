@@ -64,7 +64,11 @@ state shape 維持語意為 subjects: Record<SubjectKey, SubjectProgress>。每�
 
 每個 route 必須有自己的追蹤表，例如 `_private/TMP/computer-principles/待生成主題清單_<timestamp>.md`。追蹤表至少記錄 source file、source section、topic id、title、source labels、prompt path、draft path、verified path、import target、status、人工抽查結果與備註。全域標記定義放在 `_private/TMP/source-label-definitions.md` 或 route 可見的等效檔案；各 route 可新增 route-specific label rule，但不得覆蓋全域定義。
 
-標記定義是內容生成契約的一部分，不是視覺裝飾。已知標記包含 `[必背]`、`[比較]`、`[會算]`、`[會畫]`、`[補充]`、`[易混淆]`、`[考點]`、`[建議]`、`[原文提醒]`、`[補充建議]`。其中 `[必背]` 必須展開為定義、重要性、最小背誦句、國考作答模板與易錯提醒；`[比較]` 必須有比較表或條列比較、差異原因、考試問法與判斷關鍵字；`[會算]` 必須有公式、變數定義與完整代入例題；`[會畫]` 必須有繪圖順序、節點定義、箭頭或資料流意義與簡易圖。
+標記定義是內容生成契約的一部分，不是視覺裝飾，也不得以 artifact 內列出的幾個標記作為封閉清單。主流程在 route 產製前必須掃描所有允許來源 txt/md 與本輪輔助來源，將方括號候選分類為 valid source label、auxiliary label、non-label syntax/code token、unknown label。程式碼索引、陣列、泛型或任務標記如 `[i]`、`[mid]`、`[1, 2, 3]`、`[P]` 不得列入教材標記。
+
+目前掃描到的 valid/source seed labels 至少包含 `[必背]`、`[比較]`、`[會算]`、`[會畫]`、`[補充]`、`[易混淆]`、`[考點]`、`[建議]`、`[原文提醒]`、`[補充建議]`、`[會做]`、`[會寫]`、`[必練]`、`[會寫虛擬碼]`、`[原文考點]`；`_private` 根目錄輔助來源掃描也發現 `[原文保留]`，使用前必須分類並定義。每個有效標記都必須寫入 `_private/TMP/source-label-definitions.md`，包含定義、教材展開規則、draft 必備段落、verifier 檢查點與範例。若遇到無法分類的 unknown label，相關 topic 必須停在 draft 或 blocked，不得輸出 `.verified.md`。
+
+標記展開規則至少包含：`[必背]` 必須展開為定義、重要性、最小背誦句、國考作答模板與易錯提醒；`[比較]` 必須有比較表或條列比較、差異原因、考試問法與判斷關鍵字；`[會算]` 必須有公式、變數定義與完整代入例題；`[會畫]` 必須有繪圖順序、節點定義、箭頭或資料流意義與簡易圖；`[會做]`、`[會寫]`、`[必練]`、`[會寫虛擬碼]` 必須轉成可操作、可練習或可撰寫的步驟、範例與檢核點；`[原文考點]`、`[原文提醒]`、`[原文保留]` 必須保留來源用意，並改寫成可教學、可應考的教材內容。
 
 替代方案：先讓一個總生成器全量產出所有 route 的正式資料，再由測試補關鍵字。淘汰原因是測試只能檢查最低結構，無法保證教材可讀性；route-scoped draft 與 verifier 才能讓使用者逐路由人工抽查品質。
 
@@ -165,7 +169,7 @@ state shape 維持語意為 subjects: Record<SubjectKey, SubjectProgress>。每�
 - 副代理只能寫入 `_private/TMP/<route>/` 的 prompt、draft、verified、audit、readiness 與 tracking artifact，不得直接修改 formal app data。
 - 主流程只能在 import readiness report 確認 topic 具有 verified file、verifier result、來源追蹤與人工抽查狀態後，將該 topic 匯入 formal app data。
 - 第 16 組全路由重做時，formal app data import 必須先以 route 為單位排除既有專業教材 topic，再只匯入本輪 import readiness 通過的 topic；舊 professionalTopics 不得作為 fallback、merge source 或內容補洞來源。
-- 來源標記必須先被定義再用於副代理 prompt。遇到未知標記時，該 route 的 topic 必須停在 draft 或 blocked，不得直接 verified。
+- 來源標記必須先被掃描、分類、定義再用於副代理 prompt。artifact 內的標記只能作為 seed examples，不能視為完整清單；遇到 unknown label 時，該 route 的 topic 必須停在 draft 或 blocked，不得直接 verified。
 - verifier 檢查至少涵蓋來源對應、事實正確性、時間複雜度、空間複雜度、穩定性、Java 程式碼語意、考官可讀註解、新手可讀性與中英專有名詞。
 - 主代理負責把 verified 草稿轉成正式 app data，並在整合時統一術語、風格、來源註記與 route 所屬。
 
@@ -187,7 +191,7 @@ Out of scope: 題庫測驗、遠端同步、PDF 第一批匯入、個人筆記�
 - 馮紐曼架構 topic 的正式資料與 `_TMP` 草稿都通過深度檢查，包含程式內儲、五大單元、指令週期、瓶頸、Harvard 比較、例子、易錯點與中英術語。
 - 每個專業 route 都有獨立的 `_private/TMP/<route>/待生成主題清單_<timestamp>.md` 或等效追蹤表，且每個 imported topic 都可追到 `.draft.md`、`.verified.md`、verifier 結果與人工抽查紀錄。
 - 全路由重做後，六個專業 route 的正式 topic data 沒有 stale topic：每個 topic 都有本輪 route tracking row、`.verified.md` 與 import readiness ready 紀錄；blocked 或缺少 verified 的舊 topic 不得留在頁面或 formal app data。
-- 每個 topic 的來源標記都依標記定義展開；含 `[會算]` 的 topic 必須有公式與代入例題，含 `[會畫]` 的 topic 必須有圖或文字圖，含 `[比較]` 的 topic 必須有比較表或條列比較。
+- 每個 topic 的來源標記都依標記定義展開；route 產製前需有全域 source-label scan report，證明所有有效來源標記已定義，且 `[i]`、`[mid]`、`[1, 2, 3]`、`[P]` 等非標記語法已排除。含 `[會算]` 的 topic 必須有公式與代入例題，含 `[會畫]` 的 topic 必須有圖或文字圖，含 `[比較]` 的 topic 必須有比較表或條列比較。
 - 演算法排序複雜度資料與 _private/propose.md 基準表一致。
 - 375px Playwright 或手動截圖驗證新 route 無水平頁面 overflow、文字不重疊。
 - PROJECT_ARCHITECTURE.md 說明新增 route、內容資料與 _TMP 工作流程。
