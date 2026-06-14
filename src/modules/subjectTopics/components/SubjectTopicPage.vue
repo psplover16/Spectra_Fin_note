@@ -16,18 +16,25 @@ import type {
   SubjectTopicListBlockKind
 } from '@/modules/subjectTopics/types/subjectTopic';
 
-const props = defineProps<{
-  title: string;
-  subjectKey: SubjectKey;
-  testId: string;
-  topics: readonly SubjectTopic[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    title: string;
+    subjectKey: SubjectKey;
+    testId: string;
+    topics: readonly SubjectTopic[];
+    openLastTopicByDefault?: boolean;
+  }>(),
+  {
+    openLastTopicByDefault: import.meta.env.DEV && import.meta.env.MODE !== 'test'
+  }
+);
 
 const initialProgress = readSubjectTopicProgress().subjects[props.subjectKey];
 const completedTopicIds = ref<ReadonlySet<string>>(new Set(initialProgress.completedTopicIds));
 const bookmarkedTopicId = ref<string | null>(initialProgress.bookmarkedTopicId);
 const unfinishedTopics = computed(() => props.topics.filter((topic) => !completedTopicIds.value.has(topic.id)));
 const finishedTopics = computed(() => props.topics.filter((topic) => completedTopicIds.value.has(topic.id)));
+const lastRouteTopicId = computed(() => props.topics[props.topics.length - 1]?.id ?? null);
 
 function updateTopicCompleted(topic: SubjectTopic, completed: boolean) {
   const nextCompletedTopicIds = new Set(completedTopicIds.value);
@@ -54,6 +61,10 @@ function updateTopicBookmarked(topic: SubjectTopic, bookmarked: boolean) {
 
 function blockTestId(topic: SubjectTopic, block: SubjectTopicBlock, index: number): string {
   return `topic-block-${topic.id}-${block.kind}-${index}`;
+}
+
+function isTopicDefaultExpanded(topic: SubjectTopic): boolean {
+  return props.openLastTopicByDefault && topic.id === lastRouteTopicId.value;
 }
 
 const listBlockLabels: Record<SubjectTopicListBlockKind, string> = {
@@ -102,6 +113,7 @@ function orderedListMarkerClass(block: OrderedListContentBlock): string {
           :completed="false"
           :bookmarked="bookmarkedTopicId === topic.id"
           :show-bookmark="true"
+          :default-expanded="isTopicDefaultExpanded(topic)"
           @update:completed="updateTopicCompleted(topic, $event)"
           @update:bookmarked="updateTopicBookmarked(topic, $event)"
         >
@@ -236,6 +248,7 @@ function orderedListMarkerClass(block: OrderedListContentBlock): string {
           :completed="true"
           :bookmarked="false"
           :show-bookmark="false"
+          :default-expanded="isTopicDefaultExpanded(topic)"
           @update:completed="updateTopicCompleted(topic, $event)"
           @update:bookmarked="updateTopicBookmarked(topic, $event)"
         >

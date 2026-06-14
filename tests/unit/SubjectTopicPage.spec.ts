@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import SubjectTopicPage from '@/modules/subjectTopics/components/SubjectTopicPage.vue';
 import type { SubjectTopic } from '@/modules/subjectTopics/types/subjectTopic';
 
@@ -47,6 +47,76 @@ const newlineTopic: SubjectTopic = {
 };
 
 describe('SubjectTopicPage', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('opens only the route last topic by default when the development preview flag is enabled', () => {
+    const firstTopic: SubjectTopic = {
+      id: 'first-topic',
+      subjectKey: 'computerPrinciples',
+      title: '第一個 section',
+      summary: '第一個 section 不應自動打開。',
+      blocks: [{ kind: 'paragraph', text: '第一段內容' }]
+    };
+    const lastTopic: SubjectTopic = {
+      id: 'last-topic',
+      subjectKey: 'computerPrinciples',
+      title: '最後一個 section',
+      summary: '最後一個 section 在開發階段自動打開。',
+      blocks: [{ kind: 'paragraph', text: '最後一段內容' }]
+    };
+
+    const wrapper = mount(SubjectTopicPage, {
+      props: {
+        title: '計算機原理',
+        subjectKey: 'computerPrinciples',
+        testId: 'subject-view-computer-principles',
+        topics: [firstTopic, lastTopic],
+        openLastTopicByDefault: true
+      }
+    });
+
+    expect(wrapper.find('[data-testid="topic-detail-first-topic"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="topic-title-first-topic"]').attributes('aria-expanded')).toBe('false');
+    expect(wrapper.get('[data-testid="topic-detail-last-topic"]').text()).toContain('最後一段內容');
+    expect(wrapper.get('[data-testid="topic-title-last-topic"]').attributes('aria-expanded')).toBe('true');
+  });
+
+  it('keeps every route topic collapsed when the development preview flag is disabled', () => {
+    const topics: readonly SubjectTopic[] = [
+      {
+        id: 'first-topic',
+        subjectKey: 'computerPrinciples',
+        title: '第一個 section',
+        summary: '正式階段維持收合。',
+        blocks: [{ kind: 'paragraph', text: '第一段內容' }]
+      },
+      {
+        id: 'last-topic',
+        subjectKey: 'computerPrinciples',
+        title: '最後一個 section',
+        summary: '正式階段也維持收合。',
+        blocks: [{ kind: 'paragraph', text: '最後一段內容' }]
+      }
+    ];
+
+    const wrapper = mount(SubjectTopicPage, {
+      props: {
+        title: '計算機原理',
+        subjectKey: 'computerPrinciples',
+        testId: 'subject-view-computer-principles',
+        topics,
+        openLastTopicByDefault: false
+      }
+    });
+
+    expect(wrapper.find('[data-testid="topic-detail-first-topic"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="topic-detail-last-topic"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="topic-title-first-topic"]').attributes('aria-expanded')).toBe('false');
+    expect(wrapper.get('[data-testid="topic-title-last-topic"]').attributes('aria-expanded')).toBe('false');
+  });
+
   it('renders actual newline characters as line breaks in learner-facing text', async () => {
     const wrapper = mount(SubjectTopicPage, {
       props: {

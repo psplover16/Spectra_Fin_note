@@ -17,18 +17,16 @@ const subjectRouteCases = [
     'subject-topic-list-computerPrinciples',
     ['電腦常用單位', '馮紐曼架構']
   ],
-  [NetworkingView, 'subject-view-networking', 'subject-topic-list-networking', ['準備方向']],
-  [
-    InformationManagementView,
-    'subject-view-information-management',
-    'subject-topic-list-informationManagement',
-    ['資訊管理總覽']
-  ],
-  [ProgrammingView, 'subject-view-programming', 'subject-topic-list-programming', ['程式(Programming Overview)']],
-  [DatabaseView, 'subject-view-database', 'subject-topic-list-database', ['資料庫總章']],
-  [AlgorithmsView, 'subject-view-algorithms', 'subject-topic-list-algorithms', ['資料結構與演算法準備方向']],
-  [EnglishView, 'subject-view-english', 'subject-topic-list-english', ['閱讀策略']],
-  [ChineseView, 'subject-view-chinese', 'subject-topic-list-chinese', ['文章結構']]
+  [AlgorithmsView, 'subject-view-algorithms', 'subject-topic-list-algorithms', ['二元搜尋法(Binary Search)']]
+] as const;
+
+const emptySubjectRouteCases = [
+  [NetworkingView, 'subject-view-networking', '網路概論', ['準備方向']],
+  [InformationManagementView, 'subject-view-information-management', '資訊管理', ['資訊管理總覽']],
+  [ProgrammingView, 'subject-view-programming', '程式設計', ['程式(Programming Overview)']],
+  [DatabaseView, 'subject-view-database', '資料庫', ['資料庫總章']],
+  [EnglishView, 'subject-view-english', '英文', ['閱讀策略']],
+  [ChineseView, 'subject-view-chinese', '國文', ['文章結構']]
 ] as const;
 
 describe('subject route views', () => {
@@ -36,13 +34,23 @@ describe('subject route views', () => {
     vi.restoreAllMocks();
   });
 
-  it.each(subjectRouteCases)('renders placeholder topics for %s', (ViewComponent, viewTestId, topicListTestId, topicTitles) => {
+  it.each(subjectRouteCases)('renders filled route topics for %s', (ViewComponent, viewTestId, topicListTestId, topicTitles) => {
     const wrapper = mount(ViewComponent);
 
     expect(wrapper.find(`[data-testid="${viewTestId}"]`).exists()).toBe(true);
     expect(wrapper.find(`[data-testid="${topicListTestId}"]`).exists()).toBe(true);
     for (const topicTitle of topicTitles) {
       expect(wrapper.text()).toContain(topicTitle);
+    }
+  });
+
+  it.each(emptySubjectRouteCases)('renders an empty state instead of unfilled skeleton topics for %s', (ViewComponent, viewTestId, routeTitle, removedTopicTitles) => {
+    const wrapper = mount(ViewComponent);
+
+    expect(wrapper.find(`[data-testid="${viewTestId}"]`).exists()).toBe(true);
+    expect(wrapper.get('[data-testid="subject-topic-empty-state"]').text()).toContain(`${routeTitle}尚未建立主題內容`);
+    for (const topicTitle of removedTopicTitles) {
+      expect(wrapper.text()).not.toContain(topicTitle);
     }
   });
 
@@ -62,11 +70,8 @@ describe('subject route views', () => {
   });
 
   it('loads bundled professional topics without appending stale placeholders for rebuilt routes', () => {
-    const databaseWrapper = mount(DatabaseView);
     const algorithmsWrapper = mount(AlgorithmsView);
 
-    expect(databaseWrapper.text()).toContain('資料庫基礎(Database Foundations)');
-    expect(databaseWrapper.text()).not.toContain('這裡先建立資料庫專業科目的主題入口');
     expect(algorithmsWrapper.text()).toContain('二元搜尋法(Binary Search)');
     expect(algorithmsWrapper.text()).not.toContain('正式內容會保留複雜度');
   });
