@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/Spectra_Fin_note/staging/sw.js', { scope: '/Spectra_Fin_note/staging/' })})}
