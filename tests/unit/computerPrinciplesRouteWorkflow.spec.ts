@@ -35,7 +35,9 @@ const filledComputerPrinciplesTopicIds = new Set([
   'cp-cache',
   'cp-usb-speed',
   'cp-base-conversion',
-  'cp-complement-conversion'
+  'cp-complement-conversion',
+  'cp-floating-point-conversion',
+  'cp-codes-and-check-codes'
 ]);
 const sourceFilesByFilledTopicId = {
   [commonUnitsTopicId]: ['_private/計算機概論.txt', '_private/discuss.txt'],
@@ -51,7 +53,12 @@ const sourceFilesByFilledTopicId = {
   'cp-cache': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十一、Cache_新手國考教材.md'],
   'cp-usb-speed': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十三、USB 速度_新手國考教材.md'],
   'cp-base-conversion': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十四、進制轉換_新手國考教材.md'],
-  'cp-complement-conversion': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十五、補數轉換_新手國考教材.md']
+  'cp-complement-conversion': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十五、補數轉換_新手國考教材.md'],
+  'cp-floating-point-conversion': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十六、浮點數轉換_新手國考教材.md'],
+  'cp-codes-and-check-codes': [
+    '_private/計算機概論.txt',
+    '_private/MD/計概/3a基本計概/十七、數碼、文字碼與檢查碼_新手國考教材.md'
+  ]
 } as const;
 
 describe('computer-principles route-scoped content workflow', () => {
@@ -149,7 +156,9 @@ describe('computer-principles route-scoped content workflow', () => {
       'cp-von-neumann-architecture',
       'cp-pipeline',
       'cp-hazard',
-      'cp-cache'
+      'cp-cache',
+      'cp-floating-point-conversion',
+      'cp-codes-and-check-codes'
     ]) {
       expect(manualReview).toContain(expectedReviewTopic);
       expect(manualReview).toContain('pass');

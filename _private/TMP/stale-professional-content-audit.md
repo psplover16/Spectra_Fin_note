@@ -49,6 +49,8 @@ final result: pass
 | topic id | status | evidence |
 | --- | --- | --- |
 | cp-common-units | current | Added as the first computerPrinciples formal topic with route tracking row, `.verified.md`, verifier result, and import readiness ready. |
+| cp-floating-point-conversion | current | Filled from `_private/MD/計概/3a基本計概/十六、浮點數轉換_新手國考教材.md` with route tracking row, `.verified.md`, manual review pass, and app data sourceFiles alignment. |
+| cp-codes-and-check-codes | current | Filled from `_private/MD/計概/3a基本計概/十七、數碼、文字碼與檢查碼_新手國考教材.md` with route tracking row, `.verified.md`, manual review pass, and app data sourceFiles alignment. |
 
 ## Group 17 Stale Display Block Audit
 

@@ -45,7 +45,9 @@ describe('subject topic route data helpers', () => {
       'Cache(Cache Memory)',
       'USB 速度(USB Speed)',
       '進制轉換(Base Conversion)',
-      '補數轉換(Complement Representation)'
+      '補數轉換(Complement Representation)',
+      '浮點數轉換(Floating-Point Conversion)',
+      '數碼、文字碼與檢查碼(Codes and Check Codes)'
     ]);
     expect(computerPrinciplesIds.slice(computerPrinciplesIds.indexOf('cp-pipeline'), computerPrinciplesIds.indexOf('cp-bus') + 1)).toEqual([
       'cp-pipeline',
@@ -58,7 +60,12 @@ describe('subject topic route data helpers', () => {
       'cp-base-conversion',
       'cp-complement-conversion'
     ]);
-    expect(computerPrinciplesTitles).not.toContain('浮點數轉換(Floating Point Conversion)');
+    expect(
+      computerPrinciplesIds.slice(
+        computerPrinciplesIds.indexOf('cp-complement-conversion'),
+        computerPrinciplesIds.indexOf('cp-codes-and-check-codes') + 1
+      )
+    ).toEqual(['cp-complement-conversion', 'cp-floating-point-conversion', 'cp-codes-and-check-codes']);
 
     expect(algorithmTitles).toEqual([
       '氣泡排序法(Bubble Sort)',

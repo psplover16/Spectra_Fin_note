@@ -57,11 +57,22 @@ export type LessonArticleContentBlock =
       rowStyles?: Readonly<Record<number, LessonArticleTableCellStyle>>;
       columnStyles?: Readonly<Record<number, LessonArticleTableCellStyle>>;
       cellStyles?: Readonly<Record<LessonArticleTableCellCoordinate, LessonArticleTableCellStyle>>;
+    }
+  | {
+      kind: 'subsection';
+      heading: string;
+      blocks: readonly LessonArticleContentBlock[];
+    }
+  | {
+      kind: 'indentedGroup';
+      blocks: readonly LessonArticleContentBlock[];
     };
 
 export interface LessonArticleSection {
   heading: string;
   sourceLabel?: string;
+  collapsible?: boolean;
+  defaultExpanded?: boolean;
   blocks: readonly LessonArticleContentBlock[];
 }
 

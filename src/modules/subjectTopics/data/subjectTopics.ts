@@ -19,6 +19,14 @@ function hasLessonArticleContent(block: LessonArticleContentBlock): boolean {
     return block.items.some(hasVisibleText);
   }
 
+  if (block.kind === 'subsection') {
+    return hasVisibleText(block.heading) || block.blocks.some(hasLessonArticleContent);
+  }
+
+  if (block.kind === 'indentedGroup') {
+    return block.blocks.some(hasLessonArticleContent);
+  }
+
   return block.headers.some(hasVisibleText) || block.rows.some((row) => row.some(hasVisibleText));
 }
 

@@ -10,6 +10,7 @@ import TeachingCodeBlock from '@/shared/components/TeachingCodeBlock.vue';
 import type {
   LessonArticleContentBlock,
   LessonArticleOrderedListMarkerStyle,
+  LessonArticleSection,
   LessonArticleTableBackgroundStyleToken,
   LessonArticleTableCellStyle,
   LessonArticleTableTextStyleToken,
@@ -35,6 +36,7 @@ const props = withDefaults(
 const initialProgress = readSubjectTopicProgress().subjects[props.subjectKey];
 const completedTopicIds = ref<ReadonlySet<string>>(new Set(initialProgress.completedTopicIds));
 const bookmarkedTopicId = ref<string | null>(initialProgress.bookmarkedTopicId);
+const lessonSectionExpansionOverrides = ref<Record<string, boolean>>({});
 const unfinishedTopics = computed(() => props.topics.filter((topic) => !completedTopicIds.value.has(topic.id)));
 const finishedTopics = computed(() => props.topics.filter((topic) => completedTopicIds.value.has(topic.id)));
 const lastRouteTopicId = computed(() => props.topics[props.topics.length - 1]?.id ?? null);
@@ -68,6 +70,42 @@ function blockTestId(topic: SubjectTopic, block: SubjectTopicBlock, index: numbe
 
 function isTopicDefaultExpanded(topic: SubjectTopic): boolean {
   return props.openLastTopicByDefault && topic.id === lastRouteTopicId.value;
+}
+
+function lessonSectionKey(topic: SubjectTopic, section: LessonArticleSection): string {
+  return `${topic.id}::${section.heading}`;
+}
+
+function isLessonSectionCollapsible(section: LessonArticleSection): boolean {
+  return section.collapsible === true;
+}
+
+function lessonSectionClasses(section: LessonArticleSection): (string | Record<string, boolean>)[] {
+  return [
+    'subject-topic-lesson-section',
+    {
+      'subject-topic-lesson-section-collapsible': isLessonSectionCollapsible(section)
+    }
+  ];
+}
+
+function isLessonSectionExpanded(topic: SubjectTopic, section: LessonArticleSection): boolean {
+  if (!isLessonSectionCollapsible(section)) {
+    return true;
+  }
+
+  return lessonSectionExpansionOverrides.value[lessonSectionKey(topic, section)] ?? section.defaultExpanded === true;
+}
+
+function toggleLessonSection(topic: SubjectTopic, section: LessonArticleSection): void {
+  if (!isLessonSectionCollapsible(section)) {
+    return;
+  }
+
+  lessonSectionExpansionOverrides.value = {
+    ...lessonSectionExpansionOverrides.value,
+    [lessonSectionKey(topic, section)]: !isLessonSectionExpanded(topic, section)
+  };
 }
 
 const listBlockLabels: Record<SubjectTopicListBlockKind, string> = {
@@ -179,42 +217,166 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                 class="subject-topic-block subject-topic-lesson"
               >
                 <p v-for="leadLine in block.lead" :key="leadLine" class="subject-topic-paragraph subject-topic-text">{{ leadLine }}</p>
-                <section v-for="section in block.sections" :key="section.heading" class="subject-topic-lesson-section">
-                  <h3>
+                <section v-for="section in block.sections" :key="section.heading" :class="lessonSectionClasses(section)">
+                  <h3 v-if="!isLessonSectionCollapsible(section)">
                     <span v-if="section.sourceLabel" class="subject-topic-source-label">{{ section.sourceLabel }}</span>
                     {{ section.heading }}
                   </h3>
-                  <template v-for="contentBlock in section.blocks" :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`">
-                    <p v-if="contentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">{{ contentBlock.text }}</p>
-                    <ul v-else-if="contentBlock.kind === 'bulletList'">
-                      <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
-                    </ul>
-                    <ol
-                      v-else-if="contentBlock.kind === 'orderedList'"
-                      :class="orderedListMarkerClass(contentBlock)"
+                  <h3 v-else>
+                    <button
+                      type="button"
+                      class="subject-topic-lesson-section-toggle"
+                      :aria-expanded="isLessonSectionExpanded(topic, section)"
+                      @click="toggleLessonSection(topic, section)"
                     >
-                      <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
-                    </ol>
-                    <div v-else-if="contentBlock.kind === 'table'" class="subject-topic-table-wrap">
-                      <table class="subject-topic-table">
-                        <thead>
-                          <tr>
-                            <th v-for="header in contentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(row, rowIndex) in contentBlock.rows" :key="rowIndex">
-                            <td
-                              v-for="(cell, cellIndex) in row"
-                              :key="`${rowIndex}-${cellIndex}`"
-                              :class="['subject-topic-text', tableCellStyleClasses(contentBlock, rowIndex, cellIndex)]"
+                      <span>
+                        <span v-if="section.sourceLabel" class="subject-topic-source-label">{{ section.sourceLabel }}</span>
+                        {{ section.heading }}
+                      </span>
+                    </button>
+                  </h3>
+                  <template v-if="isLessonSectionExpanded(topic, section)">
+                    <template v-for="contentBlock in section.blocks" :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`">
+                      <p v-if="contentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">{{ contentBlock.text }}</p>
+                      <ul v-else-if="contentBlock.kind === 'bulletList'">
+                        <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                      </ul>
+                      <ol
+                        v-else-if="contentBlock.kind === 'orderedList'"
+                        :class="orderedListMarkerClass(contentBlock)"
+                      >
+                        <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                      </ol>
+                      <div v-else-if="contentBlock.kind === 'table'" class="subject-topic-table-wrap">
+                        <table class="subject-topic-table">
+                          <thead>
+                            <tr>
+                              <th v-for="header in contentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="(row, rowIndex) in contentBlock.rows" :key="rowIndex">
+                              <td
+                                v-for="(cell, cellIndex) in row"
+                                :key="`${rowIndex}-${cellIndex}`"
+                                :class="['subject-topic-text', tableCellStyleClasses(contentBlock, rowIndex, cellIndex)]"
+                              >
+                                {{ cell }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div v-else-if="contentBlock.kind === 'indentedGroup'" class="subject-topic-lesson-indent-group">
+                        <template
+                          v-for="nestedContentBlock in contentBlock.blocks"
+                          :key="`${section.heading}-indent-${nestedContentBlock.kind}-${JSON.stringify(nestedContentBlock)}`"
+                        >
+                          <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
+                            {{ nestedContentBlock.text }}
+                          </p>
+                          <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
+                            <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                          </ul>
+                          <ol v-else-if="nestedContentBlock.kind === 'orderedList'" :class="orderedListMarkerClass(nestedContentBlock)">
+                            <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                          </ol>
+                          <div v-else-if="nestedContentBlock.kind === 'table'" class="subject-topic-table-wrap">
+                            <table class="subject-topic-table">
+                              <thead>
+                                <tr>
+                                  <th v-for="header in nestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="(row, rowIndex) in nestedContentBlock.rows" :key="rowIndex">
+                                  <td
+                                    v-for="(cell, cellIndex) in row"
+                                    :key="`${rowIndex}-${cellIndex}`"
+                                    :class="['subject-topic-text', tableCellStyleClasses(nestedContentBlock, rowIndex, cellIndex)]"
+                                  >
+                                    {{ cell }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <div v-else-if="nestedContentBlock.kind === 'indentedGroup'" class="subject-topic-lesson-indent-group">
+                            <template
+                              v-for="deepNestedContentBlock in nestedContentBlock.blocks"
+                              :key="`${section.heading}-indent-deep-${deepNestedContentBlock.kind}-${JSON.stringify(deepNestedContentBlock)}`"
                             >
-                              {{ cell }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                              <p v-if="deepNestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
+                                {{ deepNestedContentBlock.text }}
+                              </p>
+                              <ul v-else-if="deepNestedContentBlock.kind === 'bulletList'">
+                                <li v-for="item in deepNestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                              </ul>
+                              <ol v-else-if="deepNestedContentBlock.kind === 'orderedList'" :class="orderedListMarkerClass(deepNestedContentBlock)">
+                                <li v-for="item in deepNestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                              </ol>
+                              <div v-else-if="deepNestedContentBlock.kind === 'table'" class="subject-topic-table-wrap">
+                                <table class="subject-topic-table">
+                                  <thead>
+                                    <tr>
+                                      <th v-for="header in deepNestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr v-for="(row, rowIndex) in deepNestedContentBlock.rows" :key="rowIndex">
+                                      <td
+                                        v-for="(cell, cellIndex) in row"
+                                        :key="`${rowIndex}-${cellIndex}`"
+                                        :class="['subject-topic-text', tableCellStyleClasses(deepNestedContentBlock, rowIndex, cellIndex)]"
+                                      >
+                                        {{ cell }}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+                      <section v-else-if="contentBlock.kind === 'subsection'" class="subject-topic-lesson-subsection">
+                        <h4>{{ contentBlock.heading }}</h4>
+                        <template
+                          v-for="nestedContentBlock in contentBlock.blocks"
+                          :key="`${section.heading}-${contentBlock.heading}-${nestedContentBlock.kind}-${JSON.stringify(nestedContentBlock)}`"
+                        >
+                          <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
+                            {{ nestedContentBlock.text }}
+                          </p>
+                          <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
+                            <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                          </ul>
+                          <ol v-else-if="nestedContentBlock.kind === 'orderedList'" :class="orderedListMarkerClass(nestedContentBlock)">
+                            <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                          </ol>
+                          <div v-else-if="nestedContentBlock.kind === 'table'" class="subject-topic-table-wrap">
+                            <table class="subject-topic-table">
+                              <thead>
+                                <tr>
+                                  <th v-for="header in nestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="(row, rowIndex) in nestedContentBlock.rows" :key="rowIndex">
+                                  <td
+                                    v-for="(cell, cellIndex) in row"
+                                    :key="`${rowIndex}-${cellIndex}`"
+                                    :class="['subject-topic-text', tableCellStyleClasses(nestedContentBlock, rowIndex, cellIndex)]"
+                                  >
+                                    {{ cell }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </template>
+                      </section>
+                    </template>
                   </template>
                 </section>
               </article>
@@ -320,42 +482,166 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                 class="subject-topic-block subject-topic-lesson"
               >
                 <p v-for="leadLine in block.lead" :key="leadLine" class="subject-topic-paragraph subject-topic-text">{{ leadLine }}</p>
-                <section v-for="section in block.sections" :key="section.heading" class="subject-topic-lesson-section">
-                  <h3>
+                <section v-for="section in block.sections" :key="section.heading" :class="lessonSectionClasses(section)">
+                  <h3 v-if="!isLessonSectionCollapsible(section)">
                     <span v-if="section.sourceLabel" class="subject-topic-source-label">{{ section.sourceLabel }}</span>
                     {{ section.heading }}
                   </h3>
-                  <template v-for="contentBlock in section.blocks" :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`">
-                    <p v-if="contentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">{{ contentBlock.text }}</p>
-                    <ul v-else-if="contentBlock.kind === 'bulletList'">
-                      <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
-                    </ul>
-                    <ol
-                      v-else-if="contentBlock.kind === 'orderedList'"
-                      :class="orderedListMarkerClass(contentBlock)"
+                  <h3 v-else>
+                    <button
+                      type="button"
+                      class="subject-topic-lesson-section-toggle"
+                      :aria-expanded="isLessonSectionExpanded(topic, section)"
+                      @click="toggleLessonSection(topic, section)"
                     >
-                      <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
-                    </ol>
-                    <div v-else-if="contentBlock.kind === 'table'" class="subject-topic-table-wrap">
-                      <table class="subject-topic-table">
-                        <thead>
-                          <tr>
-                            <th v-for="header in contentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(row, rowIndex) in contentBlock.rows" :key="rowIndex">
-                            <td
-                              v-for="(cell, cellIndex) in row"
-                              :key="`${rowIndex}-${cellIndex}`"
-                              :class="['subject-topic-text', tableCellStyleClasses(contentBlock, rowIndex, cellIndex)]"
+                      <span>
+                        <span v-if="section.sourceLabel" class="subject-topic-source-label">{{ section.sourceLabel }}</span>
+                        {{ section.heading }}
+                      </span>
+                    </button>
+                  </h3>
+                  <template v-if="isLessonSectionExpanded(topic, section)">
+                    <template v-for="contentBlock in section.blocks" :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`">
+                      <p v-if="contentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">{{ contentBlock.text }}</p>
+                      <ul v-else-if="contentBlock.kind === 'bulletList'">
+                        <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                      </ul>
+                      <ol
+                        v-else-if="contentBlock.kind === 'orderedList'"
+                        :class="orderedListMarkerClass(contentBlock)"
+                      >
+                        <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                      </ol>
+                      <div v-else-if="contentBlock.kind === 'table'" class="subject-topic-table-wrap">
+                        <table class="subject-topic-table">
+                          <thead>
+                            <tr>
+                              <th v-for="header in contentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="(row, rowIndex) in contentBlock.rows" :key="rowIndex">
+                              <td
+                                v-for="(cell, cellIndex) in row"
+                                :key="`${rowIndex}-${cellIndex}`"
+                                :class="['subject-topic-text', tableCellStyleClasses(contentBlock, rowIndex, cellIndex)]"
+                              >
+                                {{ cell }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div v-else-if="contentBlock.kind === 'indentedGroup'" class="subject-topic-lesson-indent-group">
+                        <template
+                          v-for="nestedContentBlock in contentBlock.blocks"
+                          :key="`${section.heading}-indent-${nestedContentBlock.kind}-${JSON.stringify(nestedContentBlock)}`"
+                        >
+                          <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
+                            {{ nestedContentBlock.text }}
+                          </p>
+                          <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
+                            <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                          </ul>
+                          <ol v-else-if="nestedContentBlock.kind === 'orderedList'" :class="orderedListMarkerClass(nestedContentBlock)">
+                            <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                          </ol>
+                          <div v-else-if="nestedContentBlock.kind === 'table'" class="subject-topic-table-wrap">
+                            <table class="subject-topic-table">
+                              <thead>
+                                <tr>
+                                  <th v-for="header in nestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="(row, rowIndex) in nestedContentBlock.rows" :key="rowIndex">
+                                  <td
+                                    v-for="(cell, cellIndex) in row"
+                                    :key="`${rowIndex}-${cellIndex}`"
+                                    :class="['subject-topic-text', tableCellStyleClasses(nestedContentBlock, rowIndex, cellIndex)]"
+                                  >
+                                    {{ cell }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <div v-else-if="nestedContentBlock.kind === 'indentedGroup'" class="subject-topic-lesson-indent-group">
+                            <template
+                              v-for="deepNestedContentBlock in nestedContentBlock.blocks"
+                              :key="`${section.heading}-indent-deep-${deepNestedContentBlock.kind}-${JSON.stringify(deepNestedContentBlock)}`"
                             >
-                              {{ cell }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                              <p v-if="deepNestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
+                                {{ deepNestedContentBlock.text }}
+                              </p>
+                              <ul v-else-if="deepNestedContentBlock.kind === 'bulletList'">
+                                <li v-for="item in deepNestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                              </ul>
+                              <ol v-else-if="deepNestedContentBlock.kind === 'orderedList'" :class="orderedListMarkerClass(deepNestedContentBlock)">
+                                <li v-for="item in deepNestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                              </ol>
+                              <div v-else-if="deepNestedContentBlock.kind === 'table'" class="subject-topic-table-wrap">
+                                <table class="subject-topic-table">
+                                  <thead>
+                                    <tr>
+                                      <th v-for="header in deepNestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr v-for="(row, rowIndex) in deepNestedContentBlock.rows" :key="rowIndex">
+                                      <td
+                                        v-for="(cell, cellIndex) in row"
+                                        :key="`${rowIndex}-${cellIndex}`"
+                                        :class="['subject-topic-text', tableCellStyleClasses(deepNestedContentBlock, rowIndex, cellIndex)]"
+                                      >
+                                        {{ cell }}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+                      <section v-else-if="contentBlock.kind === 'subsection'" class="subject-topic-lesson-subsection">
+                        <h4>{{ contentBlock.heading }}</h4>
+                        <template
+                          v-for="nestedContentBlock in contentBlock.blocks"
+                          :key="`${section.heading}-${contentBlock.heading}-${nestedContentBlock.kind}-${JSON.stringify(nestedContentBlock)}`"
+                        >
+                          <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
+                            {{ nestedContentBlock.text }}
+                          </p>
+                          <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
+                            <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                          </ul>
+                          <ol v-else-if="nestedContentBlock.kind === 'orderedList'" :class="orderedListMarkerClass(nestedContentBlock)">
+                            <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                          </ol>
+                          <div v-else-if="nestedContentBlock.kind === 'table'" class="subject-topic-table-wrap">
+                            <table class="subject-topic-table">
+                              <thead>
+                                <tr>
+                                  <th v-for="header in nestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="(row, rowIndex) in nestedContentBlock.rows" :key="rowIndex">
+                                  <td
+                                    v-for="(cell, cellIndex) in row"
+                                    :key="`${rowIndex}-${cellIndex}`"
+                                    :class="['subject-topic-text', tableCellStyleClasses(nestedContentBlock, rowIndex, cellIndex)]"
+                                  >
+                                    {{ cell }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </template>
+                      </section>
+                    </template>
                   </template>
                 </section>
               </article>

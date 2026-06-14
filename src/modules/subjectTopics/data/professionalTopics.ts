@@ -1544,6 +1544,14 @@ const complementConversionSourceFiles = [
   '_private/計算機概論.txt',
   '_private/MD/計概/3a基本計概/十五、補數轉換_新手國考教材.md'
 ] as const;
+const floatingPointConversionSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3a基本計概/十六、浮點數轉換_新手國考教材.md'
+] as const;
+const codesAndCheckCodesSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3a基本計概/十七、數碼、文字碼與檢查碼_新手國考教材.md'
+] as const;
 
 const commonUnitsTerms = [
   { zh: '位元', en: 'bit' },
@@ -1753,6 +1761,29 @@ const complementConversionTerms = [
   { zh: '2 補數', en: "2's complement" },
   { zh: '9 補數', en: "9's complement" },
   { zh: '10 補數', en: "10's complement" }
+] as const;
+
+const floatingPointConversionTerms = [
+  { zh: '浮點數', en: 'Floating Point' },
+  { zh: 'IEEE 754', en: 'IEEE 754' },
+  { zh: '符號位', en: 'Sign' },
+  { zh: '指數欄位', en: 'Exponent' },
+  { zh: '尾數欄位', en: 'Fraction' },
+  { zh: '偏移值', en: 'Bias' },
+  { zh: '正規化', en: 'Normalization' }
+] as const;
+
+const codesAndCheckCodesTerms = [
+  { zh: '數碼', en: 'Numeric Code' },
+  { zh: '文字碼', en: 'Character Code' },
+  { zh: '檢查碼', en: 'Check Code' },
+  { zh: '二進碼十進數', en: 'BCD' },
+  { zh: '格雷碼', en: 'Gray Code' },
+  { zh: '同位元檢查', en: 'Parity Check' },
+  { zh: '循環冗餘檢查', en: 'CRC' },
+  { zh: '漢明碼', en: 'Hamming Code' },
+  { zh: '漢明距', en: 'Hamming Distance' },
+  { zh: '症候值', en: 'Syndrome' }
 ] as const;
 
 const algorithmExampleSourceFiles = ['_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md'] as const;
@@ -3849,6 +3880,487 @@ const complementConversionLessonSections = [
   }
 ] as const;
 
+const floatingPointConversionLessonSections = [
+  {
+    heading: 'IEEE 754 欄位',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['格式', '總長度', 'Sign', 'Exponent', 'Fraction', 'bias'],
+        rows: [
+          ['單精度 float', '32 bits', '1 bit', '8 bits', '23 bits', '127'],
+          ['雙精度 double', '64 bits', '1 bit', '11 bits', '52 bits', '1023']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '一般正規化 IEEE 754 數值可用 (-1)^S * 1.F * 2^(E - bias) 來看：S 決定正負，E 是指數欄位，F 是小數尾數欄位。'
+      }
+    ]
+  },
+  {
+    heading: 'IEEE 754 轉換流程',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '先判斷符號位 Sign：正數為 0，負數為 1。',
+          '把十進位數字轉成二進位，整數用連除，小數用連乘。',
+          '把二進位寫成 1.xxxx * 2^e 的正規化形式。',
+          '指數欄位 Exponent 存的是 e + bias，不是直接存 e。',
+          'Fraction 欄位只放小數點後面的 bits，正規化前面的隱含 1 不寫進欄位。',
+          '最後把 Sign、Exponent、Fraction 依序接起來，需要十六進位時再每 4 bits 分組。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '正規化(Normalization)',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '正規化就是把二進位數字改寫成 1.xxxx * 2^e。',
+          '例：1010.01 可以把小數點往左移 3 位，變成 1.01001 * 2^3。',
+          '如果數值小於 1，通常要把小數點往右移到第一個 1 後面，指數 e 會是負數。',
+          '國考最常錯的是把 e 直接塞進 Exponent；IEEE 754 要先加 bias。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '十進位小數轉二進位',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '十進位小數轉二進位時，用小數部分連乘 2，每次取乘積的整數部分當下一個二進位位元。',
+          '若乘積出現 1.xxx，就取出 1；下一輪把整數部分拿掉，只用剩下的小數繼續乘。',
+          '例：0.625 * 2 = 1.25，取 1，剩下 0.25；0.25 * 2 = 0.5，取 0；0.5 * 2 = 1.0，取 1，所以 0.625 = 0.101。',
+          '有些十進位小數轉成二進位會無限循環，例如 0.1 約為 0.0001100110011...，題目若要求取固定位數，就依題目位數截斷或四捨五入。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '10.25 轉 IEEE 754 單精度',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '10.25 是正數，所以 Sign = 0。',
+          '10 的二進位是 1010，0.25 的二進位是 .01，所以 10.25 = 1010.01。',
+          '正規化：1010.01 = 1.01001 * 2^3。',
+          '單精度 bias = 127，所以 Exponent = 3 + 127 = 130 = 10000010。',
+          'Fraction 只放 01001 後面補 0 到 23 bits，得到 01001000000000000000000。',
+          '合併後為 0 10000010 01001000000000000000000，也就是 01000001001001000000000000000000 = 0x41240000。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'IEEE 754 反推',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '先把 32 bits 切成 Sign、Exponent、Fraction 三段。',
+          'Sign = 0 代表正數，Sign = 1 代表負數。',
+          'Exponent 欄位轉十進位後要減 bias，得到真正的指數 e。',
+          'Fraction 前面補上隱含的 1，形成 1.F。',
+          '例：0x41240000 可切成 0 | 10000010 | 01001000000000000000000；Exponent 130 - 127 = 3，所以值為 +1.01001 * 2^3 = 10.25。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '0.1 為什麼不精確',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '十進位的 0.1 在二進位中不是有限小數，會變成 0.0001100110011... 這類循環結果。',
+          'IEEE 754 的 Fraction 欄位長度有限，放不下無限循環，只能保存近似值。',
+          '所以程式中的浮點數加減有時會出現很接近但不完全相等的結果，國考看到小數精度題要想到「有限 bits 只能近似」。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '常見陷阱',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'bias 是偏移值，不是把指數取平均；單精度用 127，雙精度用 1023。',
+          'Fraction 欄位不放正規化開頭的 1，因為那個 1 是隱含位元。',
+          '小數連乘若除不盡，要依題目要求的位數處理，不要硬算到變成 0。',
+          '單精度與雙精度欄位長度不同，看到 32 bits 才用單精度欄位配置。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '考前速記',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'IEEE 754 單精度：1 / 8 / 23，bias = 127。',
+          'IEEE 754 雙精度：1 / 11 / 52，bias = 1023。',
+          '轉換公式：(-1)^S * 1.F * 2^(E - bias)。',
+          '十進位小數轉二進位：連乘 2，取整數，去掉整數後再乘剩下的小數。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const codesAndCheckCodesLessonSections = [
+  {
+    heading: '定義',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '數碼：用 bits 表示數字，例如 BCD、Gray Code。',
+          '文字碼：用編號表示文字，例如 ASCII、EBCDIC、Unicode、UTF-8。',
+          '檢查碼：額外加檢查資訊，用來偵測或更正錯誤，例如 Parity、CRC、Hamming Code。',
+          '先背一句：數碼管數字，文字碼管文字，檢查碼管有沒有錯。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '[總覽] 常見碼表',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['類別', '名稱', '國考關鍵字'],
+        rows: [
+          ['數碼', 'BCD', '一個十進位數字用 4 bits'],
+          ['數碼', 'Gray Code', '相鄰碼只差 1 bit'],
+          ['文字碼', 'ASCII', '標準 7 bits，128 種'],
+          ['文字碼', 'EBCDIC', 'IBM、大型主機'],
+          ['文字碼', 'Unicode', '統一多語言文字的碼位'],
+          ['文字碼', 'UTF-8', 'Unicode 的可變長度編碼，1 到 4 bytes'],
+          ['檢查碼', 'Parity Check', '奇同位、偶同位，偵測奇數個 bit 錯'],
+          ['檢查碼', 'CRC', '產生多項式、模 2 除法、餘數'],
+          ['檢查碼', 'Hamming Code', '檢查位、Syndrome、更正 1 bit 錯']
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'BCD',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'BCD（Binary-Coded Decimal）是用二進位編每一個十進位數字。',
+          '最常見的是 8421 BCD：第 1 個 bit 權重是 8，第 2 個 bit 權重是 4，第 3 個 bit 權重是 2，第 4 個 bit 權重是 1。',
+          '單一 8421 BCD digit 的有效範圍是 0000 到 1001，也就是十進位 0 到 9。',
+          '8421 BCD 要針對每一個十進位數字分開轉，再把結果組合起來。',
+          '例：(259)10 轉成 8421 BCD：\n2 = 0010，5 = 0101，9 = 1001，\n所以 259 的 8421 BCD = 0010 0101 1001。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'Gray Code',
+    blocks: [
+      {
+        kind: 'subsection',
+        heading: 'Gray Code 解釋與用途',
+        blocks: [
+          {
+            kind: 'orderedList',
+            items: [
+              'Gray Code 的特色是相鄰兩個碼只差 1 個 bit。',
+              '常見用途是位置偵測、旋轉編碼器，以及減少狀態切換時讀錯的機率。',
+              '考題看到「相鄰碼只差 1 bit」通常要想到 Gray Code。'
+            ]
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: 'Binary 轉 Gray',
+        blocks: [
+          {
+            kind: 'orderedList',
+            items: [
+              '規則：\n1. 最高位不變。\n2. 其餘 Gray 位元 = 左邊 binary XOR 目前 binary。\nXOR 表示相異才為 1。',
+              '例子：Binary 1011\nBinary：1 0 1 1\nGray：  1 (1 XOR 0) (0 XOR 1) (1 XOR 1)\n       = 1 1 1 0',
+              '所以 Binary 1011 = Gray 1110。'
+            ]
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: 'Gray 轉 Binary',
+        blocks: [
+          {
+            kind: 'orderedList',
+            items: [
+              '規則：\n1. 最高位不變。\n2. 其餘 Binary 位元 = 前一個已求出的 Binary XOR 目前 Gray。',
+              '例子：Gray 1110\nGray：  1 1 1 0\nBinary：1\n下一位：1 XOR 1 = 0\n下一位：0 XOR 1 = 1\n下一位：1 XOR 0 = 1',
+              '所以 Gray 1110 = Binary 1011。'
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    heading: '文字碼',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['名稱', '重點', '新手提醒'],
+        rows: [
+          ['ASCII', '標準 7 bits，可表示 128 種編號。', '英文、數字、控制字元常見。'],
+          ['Extended ASCII', '常見 8 bits，可有 256 種編號。', '128 到 255 不一定全球一致。'],
+          ['EBCDIC', '8 bits，IBM 系統常見字元碼。', '看到 IBM / 大型主機想到它。'],
+          ['Unicode', '統一多語言字元的碼位系統。', '是字元集 / 碼位，不是單一儲存格式。'],
+          ['UTF-8', 'Unicode 的常見可變長度編碼。', '英文常 1 byte，其他文字可能 2 到 4 bytes。']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          'Unicode 是「字元編號」。',
+          'UTF-8 是「把 Unicode 編號存成 bytes 的方式」。',
+          'UTF-8 相容 ASCII；ASCII 裡的 0 到 127，在 UTF-8 裡仍然用 1 byte 表示，而且編碼值相同。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'Parity Check（同位元檢查）',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'Parity Check 是加一個檢查位元，讓 1 的總數符合規則。',
+          '檢查位元位置由發送方與接收方事先協調好即可。',
+          '奇同位、偶同位，也可以翻譯成奇校驗、偶校驗。'
+        ]
+      },
+      {
+        kind: 'table',
+        headers: ['類型', '規則'],
+        rows: [
+          ['偶同位(Even Parity)', '加上檢查位後，1 的總數為偶數。'],
+          ['奇同位(Odd Parity)', '加上檢查位後，1 的總數為奇數。']
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'CRC',
+    blocks: [
+      {
+        kind: 'subsection',
+        heading: '一、定義與用途',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text:
+              'CRC（Cyclic Redundancy Check，循環冗餘檢查）常用在網路傳輸與儲存裝置。主要用來偵測錯誤，不是一般拿來更正錯誤。'
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: '二、傳送與接收流程',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text:
+              'CRC 傳送資料前，先根據資料算出一串「檢查位元」，附加在資料後面一起傳送。接收端收到後，再重新計算一次，看結果是否正確。'
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: '三、算法',
+        blocks: [
+          {
+            kind: 'orderedList',
+            items: [
+              '看生成多項式長度。ex. 1011',
+              'CRC 位數 = 生成多項式長度 - 1。',
+              '原資料後面補相同數量的 0。',
+              '用生成多項式做模 2 除法；不用進位、不用借位，減法等於 XOR。',
+              '最後餘數就是 CRC。',
+              '原資料 + CRC = 實際傳送資料。',
+              '接收端再除一次，餘數為 0 表示通過。'
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'Hamming Code（漢明碼）',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'Hamming Code 用多個「校驗位(檢查位)」來定位錯誤。',
+          '校驗位 = 額外加的檢查位元；要先決定是奇校驗還是偶校驗（同位元檢查）。',
+          '編碼步驟（發送端：算出要傳什麼）'
+        ]
+      },
+      {
+        kind: 'indentedGroup',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text:
+              '3-1. 算需要幾個校驗位 r\n公式：2^r ≥ m + r + 1（m = 資料位數）\n例：m = 4 時，r = 1 得到 2 < 6，不夠；r = 2 得到 4 < 7，不夠；r = 3 得到 8 ≥ 8，所以需要 3 個校驗位。'
+          },
+          {
+            kind: 'paragraph',
+            text:
+              '3-2. 排位置（編號從左到右、從 1 開始）\n第 1、2、4、8...（2 的次方）位放校驗位 P1、P2、P4...\n其餘位置依序填原始資料。'
+          },
+          {
+            kind: 'paragraph',
+            text: 'Hamming(7,4)：7 個總位元、4 個資料位元、3 個檢查位元\n例：原始 1011'
+          },
+          {
+            kind: 'table',
+            headers: ['位置', '1', '2', '3', '4', '5', '6', '7'],
+            rows: [
+              ['位置 2 進制', '001', '010', '011', '100', '101', '110', '111'],
+              ['內容', 'P1', 'P2', '1', 'P4', '0', '1', '1']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '（資料 1-0-1-1 填進位置 3、5、6、7）'
+          },
+          {
+            kind: 'paragraph',
+            text: '3-3. 算每個校驗位'
+          },
+          {
+            kind: 'indentedGroup',
+            blocks: [
+              {
+                kind: 'paragraph',
+                text:
+                  'P1 檢查「位置編號轉成二進位後，最右邊是 1」的位置。ex. 1/3/5/7 位置，檢查它們全部的值，P1 要符合校驗。\nP2 檢查「位置編號轉成二進位後，最中間是 1」的位置。ex. 2/3/6/7 位置，檢查它們全部的值，P2 要符合校驗。\nP4 檢查「位置編號轉成二進位後，最左邊是 1」的位置。ex. 4/5/6/7 位置，檢查它們全部的值，P4 要符合校驗。\n此步驟可以得出全部漢明碼。'
+              }
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text:
+              '3-4. 驗證，把漢明碼的值重新檢查 P1、P2、P4 負責的範圍是否符合校驗。\n當真正資料位元出錯時，Hamming Code 可以透過校驗位 / 檢查位元找出錯誤位置，然後把那一個 bit 反轉回來，因此可以恢復原本資料。'
+          }
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text:
+          'Syndrome（症候值/症狀碼/校驗子）：\n收到資料漢明碼\n→ 重新檢查 P1、P2、P4 的範圍\n→ 檢查通過記 0，檢查失敗記 1\n→ 得到 S1、S2、S4\n→ 組成 S4 S2 S1，得到 Syndrome\n→ 轉成十進位，就是錯誤位置'
+      }
+    ]
+  },
+  {
+    heading: '[必背] 漢明距',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '漢明距（Hamming Distance）是兩個碼字不同 bit 的數量。也就是說，兩組資料中不一樣的位置有幾個，漢明距離就是幾。'
+      },
+      {
+        kind: 'table',
+        headers: ['需求', '最小漢明距'],
+        rows: [
+          ['偵測 d 個錯誤', 'Dmin >= d + 1'],
+          ['更正 t 個錯誤', 'Dmin >= 2t + 1'],
+          ['已知 Dmin，最多偵測', 'Dmin - 1'],
+          ['已知 Dmin，最多更正', 'floor((Dmin - 1) / 2)']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '考前總複習(Exam Quick Review)',
+    collapsible: true,
+    defaultExpanded: false,
+    blocks: [
+      {
+        kind: 'subsection',
+        heading: '常見陷阱',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['容易錯的地方', '正確觀念'],
+            rows: [
+              ['BCD 是把整個十進位數轉二進位', '錯，BCD 是每個十進位數字分開編。'],
+              ['1010 是有效 BCD', '錯，單一 BCD 只允許 0000 到 1001。'],
+              ['Binary 轉 Gray 和 Gray 轉 Binary 用同一規則', '錯，兩個方向規則不同。'],
+              ['Unicode 和 UTF-8 是同一件事', '錯，Unicode 是碼位，UTF-8 是編碼方式。'],
+              ['Parity 可以更正錯誤', '通常錯，Parity 多半只能偵測。'],
+              ['CRC 是錯誤更正碼', '國考通常視為錯誤偵測碼。'],
+              ['偵測 d 個錯誤需要 2d + 1', '錯，那是更正常見公式的型態。']
+            ]
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: '國考答題句',
+        blocks: [
+          {
+            kind: 'orderedList',
+            items: [
+              'BCD 是用 4 bits 表示一個十進位數字；8421 BCD 的權重為 8、4、2、1。',
+              'Gray Code 的特色是相鄰碼只差 1 bit，可減少狀態轉換時的讀取錯誤。',
+              '二進位轉 Gray 時最高位不變，其餘位元為相鄰二進位位元 XOR。',
+              'Gray 轉二進位時最高位不變，其餘位元為前一個二進位位元 XOR 目前 Gray 位元。',
+              '標準 ASCII 為 7 bits，可表示 128 種編號；延伸 ASCII 常為 8 bits。',
+              'EBCDIC 是 IBM 系統常見的字元編碼。',
+              'Unicode 用於統一表示多語言字元；UTF-8 是 Unicode 的常見可變長度編碼方式。',
+              '同位元檢查可偵測奇數個 bit 錯誤，但通常不能定位或更正錯誤。',
+              'CRC 透過產生多項式做模 2 除法取得餘數，常用於錯誤偵測。',
+              '漢明碼的檢查位通常放在 1、2、4、8 等 2 的冪次位置。',
+              '偵測 d 個錯誤需要最小漢明距至少 d + 1；更正 t 個錯誤需要最小漢明距至少 2t + 1。'
+            ]
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: '考前速記',
+        blocks: [
+          {
+            kind: 'orderedList',
+            items: [
+              'BCD：一個十進位數字用 4 bits。',
+              'Gray：相鄰只差 1 bit。',
+              'ASCII：標準 7 bits。',
+              'EBCDIC：IBM、大型主機。',
+              'Unicode：統一多語言碼位。',
+              'UTF-8：Unicode 的可變長度編碼。',
+              'Parity：奇偶檢查，能偵測奇數個 bit 錯。',
+              'CRC：模 2 除法，餘數當檢查碼。',
+              'Hamming：檢查位在 1、2、4、8。',
+              '漢明距：偵測 d 要 d+1，更正 t 要 2t+1。'
+            ]
+          }
+        ]
+      }
+    ]
+  }
+] as const;
+
 const markdownBackedComputerPrinciplesContentById = {
   'cp-performance-formulas': {
     summary: '整理 CPU Time、Clock Rate、CPI、MIPS、Execution Time、ISA 與內頻外頻倍頻等效能名詞與常見公式。',
@@ -3919,6 +4431,20 @@ const markdownBackedComputerPrinciplesContentById = {
     terms: complementConversionTerms,
     lead: [],
     sections: complementConversionLessonSections
+  },
+  'cp-floating-point-conversion': {
+    summary: '整理 IEEE 754 欄位、bias、正規化、小數連乘、10.25 單精度編碼、反推解碼與 0.1 不精確原因。',
+    sourceFiles: floatingPointConversionSourceFiles,
+    terms: floatingPointConversionTerms,
+    lead: [],
+    sections: floatingPointConversionLessonSections
+  },
+  'cp-codes-and-check-codes': {
+    summary: '整理 BCD、Gray Code、ASCII/EBCDIC/Unicode/UTF-8、Parity Check、CRC、Hamming Code、Hamming Distance 與 Syndrome。',
+    sourceFiles: codesAndCheckCodesSourceFiles,
+    terms: codesAndCheckCodesTerms,
+    lead: [],
+    sections: codesAndCheckCodesLessonSections
   }
 } as const;
 

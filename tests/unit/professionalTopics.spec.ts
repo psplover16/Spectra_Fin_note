@@ -54,6 +54,8 @@ const busTopicId = 'cp-bus';
 const usbSpeedTopicId = 'cp-usb-speed';
 const baseConversionTopicId = 'cp-base-conversion';
 const complementConversionTopicId = 'cp-complement-conversion';
+const floatingPointConversionTopicId = 'cp-floating-point-conversion';
+const codesAndCheckCodesTopicId = 'cp-codes-and-check-codes';
 const markdownBackedComputerPrinciplesTopicIds = [
   'cp-performance-formulas',
   'cp-risc-cisc',
@@ -75,6 +77,8 @@ const busSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本
 const usbSpeedSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十三、USB 速度_新手國考教材.md'];
 const baseConversionSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十四、進制轉換_新手國考教材.md'];
 const complementConversionSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十五、補數轉換_新手國考教材.md'];
+const floatingPointConversionSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十六、浮點數轉換_新手國考教材.md'];
+const codesAndCheckCodesSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十七、數碼、文字碼與檢查碼_新手國考教材.md'];
 const markdownBackedComputerPrinciplesTopicCases = [
   {
     id: 'cp-performance-formulas',
@@ -164,6 +168,8 @@ const filledTopicIds = new Set([
   usbSpeedTopicId,
   baseConversionTopicId,
   complementConversionTopicId,
+  floatingPointConversionTopicId,
+  codesAndCheckCodesTopicId,
   ...markdownBackedComputerPrinciplesTopicIds,
   ...firstBatchAlgorithmTopicIds
 ]);
@@ -1015,20 +1021,267 @@ describe('professional topic skeleton data', () => {
     );
   });
 
+  it('fills floating-point conversion and codes/check-codes as formal lesson articles', () => {
+    const cases = [
+      {
+        id: floatingPointConversionTopicId,
+        title: '浮點數轉換(Floating-Point Conversion)',
+        sources: floatingPointConversionSources,
+        headings: [
+          'IEEE 754 欄位',
+          'IEEE 754 轉換流程',
+          '正規化(Normalization)',
+          '十進位小數轉二進位',
+          '10.25 轉 IEEE 754 單精度',
+          'IEEE 754 反推',
+          '0.1 為什麼不精確',
+          '常見陷阱',
+          '考前速記'
+        ],
+        terms: [
+          { zh: '浮點數', en: 'Floating Point' },
+          { zh: '指數欄位', en: 'Exponent' },
+          { zh: '偏移值', en: 'Bias' },
+          { zh: '正規化', en: 'Normalization' }
+        ],
+        keywords: [
+          'IEEE 754',
+          'bias',
+          '0x41240000',
+          '0.0001100110011',
+          '下一輪把整數部分拿掉，只用剩下的小數繼續乘'
+        ]
+      },
+      {
+        id: codesAndCheckCodesTopicId,
+        title: '數碼、文字碼與檢查碼(Codes and Check Codes)',
+        sources: codesAndCheckCodesSources,
+        headings: [
+          '定義',
+          '[總覽] 常見碼表',
+          'BCD',
+          'Gray Code',
+          '文字碼',
+          'Parity Check（同位元檢查）',
+          'CRC',
+          'Hamming Code（漢明碼）',
+          '[必背] 漢明距',
+          '考前總複習(Exam Quick Review)'
+        ],
+        terms: [
+          { zh: '數碼', en: 'Numeric Code' },
+          { zh: '文字碼', en: 'Character Code' },
+          { zh: '檢查碼', en: 'Check Code' },
+          { zh: '症候值', en: 'Syndrome' }
+        ],
+        keywords: [
+          '數碼管數字，文字碼管文字，檢查碼管有沒有錯。',
+          'BCD',
+          'Gray Code',
+          'Unicode',
+          'UTF-8',
+          'CRC',
+          'Hamming Code',
+          'Hamming Distance',
+          'Syndrome',
+          '259 的 8421 BCD = 0010 0101 1001',
+          'Binary 1011 = Gray 1110',
+          'Gray 1110 = Binary 1011',
+          'CRC 位數 = 生成多項式長度 - 1',
+          '2^r ≥ m + r + 1',
+          'S4 S2 S1',
+          'floor((Dmin - 1) / 2)'
+        ]
+      }
+    ] as const;
+
+    for (const topicCase of cases) {
+      const topic = professionalTopicsBySubject.computerPrinciples.find((computerPrinciplesTopic) => computerPrinciplesTopic.id === topicCase.id);
+
+      expect(topic, `${topicCase.id} should exist`).toBeDefined();
+      expect(topic?.title).toBe(topicCase.title);
+      expect(topic?.sourceFiles).toEqual(expect.arrayContaining(topicCase.sources));
+      expect(topic?.summary, `${topicCase.id} should have a summary`).not.toBe('');
+      expect(topic?.terms).toEqual(expect.arrayContaining([...topicCase.terms]));
+      expect(topic?.blocks).toHaveLength(1);
+
+      const lessonArticle = topic?.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topicCase.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining(topicCase.sources));
+      expect(lessonArticle.lead).toEqual([]);
+      expect(lessonArticle.sections.map((section) => section.heading)).toEqual([...topicCase.headings]);
+      expect(lessonArticle.sections.every((section) => section.sourceLabel === undefined)).toBe(true);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0)).toBe(true);
+
+      const serializedTopic = JSON.stringify(topic);
+
+      for (const keyword of topicCase.keywords) {
+        expect(serializedTopic, `${topicCase.id} should contain ${keyword}`).toContain(keyword);
+      }
+    }
+
+    const codesTopic = professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === codesAndCheckCodesTopicId);
+    const codesLessonArticle = codesTopic?.blocks[0];
+
+    expect(codesLessonArticle?.kind).toBe('lessonArticle');
+    if (codesLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cp-codes-and-check-codes should render as lessonArticle');
+    }
+
+    const quickReviewSection = codesLessonArticle.sections.find((section) => section.heading === '考前總複習(Exam Quick Review)') as
+      | ({ collapsible?: boolean; defaultExpanded?: boolean } & (typeof codesLessonArticle.sections)[number])
+      | undefined;
+
+    expect(quickReviewSection?.collapsible).toBe(true);
+    expect(quickReviewSection?.defaultExpanded).toBe(false);
+    const quickReviewSubsections = quickReviewSection?.blocks as
+      | readonly {
+          kind: string;
+          heading?: string;
+          blocks?: readonly { kind: string; headers?: readonly string[]; items?: readonly string[] }[];
+        }[]
+      | undefined;
+
+    expect(quickReviewSubsections?.map((block) => block.kind)).toEqual(['subsection', 'subsection', 'subsection']);
+    expect(quickReviewSubsections?.map((block) => block.heading)).toEqual(['常見陷阱', '國考答題句', '考前速記']);
+    expect(quickReviewSubsections?.[0]?.blocks?.[0]).toMatchObject({
+      kind: 'table',
+      headers: ['容易錯的地方', '正確觀念']
+    });
+    expect(quickReviewSubsections?.[1]?.blocks?.[0]).toMatchObject({
+      kind: 'orderedList',
+      items: expect.arrayContaining(['BCD 是用 4 bits 表示一個十進位數字；8421 BCD 的權重為 8、4、2、1。'])
+    });
+    expect(quickReviewSubsections?.[2]?.blocks?.[0]).toMatchObject({
+      kind: 'orderedList',
+      items: expect.arrayContaining(['BCD：一個十進位數字用 4 bits。'])
+    });
+
+    const grayCodeSection = codesLessonArticle.sections.find((section) => section.heading === 'Gray Code');
+    const grayCodeSubsections = grayCodeSection?.blocks as
+      | readonly {
+          kind: string;
+          heading?: string;
+          blocks?: readonly { kind: string; text?: string; items?: readonly string[] }[];
+        }[]
+      | undefined;
+
+    expect(grayCodeSubsections?.map((block) => block.kind)).toEqual(['subsection', 'subsection', 'subsection']);
+    expect(grayCodeSubsections?.map((block) => block.heading)).toEqual(['Gray Code 解釋與用途', 'Binary 轉 Gray', 'Gray 轉 Binary']);
+    expect(JSON.stringify(grayCodeSubsections?.[1])).toContain('規則：');
+    expect(JSON.stringify(grayCodeSubsections?.[1])).toContain('Binary：1 0 1 1');
+    expect(JSON.stringify(grayCodeSubsections?.[1])).toContain('Gray：  1 (1 XOR 0) (0 XOR 1) (1 XOR 1)');
+    expect(JSON.stringify(grayCodeSubsections?.[2])).toContain('規則：');
+    expect(JSON.stringify(grayCodeSubsections?.[2])).toContain('Gray：  1 1 1 0');
+    expect(JSON.stringify(grayCodeSubsections?.[2])).toContain('Binary：1');
+
+    const crcSection = codesLessonArticle.sections.find((section) => section.heading === 'CRC');
+    const crcSubsections = crcSection?.blocks as
+      | readonly {
+          kind: string;
+          heading?: string;
+          blocks?: readonly { kind: string; text?: string; items?: readonly string[] }[];
+        }[]
+      | undefined;
+
+    expect(crcSubsections?.map((block) => block.kind)).toEqual(['subsection', 'subsection', 'subsection']);
+    expect(crcSubsections?.map((block) => block.heading)).toEqual(['一、定義與用途', '二、傳送與接收流程', '三、算法']);
+    expect(JSON.stringify(crcSubsections?.[0])).toContain('CRC（Cyclic Redundancy Check，循環冗餘檢查）常用在網路傳輸與儲存裝置。');
+    expect(JSON.stringify(crcSubsections?.[0])).toContain('主要用來偵測錯誤，不是一般拿來更正錯誤。');
+    expect(JSON.stringify(crcSubsections?.[1])).toContain('CRC 傳送資料前，先根據資料算出一串「檢查位元」');
+    expect(JSON.stringify(crcSubsections?.[1])).toContain('接收端收到後，再重新計算一次，看結果是否正確。');
+    expect(JSON.stringify(crcSubsections?.[2])).toContain('看生成多項式長度。ex. 1011');
+    expect(JSON.stringify(crcSubsections?.[2])).toContain('用生成多項式做模 2 除法');
+    expect(JSON.stringify(crcSubsections?.[2])).toContain('接收端再除一次，餘數為 0 表示通過。');
+
+    const hammingSection = codesLessonArticle.sections.find((section) => section.heading === 'Hamming Code（漢明碼）');
+    const hammingBlocks = hammingSection?.blocks as
+      | readonly {
+          kind: string;
+          text?: string;
+          items?: readonly string[];
+          headers?: readonly string[];
+          rows?: readonly (readonly string[])[];
+          blocks?: readonly {
+            kind: string;
+            text?: string;
+            headers?: readonly string[];
+            rows?: readonly (readonly string[])[];
+            blocks?: readonly {
+              kind: string;
+              text?: string;
+            }[];
+          }[];
+        }[]
+      | undefined;
+
+    expect(hammingBlocks?.some((block) => block.kind === 'subsection')).toBe(false);
+    const hammingIntroList = hammingBlocks?.[0] as { kind: string; items?: readonly string[] } | undefined;
+
+    expect(hammingIntroList?.kind).toBe('orderedList');
+    expect(hammingIntroList?.items).toEqual([
+      'Hamming Code 用多個「校驗位(檢查位)」來定位錯誤。',
+      '校驗位 = 額外加的檢查位元；要先決定是奇校驗還是偶校驗（同位元檢查）。',
+      '編碼步驟（發送端：算出要傳什麼）'
+    ]);
+    expect(hammingBlocks?.[1]?.kind).toBe('indentedGroup');
+    const hammingStepGroup = hammingBlocks?.[1]?.blocks;
+
+    expect(JSON.stringify(hammingStepGroup)).toContain('3-1. 算需要幾個校驗位 r');
+    expect(JSON.stringify(hammingStepGroup)).toContain('2^r ≥ m + r + 1');
+    expect(JSON.stringify(hammingStepGroup)).toContain('3-2. 排位置（編號從左到右、從 1 開始）');
+    expect(JSON.stringify(hammingStepGroup)).toContain('Hamming(7,4)：7 個總位元、4 個資料位元、3 個檢查位元');
+    expect(hammingStepGroup?.[3]).toMatchObject({
+      kind: 'table',
+      headers: ['位置', '1', '2', '3', '4', '5', '6', '7'],
+      rows: [
+        ['位置 2 進制', '001', '010', '011', '100', '101', '110', '111'],
+        ['內容', 'P1', 'P2', '1', 'P4', '0', '1', '1']
+      ]
+    });
+    expect(JSON.stringify(hammingStepGroup)).toContain('（資料 1-0-1-1 填進位置 3、5、6、7）');
+    expect(JSON.stringify(hammingStepGroup)).toContain('3-3. 算每個校驗位');
+    expect(hammingStepGroup?.[6]?.kind).toBe('indentedGroup');
+    const hammingCheckBitDetails = hammingStepGroup?.[6]?.blocks;
+
+    expect(JSON.stringify(hammingCheckBitDetails)).toContain('P1 檢查「位置編號轉成二進位後，最右邊是 1」的位置');
+    expect(JSON.stringify(hammingCheckBitDetails)).toContain('P4 檢查「位置編號轉成二進位後，最左邊是 1」的位置');
+    expect(JSON.stringify(hammingCheckBitDetails)).toContain('此步驟可以得出全部漢明碼。');
+    expect(JSON.stringify(hammingStepGroup)).toContain('3-4. 驗證，把漢明碼的值重新檢查 P1、P2、P4 負責的範圍是否符合校驗');
+    expect(JSON.stringify(hammingBlocks)).toContain('Syndrome（症候值/症狀碼/校驗子）：');
+    expect(JSON.stringify(hammingBlocks)).toContain('組成 S4 S2 S1，得到 Syndrome');
+    expect(JSON.stringify(hammingBlocks)).toContain('轉成十進位，就是錯誤位置');
+  });
+
   it('normalizes imported Computer Principles Markdown instructions and obvious input errors', () => {
-    const importedTopics = [hazardTopicId, usbSpeedTopicId, baseConversionTopicId, complementConversionTopicId].map((topicId) =>
-      professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId)
-    );
+    const importedTopics = [
+      hazardTopicId,
+      usbSpeedTopicId,
+      baseConversionTopicId,
+      complementConversionTopicId,
+      floatingPointConversionTopicId,
+      codesAndCheckCodesTopicId
+    ].map((topicId) => professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId));
     const serializedTopics = JSON.stringify(importedTopics);
 
     expect(serializedTopics).not.toContain('用table');
+    expect(serializedTopics).not.toContain('用table做');
     expect(serializedTopics).not.toContain('ul/li做');
+    expect(serializedTopics).not.toContain('用UL/LI表示');
+    expect(serializedTopics).not.toContain('此處用 UL/LI表示');
     expect(serializedTopics).not.toContain('紅色文字顏色');
     expect(serializedTopics).not.toContain('你幫我設計顯示方式');
     expect(serializedTopics).not.toContain('(1011110010.151)2');
     expect(serializedTopics).toContain('(1011110010.101)2');
     expect(serializedTopics).toContain('USB4 Gen 3x2');
     expect(serializedTopics).toContain('USB4 Version 2.0');
+    expect(serializedTopics).toContain('P1、P2、P4');
+    expect(serializedTopics).toContain('單一 8421 BCD digit 的有效範圍');
   });
 
   it('fills the six Markdown-backed Computer Principles topics with source traceability and cleaned lesson articles', () => {

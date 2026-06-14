@@ -25,7 +25,9 @@ const filledComputerPrinciplesTopicIds = new Set([
   'cp-cache',
   'cp-usb-speed',
   'cp-base-conversion',
-  'cp-complement-conversion'
+  'cp-complement-conversion',
+  'cp-floating-point-conversion',
+  'cp-codes-and-check-codes'
 ]);
 
 function installStorageWithStaleAlgorithmsProgress() {
@@ -65,6 +67,8 @@ describe('stale professional content audit', () => {
 
     expect(allTopicIds).toContain('cp-common-units');
     expect(report).toContain('cp-common-units');
+    expect(report).toContain('cp-floating-point-conversion');
+    expect(report).toContain('cp-codes-and-check-codes');
 
     for (const staleTopicId of ['sorting-baseline', 'binary-search-placeholder', 'sorting-overview']) {
       expect(allTopicIds).not.toContain(staleTopicId);
