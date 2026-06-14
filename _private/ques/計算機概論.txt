@@ -281,6 +281,7 @@ USB4 Version 2.0 / USB 80Gbps | USB4 80Gbps | 80 Gbps
 - 掌握正負號、小數點移動、科學記號與基底。
 
 [會算] IEEE 754
+名稱 位元   正負號  指數部分  小數部分
 - 單精度 32 bits：Sign 1 bit、Exponent 8 bits、Fraction 23 bits，bias = 127。
 - 雙精度 64 bits：Sign 1 bit、Exponent 11 bits、Fraction 52 bits，bias = 1023。
 - 一般正規化數值：
@@ -296,6 +297,7 @@ USB4 Version 2.0 / USB 80Gbps | USB4 80Gbps | 80 Gbps
 - BCD：以 4 bits 表示一個十進位數字，8421 BCD 最常見。
 - Gray Code：相鄰碼只有 1 bit 不同，常用於減少轉換錯誤。
 - 二進位轉 Gray：最高位不變，其餘位為相鄰二進位位元 XOR。
+
 - Gray 轉二進位：最高位不變，其餘二進位位元為前一二進位位元 XOR 目前 Gray 位元。
 - ASCII：常見 7 bits 字元碼，延伸 ASCII 為 8 bits。
 - EBCDIC：IBM 系統常見編碼。

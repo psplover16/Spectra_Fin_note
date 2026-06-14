@@ -900,7 +900,14 @@ describe('professional topic skeleton data', () => {
           { zh: '十進制', en: 'Decimal' },
           { zh: '十六進制', en: 'Hexadecimal' }
         ],
-        keywords: ['(450.153)10', '111000010.00100111', '1C2.272B020C', '(1011110010.101)2', '(2F2.A)16']
+        keywords: [
+          '(450.153)10',
+          '111000010.00100111',
+          '1C2.272B020C',
+          '(1011110010.101)2',
+          '(2F2.A)16',
+          '出現 1.xxx，就取 1、去掉 1，留下 0.xxx'
+        ]
       },
       {
         id: complementConversionTopicId,
