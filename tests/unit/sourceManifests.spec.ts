@@ -17,6 +17,7 @@ const getSection = (text: string, heading: string, nextHeading?: string) => {
 };
 
 const computerPrinciplesHeadings = [
+  '電腦常用單位',
   '馮紐曼架構',
   '圖靈機與圖靈測試',
   '機器指令與指令週期',
@@ -202,12 +203,20 @@ describe('source reading logs and manifests', () => {
     for (const expectedText of ['topic id', 'title', 'source section', 'status', 'block structure']) {
       expect(manifest).toContain(expectedText);
     }
+    expect(manifest).toContain('cp-common-units');
 
     const manifestTopicRows = manifest
       .split('\n')
       .filter((line) => line.startsWith('| cp-') && line.includes('| pending-draft |'));
 
     expect(manifestTopicRows).toHaveLength(computerPrinciplesHeadings.length);
+
+    for (const row of manifestTopicRows) {
+      expect(row).toContain('| lessonArticle |');
+      expect(row).not.toContain('examOutline');
+      expect(row).not.toContain('memoryPoints');
+      expect(row).not.toContain('understanding');
+    }
 
     for (const heading of computerPrinciplesHeadings) {
       expect(manifest).toContain(heading);
@@ -224,26 +233,32 @@ describe('source reading logs and manifests', () => {
     expect(generatorTasks).toHaveLength(computerPrinciplesHeadings.length);
     expect(verifierTasks).toHaveLength(computerPrinciplesHeadings.length);
     expect(importTasks).toHaveLength(computerPrinciplesHeadings.length);
+    expect(taskBreakdown).toContain('cp-common-units');
     expect(taskBreakdown).toContain('_TMP/<timestamp>-computer-principles-<topic>.md');
     expect(taskBreakdown).toContain('sourceFiles');
-    expect(taskBreakdown).toContain('examOutline');
-    expect(taskBreakdown).toContain('memoryPoints');
-    expect(taskBreakdown).toContain('understandingNotes');
+    expect(taskBreakdown).toContain('lessonArticle');
+    expect(taskBreakdown).toContain('verified Markdown teaching file');
+    expect(taskBreakdown).not.toContain('examOutline');
+    expect(taskBreakdown).not.toContain('memoryPoints');
+    expect(taskBreakdown).not.toContain('understandingNotes');
   });
 
   it('keeps a verified _TMP draft for the first computer-principles imported topic', () => {
     const draftFileName = readdirSync('_TMP').find((fileName) =>
-      fileName.endsWith('-computer-principles-von-neumann-architecture.md')
+      fileName.endsWith('-computer-principles-cp-common-units.md')
     );
 
     expect(draftFileName).toBeDefined();
 
     const draft = readText(`_TMP/${draftFileName}`);
-    expect(draft).toContain('topic_id: cp-von-neumann-architecture');
+    expect(draft).toContain('topic_id: cp-common-units');
     expect(draft).toContain('subject: computerPrinciples');
     expect(draft).toContain('status: verified');
     expect(draft).toContain('_private/計算機概論.txt');
-    expect(draft).toContain('verifier result');
+    expect(draft).toContain('_private/discuss.txt');
+    expect(draft).toContain('content_shape: lessonArticle');
+    expect(draft).toContain('## Verifier 結果');
+    expect(draft).toContain('old fixed template removed');
   });
 
   it('records the computer-principles content review criteria', () => {

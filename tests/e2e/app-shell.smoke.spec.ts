@@ -14,14 +14,21 @@ test('loads a primary route directly', async ({ page }) => {
   await expect(page.getByTestId('subject-view-networking')).toContainText('網路概論');
 });
 
+test('loads computer principles route directly', async ({ page }) => {
+  await page.goto('/computer-principles');
+
+  await expect(page.getByTestId('subject-view-computer-principles')).toContainText('電腦常用單位');
+  await expect(page.getByTestId('subject-view-computer-principles')).toContainText('馮紐曼架構');
+});
+
 test('loads database and algorithms professional routes directly', async ({ page }) => {
   await page.goto('/database');
   await expect(page.getByTestId('subject-view-database')).toContainText('資料庫');
-  await expect(page.getByTestId('subject-topic-list-database')).toContainText('資料庫基本概念');
+  await expect(page.getByTestId('subject-topic-list-database')).toContainText('資料庫基礎(Database Foundations)');
 
   await page.goto('/algorithms');
   await expect(page.getByTestId('subject-view-algorithms')).toContainText('演算法');
-  await expect(page.getByTestId('subject-topic-list-algorithms')).toContainText('排序法總覽');
+  await expect(page.getByTestId('subject-topic-list-algorithms')).toContainText('二元搜尋法(Binary Search)');
 });
 
 test('primary navigation reaches database and algorithms', async ({ page }) => {

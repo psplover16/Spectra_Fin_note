@@ -1,0 +1,26 @@
+三、結構化分析與設計
+
+[必背] Cohesion（內聚力）
+- 內聚力越高越好。
+- 由佳到差大致可記：
+  - Functional Cohesion：功能內聚。
+  - Sequential Cohesion：順序內聚。
+  - Communicational Cohesion：溝通內聚。
+  - Procedural Cohesion：程序內聚。
+  - Temporal Cohesion：暫時內聚。
+  - Logical Cohesion：邏輯內聚。
+  - Coincidental Cohesion：偶發內聚。
+
+[必背] Coupling（耦合力）
+- 耦合力越低越好。
+- 由低到高大致可記：
+  - Data Coupling：資料耦合。
+  - Stamp / Data Structure Coupling：資料結構耦合。
+  - Control Coupling：控制耦合。
+  - Common Coupling：共同耦合。
+  - Content Coupling：內容耦合。
+
+[補充]
+- DFD：Data Flow Diagram，描述資料流、處理程序、資料儲存與外部實體。
+- Data Dictionary：資料字典，定義資料項目。
+- Structure Chart：結構圖，描述模組層級與呼叫關係。

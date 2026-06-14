@@ -10,5 +10,5 @@ export function getSubjectTopics(subjectKey: SubjectKey): readonly SubjectTopic[
     return placeholderTopics;
   }
 
-  return [...professionalTopics, ...placeholderTopics];
+  return professionalTopics;
 }

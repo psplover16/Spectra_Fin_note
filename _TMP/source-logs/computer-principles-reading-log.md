@@ -7,6 +7,7 @@
 
 | source section | exam outline | memory points | understanding notes |
 | ----- | ----- | ----- | ----- |
+| 電腦常用單位 | bit、byte、容量單位與網路速度單位 | bits 是 bit 的英文複數；b 是 bit、B 是 byte；1 B = 8 b | 用 32 bits = 4 bytes 與 1 MB/s = 8 Mbps 建立換算直覺 |
 | 馮紐曼架構 | 程式內儲、五大單元、馮紐曼瓶頸 | 程式與資料同存記憶體；五大單元含 ALU/CU | 用 CPU 等記憶體解釋瓶頸，再連到 cache、預取與平行處理 |
 | 圖靈機與圖靈測試 | 可計算模型與 AI 判斷方式差異 | 圖靈機是抽象模型；圖靈測試是智慧判斷 | 分清楚計算理論與人工智慧測試 |
 | 機器指令與指令週期 | 指令組成與 5 階段流程 | Opcode、Operand；Fetch、Decode、Operand Fetch、Execute、Write Back | 用 PC 指向下一指令說明每階段的必要性 |
@@ -39,4 +40,3 @@
 | Memory Management | 配置策略、fragmentation、paging/segmentation、TLB | paging 解外部碎片，可能內部碎片 | 以位址轉換與碎片來源理解策略差異 |
 | Virtual Memory | demand paging、page fault、EAT、replacement、thrashing | EAT 依 page fault ratio 加權 | thrashing 是 page fault 過多造成 CPU 利用率下降 |
 | Disk Management | allocation、disk access time、RAID、disk scheduling | access time = seek + rotational latency + transfer | 用磁頭移動與容錯方式比較 scheduling 與 RAID |
-

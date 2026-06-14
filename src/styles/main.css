@@ -157,6 +157,10 @@
     @apply m-0;
   }
 
+  .subject-topic-text {
+    white-space: pre-line;
+  }
+
   .subject-topic-block {
     @apply min-w-0 rounded border border-clay/10 bg-white/65 p-2;
   }
@@ -172,6 +176,22 @@
   .subject-topic-block ul,
   .subject-topic-block ol {
     @apply m-0 pl-5;
+  }
+
+  .subject-topic-block ol {
+    list-style-type: decimal;
+  }
+
+  .subject-topic-ordered-list-decimal {
+    list-style-type: decimal;
+  }
+
+  .subject-topic-ordered-list-upper-roman {
+    list-style-type: upper-roman;
+  }
+
+  .subject-topic-ordered-list-upper-alpha {
+    list-style-type: upper-alpha;
   }
 
   .subject-topic-source-note {

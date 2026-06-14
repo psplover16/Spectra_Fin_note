@@ -22,12 +22,14 @@
   - `src/modules/subjectTopics/` 管理：
     - `types/subjectTopic.ts`：`SubjectKey`、`SubjectTopic`、`SubjectTopicBlock`；`SubjectKey` 包含 `database` 與 `algorithms`。
     - `data/placeholderTopics.ts`：八科 placeholder topics；不得放正式題庫欄位。
-    - `data/professionalTopics.ts`：正式專業 topic data 的靜態 bundle 入口；正式 topic 需保留 `sourceFiles`、`sourceSummary`、`examOutline`、`memoryPoints`、`understandingNotes` 與中英專有名詞。
-      - 已匯入 topic 必須保留 `verifiedBy`、`verifiedAt` 或 `verifierSummary`，讓正式資料可追回 `_TMP` verified draft。
-      - 演算法正式 topic 包含排序基準、Bubble/Selection/Insertion/Merge/Quick/Heap/Shell，以及 Fibonacci、GCD、Binary Search；Shell Sort 第一批只放非遞迴主版本。
+    - `data/professionalTopics.ts`：正式專業 topic data 的靜態 bundle 入口；目前專業 topic 只保留 route、topic id、title、sourceFiles、sourceSummary 與 source section skeleton。
+      - 專業科目 route（`computerPrinciples`、`networking`、`database`、`informationManagement`、`programming`、`algorithms`）正式顯示內容必須是單一 `lessonArticle` block；舊的 `sourceNote`、`examOutline`、`memoryPoints`、`understanding`、`termList`、`workedExample`、`pitfall`、`complexityTable`、`teachingCode` 不得作為 professional topic 的 top-level displayed blocks。
+      - `summary`、`examOutline`、`memoryPoints`、`understandingNotes`、`terms`、`verifiedBy`、`verifiedAt` 與 `verifierSummary` 在 skeleton 狀態不可放入 AI 生成正文或驗證摘要。
+      - skeleton 狀態的 `lessonArticle.lead` 與 `lessonArticle.sections` 必須是空陣列；未來由使用者提供 section 標題與內容後，再把整理後內容填入對應 topic 的 `lessonArticle.sections`。
+      - 演算法 skeleton 保留排序基準、Bubble/Selection/Insertion/Merge/Quick/Heap/Shell，以及 Fibonacci、GCD、Binary Search 等 topic id 與來源定位，但不保留複雜度表、Java 範例或教學正文。
     - `data/subjectTopics.ts`：route view 的資料入口，合併正式 `professionalTopics.ts` 與尚未替換的 placeholder topics。
-    - `SubjectTopicBlock` 支援結構化內容 block union，包含 `termList`、`complexityTable`、`sourceNote`、`examOutline`、`memoryPoints`、`understanding`、`examFocus`、`workedExample`、`pitfall`、`paragraph` 與 `teachingCode`。
-    - 專業 topic 的 source traceability 由 `sourceFiles`、`sourceSummary` 與 `sourceNote` block 維護；演算法複雜度資料由 `complexityTable` row 描述。
+    - `SubjectTopicBlock` 支援結構化內容 block union，包含 `lessonArticle` 與既有 legacy block；新匯入的專業科目內容只能用 `lessonArticle` 作為 displayed block。
+    - 專業 topic 的 source traceability 由 `sourceFiles`、`sourceSummary`、`lessonArticle.sourceFiles` 與 `lessonArticle.sourceSection` 維護；教材正文只能在人工提供內容後放入 `lessonArticle.sections`。
     - `components/SubjectTopicCard.vue`：書籤、完成 checkbox、標題展開/收合與 detail slot。
     - `components/SubjectTopicPage.vue`：未完成/已完成分區、localStorage 進度讀寫與 topic block 渲染。
     - `storage/subjectTopicProgressStorage.ts`：`spectra:subject-topic-progress:v1` 的版本化 localStorage adapter。
@@ -41,7 +43,9 @@
 - `_TMP/task-breakdowns/` 保存副代理任務拆分；生成副代理一次只處理單一 topic，verifier 副代理一次只驗證單一草稿。
 - `_TMP/待生成主題清單_yyyyMMdd-HHmmss.md` 是跨科目總控追蹤表；每列包含 route、subject、manifest id、topic id、source file、status、draft path、generator task、verifier task、import task 與 notes。
 - `_TMP/reviews/` 保存內容 review 與 import summary；`_TMP/reports/` 保存 term audit、code-comment audit 與 production-chain review。
-- 主代理只把 `status: verified` 且 verifier 結果通過的 `_TMP` 草稿匯入正式 app data；`draft` 與 `blocked` 不能替換 placeholder。
+- `_private/TMP/<route>/` 保存 route-scoped source inventory、topic prompt、content writer draft、verifier output、manual review 與 import readiness；這些檔案是歷史產製證據，不是 runtime data source。
+- 每個 route 需有 `待生成主題清單_時間序列.md` 追蹤 source file、source section、topic id、prompt path、draft path、verified path、import target、status 與 verifier result。
+- 目前正式 app data 不再從 `_private/TMP/<route>/*.verified.md` 匯入正文；主代理只依使用者提供的 section 標題與內容，整理後填入對應 skeleton topic。
 
 ## Test Structure
 

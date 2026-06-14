@@ -11,14 +11,24 @@ import ProgrammingView from '@/modules/programming/views/ProgrammingView.vue';
 import SubjectTopicPage from '@/modules/subjectTopics/components/SubjectTopicPage.vue';
 
 const subjectRouteCases = [
-  [ComputerPrinciplesView, 'subject-view-computer-principles', 'subject-topic-list-computerPrinciples', '數字系統與進位'],
-  [NetworkingView, 'subject-view-networking', 'subject-topic-list-networking', 'OSI 七層模型'],
-  [InformationManagementView, 'subject-view-information-management', 'subject-topic-list-informationManagement', '資料庫正規化'],
-  [ProgrammingView, 'subject-view-programming', 'subject-topic-list-programming', 'Java 流程控制'],
-  [DatabaseView, 'subject-view-database', 'subject-topic-list-database', '資料庫基本概念'],
-  [AlgorithmsView, 'subject-view-algorithms', 'subject-topic-list-algorithms', '排序法總覽'],
-  [EnglishView, 'subject-view-english', 'subject-topic-list-english', '閱讀策略'],
-  [ChineseView, 'subject-view-chinese', 'subject-topic-list-chinese', '文章結構']
+  [
+    ComputerPrinciplesView,
+    'subject-view-computer-principles',
+    'subject-topic-list-computerPrinciples',
+    ['電腦常用單位', '馮紐曼架構']
+  ],
+  [NetworkingView, 'subject-view-networking', 'subject-topic-list-networking', ['準備方向']],
+  [
+    InformationManagementView,
+    'subject-view-information-management',
+    'subject-topic-list-informationManagement',
+    ['資訊管理總覽']
+  ],
+  [ProgrammingView, 'subject-view-programming', 'subject-topic-list-programming', ['程式(Programming Overview)']],
+  [DatabaseView, 'subject-view-database', 'subject-topic-list-database', ['資料庫總章']],
+  [AlgorithmsView, 'subject-view-algorithms', 'subject-topic-list-algorithms', ['資料結構與演算法準備方向']],
+  [EnglishView, 'subject-view-english', 'subject-topic-list-english', ['閱讀策略']],
+  [ChineseView, 'subject-view-chinese', 'subject-topic-list-chinese', ['文章結構']]
 ] as const;
 
 describe('subject route views', () => {
@@ -26,12 +36,14 @@ describe('subject route views', () => {
     vi.restoreAllMocks();
   });
 
-  it.each(subjectRouteCases)('renders placeholder topics for %s', (ViewComponent, viewTestId, topicListTestId, topicTitle) => {
+  it.each(subjectRouteCases)('renders placeholder topics for %s', (ViewComponent, viewTestId, topicListTestId, topicTitles) => {
     const wrapper = mount(ViewComponent);
 
     expect(wrapper.find(`[data-testid="${viewTestId}"]`).exists()).toBe(true);
     expect(wrapper.find(`[data-testid="${topicListTestId}"]`).exists()).toBe(true);
-    expect(wrapper.text()).toContain(topicTitle);
+    for (const topicTitle of topicTitles) {
+      expect(wrapper.text()).toContain(topicTitle);
+    }
   });
 
   it('renders a Traditional Chinese empty state without console errors', () => {
@@ -49,13 +61,13 @@ describe('subject route views', () => {
     expect(consoleError).not.toHaveBeenCalled();
   });
 
-  it('loads bundled professional topics alongside remaining placeholders', () => {
+  it('loads bundled professional topics without appending stale placeholders for rebuilt routes', () => {
     const databaseWrapper = mount(DatabaseView);
     const algorithmsWrapper = mount(AlgorithmsView);
 
-    expect(databaseWrapper.text()).toContain('資料庫(Database) 基本概念');
-    expect(databaseWrapper.text()).toContain('資料庫基本概念');
+    expect(databaseWrapper.text()).toContain('資料庫基礎(Database Foundations)');
+    expect(databaseWrapper.text()).not.toContain('這裡先建立資料庫專業科目的主題入口');
     expect(algorithmsWrapper.text()).toContain('二元搜尋法(Binary Search)');
-    expect(algorithmsWrapper.text()).toContain('排序法總覽');
+    expect(algorithmsWrapper.text()).not.toContain('正式內容會保留複雜度');
   });
 });

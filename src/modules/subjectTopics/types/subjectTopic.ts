@@ -26,6 +26,34 @@ export interface AlgorithmComplexityRow {
   notes: string;
 }
 
+export type LessonArticleOrderedListMarkerStyle = 'decimal' | 'upperRoman' | 'upperAlpha';
+
+export type LessonArticleContentBlock =
+  | {
+      kind: 'paragraph';
+      text: string;
+    }
+  | {
+      kind: 'bulletList';
+      items: readonly string[];
+    }
+  | {
+      kind: 'orderedList';
+      items: readonly string[];
+      markerStyle?: LessonArticleOrderedListMarkerStyle;
+    }
+  | {
+      kind: 'table';
+      headers: readonly string[];
+      rows: readonly (readonly string[])[];
+    };
+
+export interface LessonArticleSection {
+  heading: string;
+  sourceLabel?: string;
+  blocks: readonly LessonArticleContentBlock[];
+}
+
 export type SubjectTopicListBlockKind = 'examOutline' | 'memoryPoints' | 'understanding' | 'examFocus' | 'pitfall';
 
 export type SubjectTopicBlock =
@@ -55,6 +83,13 @@ export type SubjectTopicBlock =
       kind: 'sourceNote';
       sourceFiles: readonly string[];
       sourceSummary: string;
+    }
+  | {
+      kind: 'lessonArticle';
+      sourceFiles: readonly string[];
+      sourceSection: string;
+      lead: readonly string[];
+      sections: readonly LessonArticleSection[];
     }
   | {
       kind: 'teachingCode';

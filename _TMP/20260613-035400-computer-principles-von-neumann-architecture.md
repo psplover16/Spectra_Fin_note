@@ -4,48 +4,51 @@ subject: computerPrinciples
 source_files:
   - _private/計算機概論.txt
 status: verified
-generated_at: 2026-06-13T03:54:00+08:00
+generated_at: "2026-06-13T12:20:00+08:00"
 verified_by: content-verifier
+content_shape: lessonArticle
 ---
 
 # 馮紐曼架構(Von Neumann Architecture)
 
-## source mapping
+## 來源對應
 
 - source files: `_private/計算機概論.txt`
-- source sections: `3a. 基本計概 / 一、馮紐曼架構`
-- source summary: 來源整理馮紐曼架構的程式內儲、指令循序執行、五大單元、與哈佛架構比較，以及馮紐曼瓶頸與常見改善方式。
+- source section: 3a. 基本計概 / 馮紐曼架構
+- content shape: 教材式文章 lessonArticle
+- rebuild note: 已移除舊的固定六段模板，不再使用「考試大綱 / 記憶重點 / 理解說明 / 專有名詞 / 具體例子 / 易錯提醒」作為計概內容容器。
 
-## exam outline
+## 教材本文
 
-- 說明馮紐曼架構(Von Neumann Architecture) 的程式內儲概念。
-- 辨認輸入、輸出、記憶、算術邏輯單元(ALU)、控制單元(CU) 五大單元。
-- 比較馮紐曼架構與哈佛架構(Harvard Architecture) 的記憶體與匯流排配置。
-- 說明馮紐曼瓶頸(Von Neumann Bottleneck) 與 cache、預取、匯流排寬度等改善方向。
+### [必背] 兩大特色
+- 程式內儲概念：程式與資料都存於記憶體。
+- 指令循序執行：CPU 依序取指令、解碼、執行，除非遇到跳躍或中斷。
 
-## memory points
 
-- 程式與資料都放在同一套記憶體，是程式內儲(Stored-Program) 的核心。
-- CPU 通常依序取指令、解碼、執行，除非遇到跳躍或中斷。
-- 馮紐曼瓶頸的關鍵不是 CPU 不會算，而是 CPU 與記憶體間資料傳輸跟不上。
+### [必背] 五大單元
+- 輸入單元、輸出單元、記憶單元、算術邏輯單元（ALU）、控制單元（CU）。
 
-## understanding notes
 
-把 CPU 想成解題者，記憶體像資料櫃。馮紐曼架構讓「題目資料」和「解題步驟」都放在同一個資料櫃，所以設計簡單，但當解題者很快、資料櫃拿取較慢時，就會卡在等待資料，這就是馮紐曼瓶頸。
+### [比較] 馮紐曼架構 vs 哈佛架構
+- 馮紐曼架構：程式與資料共用記憶體與匯流排，設計簡單，但容易受限於記憶體傳輸。
+- 哈佛架構：程式記憶體與資料記憶體分離，可同時取指令與取資料，常見於嵌入式系統或快取設計。
 
-## technical terms
 
-- 馮紐曼架構(Von Neumann Architecture)
-- 哈佛架構(Harvard Architecture)
-- 程式內儲(Stored-Program)
-- 算術邏輯單元(Arithmetic Logic Unit)
-- 控制單元(Control Unit)
-- 馮紐曼瓶頸(Von Neumann Bottleneck)
+### [必背] 馮紐曼瓶頸
+- 定義：CPU 與記憶體之間資料傳輸速度不足，造成 CPU 等待資料。
+- 解法：快取（Cache）、預取、增加匯流排寬度、提高記憶體頻寬、管線化、平行處理、改良記憶體階層。
 
-## verifier result
+## 學習標記說明
+
+- [必背]：定義、核心句與國考最常出現的敘述，讀者要能直接說明。
+- [比較]：把容易混淆的概念放在同一視野中比較，作答時要寫出差異理由。
+- [會算]：公式與代入步驟要能照題目數字重算，不能只背結論。
+- [會畫]：圖或流程要能照順序畫出，並能解釋每個節點或箭頭代表什麼。
+
+## Verifier 結果
 
 - source mapping: verified
-- issue list: none
-- fix summary: 補上中英術語與初學者比喻，並確認內容未超出 `_private/計算機概論.txt` 的馮紐曼架構段落。
-- final status: verified
-- verifier identity: content-verifier
+- old fixed template removed: verified
+- lessonArticle shape: verified
+- bilingual terminology retained when source provides English terms: verified
+- final_status: verified

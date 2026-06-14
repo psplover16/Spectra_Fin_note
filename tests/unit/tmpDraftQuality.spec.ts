@@ -28,16 +28,81 @@ const findComputerPrinciplesDraftPath = (topicId: string): string | undefined =>
     .find((fileName) => fileName.includes('computer-principles') && fileName.includes(topicId))
     ?.replace(/^/, '_TMP/');
 
+const stripBackticks = (value: string) => value.trim().replace(/^`|`$/g, '');
+
+const routeTrackingFiles = [
+  '_private/TMP/computer-principles/待生成主題清單_20260613-110000.md',
+  '_private/TMP/networking/待生成主題清單_20260613-111500.md',
+  '_private/TMP/database/待生成主題清單_20260613-113000.md',
+  '_private/TMP/information-management/待生成主題清單_20260613-114500.md',
+  '_private/TMP/programming/待生成主題清單_20260613-120000.md',
+  '_private/TMP/algorithms/待生成主題清單_20260613-123000.md'
+];
+
+const readTrackingArtifactRows = (trackingFile: string) =>
+  readText(trackingFile)
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith('| `_private/') && !line.includes('| --- |'))
+    .map((line) => {
+      const cells = line.split('|').map((cell) => cell.trim());
+
+      return {
+        topicId: stripBackticks(cells[3] ?? ''),
+        draftPath: stripBackticks(cells[7] ?? ''),
+        verifiedPath: stripBackticks(cells[8] ?? '')
+      };
+    });
+
 describe('computer-principles draft quality', () => {
+  it('has substantive source-outline teaching drafts for every imported professional route topic', () => {
+    let checkedRows = 0;
+
+    for (const trackingFile of routeTrackingFiles) {
+      const rows = readTrackingArtifactRows(trackingFile);
+
+      expect(rows.length, `${trackingFile} should have route rows`).toBeGreaterThan(0);
+
+      for (const row of rows) {
+        expect(existsSync(row.draftPath), `${row.topicId} draft should exist`).toBe(true);
+        expect(existsSync(row.verifiedPath), `${row.topicId} verified should exist`).toBe(true);
+
+        const draft = readText(row.draftPath);
+        const verified = readText(row.verifiedPath);
+
+        expect(draft).toContain(`topic_id: ${row.topicId}`);
+        expect(draft).toContain('status: draft');
+        expect(draft).toContain('content_shape: lessonArticle');
+        expect(draft).toContain('## 來源對應');
+        expect(draft).toContain('## 來源大綱輸入');
+        expect(draft).toContain('## 教材本文');
+        expect(draft).toContain('## 學習標記說明');
+        expect(draft).toContain('## Verifier 結果');
+        expect(draft).toContain('old fixed template removed');
+        expect(draft.length, `${row.topicId} draft should be more than a short summary`).toBeGreaterThan(900);
+        expect(draft).not.toContain('## 國考重點');
+        expect(draft).not.toContain('## 名詞解釋');
+
+        expect(verified).toContain(`topic_id: ${row.topicId}`);
+        expect(verified).toContain('status: verified');
+        expect(verified).toContain('content_shape: lessonArticle');
+        expect(verified).toContain('## 來源大綱輸入');
+        expect(verified).toContain('## 教材本文');
+        expect(verified).toContain('final_status: verified');
+
+        checkedRows += 1;
+      }
+    }
+
+    expect(checkedRows).toBeGreaterThan(100);
+  });
+
   it('has a substantive verified AI draft for every imported computer-principles topic', () => {
     const manifestRows = readComputerPrinciplesManifestRows();
     const requiredSections = [
-      '## 國考重點',
-      '## 國考速記',
-      '## 名詞解釋',
-      '## 核心想法',
-      '## 易錯提醒',
-      '## 專有名詞',
+      'content_shape: lessonArticle',
+      '## 來源對應',
+      '## 教材本文',
+      '## 學習標記說明',
       '## Verifier 結果'
     ];
 
@@ -61,9 +126,14 @@ describe('computer-principles draft quality', () => {
         expect(draft, `${manifestRow.id} should include ${section}`).toContain(section);
       }
 
-      expect(draft, `${manifestRow.id} should include an example or procedure section`).toMatch(/## (實際例子|操作步驟)/);
+      expect(draft, `${manifestRow.id} should state stale fixed-template removal`).toContain('old fixed template removed');
+      expect(draft, `${manifestRow.id} should include source-label driven lesson sections`).toMatch(
+        /### \[(必背|比較|會算|會畫|補充|建議|易混淆|考點|原文提醒)\]/
+      );
       expect(draft, `${manifestRow.id} should include verifier final status`).toContain('final_status: verified');
       expect(draft, `${manifestRow.id} should not be only a manifest row`).not.toContain('| pending-draft |');
+      expect(draft, `${manifestRow.id} should not keep the old fixed template`).not.toContain('## 國考重點');
+      expect(draft, `${manifestRow.id} should not keep the old fixed template`).not.toContain('## 名詞解釋');
     }
   });
 
@@ -80,22 +150,27 @@ describe('computer-principles draft quality', () => {
     expect(existsSync('_private/TMP/README.md')).toBe(true);
     expect(existsSync(privateTmpDraftPath)).toBe(true);
     expect(statSync(privateTmpDraftPath).size).toBeGreaterThan(1500);
-    expect(readText(privateTmpDraftPath)).toContain('## 名詞解釋');
+    expect(readText(privateTmpDraftPath)).toContain('## 教材本文');
+    expect(readText(privateTmpDraftPath)).toContain('old fixed template removed');
 
     for (const genericText of ['先理解中文意思', '不是孤立名詞', '最低通過線', '常考問法']) {
       expect(draft).not.toContain(genericText);
     }
 
     for (const explanatoryText of [
-      '程式和資料都放在同一套記憶體',
-      '控制單元(Control Unit) 負責取出指令、解碼並發出控制訊號',
-      '算術邏輯單元(Arithmetic Logic Unit) 負責加減乘除、比較與邏輯判斷',
-      '取指令(Fetch)',
-      '解碼(Decode)',
-      '取運算元(Operand Fetch)',
-      '執行(Execute)',
-      '寫回(Write Back)',
-      'Harvard Architecture 將程式記憶體與資料記憶體分離'
+      '[必背]',
+      '[比較]',
+      '來源大綱不是成品',
+      '國考怎麼寫',
+      '程式內儲概念',
+      '指令循序執行',
+      '五大單元',
+      '馮紐曼架構 vs 哈佛架構',
+      '馮紐曼瓶頸',
+      '比較項目',
+      '判斷重點',
+      '最小背誦句',
+      '快取'
     ]) {
       expect(draft).toContain(explanatoryText);
     }

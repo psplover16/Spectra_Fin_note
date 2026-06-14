@@ -2,11 +2,14 @@
 
 - source manifest: `_TMP/manifests/computer-principles-manifest.md`
 - draft filename contract: `_TMP/<timestamp>-computer-principles-<topic>.md`
-- required draft fields: sourceFiles, examOutline, memoryPoints, understandingNotes
+- required draft shape: lessonArticle
+- required draft fields: sourceFiles, sourceSection, sourceLabels, lead, sections, verifier result
+- import gate: only a verified Markdown teaching file with lessonArticle content can enter formal app data.
 - rule: 每個 manifest topic 各自建立 generator、verifier、import task，不合併不同 topic。
 
 ## generator tasks
 
+- [ ] generator cp-common-units -> `_TMP/<timestamp>-computer-principles-common-units.md`
 - [ ] generator cp-von-neumann-architecture -> `_TMP/<timestamp>-computer-principles-von-neumann-architecture.md`
 - [ ] generator cp-turing-machine-and-test -> `_TMP/<timestamp>-computer-principles-turing-machine-and-test.md`
 - [ ] generator cp-machine-instruction-cycle -> `_TMP/<timestamp>-computer-principles-machine-instruction-cycle.md`
@@ -42,6 +45,7 @@
 
 ## verifier tasks
 
+- [ ] verifier cp-common-units
 - [ ] verifier cp-von-neumann-architecture
 - [ ] verifier cp-turing-machine-and-test
 - [ ] verifier cp-machine-instruction-cycle
@@ -77,6 +81,7 @@
 
 ## import tasks
 
+- [ ] import cp-common-units
 - [ ] import cp-von-neumann-architecture
 - [ ] import cp-turing-machine-and-test
 - [ ] import cp-machine-instruction-cycle

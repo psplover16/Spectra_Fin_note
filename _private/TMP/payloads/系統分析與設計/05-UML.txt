@@ -1,0 +1,12 @@
+五、UML
+
+[必背]
+- Class Diagram：類別、屬性、方法與關係。
+- Use Case Diagram：使用者角色與系統功能。
+- Activity Diagram：流程、分支、平行活動。
+- Sequence Diagram：物件間訊息傳遞與時間順序。
+
+[補充]
+- State Diagram：狀態與事件轉換。
+- Component Diagram：元件與相依。
+- Deployment Diagram：部署節點與構件。

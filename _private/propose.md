@@ -1,643 +1,280 @@
-# 專業科目內容擴充討論稿
-
-來源：`_private/discuss.txt`  
-模式：`$spectra-discuss` assumptions mode  
-狀態：已依使用者回答補上回覆與定稿方向，後續可再交由 `$spectra-propose` 產生正式變更提案。
-
-## 目前理解
-
-本次需求不是單純調整排版，而是要把 `_private/` 內指定科目的文字資料轉成正式學習內容，並補足教學深度、路由、題目導向說明與程式範例。
-
-原始指定的科目與來源如下：
-
-- 計概：`_private/計算機概論.txt`
-- 網概：`_private/網概.txt`
-- 資料庫：`_private/資料庫.txt`、`_private/資料結構與演算法.txt`
-- 資管：`_private/資訊管理.txt`
-- 程式：`_private/程式.txt`、`_private/系統分析與設計.txt`
-- 演算法：`_private/資料結構與演算法.txt`、`_private/國考常見演算法_Java遞迴非遞迴_時間複雜度.md`
-
-依本輪回答後的定稿方向：
-
-- `資料結構與演算法.txt` 暫定全部歸入「演算法」。
-- 「資料庫」第一批來源暫定只使用 `資料庫.txt`。
-- `程式語言_all.pdf` 第一批不納入。
-- 全部專業科目都在正式提案範圍內，但實作與內容匯入需要分批完成。
-- 正式 `tasks.md` 的任務數量無上限；不得為了讓任務清單變短而合併不同科目、不同 topic 或不同驗證工作。
-- 內容產製應大量運用副代理；主代理負責規則、整合與最終寫入，副代理負責分 topic 生成、校對與驗證。
-
-核心要求：
-
-- 每個指定的 txt/md 來源檔都必須先完整閱讀，再產生 topic；不得只依檔名、既有常識或摘要推測內容。
-- 每個來源檔包含考試大綱、需要記憶的內容、需要理解的內容；正式 topic 需區分「考試大綱」、「記憶重點」與「理解說明」。
-- 每個 txt 目前多半只有標題與重點，AI 需要補足「可自學」的教學內容。
-- 內容面向國考，必須降低錯誤率，並讓初學者能看懂。
-- 程式碼註解要說明答題意圖，不只是逐行翻譯。
-- 程式碼註解需讓考官看得出作答思路、想法與用意，不能只寫語法功能。
-- 演算法必須涵蓋排序：Bubble、Selection、Insertion、Merge、Quick、Heap、Shell。
-- 排序需整理最佳、平均、最差時間複雜度、穩定性與補充說明。
-- 每個排序演算法需要遞迴與非遞迴版本，以及時間複雜度。
-- `國考常見演算法_Java遞迴非遞迴_時間複雜度.md` 內既有的常見演算法都需納入盤點；不得只收後續列出的七個必收範例。
-- 演算法必收範例需包含：氣泡排序法、快速排序法、Fibonacci 序列、最大公因數、二元搜尋法、選擇排序法、插入排序法。
-- 二元搜尋法必須明確提醒「資料需先排序過才可使用」，否則演算法前提不成立。
-- 所有專有名詞都需提供中文與英文對照；標題、表格與首次出現時使用 `中文(English Term)` 格式，例如 `二元樹(Binary Tree)`。
-- 任務拆分數量無上限；每個科目、topic、來源整理、草稿產生、verifier 檢查、正式匯入與驗收都可拆成獨立 task。
-- 後續執行需大量運用副代理，尤其是內容生成副代理、內容驗證副代理與整合檢查副代理。
-- 讀者定位為新手自學者；內容需手把手、清楚、通俗，不能假設讀者已懂前置觀念。
-- 英文、中文可維持不同處理方式，其餘科目的風格應一致。
-
-## 已偵測到的現況
-
-目前專案已有科目學習 app shell，但專業科目內容仍偏骨架。
-
-相關檔案觀察：
-
-- `src/app/router.ts` 目前有 `/computer-principles`、`/networking`、`/information-management`、`/programming`、`/english`、`/chinese`。
-- 目前尚未看到 `/database` 與 `/algorithms` 兩個獨立路由。
-- `src/modules/subjectTopics/types/subjectTopic.ts` 的 `SubjectKey` 目前不包含 `database` 或 `algorithms`。
-- `src/modules/subjectTopics/data/placeholderTopics.ts` 目前仍是 placeholder 內容。
-- `src/modules/subjectTopics/components/SubjectTopicPage.vue` 已負責主題清單、未完成/已完成區、閱讀進度與收藏。
-- 先前需求已移除每個 section 的 `subTitle`，後續內容結構不應再把 section subtitle 放回 UI。
-
-## 目前假設
-
-### 假設 1：需要新增「資料庫」與「演算法」專業路由
-
-做法：
-
-- 新增 `/database` 與 `/algorithms`。
-- `SubjectKey` 增加 `database`、`algorithms`。
-- 首頁或導覽需能進入這兩個科目。
-
-依據：
-
-- `_private/discuss.txt` 把「資料庫」與「演算法」列成獨立專業科目。
-- 現有路由沒有這兩項，若直接塞進既有科目會讓資料歸屬不清。
-
-如果此假設錯誤：
-
-- 可以改成把資料庫放入「資管」，演算法放入「程式」。
-- 但這會讓單一科目內容過大，且後續查找與進度追蹤較不直覺。
-
-### 假設 2：需要先定義內容資料結構，再大量產生內容
-
-做法：
-
-- 不建議直接把長篇 Markdown 全部塞進 placeholder data。
-- 應先決定 topic block 是否要支援：觀念說明、考點提醒、記憶法、範例、易錯點、複雜度表、Java 程式碼、驗證註記。
-
-依據：
-
-- 現有 block 只有 `paragraph` 與 `teachingCode`，不足以承載國考導向的深度內容。
-- 演算法內容需要複雜度、穩定性、遞迴/非遞迴比較，單純段落會很難維護。
-
-如果此假設錯誤：
-
-- 可先用現有 block 寫入內容，但未來若要調整呈現方式，會有大量資料重工。
-
-### 假設 3：需要建立受控的內容產製流程
-
-做法：
-
-- 每個科目或 topic 先在 `_TMP/` 產生暫存稿。
-- 暫存稿需包含來源檔、涵蓋章節、生成日期、驗證清單、待查問題。
-- 由 generator 副代理依 topic 產生草稿，再由 verifier 副代理檢查錯誤、補強說明、確認 Java 程式碼與複雜度。
-- 通過後再由主流程整合進 app。
-- 主代理不得把副代理輸出直接當成正式內容；主代理需負責最後整合、風格一致性與檔案寫入。
-
-依據：
-
-- 使用者明確提出 generator agent、verifier agent 與 `_TMP/` 的流程構想。
-- 使用者強調「禁止任何錯誤」，因此需要可追蹤來源與審核紀錄。
-
-如果此假設錯誤：
-
-- 可以改成單一流程直接產生正式內容，但不利於追蹤、校對與分批接受。
-
-### 假設 4：演算法內容需要比一般科目更嚴格的模板
-
-做法：
-
-每個演算法 topic 建議至少包含：
-
-- 什麼時候會考。
-- 核心想法。
-- 手算步驟。
-- Java 非遞迴版本。
-- Java 遞迴版本。
-- 複雜度表。
-- 穩定性。
-- 國考常見陷阱。
-- 答題註解策略。
-
-依據：
-
-- `_private/discuss.txt` 對演算法提出最具體要求。
-- 排序演算法若沒有統一模板，很容易漏掉穩定性、最佳情境或遞迴版本的定位。
-
-如果此假設錯誤：
-
-- 可把演算法也視為一般觀念科目，但會削弱國考作答導向。
-
-## 發現的問題與風險
-
-1. 現有 app 沒有「資料庫」與「演算法」路由  
-   需要確認是否新增獨立路由，否則內容只能暫時併入資管或程式。
-
-2. `資料結構與演算法.txt` 同時被列入資料庫與演算法  
-   需要定義切分規則，避免同一份內容被重複產生或放錯科目。
-
-3. `系統分析與設計.txt` 被列入程式  
-   系統分析與設計概念上可能也接近資管，需確認是否仍歸入程式。
-
-4. 「每個排序演算法都要遞迴與非遞迴版本」可能需要註明教學定位  
-   Bubble、Selection、Insertion、Shell 通常以迭代寫法為主；若提供遞迴版，建議標示為「教學用變形」，避免誤導成考場標準寫法。
-
-5. 「禁止任何錯誤」不能只靠單次生成達成  
-   建議至少要求：來源對應、複雜度交叉檢查、Java 程式碼檢查、verifier 審核、待查問題不得直接進正式內容。
-
-   排序複雜度尤其要以 discuss.txt 的基準表為驗證來源，不能由生成內容自由改寫。
-
-6. 內容量很大，不適合一次全部塞進單一變更  
-   建議先建立資料結構與匯入流程，再按科目或 topic 分批導入。
-
-7. `_TMP/` 若沒有命名規則與驗證清單，會變成不可追蹤的草稿區  
-   建議使用固定格式，例如 `_TMP/20260613-1530-algorithms-bubble-sort.md`。
-
-8. 現有 topic block 結構太淺  
-   若維持現狀，複雜度表、考點、錯誤提醒與多版本程式碼會混在 paragraph 內，後續難以維護。
-
-9. 先前已要求不應該有每個 section 的 subTitle  
-   後續新增內容時，應避免在 UI 或資料中重新引入 section subtitle 作為固定欄位。
-
-10. `_private/程式語言_all.pdf` 存在，但本次 discuss.txt 未列為來源  
-    需確認是否納入第一批內容，否則暫不讀取與使用。
-
-11. `_private/筆記.md` 存在，但目前未被指定  
-    依專案規則，除非明確要求，否則不讀取個人筆記與學習資料。
-
-12. 若正式提案限制任務數量，會提高錯誤與漏項風險  
-    本需求明確允許任務數量無上限，因此 `tasks.md` 應以「可驗收、可追蹤」為優先，不以任務數少為目標。
-
-13. 大量運用副代理需要明確邊界  
-    副代理可負責分 topic 生成與驗證，但主代理仍需負責任務拆分、來源規則、正式整合與最終審查，避免多個副代理產出互相衝突。
-
-14. 每個副代理應只處理單一 topic 後結束  
-    使用者原始流程要求每個 topic 開啟一個副代理，完成後關閉，避免下一個 topic 受到前一個上下文污染。
-
-## 建議結論
-
-建議不要直接進入「大量產生正式內容」。
-
-建議下一步建立一個正式 Spectra change，例如：
-
-`ingest-professional-subject-content`
-
-此 change 可分成五個階段：
-
-1. 建立內容來源 manifest  
-   定義每個科目使用哪些來源檔、哪些章節、哪些內容排除。
-
-2. 擴充內容資料模型  
-   支援國考導向的教學內容、考點、範例、複雜度表與程式碼。
-
-3. 新增或調整科目路由  
-   依使用者確認結果新增 `/database`、`/algorithms` 或採用合併方案。
-
-4. 建立 `_TMP/` 草稿與驗證流程  
-   每個 topic 先產生暫存稿，經 verifier 確認後才能匯入正式資料。
-
-5. 建立副代理工作契約  
-   大量運用 generator、verifier 與整合檢查副代理，但每個副代理必須有明確 topic 範圍、輸入來源、輸出檔案與驗收清單。
-
-6. 分批匯入正式內容  
-   優先處理演算法，因為需求最明確、最容易建立模板與驗證規則。
-
-正式 `tasks.md` 的 task 數量不設上限，應拆到每個 task 都能單獨檢查完成與否。
-
-## 介面深度檢查
-
-這次變更會碰到多個邊界，不宜只做表面資料填充。
-
-建議的主要邊界：
-
-- 路由邊界：`src/app/router.ts`
-- 科目鍵值邊界：`SubjectKey`
-- topic 資料邊界：`SubjectTopic` 與 block schema
-- 內容來源邊界：`_private/` 指定資料檔
-- 暫存草稿邊界：`_TMP/`
-- 正式內容匯入邊界：由審核後草稿轉成 app data
-
-建議避免：
-
-- 只新增一堆 paragraph，卻沒有結構化考點與驗證欄位。
-- 讓 `_TMP/` 產物直接變成不可追蹤的最終資料。
-- 產生內容時重新加入 section subtitle 類欄位。
-
-## 建議的 `_TMP/` 草稿格式
-
-```md
----
-topic_id: algorithms-bubble-sort
-subject: algorithms
-source_files:
-  - _private/資料結構與演算法.txt
-  - _private/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
-status: draft
-generated_at: 2026-06-13
-verified_by: pending
----
-
-# Bubble Sort
-
-## 來源摘要
-
-## 教學內容
-
-## 國考考點
-
-## Java 非遞迴版本
-
-## Java 遞迴版本
-
-## 複雜度與穩定性
-
-## 易錯提醒
-
-## Verifier 檢查
-
-- [ ] 已完整閱讀指定來源檔，不是只依檔名或常識推測
-- [ ] 已對應來源中的考試大綱、記憶重點與理解重點
-- [ ] 來源對應正確
-- [ ] Java 程式碼可讀且語意正確
-- [ ] 程式碼註解已說明作答思路、想法與用意，考官能看出解題邏輯
-- [ ] 時間複雜度正確
-- [ ] 空間複雜度正確
-- [ ] 穩定性正確
-- [ ] 排序法複雜度與穩定性符合 discuss.txt 基準表
-- [ ] 沒有把教學用變形誤寫成標準考場寫法
-- [ ] 專有名詞已提供中文與英文對照，並符合 `中文(English Term)` 格式
-- [ ] 內容符合新手自學定位，能手把手照順序讀懂
+# Computer Principles 6 個 topic 內容匯入討論稿
+
+## 來源
+
+- 討論輸入：`_private/discuss.txt`
+- 內容來源：
+  - `_private/MD/計概/3a基本計概/六、效能名詞與公式_新手國考教材.md`
+  - `_private/MD/計概/3a基本計概/七、RISC 與 CISC_新手國考教材.md`
+  - `_private/MD/計概/3a基本計概/八、Memory 階層圖_新手國考教材.md`
+  - `_private/MD/計概/3a基本計概/九、Memory 分類圖_新手國考教材.md`
+  - `_private/MD/計概/3a基本計概/十、Register（暫存器）_新手國考教材.md`
+  - `_private/MD/計概/3a基本計概/十一、Cache_新手國考教材.md`
+
+## 目標理解
+
+目前理解是：
+
+```text
+嚴格來說，本次要做的是：
+1. 讀取 6 份已整理過的 Markdown。
+2. 保留各 md 既有教材內容。
+3. 將各 md 內容編排成 app 支援的 lessonArticle block。
+4. 放入 /computer-principles 路由中對應 topic 的 section。
 ```
 
-## 待確認問題
+「不改變現有資料」先解讀為：
 
-請直接在每題下方作答。
+```text
+不新增主題、不重寫教材、不自行擴寫核心觀念。
+可以把 Markdown 裡的表格註記、UL/LI 註記轉成 app 支援的 table / bulletList / orderedList。
+除已確認的 Cache「下一層記憶體」短句外，不主動加入 md 之外的新解釋。
+可以補 sourceFiles 與測試，讓正式 app data 有來源追蹤與回歸保護。
+```
 
-### Q1. 路由要怎麼安排？
+實作時應優先沿用各 md 的既有內容、順序與標題；下方 section 表格只用來輔助對應 app block 型態，不代表要重新撰寫或重切教材。
 
-建議選項：新增 `/database` 與 `/algorithms`，讓資料庫、演算法成為獨立專業科目。
+## 討論模式
 
-其他可能：
+使用 `$spectra-discuss` 的 Assumptions mode。
 
-- 把資料庫併入資管，演算法併入程式。
-- 只新增演算法，資料庫先併入資管。
-- 其他安排。
+原因：已找到 3 個以上相關 source 檔，可根據現有架構提出假設。
 
-你的回答：依你建議
+相關檔案：
 
+- `src/modules/subjectTopics/data/professionalTopics.ts`
+- `src/modules/subjectTopics/components/SubjectTopicPage.vue`
+- `src/modules/subjectTopics/data/subjectTopics.ts`
 
-### Q2. `資料結構與演算法.txt` 要怎麼切分？
+本次議題是 md 內容編排、格式轉換與既有 topic data 填補，不涉及新 IPC、新 storage abstraction、新跨層流程或新 UI block 型別，因此不需要 interface depth check。
 
-建議選項：排序與常見演算法放入演算法；資料結構基礎依內容性質放入程式或計概，不直接放入資料庫。
+## 對應 topic
 
-其他可能：
-
-- 全部放入演算法。
-- 資料結構放入資料庫，演算法放入演算法。
-- 其他切分方式。
-
-你的回答：全部放入演算法
-
-
-### Q3. `系統分析與設計.txt` 是否確定歸入程式？
-
-建議選項：先依使用者原始指定歸入程式，但 topic title 要清楚標示系統分析與設計。
-
-其他可能：
-
-- 改歸入資管。
-- 拆成資管與程式各一部分。
-
-你的回答： 依你建議
-
-
-### Q4. `_private/程式語言_all.pdf` 是否納入本次第一批來源？
-
-建議選項：第一批不納入，先處理 discuss.txt 明確列出的 txt/md 來源。
-
-其他可能：
-
-- 納入程式科目。
-- 只作為 verifier 參考。
-
-你的回答：不納入
-
-
-### Q5. 排序演算法的遞迴版本要怎麼處理？
-
-建議選項：每個排序都提供非遞迴標準版；遞迴版若不是常見標準寫法，明確標示為教學用變形。
-
-其他可能：
-
-- 每個排序都強制提供遞迴與非遞迴，不額外標示。
-- 只在 Merge Sort、Quick Sort 等自然遞迴演算法提供遞迴版。
-
-你的回答：做不到或難以做到的，就不提供 非遞迴。 這部分你先幫我看一下，有哪些會有、哪些不會有
-
-
-### Q6. 是否採用 `_TMP/` 草稿加 verifier 的流程？
-
-建議選項：採用。每個 topic 先進 `_TMP/`，通過檢查後再匯入 app。
-
-其他可能：
-
-- 不使用 `_TMP/`，直接產生正式資料。
-- 只對演算法使用 `_TMP/` 與 verifier。
-
-你的回答：採用
-
-
-### Q7. 第一批優先做哪個科目？
-
-建議選項：演算法。需求最明確，最適合先建立模板、驗證規則與匯入流程。
-
-其他可能：
-
-- 計概
-- 網概
-- 資料庫
-- 資管
-- 程式
-
-你的回答：全部都要
-
-
-### Q8. 正式內容是否需要保留來源註記？
-
-建議選項：需要。每個 topic 至少保留來源檔與來源章節摘要，方便日後校正。
-
-其他可能：
-
-- 只在 `_TMP/` 保留來源註記，正式 app 不顯示。
-- 完全不保留來源註記。
-
-你的回答：需要
-
-
-### Q9. placeholder topics 要怎麼處理？
-
-建議選項：在該科目正式內容通過驗證後，再逐步替換 placeholder。
-
-其他可能：
-
-- 一次全部移除 placeholder。
-- 保留 placeholder，正式內容另開資料檔。
-
-你的回答：依你建議
-
-
-### Q10. 後續正式提案名稱是否使用 `ingest-professional-subject-content`？
-
-建議選項：使用這個名稱。
-
-其他可能：
-
-- 使用其他 change id。
-
-你的回答：使用這個名稱
-
-
-## AI 回覆與定稿方向
-
-### Q1 回覆：新增資料庫與演算法路由
-
-採用原建議：
-
-- 新增 `/database`，顯示名稱為「資料庫」。
-- 新增 `/algorithms`，顯示名稱為「演算法」。
-- `SubjectKey` 需要新增 `database` 與 `algorithms`。
-- 導覽與 route preload 也要同步補上，避免新增頁面但使用者無法進入。
-
-這個安排最清楚，因為資料庫、演算法本身都是國考專業科目中的大塊內容，不適合全部塞進資管或程式。
-
-### Q2 回覆：`資料結構與演算法.txt` 全部放入演算法
-
-採用使用者回答。
-
-定稿：
-
-- `資料結構與演算法.txt` 全部歸入「演算法」。
-- 「資料庫」第一批不再使用 `資料結構與演算法.txt`。
-- 若 `資料結構與演算法.txt` 內有非常基礎、可支援資料庫理解的內容，正式 app 也不直接複製到資料庫；最多在資料庫 topic 以「延伸閱讀」或「相關觀念」指向演算法科目。
-
-這樣可以避免同一份來源被雙重匯入，降低日後維護與校對成本。
-
-### Q3 回覆：`系統分析與設計.txt` 先歸入程式
-
-採用原建議：
-
-- `系統分析與設計.txt` 先歸入「程式」。
-- topic title 需要明確標示「系統分析與設計」，避免讀者誤以為全部都是程式語法。
-- 若後續內容讀起來更偏資訊管理，可在第二階段再拆分或移轉。
-
-理由是使用者原始指定已把它列在程式下，先遵循原指定最穩；但 UI 與 topic 命名要把領域講清楚。
-
-### Q4 回覆：`程式語言_all.pdf` 第一批不納入
-
-採用使用者回答。
-
-定稿：
-
-- 第一批只處理 discuss.txt 明確列出的 txt/md 來源。
-- 不讀取、不引用、不匯入 `程式語言_all.pdf`。
-- 後續若要納入 PDF，應另開一輪討論或新 task，避免第一批內容來源失控。
-
-### Q5 回覆：排序演算法遞迴與非遞迴版本
-
-我先把你的回答判讀為：「不自然、難以正確教學、或容易誤導的版本，不要硬塞。」這裡比較像是在放寬「每個排序都必須有遞迴版」的要求；非遞迴版本身幾乎每個排序都能提供。
-
-建議定稿如下：
-
-| 排序法 | 非遞迴版 | 遞迴版 | 建議收錄方式 |
-| --- | --- | --- | --- |
-| Bubble Sort | 有，標準寫法 | 有，但屬教學用變形 | 收兩版；遞迴版標示「教學用，非考場主流」 |
-| Selection Sort | 有，標準寫法 | 有，但屬教學用變形 | 收兩版；遞迴版標示「教學用，非考場主流」 |
-| Insertion Sort | 有，標準寫法 | 有，常見於遞迴練習但非主流排序寫法 | 收兩版；遞迴版標示用途 |
-| Merge Sort | 有，bottom-up 迭代版 | 有，標準主流寫法 | 收兩版；遞迴版作為主要教學版本 |
-| Quick Sort | 有，使用 stack 的迭代版 | 有，標準主流寫法 | 收兩版；遞迴版作為主要教學版本 |
-| Heap Sort | 有，標準寫法 | 有，通常體現在 recursive heapify | 收兩版；需說明遞迴點在 heapify，不是把排序切成左右遞迴 |
-| Shell Sort | 有，標準寫法 | 不建議收正式遞迴版 | 只收非遞迴標準版；補一句「遞迴改寫不具國考代表性」 |
-
-排序複雜度與穩定性需以以下表格作為第一版基準：
-
-| 排序法 | 最佳時間 | 平均時間 | 最差時間 | 穩定性 | 備註 |
-| --- | --- | --- | --- | --- | --- |
-| 氣泡排序法(Bubble Sort) | O(n) | O(n^2) | O(n^2) | 穩定 | 若有 early stop，最好可到 O(n) |
-| 選擇排序法(Selection Sort) | O(n^2) | O(n^2) | O(n^2) | 通常不穩定 | 交換次數少 |
-| 插入排序法(Insertion Sort) | O(n) | O(n^2) | O(n^2) | 穩定 | 適合小資料或近乎排序資料 |
-| 合併排序法(Merge Sort) | O(n log n) | O(n log n) | O(n log n) | 穩定 | 需要額外空間 |
-| 快速排序法(Quick Sort) | O(n log n) | O(n log n) | O(n^2) | 不穩定 | pivot 選不好會退化 |
-| 堆積排序法(Heap Sort) | O(n log n) | O(n log n) | O(n log n) | 不穩定 | 原地排序，利用 heap |
-| 希爾排序法(Shell Sort) | 視 gap 而定 | 視 gap 而定 | 可到 O(n^2) | 不穩定 | 插入排序改良 |
-
-因此第一批建議：
-
-- Bubble、Selection、Insertion、Merge、Quick、Heap：提供非遞迴與遞迴版。
-- Shell：只提供非遞迴標準版，不提供正式遞迴版。
-
-若之後你堅持「七種排序都要有遞迴版」，Shell Sort 可以放在附錄或補充框中，但不建議放成主要考場寫法。
-
-### Q5 補充回覆：排序法與常見演算法必收範例
-
-使用者補充的清單應納入「演算法」第一批必收內容。
-
-定稿清單：
-
-| 題型 | 是否納入 | 收錄方式 |
+| Markdown | 對應 topic id | 現況 |
 | --- | --- | --- |
-| 氣泡排序法 | 是 | 排序 topic；提供非遞迴標準版與遞迴教學版 |
-| 快速排序法 | 是 | 排序 topic；提供遞迴標準版與 stack 非遞迴版 |
-| Fibonacci 序列 | 是 | 常見遞迴/迭代 topic；提供遞迴版、迭代版，並提醒單純遞迴會重複計算 |
-| 最大公因數 | 是 | 常見演算法 topic；提供輾轉相除法，建議收遞迴與迭代兩版 |
-| 二元搜尋法 | 是 | 搜尋 topic；提供遞迴與迭代兩版，必須註明資料需先排序 |
-| 選擇排序法 | 是 | 排序 topic；提供非遞迴標準版與遞迴教學版 |
-| 插入排序法 | 是 | 排序 topic；提供非遞迴標準版與遞迴教學版 |
+| 六、效能名詞與公式 | `cp-performance-formulas` | 目前仍走空 skeleton |
+| 七、RISC 與 CISC | `cp-risc-cisc` | 目前仍走空 skeleton |
+| 八、Memory 階層圖 | `cp-memory-hierarchy` | 目前仍走空 skeleton |
+| 九、Memory 分類圖 | `cp-memory-classification` | 目前仍走空 skeleton |
+| 十、Register（暫存器） | `cp-registers` | 目前仍走空 skeleton |
+| 十一、Cache | `cp-cache` | 目前仍走空 skeleton |
 
-補充說明：
+## My assumptions
 
-- 使用者寫的 `Fabonacci` 正式文件中應統一寫作 `Fibonacci`。
-- 二元搜尋法的範例資料必須先呈現為已排序陣列，例如 `[1, 3, 5, 7, 9]`。
-- 若要示範「未排序資料不能直接二元搜尋」，可以放在易錯提醒，不建議放成主要程式範例。
+### 1. 仍使用既有 `lessonArticle` 結構
 
-### 全域補充回覆：專有名詞需中英並列
+**Approach**：6 個 topic 都整理成既有 `lessonArticle`，使用 `lead`、`sections`、`paragraph`、`bulletList`、`orderedList`、`table`。
 
-採用使用者補充。
+**Evidence**：
 
-定稿：
+- `SubjectTopicPage.vue` 已支援 `lessonArticle`、表格、清單與段落。
+- 先前 `cp-machine-instruction-cycle`、`cp-pipeline`、`cp-bus` 已用同一套模式。
 
-- 所有專有名詞都要提供中文與英文對照。
-- 標題、表格欄位、重點清單與首次出現時，使用 `中文(English Term)` 格式。
-- 同一段後續重複出現時，可以只用中文簡稱，避免學習內容變得過度冗長。
-- 英文名詞採常見標準寫法與大小寫，例如 `二元樹(Binary Tree)`、`二元搜尋法(Binary Search)`、`快速排序法(Quick Sort)`。
-- 若中文翻譯可能有多種說法，正式內容應固定使用同一中文詞，並在第一次出現時補英文。
+**If wrong**：若需要新的 block 型別，後續就不是純內容匯入，還要新增 UI 與型別測試。
 
-### Q6 回覆：採用 `_TMP/` 草稿加 verifier 流程
+### 2. 6 個 topic 應各自建立專用 factory
 
-採用使用者回答。
+**Approach**：比照已填內容 topic，在 `professionalTopics.ts` 建立各 topic 的 sourceFiles、terms、lesson sections、factory，並在 `createProfessionalTopicSkeleton` 中接上。
 
-定稿：
+**Evidence**：
 
-- 每個 topic 先產生 `_TMP/` 草稿。
-- verifier 通過後才匯入 app data。
-- `_TMP/` 檔案需保留來源、topic id、生成日期、檢查清單與待查問題。
-- verifier 發現疑點時，不得直接用猜測補進正式內容。
+- `createProfessionalTopicSkeleton` 目前只對已填內容 topic 有專用 branch。
+- 這 6 個 topic 目前沒有 branch，因此會回到空 `lead: []`、`sections: []`。
 
-### Q6 補充回覆：任務數量無上限與大量運用副代理
+**If wrong**：若不接 factory，路由 topic 仍存在，但正式內容不會顯示。
 
-採用使用者原始要求，並補成正式執行規則。
+### 3. sourceFiles 應加入對應 Markdown 路徑
 
-定稿：
+**Approach**：每個 topic 的 `sourceFiles` 保留 `_private/計算機概論.txt`，並加入對應 Markdown 路徑。
 
-- 任務數量無上限，`tasks.md` 不需要為了簡短而壓縮任務。
-- 每個科目可拆成：來源盤點、topic manifest、草稿生成、verifier 檢查、修正、正式匯入、UI 驗收、內容驗收。
-- 每個演算法 topic 可再拆成：概念說明、手算範例、Java 遞迴版、Java 非遞迴版、複雜度表、易錯提醒、專有名詞中英對照、verifier 檢查。
-- 後續執行應大量運用副代理，不建議由單一代理一次完成所有內容生成與驗證。
-- 每個內容生成副代理只處理一個 topic，完成後關閉，避免後續 topic 受到前一個上下文污染。
-- 每個內容驗證副代理也只驗證一個 topic；若發現問題，可直接修正同一份 `_TMP/` 草稿，並留下 verifier 結果。
+**Evidence**：
 
-副代理建議分工：
+- 已填內容 topic 例如機器指令、Pipeline、Bus 皆有加入對應 Markdown source。
+- 目前這 6 個 skeleton 的 `sourceFiles` 只有 `_private/計算機概論.txt`。
 
-| 副代理類型 | 負責內容 | 輸出 |
+**If wrong**：若不加入 Markdown 路徑，正式 app data 的來源追蹤會不完整。
+
+### 4. Markdown 中的編排註記不應原樣進 app
+
+**Approach**：`table表示`、`用UL/LI表示`、`此處用 UL/LI表示` 這類文字只當作整理指示，匯入時要轉成正式 block 型態，不顯示在教材中。
+
+**Evidence**：
+
+- `七、RISC 與 CISC` 含 `(用table表示)`。
+- `八、Memory 階層圖` 含 `table表示`、`此處用 UL/LI表示`。
+- `九、Memory 分類圖` 含 `以table表示`、`table表示`。
+- `十、Register（暫存器）` 的 heading 含 `用UL/LI表示`。
+
+**If wrong**：使用者會在 app 看到編排註記，教材質感與可讀性會下降。
+
+### 5. 測試應把 6 個 topic 視為正式填入內容
+
+**Approach**：更新 `professionalTopics.spec.ts`、route workflow 或 stale audit 類測試，要求這 6 個 topic 有非空 lead、sections、sourceFiles，並檢查重點 section 或關鍵字。
+
+**Evidence**：
+
+- 先前 `cp-pipeline` / `cp-bus` 填內容時已用測試防止回退。
+- 目前若不補測試，這 6 個 topic 未來回到空 skeleton 也不一定會被擋下。
+
+**If wrong**：後續重構時可能靜悄悄遺失內容。
+
+## 建議整理範圍
+
+重要：本節只描述「各 md 內容進 app 時可對應的 section / block 型態」。實作時仍應以 md 原文的既有內容、順序與標題為主，避免因表格建議而重寫教材或重切大綱。
+
+### cp-performance-formulas
+
+來源：`六、效能名詞與公式_新手國考教材.md`
+
+建議 sections：
+
+| section heading | 內容範圍 | block 型態 |
 | --- | --- | --- |
-| 內容生成副代理 | 依單一 topic 與指定來源產生 `_TMP/` 草稿 | `_TMP/<timestamp>-<subject>-<topic>.md` |
-| 內容驗證副代理 | 檢查事實、複雜度、Java 程式碼、國考用語與中英名詞 | 在同一 `_TMP/` 檔補 verifier 結果 |
-| 整合檢查副代理 | 檢查多 topic 之間是否重複、矛盾、風格不一致 | 整合檢查報告或修正建議 |
-| 主代理 | 控制規則、拆 task、審查副代理輸出、寫入正式 app data | 正式專案檔案與最終驗收 |
+| 核心公式 | CPU Time、Clock Rate 版本 | paragraph + table |
+| 名詞速查 | Clock、CPI、MIPS、Execution Time、ISA、內頻/外頻/倍頻 | table |
+| 常見公式 | CPU Time、MIPS、內頻公式 | bulletList 或 table |
+| 易混淆 | Clock Rate、MIPS、CPI、Instruction Count | bulletList |
 
-限制：
+注意：Execution Time 已明確標示單位是秒，正式內容可保留。
 
-- 副代理不應直接把內容寫入正式 app data。
-- 副代理不得讀取未被允許的個人筆記或受限資料夾。
-- 若副代理對內容正確性有疑問，必須留下待查問題，不得自行猜測補上。
-- 副代理完成單一 topic 後應結束，不沿用同一副代理處理下一個 topic。
-- 主代理最後需要統一術語、格式、資料來源與 UI 呈現。
+### cp-risc-cisc
 
-### Q7 回覆：全部科目都要，但要分批交付
+來源：`七、RISC 與 CISC_新手國考教材.md`
 
-採用使用者回答的範圍：「全部都要」。
+建議 sections：
 
-但實作策略仍建議分批：
+| section heading | 內容範圍 | block 型態 |
+| --- | --- | --- |
+| ISA 是什麼 | CPU 對程式設計者或編譯器公開的指令規則 | paragraph |
+| RISC vs CISC | 指令數、定址模式、指令長度、週期、暫存器、記憶體存取等 | table |
+| 名詞解釋 | 定址模式、Load/Store、Pipeline、微指令 | orderedList |
+| 考前速記 | RISC 口訣與 CISC 口訣 | bulletList |
 
-1. 先完成 route、SubjectKey、資料模型與來源 manifest。
-2. 先用「演算法」建立內容模板與 verifier 標準，因為它最容易檢查正確性。
-3. 再依序匯入計概、網概、資料庫、資管、程式。
-4. 每個科目都要進正式提案範圍；分批只是降低錯誤率，不是縮小範圍。
+注意：來源最後有「RISC 不等於一定比較快，CISC 不等於一定比較慢」，正式內容應保留。
 
-### Q8 回覆：正式內容需要保留來源註記
+### cp-memory-hierarchy
 
-採用使用者回答。
+來源：`八、Memory 階層圖_新手國考教材.md`
 
-定稿：
+建議 sections：
 
-- `_TMP/` 必須保留完整來源註記。
-- 正式 app data 至少保留來源檔與來源摘要。
-- UI 是否顯示來源註記可以後續決定，但資料層要保留，方便校正。
+| section heading | 內容範圍 | block 型態 |
+| --- | --- | --- |
+| Memory 階層順序 | 1 到 5 層，Register、Cache、RAM、SSD/HDD、外部儲存 | table |
+| 細分 Cache | L1 → L2 → L3 | orderedList 或 bulletList |
+| 方向重點 | 越近 CPU 越快、小、貴；越遠越慢、大、便宜 | paragraph |
+| Locality | Temporal / Spatial Locality | table |
 
-### Q9 回覆：逐步替換 placeholder
+注意：來源中的 `table表示`、`此處用 UL/LI表示` 不應進正式內容。
 
-採用原建議：
+### cp-memory-classification
 
-- 不一次清空 placeholder。
-- 每個科目的正式內容通過 verifier 後，再替換該科目的 placeholder。
-- 尚未完成的科目保留 placeholder，避免頁面突然空掉。
+來源：`九、Memory 分類圖_新手國考教材.md`
 
-### Q10 回覆：正式提案名稱
+建議 sections：
 
-採用使用者回答。
+| section heading | 內容範圍 | block 型態 |
+| --- | --- | --- |
+| Memory 分類圖 | 依角色分類、依斷電分類 | paragraph 或 bulletList |
+| RAM vs ROM | 用途、斷電、讀寫特性、例子 | table |
+| SRAM vs DRAM | Static / Dynamic、儲存方式、refresh、用途 | table |
+| ROM 類型 | PROM、EPROM、EEPROM、Flash | table |
 
-正式 change id：
+注意：EPROM 通常是紫外線整片擦除；EEPROM 是電氣擦除、可局部改寫；Flash 常以 block 為單位。
 
-`ingest-professional-subject-content`
+### cp-registers
 
-## Conclusion
+來源：`十、Register（暫存器）_新手國考教材.md`
 
-**Decision**：建立 `ingest-professional-subject-content` 變更，範圍包含計概、網概、資料庫、資管、程式、演算法；新增資料庫與演算法獨立路由；採用 `_TMP/` 草稿與 verifier 流程；任務數量無上限；後續執行需大量運用副代理；全部內容分批匯入。  
-**Rationale**：使用者需要全部專業科目，但內容量大且要求高度正確，因此應把「範圍完整」、「任務可無限拆分」、「副代理分工驗證」和「交付分批」分開處理。  
-**Capture to**：後續 `$spectra-propose` 應將此結論整理到 `openspec/changes/ingest-professional-subject-content/proposal.md`、`design.md`、`tasks.md` 與相關 spec delta。
+建議 sections：
 
-正式提案至少應捕捉這些需求：
+| section heading | 內容範圍 | block 型態 |
+| --- | --- | --- |
+| 暫存器是什麼 | CPU 內部小而快的儲存空間 | paragraph |
+| 常見暫存器 | PC、IR、Base、Limit、Flag/Status、MAR、MDR/MBR | table 或 bulletList |
+| 常見考法 | 名稱功能配對、取指令流程、記憶體保護、旗標意義 | orderedList |
 
-- 新增 `/database` 與 `/algorithms`。
-- `資料結構與演算法.txt` 全部歸入演算法。
-- `系統分析與設計.txt` 第一批歸入程式，topic 命名需明確。
-- `程式語言_all.pdf` 第一批不納入。
-- 每個指定 txt/md 來源檔都必須先完整閱讀；正式 topic 需對應考試大綱、記憶重點與理解重點。
-- 全部專業科目都要匯入，但任務需分批。
-- `tasks.md` 任務數量無上限，應拆到每個 task 可單獨驗收。
-- 後續執行需大量運用副代理，至少包含內容生成副代理、內容驗證副代理與整合檢查副代理。
-- 主代理負責規則、任務拆分、正式整合與最終審查；副代理不得直接寫入正式 app data。
-- 每個副代理只處理單一 topic，完成後關閉，避免上下文污染。
-- Shell Sort 第一批只收非遞迴標準版；其餘六種排序提供遞迴與非遞迴版。
-- 排序法複雜度與穩定性需以 discuss.txt 基準表為第一版標準。
-- `國考常見演算法_Java遞迴非遞迴_時間複雜度.md` 內既有的常見演算法都需納入盤點。
-- 演算法第一批必收範例包含：氣泡排序法、快速排序法、Fibonacci 序列、最大公因數、二元搜尋法、選擇排序法、插入排序法。
-- 二元搜尋法需明確標示前提：資料必須先排序。
-- 所有專有名詞需提供中文與英文對照；標題、表格與首次出現時使用 `中文(English Term)` 格式。
-- 程式碼註解需讓考官看出思路、想法與用意；內容需符合新手自學、手把手、通俗說明。
-- 正式資料層保留來源註記。
-- placeholder 依科目逐步替換。
+注意：來源的 heading 含 `用UL/LI表示`，正式內容應清掉。
 
-## 後續建議指令
+### cp-cache
 
-當本檔回答完畢後，可執行：
+來源：`十一、Cache_新手國考教材.md`
 
-```bash
-$spectra-propose 請讀取指定 Markdown 檔案 `@/_private/propose.md` 的內容。
+建議 sections：
+
+| section heading | 內容範圍 | block 型態 |
+| --- | --- | --- |
+| Cache 類別 | L1、L2、L3 | bulletList |
+| Hit / Miss / Hit Ratio | Hit、Miss、Hit Ratio、Miss Rate、Hit Time、Miss Penalty | bulletList 或 table |
+| AMAT | AMAT 公式與例題 | paragraph + worked calculation as orderedList |
+| 寫入策略 | Write Through、Write Back | table |
+| Write Allocate | Write Allocate、No Write Allocate | table |
+
+注意：來源提到「下一層記憶體」，但對新手可能不清楚。正式內容建議補一句：
+
+```text
+下一層記憶體是目前 Cache 後面、離 CPU 更遠的一層；若題目簡化成一層 Cache，下一層通常就是 Main Memory / RAM。
 ```
 
-正式提案完成並確認後，再進入：
+## 發現問題彙整
 
-```bash
-$spectra-apply <change-id>
-```
+1. 這 6 個 topic 在 `professionalTopics.ts` 已有 skeleton，但仍是空 `lessonArticle`。
+2. 6 份 Markdown 是實際整理來源，但 app data 的 `sourceFiles` 尚未包含它們。
+3. Markdown 內有多處編排註記，例如 `table表示`、`用UL/LI表示`，正式 app 內容應轉為結構化 block。
+4. `cp-cache` 的「下一層記憶體」對新手可能不夠清楚，建議正式內容補短句說明。
+5. `cp-registers` 來源沒有 H1，直接從 `## 名詞解釋` 開始；正式 app 可用 topic title 補足，不一定需要改 Markdown。
+6. 若正式填入這 6 個 topic，測試需同步更新，尤其是 `professionalTopics.spec.ts` 的 `filledTopicIds`，以及 `computerPrinciplesRouteWorkflow.spec.ts`、`staleProfessionalContentAudit.spec.ts` 的 `filledComputerPrinciplesTopicIds` / `sourceFilesByFilledTopicId`，避免之後回退成空 skeleton。
+
+## 需要你確認
+
+請直接在每題的「回答」後面填寫。
+
+### Q1. 是否 6 個 topic 一起做成同一個 Spectra change？
+
+**建議**：一起做。  
+理由：6 個 topic 都屬於 `computer-principles`、同一批已整理 Markdown、同一個填內容模式。
+
+**回答**：依你建議
+
+### Q2. 「不改變現有資料」是否可理解為不改核心教材內容，但可清掉編排註記？
+
+**建議**：可以。  
+例如 `table表示`、`用UL/LI表示` 不屬於教材內容，應轉成 app 的 `table` / `bulletList`。
+
+**回答**：可以
+
+### Q3. sourceFiles 是否都加入對應 Markdown 路徑？
+
+**建議**：加入。  
+比照 `cp-machine-instruction-cycle`、`cp-pipeline`、`cp-bus` 的作法。
+
+**回答**：加入
+
+### Q4. Cache 內容是否補「下一層記憶體」短版解釋？
+
+**建議**：補。  
+理由：你前面已明確卡在這個詞，新手版 app 內容應避免同樣卡點。
+
+**回答**：補
+
+### Q5. Register 的 PC / IR 是否要保留白話說明？
+
+**建議**：保留。  
+這裡指的是 `cp-registers`，來源是 `十、Register（暫存器）_新手國考教材.md`。目前 md 檔本來就已有 PC / IR 說明，匯入正式 app 內容時沿用 md 既有說明，不另外改寫核心內容。
+
+**回答**：目前 md 檔本來就有說明，沿用既有說明即可。
+
+### Q6. Memory 階層是否同時呈現「粗分 5 層」與「Cache 細分 L1/L2/L3」？
+
+**建議**：同時呈現。  
+理由：你前面提到看過 1～5 層，正式內容可先用 5 層表格，再補 Cache 可細分。
+
+**回答**：同時呈現
+
+## 結論
+
+**Decision**：建立正式 Spectra change，將 6 份 Markdown 的既有內容經編排後，填入對應 `computer-principles` topic section。
+
+**Rationale**：需求核心是把 md 內容結構化搬移到 app，不是重新撰寫教材；現有 app 已支援 `lessonArticle`，不需要新增 UI 或資料型別。主要風險是來源追蹤、測試保護與 raw 編排註記清理。
+
+**Capture to**：本檔 `_private/propose.md`。Q1-Q6 已確認，下一步可執行 `$spectra-propose`。

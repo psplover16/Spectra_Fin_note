@@ -8,6 +8,8 @@ import {
 } from '@/modules/subjectTopics/storage/subjectTopicProgressStorage';
 import TeachingCodeBlock from '@/shared/components/TeachingCodeBlock.vue';
 import type {
+  LessonArticleContentBlock,
+  LessonArticleOrderedListMarkerStyle,
   SubjectKey,
   SubjectTopic,
   SubjectTopicBlock,
@@ -62,8 +64,20 @@ const listBlockLabels: Record<SubjectTopicListBlockKind, string> = {
   pitfall: '易錯提醒'
 };
 
+type OrderedListContentBlock = Extract<LessonArticleContentBlock, { kind: 'orderedList' }>;
+
+const orderedListMarkerClasses: Record<LessonArticleOrderedListMarkerStyle, string> = {
+  decimal: 'subject-topic-ordered-list-decimal',
+  upperRoman: 'subject-topic-ordered-list-upper-roman',
+  upperAlpha: 'subject-topic-ordered-list-upper-alpha'
+};
+
 function isListBlock(block: SubjectTopicBlock): block is Extract<SubjectTopicBlock, { kind: SubjectTopicListBlockKind }> {
   return block.kind in listBlockLabels;
+}
+
+function orderedListMarkerClass(block: OrderedListContentBlock): string {
+  return orderedListMarkerClasses[block.markerStyle ?? 'decimal'];
 }
 </script>
 
@@ -93,24 +107,63 @@ function isListBlock(block: SubjectTopicBlock): block is Extract<SubjectTopicBlo
         >
           <div class="subject-topic-blocks">
             <template v-for="(block, index) in topic.blocks" :key="blockTestId(topic, block, index)">
-              <p v-if="block.kind === 'paragraph'" :data-testid="blockTestId(topic, block, index)" class="subject-topic-paragraph">
+              <p v-if="block.kind === 'paragraph'" :data-testid="blockTestId(topic, block, index)" class="subject-topic-paragraph subject-topic-text">
                 {{ block.text }}
               </p>
               <section v-else-if="isListBlock(block)" :data-testid="blockTestId(topic, block, index)" class="subject-topic-block">
                 <h3>{{ listBlockLabels[block.kind] }}</h3>
                 <ul>
-                  <li v-for="item in block.items" :key="item">{{ item }}</li>
+                  <li v-for="item in block.items" :key="item" class="subject-topic-text">{{ item }}</li>
                 </ul>
               </section>
+              <article
+                v-else-if="block.kind === 'lessonArticle'"
+                :data-testid="blockTestId(topic, block, index)"
+                class="subject-topic-block subject-topic-lesson"
+              >
+                <p v-for="leadLine in block.lead" :key="leadLine" class="subject-topic-paragraph subject-topic-text">{{ leadLine }}</p>
+                <section v-for="section in block.sections" :key="section.heading" class="subject-topic-lesson-section">
+                  <h3>
+                    <span v-if="section.sourceLabel" class="subject-topic-source-label">{{ section.sourceLabel }}</span>
+                    {{ section.heading }}
+                  </h3>
+                  <template v-for="contentBlock in section.blocks" :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`">
+                    <p v-if="contentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">{{ contentBlock.text }}</p>
+                    <ul v-else-if="contentBlock.kind === 'bulletList'">
+                      <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                    </ul>
+                    <ol
+                      v-else-if="contentBlock.kind === 'orderedList'"
+                      :class="orderedListMarkerClass(contentBlock)"
+                    >
+                      <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                    </ol>
+                    <div v-else-if="contentBlock.kind === 'table'" class="subject-topic-table-wrap">
+                      <table class="subject-topic-table">
+                        <thead>
+                          <tr>
+                            <th v-for="header in contentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(row, rowIndex) in contentBlock.rows" :key="rowIndex">
+                            <td v-for="(cell, cellIndex) in row" :key="`${rowIndex}-${cellIndex}`" class="subject-topic-text">{{ cell }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </template>
+                </section>
+              </article>
               <section
                 v-else-if="block.kind === 'sourceNote'"
                 :data-testid="blockTestId(topic, block, index)"
                 class="subject-topic-block subject-topic-source-note"
               >
                 <h3>來源註記</h3>
-                <p>{{ block.sourceSummary }}</p>
+                <p class="subject-topic-text">{{ block.sourceSummary }}</p>
                 <ul>
-                  <li v-for="sourceFile in block.sourceFiles" :key="sourceFile">{{ sourceFile }}</li>
+                  <li v-for="sourceFile in block.sourceFiles" :key="sourceFile" class="subject-topic-text">{{ sourceFile }}</li>
                 </ul>
               </section>
               <section v-else-if="block.kind === 'termList'" :data-testid="blockTestId(topic, block, index)" class="subject-topic-block">
@@ -124,11 +177,11 @@ function isListBlock(block: SubjectTopicBlock): block is Extract<SubjectTopicBlo
               </section>
               <section v-else-if="block.kind === 'workedExample'" :data-testid="blockTestId(topic, block, index)" class="subject-topic-block">
                 <h3>具體例子</h3>
-                <p>{{ block.problem }}</p>
+                <p class="subject-topic-text">{{ block.problem }}</p>
                 <ol>
-                  <li v-for="step in block.steps" :key="step">{{ step }}</li>
+                  <li v-for="step in block.steps" :key="step" class="subject-topic-text">{{ step }}</li>
                 </ol>
-                <p v-if="block.result">{{ block.result }}</p>
+                <p v-if="block.result" class="subject-topic-text">{{ block.result }}</p>
               </section>
               <section
                 v-else-if="block.kind === 'complexityTable'"
@@ -150,12 +203,12 @@ function isListBlock(block: SubjectTopicBlock): block is Extract<SubjectTopicBlo
                     </thead>
                     <tbody>
                       <tr v-for="row in block.rows" :key="`${row.algorithmNameZh}-${row.algorithmNameEn}`">
-                        <td>{{ row.algorithmNameZh }}({{ row.algorithmNameEn }})</td>
-                        <td>{{ row.bestTime }}</td>
-                        <td>{{ row.averageTime }}</td>
-                        <td>{{ row.worstTime }}</td>
-                        <td>{{ row.stability }}</td>
-                        <td>{{ row.notes }}</td>
+                        <td class="subject-topic-text">{{ row.algorithmNameZh }}({{ row.algorithmNameEn }})</td>
+                        <td class="subject-topic-text">{{ row.bestTime }}</td>
+                        <td class="subject-topic-text">{{ row.averageTime }}</td>
+                        <td class="subject-topic-text">{{ row.worstTime }}</td>
+                        <td class="subject-topic-text">{{ row.stability }}</td>
+                        <td class="subject-topic-text">{{ row.notes }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -188,24 +241,63 @@ function isListBlock(block: SubjectTopicBlock): block is Extract<SubjectTopicBlo
         >
           <div class="subject-topic-blocks">
             <template v-for="(block, index) in topic.blocks" :key="blockTestId(topic, block, index)">
-              <p v-if="block.kind === 'paragraph'" :data-testid="blockTestId(topic, block, index)" class="subject-topic-paragraph">
+              <p v-if="block.kind === 'paragraph'" :data-testid="blockTestId(topic, block, index)" class="subject-topic-paragraph subject-topic-text">
                 {{ block.text }}
               </p>
               <section v-else-if="isListBlock(block)" :data-testid="blockTestId(topic, block, index)" class="subject-topic-block">
                 <h3>{{ listBlockLabels[block.kind] }}</h3>
                 <ul>
-                  <li v-for="item in block.items" :key="item">{{ item }}</li>
+                  <li v-for="item in block.items" :key="item" class="subject-topic-text">{{ item }}</li>
                 </ul>
               </section>
+              <article
+                v-else-if="block.kind === 'lessonArticle'"
+                :data-testid="blockTestId(topic, block, index)"
+                class="subject-topic-block subject-topic-lesson"
+              >
+                <p v-for="leadLine in block.lead" :key="leadLine" class="subject-topic-paragraph subject-topic-text">{{ leadLine }}</p>
+                <section v-for="section in block.sections" :key="section.heading" class="subject-topic-lesson-section">
+                  <h3>
+                    <span v-if="section.sourceLabel" class="subject-topic-source-label">{{ section.sourceLabel }}</span>
+                    {{ section.heading }}
+                  </h3>
+                  <template v-for="contentBlock in section.blocks" :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`">
+                    <p v-if="contentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">{{ contentBlock.text }}</p>
+                    <ul v-else-if="contentBlock.kind === 'bulletList'">
+                      <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                    </ul>
+                    <ol
+                      v-else-if="contentBlock.kind === 'orderedList'"
+                      :class="orderedListMarkerClass(contentBlock)"
+                    >
+                      <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+                    </ol>
+                    <div v-else-if="contentBlock.kind === 'table'" class="subject-topic-table-wrap">
+                      <table class="subject-topic-table">
+                        <thead>
+                          <tr>
+                            <th v-for="header in contentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(row, rowIndex) in contentBlock.rows" :key="rowIndex">
+                            <td v-for="(cell, cellIndex) in row" :key="`${rowIndex}-${cellIndex}`" class="subject-topic-text">{{ cell }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </template>
+                </section>
+              </article>
               <section
                 v-else-if="block.kind === 'sourceNote'"
                 :data-testid="blockTestId(topic, block, index)"
                 class="subject-topic-block subject-topic-source-note"
               >
                 <h3>來源註記</h3>
-                <p>{{ block.sourceSummary }}</p>
+                <p class="subject-topic-text">{{ block.sourceSummary }}</p>
                 <ul>
-                  <li v-for="sourceFile in block.sourceFiles" :key="sourceFile">{{ sourceFile }}</li>
+                  <li v-for="sourceFile in block.sourceFiles" :key="sourceFile" class="subject-topic-text">{{ sourceFile }}</li>
                 </ul>
               </section>
               <section v-else-if="block.kind === 'termList'" :data-testid="blockTestId(topic, block, index)" class="subject-topic-block">
@@ -219,11 +311,11 @@ function isListBlock(block: SubjectTopicBlock): block is Extract<SubjectTopicBlo
               </section>
               <section v-else-if="block.kind === 'workedExample'" :data-testid="blockTestId(topic, block, index)" class="subject-topic-block">
                 <h3>具體例子</h3>
-                <p>{{ block.problem }}</p>
+                <p class="subject-topic-text">{{ block.problem }}</p>
                 <ol>
-                  <li v-for="step in block.steps" :key="step">{{ step }}</li>
+                  <li v-for="step in block.steps" :key="step" class="subject-topic-text">{{ step }}</li>
                 </ol>
-                <p v-if="block.result">{{ block.result }}</p>
+                <p v-if="block.result" class="subject-topic-text">{{ block.result }}</p>
               </section>
               <section
                 v-else-if="block.kind === 'complexityTable'"
@@ -245,12 +337,12 @@ function isListBlock(block: SubjectTopicBlock): block is Extract<SubjectTopicBlo
                     </thead>
                     <tbody>
                       <tr v-for="row in block.rows" :key="`${row.algorithmNameZh}-${row.algorithmNameEn}`">
-                        <td>{{ row.algorithmNameZh }}({{ row.algorithmNameEn }})</td>
-                        <td>{{ row.bestTime }}</td>
-                        <td>{{ row.averageTime }}</td>
-                        <td>{{ row.worstTime }}</td>
-                        <td>{{ row.stability }}</td>
-                        <td>{{ row.notes }}</td>
+                        <td class="subject-topic-text">{{ row.algorithmNameZh }}({{ row.algorithmNameEn }})</td>
+                        <td class="subject-topic-text">{{ row.bestTime }}</td>
+                        <td class="subject-topic-text">{{ row.averageTime }}</td>
+                        <td class="subject-topic-text">{{ row.worstTime }}</td>
+                        <td class="subject-topic-text">{{ row.stability }}</td>
+                        <td class="subject-topic-text">{{ row.notes }}</td>
                       </tr>
                     </tbody>
                   </table>
