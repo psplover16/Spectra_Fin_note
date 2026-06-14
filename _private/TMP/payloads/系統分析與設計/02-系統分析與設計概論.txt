@@ -1,0 +1,14 @@
+二、系統分析與設計概論
+
+[必背] SDLC
+- Planning：規劃。
+- Analysis：需求分析。
+- Design：系統設計。
+- Implementation：實作。
+- Testing：測試。
+- Deployment：導入。
+- Maintenance：維護。
+
+[必背] SSDLC
+- Secure SDLC：在需求、設計、實作、測試、部署與維護各階段納入安全控制。
+- 常見活動：威脅建模、安全需求、程式碼掃描、滲透測試、弱點修補。

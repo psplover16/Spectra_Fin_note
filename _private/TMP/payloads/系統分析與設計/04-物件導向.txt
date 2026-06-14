@@ -1,0 +1,11 @@
+四、物件導向
+
+[比較]
+- Dependency（相依）：一個類別短暫使用另一個類別。
+- Association（結合）：物件間有一般關聯。
+- Aggregation（聚合）：has-a 弱整體部分關係，部分可獨立存在。
+- Composition（組合）：has-a 強整體部分關係，部分生命週期依賴整體。
+
+[補充]
+- Generalization：一般化，常表示繼承。
+- Realization：實作介面。

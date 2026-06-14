@@ -1,0 +1,236 @@
+4. 資料結構與演算法
+
+一、準備方向
+
+[原文提醒]
+- 這科很多專有名詞需要記憶，尤其 Tree 相關名詞。
+- 唯一不建議死背的是程式碼，甚至虛擬碼也不要只靠背。
+- 應理解程式在做什麼，抽象觀念可畫圖理解。
+- 時間複雜度比較圖幾乎必考。
+- 「圖」和「排序」較困難，建議先看圖、照流程跑，再整理成虛擬碼，最後試著寫程式。
+- 排序初學時，把每一步每個元素的位置畫出來最清楚。
+- 「高等樹」要懂排序方式並會寫虛擬碼，原文印象中歷年較少考高等樹完整程式碼。
+
+二、演算法
+
+[必背] 定義
+- 演算法是解決問題的明確步驟集合。
+
+[必背] 五個滿足條件
+1. Input：可有零個或多個輸入。
+2. Output：至少一個輸出。
+3. Definiteness：每一步必須明確。
+4. Finiteness：有限步驟後結束。
+5. Effectiveness：每一步可實際執行。
+
+三、時間複雜度
+
+[必背] Big O 比較
+- O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(n^3) < O(2^n) < O(n!)
+
+[會算]
+- 迴圈相加通常 O(n)。
+- 雙層巢狀迴圈通常 O(n^2)。
+- 每次問題規模減半通常 O(log n)。
+- 分治常見 O(n log n)，例如 merge sort。
+
+[易混淆]
+- Big O 看成長趨勢，不看常數與低次項。
+- 最好、平均、最差時間複雜度要分開看。
+
+四、陣列（Array）
+
+[必背]
+- 連續記憶體配置。
+- 支援 O(1) 隨機存取。
+- 插入與刪除可能需搬移元素，通常 O(n)。
+
+[會算] 位址計算
+- 一維陣列：
+  - LOC(A[i]) = Base(A) + (i - lower_bound) * element_size。
+- 二維陣列 Row-major：
+  - LOC(A[i][j]) = Base + [(i - row_lower) * number_of_columns + (j - column_lower)] * element_size。
+- 二維陣列 Column-major：
+  - LOC(A[i][j]) = Base + [(j - column_lower) * number_of_rows + (i - row_lower)] * element_size。
+
+五、Linked List
+
+[必背]
+- 節點由資料欄位與指標欄位組成。
+- 不需連續記憶體。
+- 插入與刪除在已知節點位置時可很快，但搜尋通常 O(n)。
+
+[比較] Array vs Linked List
+- Array：隨機存取快、記憶體連續、大小較固定。
+- Linked List：插入刪除彈性高、需額外指標空間、無法 O(1) 直接索引。
+
+[會寫虛擬碼]
+- 插入：
+  - 在 head 前插入。
+  - 在 tail 後插入。
+  - 在節點中間插入。
+- 刪除：
+  - 刪除 head。
+  - 刪除 tail。
+  - 刪除指定節點。
+
+[比較]
+- Singly Linked List：單向。
+- Circular Linked List：尾端指回頭端。
+- Doubly Linked List：每節點有 prev 與 next，可雙向走訪。
+
+六、Stack 與 Queue
+
+[必背] Stack
+- LIFO：Last In, First Out。
+- 操作：push、pop、peek。
+- 應用：函式呼叫、遞迴、括號配對、DFS、運算式轉換。
+
+[必背] Queue
+- FIFO：First In, First Out。
+- 操作：enqueue、dequeue、front/rear。
+- 應用：排程、BFS、緩衝區。
+
+[比較]
+- Stack：一端進出。
+- Queue：一端進、一端出。
+- Array 實作：需注意 overflow、underflow。
+- Linked List 實作：大小較彈性，但需額外指標。
+
+[會算] Circular Queue
+- 以陣列實作 queue 時，front/rear 透過 modulo 循環。
+- 常見判斷：
+  - 空：front == rear，或依教材設定。
+  - 滿：(rear + 1) mod size == front，若保留一格。
+
+七、Tree
+
+[必背] 基本術語
+- Root、Node、Edge、Parent、Child、Sibling、Leaf、Degree、Level、Height、Depth、Subtree、Ancestor、Descendant。
+
+[必背] Binary Tree
+- 每個節點最多兩個 child。
+- Full Binary Tree：每個節點有 0 或 2 個 child。
+- Complete Binary Tree：除最後一層外皆滿，最後一層由左到右填。
+- Perfect Binary Tree：所有內部節點都有兩個 child，所有 leaf 同層。
+- Balanced Binary Tree：高度接近平衡。
+
+[比較] Tree vs Binary Tree
+- Tree：每節點 child 數不限。
+- Binary Tree：每節點最多兩個 child，且左右 child 有順序。
+
+[會算] Binary Tree 特性
+- 高度 h 的 perfect binary tree 節點數為 2^(h+1) - 1（若 root 高度為 0）。
+- n 個節點的 binary tree 邊數為 n - 1。
+- Complete binary tree 可用陣列表示：
+  - 若從 1 開始編號，節點 i 的 left child = 2i，right child = 2i + 1，parent = floor(i/2)。
+
+[會做] Traversal
+- Preorder：Root → Left → Right。
+- Inorder：Left → Root → Right。
+- Postorder：Left → Right → Root。
+- Level-order：逐層走訪。
+- 常考：由前序、中序推回樹；或由後序、中序推回樹。
+
+八、圖（Graph）
+
+[必背] 基本術語
+- Vertex、Edge、Directed Graph、Undirected Graph、Weighted Graph、Path、Cycle、Connected Graph、Degree、In-degree、Out-degree。
+
+[比較] 表示法
+- Adjacency Matrix：查邊快 O(1)，空間 O(V^2)，適合稠密圖。
+- Adjacency List：空間 O(V+E)，適合稀疏圖。
+
+[比較] DFS vs BFS
+- DFS：深度優先，常用 stack 或 recursion，可用於拓樸排序、連通分量、cycle detection。
+- BFS：廣度優先，常用 queue，可求 unweighted graph 最短路徑。
+
+[必背] Spanning Tree
+- 包含所有 vertex 且無 cycle 的子圖。
+- n 個 vertex 的 spanning tree 有 n - 1 條 edge。
+
+[會做] MST
+- Kruskal's Algorithm：依 edge 權重由小到大選，避免 cycle，常用 union-find。
+- Prim's Algorithm：從某節點開始，每次選連到外部的最小 edge。
+
+[會做] Shortest Path
+- Dijkstra's Algorithm：單源最短路徑，權重不可為負。
+- Floyd-Warshall Algorithm：所有點對最短路徑，可處理負邊但不能有負環。
+
+[必背] AOV / AOE
+- AOV Network：Activity on Vertex，常用於拓樸排序。
+- AOE Network：Activity on Edge，常用於專案排程、critical path。
+
+九、排序
+
+[必背] 7 種常見排序比較
+
+排序法 | 最好 | 平均 | 最差 | 穩定性 | 備註
+--- | --- | --- | --- | --- | ---
+Bubble Sort | O(n) | O(n^2) | O(n^2) | 穩定 | 若有 early stop 最好 O(n)
+Selection Sort | O(n^2) | O(n^2) | O(n^2) | 通常不穩定 | 交換次數少
+Insertion Sort | O(n) | O(n^2) | O(n^2) | 穩定 | 適合小資料或近乎排序
+Merge Sort | O(n log n) | O(n log n) | O(n log n) | 穩定 | 需要額外空間
+Quick Sort | O(n log n) | O(n log n) | O(n^2) | 不穩定 | pivot 選不好會退化
+Heap Sort | O(n log n) | O(n log n) | O(n log n) | 不穩定 | 原地排序，利用 heap
+Shell Sort | 視 gap 而定 | 視 gap 而定 | 可到 O(n^2) | 不穩定 | 插入排序改良 |
+
+[會做]
+- 每種排序法的操作流程要能手算。
+- 程式碼不要死背，但虛擬碼與核心概念要會。
+
+[補充]
+- Counting Sort / Radix Sort / Bucket Sort 屬非比較排序，適用於特定資料範圍或格式。
+
+十、高等樹
+
+[必背] AVL Tree
+- 自平衡 BST。
+- 任一節點左右子樹高度差最多 1。
+- 插入或刪除後透過旋轉維持平衡。
+- 旋轉：LL、RR、LR、RL。
+- 搜尋、插入、刪除平均與最差多為 O(log n)。
+
+[必背] B Tree
+- 多路平衡搜尋樹，常用於磁碟索引與資料庫。
+- 節點可有多個 key 與 child。
+- 所有 leaf 在同一層。
+- 搜尋、插入、刪除 O(log n)。
+- 考點：階數、key 數、child 數、分裂、合併、借 key。
+
+[必背] Heap Tree
+- Complete Binary Tree。
+- Max Heap：parent >= children。
+- Min Heap：parent <= children。
+- 插入：放最後再向上調整。
+- 刪除 root：最後節點補 root，再向下調整。
+- 搜尋任意值：通常 O(n)。
+- 取最大或最小：O(1)。
+- 插入與刪除 root：O(log n)。
+
+[必背] Red-Black Tree
+- 自平衡 BST。
+- 節點顏色為紅或黑。
+- Root 為黑。
+- 紅節點不能有紅 child。
+- 從任一節點到其 NIL leaf 的黑節點數相同。
+- 搜尋、插入、刪除 O(log n)。
+
+十一、雜湊法（Hashing）
+
+[必背]
+- Hash Function：將 key 映射到 table index。
+- Collision：不同 key 映射到同一位置。
+- Overflow：碰撞或桶空間不足造成溢位。
+
+[比較] Overflow / Collision 處理
+- Chaining：每格接 linked list 或 bucket。
+- Open Addressing：
+  - Linear Probing：線性探測，易 primary clustering。
+  - Quadratic Probing：平方探測。
+  - Double Hashing：用第二個 hash function 決定探測距離。
+- Rehashing：擴大 table 後重新雜湊。
+
+[補充]
+- Load Factor = 已存元素數 / table 大小。
+- Load factor 太高會降低效率。

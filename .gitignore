@@ -1,0 +1,9 @@
+.spectra/
+openspec/.vector-search.db*
+/_private/done*
+node_modules/
+dist/
+build/
+coverage/
+test-results/
+playwright-report/

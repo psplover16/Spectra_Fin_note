@@ -1,0 +1,137 @@
+5. 資料庫
+
+一、準備方向
+
+[原文提醒]
+- SQL 語法一定要熟，建議多寫歷屆。
+- 可另外搜尋 SQL 練習題，例如面試必考 SQL 100 題。
+- 練題時要注意使用的是哪種 SQL：標準 SQL、MySQL、T-SQL、PostgreSQL 等，不同 DBMS 可用函數不同。
+
+二、ANSI/SPARC 架構
+
+[會畫] 三層架構
+- External Level（外部層）：使用者或應用看到的 view。
+- Conceptual Level（概念層）：整體資料庫邏輯結構。
+- Internal Level（內部層）：實體儲存方式與索引。
+
+[比較] 各層的對象、內容、特色與例子
+
+層級 | 對象 | 內容 | 特色 | 例子
+--- | --- | --- | --- | ---
+External Level | 使用者、應用程式 | 使用者需要看到的資料視圖 | 可有多個 view，隱藏不必要資料 | 業務人員只看客戶訂單 view
+Conceptual Level | DBA、系統分析人員 | 整體邏輯 schema、entity、relationship、constraints | 全資料庫的統一邏輯描述 | 客戶、訂單、產品及其關係
+Internal Level | DBMS、系統管理者 | 實體儲存、檔案組織、索引、存取路徑 | 關心資料實際如何存放 | B+ tree index、heap file、hash file
+
+[必背] 為何使用
+- 提供資料抽象化。
+- 降低使用者與實體儲存的耦合。
+- 支援資料獨立性：
+  - Logical Data Independence：概念層改變不影響外部層。
+  - Physical Data Independence：內部儲存改變不影響概念層。
+
+三、資料庫基礎
+
+[比較] 優缺點
+- 優點：資料共享、降低重複、維持一致性、權限控管、備份復原、交易管理。
+- 缺點：系統複雜、成本高、DBA 需求、集中化風險。
+
+[比較] 種類
+- 階層式資料庫：樹狀結構，父子關係明確。
+- 網路式資料庫：圖狀結構，支援多對多。
+- 關聯式資料庫：以 table 表示資料，最常見。
+- 物件導向式資料庫：以 object 儲存資料。
+- NoSQL：常見 key-value、document、column-family、graph database。
+
+四、Key
+
+[必背]
+- Super Key：可唯一識別 tuple 的屬性集合。
+- Candidate Key：最小 super key。
+- Primary Key：被選為主要識別的 candidate key。
+- Alternate Key：未被選為 primary key 的 candidate key。
+- Foreign Key：參照其他 table primary key 的欄位。
+- Composite Key：由多個欄位組成的 key。
+
+五、ERD
+
+[必背]
+- Entity：實體。
+- Attribute：屬性。
+- Relationship：關係。
+- Cardinality：1:1、1:N、M:N。
+- Weak Entity：依賴其他 entity 才能識別。
+
+[會做]
+- M:N 關係通常需轉成關聯表。
+- 多值屬性通常拆成新表。
+
+六、正規化
+
+[比較]
+- 1NF：欄位不可再分，避免重複群組。
+- 2NF：符合 1NF，且非 key 屬性完全相依於整個 candidate key。
+- 3NF：符合 2NF，且非 key 屬性不傳遞相依於 key。
+- BCNF：每個決定因子都是 candidate key。
+- 4NF：處理多值相依。
+
+[必背] 優缺點
+- 優點：降低資料重複、避免更新異常、插入異常、刪除異常。
+- 缺點：table 增多、join 成本提高，查詢可能較複雜。
+
+七、SQL 分類與 CRUD
+
+[必背]
+- DDL：Data Definition Language，例如 CREATE、ALTER、DROP、TRUNCATE。
+- DML：Data Manipulation Language，例如 SELECT、INSERT、UPDATE、DELETE。
+- DCL：Data Control Language，例如 GRANT、REVOKE。
+- TCL：Transaction Control Language，例如 COMMIT、ROLLBACK、SAVEPOINT。
+- DQL：有些教材會把 SELECT 獨立為 Data Query Language。
+
+[會寫] CRUD
+- Create：INSERT。
+- Read：SELECT。
+- Update：UPDATE。
+- Delete：DELETE。
+
+[必練]
+- WHERE、ORDER BY、GROUP BY、HAVING。
+- INNER JOIN、LEFT JOIN、RIGHT JOIN、FULL OUTER JOIN。
+- Subquery、EXISTS、IN。
+- Aggregate functions：COUNT、SUM、AVG、MAX、MIN。
+- Constraints：PRIMARY KEY、FOREIGN KEY、UNIQUE、NOT NULL、CHECK、DEFAULT。
+
+八、ACID 與交易
+
+[必背]
+- Atomicity：交易全做或全不做。
+- Consistency：交易前後資料庫維持一致。
+- Isolation：並行交易彼此隔離。
+- Durability：提交後永久保存。
+
+[補充] 隔離性問題
+- Dirty Read：讀到未提交資料。
+- Non-repeatable Read：同一筆資料重讀結果不同。
+- Phantom Read：同一查詢條件重查出現新增或消失的列。
+
+九、NoSQL
+
+[比較]
+- Key-Value：例如 Redis，速度快。
+- Document：例如 MongoDB，適合 JSON 類資料。
+- Column-Family：例如 Cassandra，適合大量分散式資料。
+- Graph：例如 Neo4j，適合關係網路。
+
+[易混淆]
+- NoSQL 不代表不用 SQL，而是 Not Only SQL。
+- 常與 CAP theorem、BASE 特性一起考：
+  - CAP：Consistency、Availability、Partition Tolerance。
+  - BASE：Basically Available、Soft state、Eventual consistency。
+
+十、資料庫補充考點
+
+[補充]
+- Index：提高查詢速度，但增加寫入與維護成本。
+- View：虛擬表，可簡化查詢與控管權限。
+- Stored Procedure：資料庫端預先定義程序。
+- Trigger：資料變更時自動觸發。
+- SQL Injection：將惡意 SQL 插入輸入欄位，防範方式包含 prepared statement、parameterized query、權限最小化、輸入驗證。
