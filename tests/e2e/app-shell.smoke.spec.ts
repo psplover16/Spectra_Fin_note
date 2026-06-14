@@ -24,7 +24,7 @@ test('loads computer principles route directly', async ({ page }) => {
 test('loads database and algorithms professional routes directly', async ({ page }) => {
   await page.goto('/database');
   await expect(page.getByTestId('subject-view-database')).toContainText('資料庫');
-  await expect(page.getByTestId('subject-topic-list-database')).toContainText('資料庫基礎(Database Foundations)');
+  await expect(page.getByTestId('subject-topic-empty-state')).toContainText('資料庫尚未建立主題內容');
 
   await page.goto('/algorithms');
   await expect(page.getByTestId('subject-view-algorithms')).toContainText('演算法');

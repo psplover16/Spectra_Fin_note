@@ -39,7 +39,7 @@ test('production PWA shell loads professional routes offline after an online war
 
   await expect(page.getByTestId('route-tabs')).toBeVisible();
   await expect(page.getByTestId('subject-view-algorithms')).toBeVisible();
-  await expect(page.getByTestId('topic-title-sorting-overview')).toBeVisible();
+  await expect(page.getByTestId('topic-title-binary-search')).toBeVisible();
 
   await context.setOffline(false);
 });

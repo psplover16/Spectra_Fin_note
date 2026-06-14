@@ -14,7 +14,9 @@ const readAlgorithmsManifestRows = () =>
         .slice(0, 5)
         .map((cell) => cell.trim().replace(/^`|`$/g, ''));
 
-      return { manifestId, id, title, sourceSection, sourceFile: '_private/資料結構與演算法.txt' };
+      const sourceFile = '_private/資料結構與演算法.txt';
+
+      return { manifestId, id, title, sourceSection, sourceFile, formalSourceFile: sourceFile };
     });
 
 const readCommonAlgorithmRows = () =>
@@ -32,7 +34,8 @@ const readCommonAlgorithmRows = () =>
         id,
         title,
         sourceSection,
-        sourceFile: '_private/國考常見演算法_Java遞迴非遞迴_時間複雜度.md'
+        sourceFile: '_private/國考常見演算法_Java遞迴非遞迴_時間複雜度.md',
+        formalSourceFile: '_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md'
       };
     });
 
@@ -42,21 +45,24 @@ const readSortingExpansionRows = () => [
     id: 'merge-sort',
     title: '合併排序法(Merge Sort)',
     sourceSection: '九、排序 / Sorting baseline table',
-    sourceFile: '_private/資料結構與演算法.txt'
+    sourceFile: '_private/資料結構與演算法.txt',
+    formalSourceFile: '_private/資料結構與演算法.txt'
   },
   {
     manifestId: 'sorting-expansion-heap-sort',
     id: 'heap-sort',
     title: '堆積排序法(Heap Sort)',
     sourceSection: '九、排序 / Sorting baseline table',
-    sourceFile: '_private/資料結構與演算法.txt'
+    sourceFile: '_private/資料結構與演算法.txt',
+    formalSourceFile: '_private/資料結構與演算法.txt'
   },
   {
     manifestId: 'sorting-expansion-shell-sort',
     id: 'shell-sort',
     title: '希爾排序法(Shell Sort)',
     sourceSection: '九、排序 / Sorting baseline table',
-    sourceFile: '_private/資料結構與演算法.txt'
+    sourceFile: '_private/資料結構與演算法.txt',
+    formalSourceFile: '_private/資料結構與演算法.txt'
   }
 ];
 
@@ -175,11 +181,20 @@ describe('algorithms route-scoped content workflow', () => {
 
     for (const row of manifestRows) {
       const topic = formalTopics.find((formalTopic) => formalTopic.id === row.id);
+      const isCommonAlgorithmTopic = row.manifestId?.startsWith('common-') ?? false;
 
       expect(topic).toBeDefined();
-      expect(topic?.sourceFiles).toEqual(expect.arrayContaining([row.sourceFile]));
-      expect(topic?.blocks).toHaveLength(1);
-      expect(topic?.blocks[0]).toEqual(expect.objectContaining({ kind: 'lessonArticle', lead: [], sections: [] }));
+      expect(topic?.sourceFiles).toEqual(expect.arrayContaining([row.formalSourceFile]));
+      expect(topic?.blocks[0]).toEqual(expect.objectContaining({ kind: 'lessonArticle' }));
+      if (isCommonAlgorithmTopic && topic?.blocks[0]?.kind === 'lessonArticle') {
+        expect(topic.blocks[0].lead.length).toBeGreaterThan(0);
+        expect(topic.blocks[0].sections.length).toBeGreaterThan(0);
+        expect(topic.blocks.some((block) => block.kind === 'teachingCode')).toBe(true);
+      } else {
+        expect(topic?.blocks).toHaveLength(1);
+        expect(topic?.blocks[0]).toEqual(expect.objectContaining({ kind: 'lessonArticle', lead: [], sections: [] }));
+        expect(topic?.blocks.some((block) => block.kind === 'teachingCode')).toBe(false);
+      }
       expect(topic?.blocks.some((block) => block.kind === 'sourceNote')).toBe(false);
       expect(topic?.blocks.some((block) => block.kind === 'examOutline')).toBe(false);
       expect(topic?.blocks.some((block) => block.kind === 'memoryPoints')).toBe(false);
@@ -188,7 +203,6 @@ describe('algorithms route-scoped content workflow', () => {
       expect(topic?.blocks.some((block) => block.kind === 'workedExample')).toBe(false);
       expect(topic?.blocks.some((block) => block.kind === 'pitfall')).toBe(false);
       expect(topic?.blocks.some((block) => block.kind === 'complexityTable')).toBe(false);
-      expect(topic?.blocks.some((block) => block.kind === 'teachingCode')).toBe(false);
     }
   });
 });

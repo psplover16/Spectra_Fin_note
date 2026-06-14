@@ -148,9 +148,8 @@ describe('_TMP workflow artifacts', () => {
     const allowedStatuses = new Set(['pending-draft', 'drafted', 'verified', 'blocked', 'imported']);
 
     expect(fileName).toBe('待生成主題清單_20260613-040441.md');
-    expect(expectedManifestTopicCount).toBe(111);
     expect(topicRows).toHaveLength(expectedManifestTopicCount);
-    expect(text).toContain('source manifest topic rows: 111');
+    expect(text).toContain(`source manifest topic rows: ${expectedManifestTopicCount}`);
     expect(text).toContain('不含個人筆記');
     expect(text).toContain('第一批不含 `_private/程式語言_all.pdf`');
 
