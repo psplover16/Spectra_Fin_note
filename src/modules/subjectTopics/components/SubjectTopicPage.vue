@@ -10,6 +10,9 @@ import TeachingCodeBlock from '@/shared/components/TeachingCodeBlock.vue';
 import type {
   LessonArticleContentBlock,
   LessonArticleOrderedListMarkerStyle,
+  LessonArticleTableBackgroundStyleToken,
+  LessonArticleTableCellStyle,
+  LessonArticleTableTextStyleToken,
   SubjectKey,
   SubjectTopic,
   SubjectTopicBlock,
@@ -90,6 +93,48 @@ function isListBlock(block: SubjectTopicBlock): block is Extract<SubjectTopicBlo
 function orderedListMarkerClass(block: OrderedListContentBlock): string {
   return orderedListMarkerClasses[block.markerStyle ?? 'decimal'];
 }
+
+type TableContentBlock = Extract<LessonArticleContentBlock, { kind: 'table' }>;
+
+const tableTextStyleClasses: Record<LessonArticleTableTextStyleToken, string> = {
+  defaultText: 'subject-topic-table-cell-default-text',
+  emphasisText: 'subject-topic-table-cell-emphasis-text'
+};
+
+const tableBackgroundStyleClasses: Record<LessonArticleTableBackgroundStyleToken, string> = {
+  emphasisBackground: 'subject-topic-table-cell-emphasis-background'
+};
+
+function isTableTextStyleToken(value: unknown): value is LessonArticleTableTextStyleToken {
+  return typeof value === 'string' && value in tableTextStyleClasses;
+}
+
+function isTableBackgroundStyleToken(value: unknown): value is LessonArticleTableBackgroundStyleToken {
+  return typeof value === 'string' && value in tableBackgroundStyleClasses;
+}
+
+function mergeTableCellStyle(...styles: readonly (LessonArticleTableCellStyle | undefined)[]): LessonArticleTableCellStyle {
+  return styles.reduce<LessonArticleTableCellStyle>((mergedStyle, style) => ({ ...mergedStyle, ...style }), {});
+}
+
+function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellIndex: number): string[] {
+  const style = mergeTableCellStyle(
+    block.rowStyles?.[rowIndex],
+    block.columnStyles?.[cellIndex],
+    block.cellStyles?.[`${rowIndex}:${cellIndex}`]
+  );
+  const classes: string[] = [];
+
+  if (isTableTextStyleToken(style.text)) {
+    classes.push(tableTextStyleClasses[style.text]);
+  }
+
+  if (isTableBackgroundStyleToken(style.background)) {
+    classes.push(tableBackgroundStyleClasses[style.background]);
+  }
+
+  return classes;
+}
 </script>
 
 <template>
@@ -159,7 +204,13 @@ function orderedListMarkerClass(block: OrderedListContentBlock): string {
                         </thead>
                         <tbody>
                           <tr v-for="(row, rowIndex) in contentBlock.rows" :key="rowIndex">
-                            <td v-for="(cell, cellIndex) in row" :key="`${rowIndex}-${cellIndex}`" class="subject-topic-text">{{ cell }}</td>
+                            <td
+                              v-for="(cell, cellIndex) in row"
+                              :key="`${rowIndex}-${cellIndex}`"
+                              :class="['subject-topic-text', tableCellStyleClasses(contentBlock, rowIndex, cellIndex)]"
+                            >
+                              {{ cell }}
+                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -294,7 +345,13 @@ function orderedListMarkerClass(block: OrderedListContentBlock): string {
                         </thead>
                         <tbody>
                           <tr v-for="(row, rowIndex) in contentBlock.rows" :key="rowIndex">
-                            <td v-for="(cell, cellIndex) in row" :key="`${rowIndex}-${cellIndex}`" class="subject-topic-text">{{ cell }}</td>
+                            <td
+                              v-for="(cell, cellIndex) in row"
+                              :key="`${rowIndex}-${cellIndex}`"
+                              :class="['subject-topic-text', tableCellStyleClasses(contentBlock, rowIndex, cellIndex)]"
+                            >
+                              {{ cell }}
+                            </td>
                           </tr>
                         </tbody>
                       </table>

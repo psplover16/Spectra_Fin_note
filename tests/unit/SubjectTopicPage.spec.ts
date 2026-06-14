@@ -46,6 +46,63 @@ const newlineTopic: SubjectTopic = {
   ]
 };
 
+const highlightedTableTopic: SubjectTopic = {
+  id: 'highlight-table-fixture',
+  subjectKey: 'computerPrinciples',
+  title: '表格重點測試',
+  summary: '確認 lessonArticle table 可以用受控 metadata 標示重點。',
+  blocks: [
+    {
+      kind: 'lessonArticle',
+      sourceFiles: ['_private/計算機概論.txt'],
+      sourceSection: '表格重點測試',
+      lead: [],
+      sections: [
+        {
+          heading: 'USB 重點',
+          blocks: [
+            {
+              kind: 'table',
+              headers: ['版本', '速度'],
+              rows: [
+                ['USB 2.0', '480 Mbps'],
+                ['USB 3.0', '5 Gbps'],
+                ['USB4 v2.0', '80 Gbps']
+              ],
+              rowStyles: {
+                0: { text: 'emphasisText' },
+                1: { text: 'emphasisText' }
+              },
+              columnStyles: {
+                1: { text: 'defaultText' }
+              },
+              cellStyles: {
+                '2:1': { background: 'emphasisBackground' }
+              }
+            },
+            {
+              kind: 'table',
+              headers: ['公式', '說明'],
+              rows: [['2^n', 'n bits 可產生的位址數'], ['換行', '第一行\n第二行']]
+            },
+            {
+              kind: 'table',
+              headers: ['未知 token'],
+              rows: [['dangerRainbow']],
+              rowStyles: {
+                0: { text: 'dangerRainbow' as never }
+              },
+              cellStyles: {
+                '0:0': { background: 'neonBackground' as never }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
 describe('SubjectTopicPage', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -142,5 +199,35 @@ describe('SubjectTopicPage', () => {
       expect(element.textContent).toContain('\n');
       expect(element).toHaveClass('subject-topic-text');
     }
+  });
+
+  it('renders controlled table highlight metadata without changing unstyled table behavior', async () => {
+    const wrapper = mount(SubjectTopicPage, {
+      props: {
+        title: '計算機原理',
+        subjectKey: 'computerPrinciples',
+        testId: 'subject-view-computer-principles',
+        topics: [highlightedTableTopic]
+      }
+    });
+
+    await wrapper.find('[data-testid="topic-title-highlight-table-fixture"]').trigger('click');
+
+    const tables = wrapper.findAll('table.subject-topic-table');
+    const highlightedCells = tables[0]?.findAll('tbody td') ?? [];
+    const plainCells = tables[1]?.findAll('tbody td') ?? [];
+    const unknownTokenCell = tables[2]?.find('tbody td');
+
+    expect(tables).toHaveLength(3);
+    expect(highlightedCells[0]?.classes()).toContain('subject-topic-table-cell-emphasis-text');
+    expect(highlightedCells[1]?.classes()).toContain('subject-topic-table-cell-default-text');
+    expect(highlightedCells[2]?.classes()).toContain('subject-topic-table-cell-emphasis-text');
+    expect(highlightedCells[3]?.classes()).toContain('subject-topic-table-cell-default-text');
+    expect(highlightedCells[5]?.classes()).toContain('subject-topic-table-cell-emphasis-background');
+    expect(plainCells.every((cell) => cell.classes().every((className) => !className.includes('emphasis')))).toBe(true);
+    expect(plainCells[3]?.text()).toContain('第一行\n第二行');
+    expect(unknownTokenCell?.classes().every((className) => !className.includes('dangerRainbow') && !className.includes('neonBackground'))).toBe(
+      true
+    );
   });
 });

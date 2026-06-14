@@ -49,7 +49,11 @@ const filledTopicId = 'cp-von-neumann-architecture';
 const turingTopicId = 'cp-turing-machine-and-test';
 const machineInstructionCycleTopicId = 'cp-machine-instruction-cycle';
 const pipelineTopicId = 'cp-pipeline';
+const hazardTopicId = 'cp-hazard';
 const busTopicId = 'cp-bus';
+const usbSpeedTopicId = 'cp-usb-speed';
+const baseConversionTopicId = 'cp-base-conversion';
+const complementConversionTopicId = 'cp-complement-conversion';
 const markdownBackedComputerPrinciplesTopicIds = [
   'cp-performance-formulas',
   'cp-risc-cisc',
@@ -66,7 +70,11 @@ const machineInstructionCycleSources = [
   '_private/MD/計概/3a基本計概/三、機器指令與指令週期_新手國考教材.md'
 ];
 const pipelineSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/四、Pipeline（管線化）_新手國考教材.md'];
+const hazardSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十二、Hazard_新手國考教材.md'];
 const busSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/五、匯流排（Bus）_新手國考教材.md'];
+const usbSpeedSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十三、USB 速度_新手國考教材.md'];
+const baseConversionSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十四、進制轉換_新手國考教材.md'];
+const complementConversionSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十五、補數轉換_新手國考教材.md'];
 const markdownBackedComputerPrinciplesTopicCases = [
   {
     id: 'cp-performance-formulas',
@@ -151,7 +159,11 @@ const filledTopicIds = new Set([
   turingTopicId,
   machineInstructionCycleTopicId,
   pipelineTopicId,
+  hazardTopicId,
   busTopicId,
+  usbSpeedTopicId,
+  baseConversionTopicId,
+  complementConversionTopicId,
   ...markdownBackedComputerPrinciplesTopicIds,
   ...firstBatchAlgorithmTopicIds
 ]);
@@ -847,6 +859,169 @@ describe('professional topic skeleton data', () => {
         { zh: '可定址空間', en: 'Addressable Space' }
       ])
     );
+  });
+
+  it('fills Hazard, USB speed, base conversion, and complement conversion as formal lesson articles', () => {
+    const cases = [
+      {
+        id: hazardTopicId,
+        title: '管線危障(Hazard)',
+        sources: hazardSources,
+        headings: ['定義', '三種 Hazard', '名詞解釋', 'RAW、WAR、WAW'],
+        terms: [
+          { zh: '管線危障', en: 'Hazard' },
+          { zh: '停滯', en: 'Stall' },
+          { zh: '泡泡', en: 'Bubble' },
+          { zh: '資料前推', en: 'Forwarding' }
+        ],
+        keywords: ['Structural Hazard', 'Data Hazard', 'Control Hazard', 'Instruction Cache', 'Data Cache', 'Read After Write']
+      },
+      {
+        id: usbSpeedTopicId,
+        title: 'USB 速度(USB Speed)',
+        sources: usbSpeedSources,
+        headings: ['USB 常見速度表', 'Mbps 與 MB/s 不一樣', '看懂 Gen 1x1、2x1、2x2', '備註'],
+        terms: [
+          { zh: '位元每秒', en: 'Mbps' },
+          { zh: '千兆位元每秒', en: 'Gbps' },
+          { zh: '位元組每秒', en: 'MB/s' },
+          { zh: 'Type-C', en: 'USB Type-C' }
+        ],
+        keywords: ['USB 2.0', '480 Mbps', 'USB4 Gen 3x2', '40 Gbps', 'USB4 Version 2.0', '80 Gbps']
+      },
+      {
+        id: baseConversionTopicId,
+        title: '進制轉換(Base Conversion)',
+        sources: baseConversionSources,
+        headings: ['核心概念', '十六進制字母', '轉換方法總表', '範例'],
+        terms: [
+          { zh: '二進制', en: 'Binary' },
+          { zh: '八進制', en: 'Octal' },
+          { zh: '十進制', en: 'Decimal' },
+          { zh: '十六進制', en: 'Hexadecimal' }
+        ],
+        keywords: ['(450.153)10', '111000010.00100111', '1C2.272B020C', '(1011110010.101)2', '(2F2.A)16']
+      },
+      {
+        id: complementConversionTopicId,
+        title: '補數轉換(Complement Representation)',
+        sources: complementConversionSources,
+        headings: ['核心概念', '三種表示法', '補數備註'],
+        terms: [
+          { zh: '符號大小', en: 'Sign-Magnitude' },
+          { zh: '1 補數', en: "1's complement" },
+          { zh: '2 補數', en: "2's complement" },
+          { zh: '10 補數', en: "10's complement" }
+        ],
+        keywords: ['Sign-Magnitude', "1's complement", "2's complement", 'r^n - N', '(r^n - 1) - N']
+      }
+    ] as const;
+
+    for (const topicCase of cases) {
+      const topic = professionalTopicsBySubject.computerPrinciples.find((computerPrinciplesTopic) => computerPrinciplesTopic.id === topicCase.id);
+
+      expect(topic, `${topicCase.id} should exist`).toBeDefined();
+      expect(topic?.title).toBe(topicCase.title);
+      expect(topic?.sourceFiles).toEqual(expect.arrayContaining(topicCase.sources));
+      expect(topic?.summary, `${topicCase.id} should have a summary`).not.toBe('');
+      expect(topic?.terms).toEqual(expect.arrayContaining([...topicCase.terms]));
+      expect(topic?.blocks).toHaveLength(1);
+
+      const lessonArticle = topic?.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topicCase.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining(topicCase.sources));
+      expect(lessonArticle.lead).toEqual([]);
+      expect(lessonArticle.sections.map((section) => section.heading)).toEqual([...topicCase.headings]);
+      expect(lessonArticle.sections.every((section) => section.sourceLabel === undefined)).toBe(true);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0)).toBe(true);
+
+      const serializedTopic = JSON.stringify(topic);
+
+      for (const keyword of topicCase.keywords) {
+        expect(serializedTopic, `${topicCase.id} should contain ${keyword}`).toContain(keyword);
+      }
+    }
+  });
+
+  it('keeps Hazard dependency tables and USB priority highlights structurally testable', () => {
+    const hazardTopic = professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === hazardTopicId);
+    const usbSpeedTopic = professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === usbSpeedTopicId);
+    const hazardLessonArticle = hazardTopic?.blocks[0];
+    const usbLessonArticle = usbSpeedTopic?.blocks[0];
+
+    expect(hazardLessonArticle?.kind).toBe('lessonArticle');
+    expect(usbLessonArticle?.kind).toBe('lessonArticle');
+
+    if (hazardLessonArticle?.kind !== 'lessonArticle' || usbLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('Hazard and USB speed topics should render as lessonArticle blocks');
+    }
+
+    const rawWarWawTable = hazardLessonArticle.sections
+      .find((section) => section.heading === 'RAW、WAR、WAW')
+      ?.blocks.find((block) => block.kind === 'table');
+    const usbTables = usbLessonArticle.sections.flatMap((section) => section.blocks).filter((block) => block.kind === 'table');
+    const usbPriorityTable = usbLessonArticle.sections
+      .find((section) => section.heading === 'USB 常見速度表')
+      ?.blocks.find((block) => block.kind === 'table');
+
+    expect(rawWarWawTable?.kind).toBe('table');
+    if (rawWarWawTable?.kind !== 'table') {
+      throw new Error('RAW/WAR/WAW content should render as a table');
+    }
+    expect(rawWarWawTable.headers).toEqual(['類型', '全名', '白話意思']);
+    expect(rawWarWawTable.rows.every((row) => row.length === 3)).toBe(true);
+
+    expect(usbPriorityTable?.kind).toBe('table');
+    if (usbPriorityTable?.kind !== 'table') {
+      throw new Error('USB speed content should render as a table');
+    }
+    expect(usbTables).toHaveLength(1);
+    expect(usbPriorityTable.rows.map((row) => row[2])).toEqual([
+      '1.5 Mbps',
+      '12 Mbps',
+      '480 Mbps',
+      '5 Gbps',
+      '10 Gbps',
+      '20 Gbps',
+      '20 Gbps',
+      '40 Gbps',
+      '80 Gbps'
+    ]);
+    expect(usbPriorityTable.rowStyles).toEqual({
+      2: { text: 'emphasisText' },
+      3: { text: 'emphasisText' },
+      4: { text: 'emphasisText' },
+      5: { text: 'emphasisText' },
+      7: { text: 'emphasisText' },
+      8: { text: 'emphasisText' }
+    });
+    expect(
+      usbLessonArticle.sections.findIndex((section) => section.heading === '看懂 Gen 1x1、2x1、2x2')
+    ).toBeLessThan(usbLessonArticle.sections.findIndex((section) => section.heading === '備註'));
+    expect(JSON.stringify(usbLessonArticle.sections)).toContain(
+      'Gen 2x2 可以讀成「每條 10 Gbps，走 2 條」，合計 20 Gbps'
+    );
+  });
+
+  it('normalizes imported Computer Principles Markdown instructions and obvious input errors', () => {
+    const importedTopics = [hazardTopicId, usbSpeedTopicId, baseConversionTopicId, complementConversionTopicId].map((topicId) =>
+      professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId)
+    );
+    const serializedTopics = JSON.stringify(importedTopics);
+
+    expect(serializedTopics).not.toContain('用table');
+    expect(serializedTopics).not.toContain('ul/li做');
+    expect(serializedTopics).not.toContain('紅色文字顏色');
+    expect(serializedTopics).not.toContain('你幫我設計顯示方式');
+    expect(serializedTopics).not.toContain('(1011110010.151)2');
+    expect(serializedTopics).toContain('(1011110010.101)2');
+    expect(serializedTopics).toContain('USB4 Gen 3x2');
+    expect(serializedTopics).toContain('USB4 Version 2.0');
   });
 
   it('fills the six Markdown-backed Computer Principles topics with source traceability and cleaned lesson articles', () => {

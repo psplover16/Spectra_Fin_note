@@ -227,6 +227,18 @@
     @apply bg-sand/60 font-semibold text-ink;
   }
 
+  .subject-topic-table-cell-default-text {
+    @apply text-ink;
+  }
+
+  .subject-topic-table-cell-emphasis-text {
+    @apply font-semibold text-red-700;
+  }
+
+  .subject-topic-table-cell-emphasis-background {
+    @apply bg-amber-100;
+  }
+
   .topic-code-placeholder {
     @apply rounded border border-moss/25 bg-parchment p-2;
   }

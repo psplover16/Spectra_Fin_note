@@ -25,25 +25,33 @@ const filledComputerPrinciplesTopicIds = new Set([
   commonUnitsTopicId,
   'cp-von-neumann-architecture',
   'cp-pipeline',
+  'cp-hazard',
   'cp-bus',
   'cp-performance-formulas',
   'cp-risc-cisc',
   'cp-memory-hierarchy',
   'cp-memory-classification',
   'cp-registers',
-  'cp-cache'
+  'cp-cache',
+  'cp-usb-speed',
+  'cp-base-conversion',
+  'cp-complement-conversion'
 ]);
 const sourceFilesByFilledTopicId = {
   [commonUnitsTopicId]: ['_private/計算機概論.txt', '_private/discuss.txt'],
   'cp-von-neumann-architecture': ['_private/計算機概論.txt', '_private/MD/馮紐曼架構.md'],
   'cp-pipeline': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/四、Pipeline（管線化）_新手國考教材.md'],
+  'cp-hazard': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十二、Hazard_新手國考教材.md'],
   'cp-bus': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/五、匯流排（Bus）_新手國考教材.md'],
   'cp-performance-formulas': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/六、效能名詞與公式_新手國考教材.md'],
   'cp-risc-cisc': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/七、RISC 與 CISC_新手國考教材.md'],
   'cp-memory-hierarchy': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/八、Memory 階層圖_新手國考教材.md'],
   'cp-memory-classification': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/九、Memory 分類圖_新手國考教材.md'],
   'cp-registers': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十、Register（暫存器）_新手國考教材.md'],
-  'cp-cache': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十一、Cache_新手國考教材.md']
+  'cp-cache': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十一、Cache_新手國考教材.md'],
+  'cp-usb-speed': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十三、USB 速度_新手國考教材.md'],
+  'cp-base-conversion': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十四、進制轉換_新手國考教材.md'],
+  'cp-complement-conversion': ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十五、補數轉換_新手國考教材.md']
 } as const;
 
 describe('computer-principles route-scoped content workflow', () => {
@@ -140,6 +148,7 @@ describe('computer-principles route-scoped content workflow', () => {
     for (const expectedReviewTopic of [
       'cp-von-neumann-architecture',
       'cp-pipeline',
+      'cp-hazard',
       'cp-cache'
     ]) {
       expect(manualReview).toContain(expectedReviewTopic);

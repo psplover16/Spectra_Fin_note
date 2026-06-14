@@ -27,6 +27,14 @@ export interface AlgorithmComplexityRow {
 }
 
 export type LessonArticleOrderedListMarkerStyle = 'decimal' | 'upperRoman' | 'upperAlpha';
+export type LessonArticleTableTextStyleToken = 'defaultText' | 'emphasisText';
+export type LessonArticleTableBackgroundStyleToken = 'emphasisBackground';
+export type LessonArticleTableCellCoordinate = `${number}:${number}`;
+
+export interface LessonArticleTableCellStyle {
+  text?: LessonArticleTableTextStyleToken;
+  background?: LessonArticleTableBackgroundStyleToken;
+}
 
 export type LessonArticleContentBlock =
   | {
@@ -46,6 +54,9 @@ export type LessonArticleContentBlock =
       kind: 'table';
       headers: readonly string[];
       rows: readonly (readonly string[])[];
+      rowStyles?: Readonly<Record<number, LessonArticleTableCellStyle>>;
+      columnStyles?: Readonly<Record<number, LessonArticleTableCellStyle>>;
+      cellStyles?: Readonly<Record<LessonArticleTableCellCoordinate, LessonArticleTableCellStyle>>;
     };
 
 export interface LessonArticleSection {

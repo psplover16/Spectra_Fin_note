@@ -55,7 +55,8 @@ Table block 應保持 headers 與 rows 的既有結構，新增可選 style meta
 - /computer-principles topic list SHALL include the four filled topics, with `cp-hazard` placed immediately after `cp-pipeline` and immediately before `cp-bus`.
 - `cp-usb-speed`, `cp-base-conversion`, and `cp-complement-conversion` SHALL remain after `cp-cache` in their existing relative order.
 - Hazard topic title SHALL render as `管線危障(Hazard)`.
-- USB topic SHALL show a speed table and a separate most-tested section where key speed rows can render with red text through table style metadata.
+- USB topic SHALL show one USB speed table, and the most-tested speed rows SHALL render with red text through table style metadata inside that same table.
+- USB topic SHALL explain Gen 1x1、Gen 2x1、Gen 2x2、Gen 3x2 notation before the 備註 section, using learner-facing wording that identifies per-lane speed and lane count.
 - Base conversion topic SHALL include eight worked examples, including `(450.153)10` converted to binary and hexadecimal with fractional output taken to 8 digits, and `(1011110010.101)2` converted to hexadecimal.
 - Complement conversion topic SHALL include sign-magnitude, 1's complement, 2's complement, and a notes section for 9's complement and 10's complement.
 - Raw instruction phrases from Markdown, including `用table`, `ul/li做`, `紅色文字顏色`, and `你幫我設計顯示方式`, SHALL NOT appear in rendered app data.

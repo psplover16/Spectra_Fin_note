@@ -80,6 +80,18 @@ const professionalTopicSkeletonConfigs = [
     topicType: "procedure"
   },
   {
+    id: "cp-hazard",
+    subjectKey: "computerPrinciples",
+    titleZh: "管線危障",
+    titleEn: "Hazard",
+    sourceFiles: [
+      "_private/計算機概論.txt"
+    ],
+    sourceSection: "3a. 基本計概 / Hazard",
+    difficulty: "core",
+    topicType: "concept"
+  },
+  {
     id: "cp-bus",
     subjectKey: "computerPrinciples",
     titleZh: "匯流排（Bus）",
@@ -162,18 +174,6 @@ const professionalTopicSkeletonConfigs = [
     sourceSection: "3a. 基本計概 / Cache",
     difficulty: "core",
     topicType: "procedure"
-  },
-  {
-    id: "cp-hazard",
-    subjectKey: "computerPrinciples",
-    titleZh: "Hazard",
-    titleEn: "Pipeline Hazard",
-    sourceFiles: [
-      "_private/計算機概論.txt"
-    ],
-    sourceSection: "3a. 基本計概 / Hazard",
-    difficulty: "core",
-    topicType: "concept"
   },
   {
     id: "cp-usb-speed",
@@ -1528,6 +1528,22 @@ const cacheSourceFiles = [
   '_private/計算機概論.txt',
   '_private/MD/計概/3a基本計概/十一、Cache_新手國考教材.md'
 ] as const;
+const hazardSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3a基本計概/十二、Hazard_新手國考教材.md'
+] as const;
+const usbSpeedSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3a基本計概/十三、USB 速度_新手國考教材.md'
+] as const;
+const baseConversionSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3a基本計概/十四、進制轉換_新手國考教材.md'
+] as const;
+const complementConversionSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3a基本計概/十五、補數轉換_新手國考教材.md'
+] as const;
 
 const commonUnitsTerms = [
   { zh: '位元', en: 'bit' },
@@ -1696,6 +1712,47 @@ const cacheTerms = [
   { zh: '寫回式', en: 'Write Back' },
   { zh: '寫入配置', en: 'Write Allocate' },
   { zh: '非寫入配置', en: 'No Write Allocate' }
+] as const;
+
+const hazardTerms = [
+  { zh: '管線危障', en: 'Hazard' },
+  { zh: '停滯', en: 'Stall' },
+  { zh: '泡泡', en: 'Bubble' },
+  { zh: '結構危障', en: 'Structural Hazard' },
+  { zh: '資料危障', en: 'Data Hazard' },
+  { zh: '控制危障', en: 'Control Hazard' },
+  { zh: '指令快取', en: 'Instruction Cache' },
+  { zh: '資料快取', en: 'Data Cache' },
+  { zh: '資料前推', en: 'Forwarding' },
+  { zh: '編譯器排程', en: 'Compiler scheduling' },
+  { zh: '暫存器重新命名', en: 'Register renaming' }
+] as const;
+
+const usbSpeedTerms = [
+  { zh: '通用序列匯流排', en: 'USB' },
+  { zh: '位元每秒', en: 'Mbps' },
+  { zh: '千兆位元每秒', en: 'Gbps' },
+  { zh: '位元組每秒', en: 'MB/s' },
+  { zh: 'USB4', en: 'USB4' },
+  { zh: 'Type-C', en: 'USB Type-C' }
+] as const;
+
+const baseConversionTerms = [
+  { zh: '二進制', en: 'Binary' },
+  { zh: '八進制', en: 'Octal' },
+  { zh: '十進制', en: 'Decimal' },
+  { zh: '十六進制', en: 'Hexadecimal' },
+  { zh: '位值展開', en: 'Positional Notation' },
+  { zh: '基底', en: 'Base' }
+] as const;
+
+const complementConversionTerms = [
+  { zh: '補數', en: 'Complement' },
+  { zh: '符號大小', en: 'Sign-Magnitude' },
+  { zh: '1 補數', en: "1's complement" },
+  { zh: '2 補數', en: "2's complement" },
+  { zh: '9 補數', en: "9's complement" },
+  { zh: '10 補數', en: "10's complement" }
 ] as const;
 
 const algorithmExampleSourceFiles = ['_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md'] as const;
@@ -3539,6 +3596,255 @@ const cacheLessonSections = [
   }
 ] as const;
 
+const hazardLessonSections = [
+  {
+    heading: '定義',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'Hazard（危障 / 冒險）是 Pipeline 中，讓指令不能照預定時脈繼續前進的情況。Hazard 本身不一定代表算錯，而是如果不處理，可能會錯或必須等待。',
+          'Stall（停滯 / 停等）是 CPU 讓某些管線階段先等一下，不讓指令繼續前進。',
+          'Bubble（泡泡 / 空泡）是 stall 插入的空白週期，不做有用工作，只是用來把指令錯開。',
+          '白話記法：Hazard 是原因，Stall 是處理方式之一，Bubble 是 stall 造成的空白時間。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三種 Hazard',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['類型', '白話意思', '看到什麼關鍵字', '常見處理'],
+        rows: [
+          ['Structural Hazard', '搶硬體', '同一記憶體、\n同一功能單元、\n資源不足', '增加硬體、\n分離 Instruction Cache / Data Cache、\n排程調整'],
+          ['Data Hazard', '等資料', '前一指令結果、\n暫存器讀寫、\n資料相依', 'Forwarding、Stall、\nCompiler scheduling、\nRegister renaming'],
+          ['Control Hazard', '不知道下一步去哪', 'branch、\njump、PC、\n分支預測', 'Branch prediction、\nFlush、\nDelayed branch、\nSpeculative execution']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '名詞解釋',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'Instruction Cache(指令快取)：放程式指令的快取。',
+          'Data Cache(資料快取)：放資料的快取。',
+          'Forwarding(資料前推 / 旁路傳送)：結果剛算出來，不等 WB 寫回，就先直接給下一個指令用；不一定能解決所有情況。',
+          'Stall(停滯 / 停等)：如果 Forwarding 還來不及，就讓後面的指令先等，會浪費週期並降低效能。',
+          'Compiler scheduling(編譯器排程)：編譯器調整指令順序，讓相依指令錯開。',
+          'Register renaming(暫存器重新命名)：用不同實體暫存器避免假相依。',
+          'branch(分支指令)：根據條件決定要不要跳到別的地方。',
+          'jump(跳躍指令)：直接跳到指定位置繼續執行。',
+          'PC(Program Counter，程式計數器)：記錄下一條要抓的指令位址。',
+          'branch prediction(分支預測)：CPU 先猜 branch 會不會跳。',
+          'Flush(清除管線 / 沖刷 / 清空)：把錯誤路徑的指令清掉。',
+          'Delayed branch(延遲分支)：把分支後面的空檔拿來安排可執行的指令。',
+          'Speculative execution(推測執行)：CPU 先推測執行，猜對就保留，猜錯就丟掉。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'RAW、WAR、WAW',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'Data Hazard 常見有三種。國考看到暫存器讀寫順序，就先判斷是哪一種相依。'
+      },
+      {
+        kind: 'table',
+        headers: ['類型', '全名', '白話意思'],
+        rows: [
+          ['RAW', 'Read After Write', '後面要讀，前面還沒寫好。'],
+          ['WAR', 'Write After Read', '後面太早寫，害前面讀不到舊值。'],
+          ['WAW', 'Write After Write', '兩個都要寫，寫入順序錯會出事。']
+        ]
+      }
+    ]
+  }
+] as const;
+
+const usbSpeedLessonSections = [
+  {
+    heading: 'USB 常見速度表',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['版本或名稱', '常見名稱', '理論速度'],
+        rows: [
+          ['USB 1.0 / 1.1', 'Low Speed', '1.5 Mbps'],
+          ['USB 1.0 / 1.1', 'Full Speed', '12 Mbps'],
+          ['USB 2.0', 'High Speed', '480 Mbps'],
+          ['USB 3.0 / USB 3.1 Gen 1 / USB 3.2 Gen 1x1', 'SuperSpeed', '5 Gbps'],
+          ['USB 3.1 Gen 2 / USB 3.2 Gen 2x1', 'SuperSpeed+', '10 Gbps'],
+          ['USB 3.2 Gen 2x2', 'SuperSpeed USB 20Gbps', '20 Gbps'],
+          ['USB4 Gen 2x2', 'USB4 20Gbps', '20 Gbps'],
+          ['USB4 Gen 3x2', 'USB4 40Gbps', '40 Gbps'],
+          ['USB4 Version 2.0 / USB 80Gbps', 'USB4 80Gbps', '80 Gbps']
+        ],
+        rowStyles: {
+          2: { text: 'emphasisText' },
+          3: { text: 'emphasisText' },
+          4: { text: 'emphasisText' },
+          5: { text: 'emphasisText' },
+          7: { text: 'emphasisText' },
+          8: { text: 'emphasisText' }
+        }
+      }
+    ]
+  },
+  {
+    heading: 'Mbps 與 MB/s 不一樣',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'USB 規格常寫 Mbps / Gbps，這裡的小寫 b 是 bit（位元）。',
+          '1 Byte = 8 bits，所以看到 byte 要記得乘除 8。',
+          'MB/s 約等於 Mbps ÷ 8；GB/s 約等於 Gbps ÷ 8。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '看懂 Gen 1x1、2x1、2x2',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'USB 3.2 / USB4 常看到 Gen 1x1、Gen 2x1、Gen 2x2、Gen 3x2。這裡不是單純在做乘法，而是在說「每條通道速度」和「通道數」。',
+          '前面的 Gen 1、Gen 2、Gen 3 可先當成每條通道的速度等級：Gen 1 約 5 Gbps，Gen 2 約 10 Gbps，Gen 3 約 20 Gbps。',
+          '後面的 x1、x2 表示通道數：x1 代表 1 條通道，x2 代表 2 條通道。',
+          '所以 Gen 2x2 可以讀成「每條 10 Gbps，走 2 條」，合計 20 Gbps；Gen 3x2 可以讀成「每條 20 Gbps，走 2 條」，合計 40 Gbps。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '備註',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '表格速度是理論速度，實際速度會受線材、控制器、協定開銷與裝置限制影響。',
+          'Type-C 是接頭形狀，不保證一定是高速 USB。題目若問速度，要看 USB 版本，不只看接頭。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const baseConversionLessonSections = [
+  {
+    heading: '核心概念',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '十進制是逢 10 進 1，二進制是逢 2 進 1，八進制是逢 8 進 1，十六進制是逢 16 進 1。題目寫 (1011)2，右下角的 2 表示這是二進制。'
+      }
+    ]
+  },
+  {
+    heading: '十六進制字母',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['十六進制', '十進制'],
+        rows: [
+          ['A', '10'],
+          ['B', '11'],
+          ['C', '12'],
+          ['D', '13'],
+          ['E', '14'],
+          ['F', '15']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '轉換方法總表',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['題型', '方法', '讀取方向'],
+        rows: [
+          ['十進制整數轉 n 進制', '連除 n，直到商為 0，記餘數。', '餘數由下往上讀。'],
+          ['十進制小數轉 n 進制', '連乘 n，直到小數變成 0；若除不盡，就依題目要求取位數。', '每次取出的整數部分由上往下讀。'],
+          ['n 進制轉十進制', '位值展開。', '每位乘上基底次方後加總。'],
+          ['二進制轉八進制', '每 3 bits 一組。\n整數部分：從小數點往左分組。\n小數部分：從小數點往右分組。', '不足補 0。'],
+          ['二進制轉十六進制', '每 4 bits 一組。\n整數部分：從小數點往左分組。\n小數部分：從小數點往右分組。', '不足補 0。']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '範例',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '將 (450.153)10 轉成二進制：整數 450 連除 2，餘數反讀為 111000010；小數 0.153 連乘 2，取 8 位為 00100111，所以指定精度下約為 (111000010.00100111)2。',
+          '將 (450.153)10 轉成十六進制：整數 450 連除 16，得到 1C2；小數 0.153 連乘 16，取 8 位為 272B020C，所以指定精度下約為 (1C2.272B020C)16。',
+          '將 (11010101.1011)2 轉八進制：整數從小數點往左每 3 bits 分組，011 010 101 = 325；小數往右分組，101 100 = 54，所以是 (325.54)8。',
+          '將 (1011110010.101)2 轉十六進制：整數從小數點往左每 4 bits 分組，0010 1111 0010 = 2F2；小數往右補成 1010 = A，所以是 (2F2.A)16。',
+          '將 (653.5)8 轉成二進制：每個八進制位數轉 3 bits，6=110、5=101、3=011，小數 5=101，所以是 (110101011.101)2。',
+          '將 (653.5)8 轉成十六進制：先轉二進制為 110101011.101，再每 4 bits 分組，0001 1010 1011 = 1AB，小數 1010 = A，所以是 (1AB.A)16。',
+          '將 (2F2.C)16 轉成二進制：每個十六進制位數轉 4 bits，2=0010、F=1111、2=0010，小數 C=1100，所以是 (1011110010.1100)2。',
+          '將 (2F2.C)16 轉成八進制：先轉二進制為 0010 1111 0010.1100，再每 3 bits 分組，001 011 110 010 = 1362，小數 110 = 6，所以是 (1362.6)8。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const complementConversionLessonSections = [
+  {
+    heading: '核心概念',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '補數是電腦用固定 bits 表示正負整數的方法。重點不是先做符號大小再做補數，而是同一個數字可以用不同表示法編碼。現代電腦整數通常使用 2 補數。'
+      }
+    ]
+  },
+  {
+    heading: '三種表示法',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['表示法', '正數', '負數怎麼做', '是否有 +0 / -0', 'n bits 範圍'],
+        rows: [
+          ['符號大小（Sign-Magnitude）', '最高位 0，其餘放大小。', '最高位 1，其餘放大小。', '有', '-(2^(n-1)-1) 到 +(2^(n-1)-1)'],
+          ["1 補數(1's complement)", '和一般二進位相同。', '正數全部反相。', '有', '-(2^(n-1)-1) 到 +(2^(n-1)-1)'],
+          ["2 補數(2's complement)", '和一般二進位相同。', '正數反相後加 1。', '無', '-2^(n-1) 到 +(2^(n-1)-1)']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '例：8 bits 表示 -13。+13 是 00001101；符號大小是 10001101；1 補數是 11110010；2 補數是 11110011。一般電腦整數多用 2 補數。'
+      }
+    ]
+  },
+  {
+    heading: '補數備註',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '2 補數的優點是加減法可以直接用二進位加法處理；如果超出指定 bits，最左邊超出的進位丟掉。',
+          'r 的補數（基數補數，如 10 補數）：N 的 r 補數為 r^n - N，其中 n 為位數。例如三位數 345 的 10 補數為 1000 - 345 = 655。',
+          'r-1 的補數（減一補數，如 9 補數）：N 的 r-1 補數為 (r^n - 1) - N。例如三位數 345 的 9 補數為 999 - 345 = 654。',
+          '國考若問十進位補數，通常是在問 9 補數或 10 補數；若問電腦整數表示，通常優先想到 2 補數。'
+        ]
+      }
+    ]
+  }
+] as const;
+
 const markdownBackedComputerPrinciplesContentById = {
   'cp-performance-formulas': {
     summary: '整理 CPU Time、Clock Rate、CPI、MIPS、Execution Time、ISA 與內頻外頻倍頻等效能名詞與常見公式。',
@@ -3581,6 +3887,34 @@ const markdownBackedComputerPrinciplesContentById = {
     terms: cacheTerms,
     lead: [],
     sections: cacheLessonSections
+  },
+  'cp-hazard': {
+    summary: '整理 Pipeline Hazard 的定義、Stall/Bubble、三種危障、Forwarding 等解法，以及 RAW/WAR/WAW 資料相依。',
+    sourceFiles: hazardSourceFiles,
+    terms: hazardTerms,
+    lead: [],
+    sections: hazardLessonSections
+  },
+  'cp-usb-speed': {
+    summary: '整理 USB 常見版本理論速度、最常考速度列、Mbps 與 MB/s 差異，以及 Type-C 不等於高速 USB 的常見陷阱。',
+    sourceFiles: usbSpeedSourceFiles,
+    terms: usbSpeedTerms,
+    lead: [],
+    sections: usbSpeedLessonSections
+  },
+  'cp-base-conversion': {
+    summary: '整理二進制、八進制、十進制、十六進制互轉方法，並保留八題常見進制轉換的完整計算過程。',
+    sourceFiles: baseConversionSourceFiles,
+    terms: baseConversionTerms,
+    lead: [],
+    sections: baseConversionLessonSections
+  },
+  'cp-complement-conversion': {
+    summary: '整理符號大小、1 補數、2 補數的差異、範圍與 -13 範例，並補充 9 補數與 10 補數的十進位概念。',
+    sourceFiles: complementConversionSourceFiles,
+    terms: complementConversionTerms,
+    lead: [],
+    sections: complementConversionLessonSections
   }
 } as const;
 

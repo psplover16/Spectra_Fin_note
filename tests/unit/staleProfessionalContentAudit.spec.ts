@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import SubjectTopicPage from '@/modules/subjectTopics/components/SubjectTopicPage.vue';
 import { professionalTopicsBySubject } from '@/modules/subjectTopics/data/professionalTopics';
-import { getSubjectTopics } from '@/modules/subjectTopics/data/subjectTopics';
+import { getSubjectTopics, hasSubjectTopicContent } from '@/modules/subjectTopics/data/subjectTopics';
 import {
   createEmptySubjectTopicProgressState,
   subjectTopicProgressStorageKey
@@ -15,13 +15,17 @@ const filledComputerPrinciplesTopicIds = new Set([
   'cp-common-units',
   'cp-von-neumann-architecture',
   'cp-pipeline',
+  'cp-hazard',
   'cp-bus',
   'cp-performance-formulas',
   'cp-risc-cisc',
   'cp-memory-hierarchy',
   'cp-memory-classification',
   'cp-registers',
-  'cp-cache'
+  'cp-cache',
+  'cp-usb-speed',
+  'cp-base-conversion',
+  'cp-complement-conversion'
 ]);
 
 function installStorageWithStaleAlgorithmsProgress() {
@@ -110,9 +114,9 @@ describe('stale professional content audit', () => {
 
     for (const subjectKey of professionalSubjectKeys) {
       const renderedTopicIds = getSubjectTopics(subjectKey).map((topic) => topic.id);
-      const formalTopicIds = professionalTopicsBySubject[subjectKey].map((topic) => topic.id);
+      const visibleFormalTopicIds = professionalTopicsBySubject[subjectKey].filter(hasSubjectTopicContent).map((topic) => topic.id);
 
-      expect(renderedTopicIds).toEqual(formalTopicIds);
+      expect(renderedTopicIds).toEqual(visibleFormalTopicIds);
     }
   });
 

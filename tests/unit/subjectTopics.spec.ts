@@ -24,7 +24,9 @@ describe('subject topic route data helpers', () => {
   });
 
   it('keeps only route topics with actual learner-facing content', () => {
-    const computerPrinciplesTitles = getSubjectTopics('computerPrinciples').map((topic) => topic.title);
+    const computerPrinciplesTopics = getSubjectTopics('computerPrinciples');
+    const computerPrinciplesTitles = computerPrinciplesTopics.map((topic) => topic.title);
+    const computerPrinciplesIds = computerPrinciplesTopics.map((topic) => topic.id);
     const algorithmTitles = getSubjectTopics('algorithms').map((topic) => topic.title);
 
     expect(computerPrinciplesTitles).toEqual([
@@ -33,16 +35,29 @@ describe('subject topic route data helpers', () => {
       '圖靈機與圖靈測試(Turing Machine and Turing Test)',
       '機器指令與指令週期(Machine Instruction and Instruction Cycle)',
       'Pipeline（管線化）(Pipelining)',
+      '管線危障(Hazard)',
       '匯流排（Bus）',
       '效能名詞與公式(Performance Terms and Formulas)',
       'RISC 與 CISC(RISC and CISC)',
       'Memory 階層圖(Memory Hierarchy)',
       'Memory 分類圖(Memory Classification)',
       'Register（暫存器）(Register)',
-      'Cache(Cache Memory)'
+      'Cache(Cache Memory)',
+      'USB 速度(USB Speed)',
+      '進制轉換(Base Conversion)',
+      '補數轉換(Complement Representation)'
     ]);
-    expect(computerPrinciplesTitles).not.toContain('USB 速度(USB Speed)');
-    expect(computerPrinciplesTitles).not.toContain('補數轉換(Complement Conversion)');
+    expect(computerPrinciplesIds.slice(computerPrinciplesIds.indexOf('cp-pipeline'), computerPrinciplesIds.indexOf('cp-bus') + 1)).toEqual([
+      'cp-pipeline',
+      'cp-hazard',
+      'cp-bus'
+    ]);
+    expect(computerPrinciplesIds.slice(computerPrinciplesIds.indexOf('cp-cache'), computerPrinciplesIds.indexOf('cp-complement-conversion') + 1)).toEqual([
+      'cp-cache',
+      'cp-usb-speed',
+      'cp-base-conversion',
+      'cp-complement-conversion'
+    ]);
     expect(computerPrinciplesTitles).not.toContain('浮點數轉換(Floating Point Conversion)');
 
     expect(algorithmTitles).toEqual([
