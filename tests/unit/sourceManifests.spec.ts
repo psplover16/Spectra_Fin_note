@@ -60,7 +60,7 @@ const sourceManifestChecks = [
     manifestPath: '_TMP/manifests/networking-manifest.md',
     expectedTopicCount: 11,
     countReadingLogTopics: (text: string) => countLines(text, (line) => /^## H\d+ /.test(line)),
-    countManifestTopics: (text: string) => countLines(text, (line) => /^## [a-z0-9][a-z0-9-]*$/.test(line))
+    countManifestTopics: (text: string) => countLines(text, (line) => /^## [a-z0-9][a-z0-9-]*\r?$/.test(line))
   },
   {
     name: 'database',

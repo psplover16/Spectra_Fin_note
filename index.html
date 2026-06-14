@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#b45a32" />
     <title>國營資訊考試講義</title>
+    <script>
+      (function () {
+        var locationRef = window.location;
+
+        if (locationRef.search.charAt(1) !== '/') {
+          return;
+        }
+
+        var restoredPath = locationRef.search
+          .slice(1)
+          .split('&')
+          .map(function (segment) {
+            return segment.replace(/~and~/g, '&');
+          })
+          .join('?');
+
+        window.history.replaceState(null, '', locationRef.pathname.replace(/\/$/, '') + restoredPath + locationRef.hash);
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting...</title>
+    <script>
+      (function () {
+        var locationRef = window.location;
+        var segments = locationRef.pathname.split('/').filter(Boolean);
+        var baseSegmentCount = /\.github\.io$/.test(locationRef.hostname) && segments.length > 0 ? 1 : 0;
+
+        if (segments[baseSegmentCount] === 'staging') {
+          baseSegmentCount += 1;
+        }
+
+        var basePath = '/' + segments.slice(0, baseSegmentCount).join('/');
+
+        if (basePath !== '/') {
+          basePath += '/';
+        }
+
+        var routePath = segments.slice(baseSegmentCount).join('/').replace(/&/g, '~and~');
+        var search = locationRef.search ? '&' + locationRef.search.slice(1).replace(/&/g, '~and~') : '';
+
+        locationRef.replace(
+          locationRef.protocol +
+            '//' +
+            locationRef.host +
+            basePath +
+            '?/' +
+            routePath +
+            search +
+            locationRef.hash
+        );
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

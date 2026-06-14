@@ -73,6 +73,28 @@ function emptyProductionRoot(pagesDir) {
   emptyDirectoryExcept(pagesDir, new Set(['.git', 'staging']));
 }
 
+function writeRootRedirectIfMissing({ pagesDir, destinationSubdir }) {
+  if (destinationSubdir === '.' || existsSync(join(pagesDir, 'index.html'))) {
+    return;
+  }
+
+  const target = destinationSubdir.endsWith('/') ? destinationSubdir : `${destinationSubdir}/`;
+  writeFileSync(
+    join(pagesDir, 'index.html'),
+    `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="0; url=${target}" />
+    <title>Redirecting...</title>
+    <script>window.location.replace('${target}' + window.location.search + window.location.hash);</script>
+  </head>
+  <body><a href="${target}">Continue to staging</a></body>
+</html>
+`
+  );
+}
+
 export function syncBuildOutput({ distDir, pagesDir, destinationSubdir }) {
   if (!existsSync(distDir)) {
     throw new Error(`Build output not found: ${distDir}`);
@@ -87,6 +109,12 @@ export function syncBuildOutput({ distDir, pagesDir, destinationSubdir }) {
     copyDirectoryContents(distDir, destinationDir);
   }
 
+  const spaFallback = join(distDir, '404.html');
+  if (existsSync(spaFallback)) {
+    cpSync(spaFallback, join(pagesDir, '404.html'));
+  }
+
+  writeRootRedirectIfMissing({ pagesDir, destinationSubdir });
   writeFileSync(join(pagesDir, '.nojekyll'), '');
 }
 

@@ -2,12 +2,12 @@ import { expect, test } from '@playwright/test';
 
 test('header, topic cards, and code blocks stay inside a 375px viewport', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
-  await page.goto('/programming');
+  await page.goto('/algorithms');
 
-  await page.getByTestId('topic-title-check-bit-formula').click();
+  await page.getByTestId('topic-title-binary-search').click();
   const codeRegion = page.getByTestId('teaching-code-region').first();
   await expect(codeRegion).toBeVisible();
-  await expect(page.getByTestId('teaching-code-code').first()).toContainText('boolean enough');
+  await expect(page.getByTestId('teaching-code-code').first()).toContainText('binarySearch');
 
   const layout = await page.evaluate(() => {
     const routeControls = Array.from(document.querySelectorAll<HTMLElement>('[data-testid^="route-tab-"]'));

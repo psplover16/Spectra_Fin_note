@@ -7,7 +7,16 @@ import vuePlugin from 'eslint-plugin-vue';
 
 export default [
   {
-    ignores: ['dist/**', 'build/**', 'coverage/**', 'node_modules/**', 'test-results/**', 'playwright-report/**']
+    ignores: [
+      'dist/**',
+      'build/**',
+      'coverage/**',
+      'node_modules/**',
+      'test-results/**',
+      'playwright-report/**',
+      '_TMP/**',
+      '_private/TMP/**'
+    ]
   },
   js.configs.recommended,
   {
