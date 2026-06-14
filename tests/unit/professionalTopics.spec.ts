@@ -774,6 +774,11 @@ describe('professional topic skeleton data', () => {
     expect(serializedTopic).toContain('Structural Hazard');
     expect(serializedTopic).toContain('Data Hazard');
     expect(serializedTopic).toContain('Control Hazard');
+    expect(serializedTopic).toContain('Instruction Fetch');
+    expect(serializedTopic).toContain('Instruction Decode');
+    expect(serializedTopic).toContain('Execute');
+    expect(serializedTopic).toContain('Memory Access');
+    expect(serializedTopic).toContain('Write Back');
     expect(serializedTopic).toContain('Speedup');
     expect(serializedTopic).toContain('(k + n - 1) * t');
     expect(serializedTopic).not.toContain('此處用table');

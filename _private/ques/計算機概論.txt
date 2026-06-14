@@ -211,10 +211,6 @@ Pipeline | 較適合 | 較不易，但現代 CISC 會轉成微指令改善
 - Write Allocate：write miss 時把區塊載入 cache 再寫。
 - No Write Allocate：write miss 時直接寫到下一層，不載入 cache。
 
---------------------
-
-
-
 十二、Hazard
 
 [必背] 定義
@@ -259,6 +255,8 @@ USB4 Version 2.0 / USB 80Gbps | USB4 80Gbps | 80 Gbps
   - 2 進位每 4 bits 對應 16 進位 1 位。
   - 常背：2^10 約 1K，2^20 約 1M，2^30 約 1G，2^40 約 1T。
 
+
+
 十五、補數轉換
 
 [會算] 表示法
@@ -274,6 +272,8 @@ USB4 Version 2.0 / USB 80Gbps | USB4 80Gbps | 80 Gbps
 [易混淆]
 - 現代電腦整數多使用 2's complement。
 - 2's complement 加減法可直接用二進位加法處理，較方便。
+
+
 
 十六、浮點數轉換
 

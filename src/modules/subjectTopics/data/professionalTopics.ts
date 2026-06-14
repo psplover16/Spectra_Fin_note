@@ -2937,6 +2937,21 @@ const pipelineLessonSections = [
       {
         kind: 'paragraph',
         text: '白話來看，管線就像把工作拆成幾站。同一個時間點，每一個管線階段只能處理一個指令。'
+      },
+      {
+        kind: 'table',
+        headers: ['縮寫', '英文', '中文', '白話作用'],
+        rows: [
+          ['IF', 'Instruction Fetch', '抓指令', '把下一個要執行的指令抓進來。'],
+          ['ID', 'Instruction Decode', '解碼 / 讀暫存器', '看懂指令要做什麼，並讀出需要的暫存器資料。'],
+          ['EX', 'Execute', '執行運算', '做運算、比較，或計算記憶體位址。'],
+          ['MEM', 'Memory Access', '存取記憶體', '讀取或寫入資料記憶體。'],
+          ['WB', 'Write Back', '寫回結果', '把運算結果寫回暫存器。']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '可以理解成：5 階段 Pipeline 是把單一指令的指令週期拆成 5 格，讓不同指令同時卡在不同格子裡執行。'
       }
     ]
   },
