@@ -1,1 +1,0 @@
-import{g as s,_ as a}from"./subjectTopics-6TOcq5zi.js";import{d as c,g as o,h as n,o as i}from"./vendor-vue-DdfuOPvT.js";const e="database",b=c({__name:"DatabaseView",setup(p){const t=s(e);return(r,_)=>(i(),o(a,{title:"資料庫","subject-key":e,"test-id":"subject-view-database",topics:n(t)},null,8,["topics"]))}});export{b as default};
