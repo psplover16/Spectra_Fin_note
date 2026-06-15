@@ -1088,6 +1088,9 @@ describe('professional topic skeleton data', () => {
           'Binary 1011 = Gray 1110',
           'Gray 1110 = Binary 1011',
           'CRC 位數 = 生成多項式長度 - 1',
+          '原資料 1001，補 3 個 0：1001000',
+          '0000110',
+          '    110  這是CRC',
           '2^r ≥ m + r + 1',
           'S4 S2 S1',
           'floor((Dmin - 1) / 2)'
@@ -1189,8 +1192,8 @@ describe('professional topic skeleton data', () => {
         }[]
       | undefined;
 
-    expect(crcSubsections?.map((block) => block.kind)).toEqual(['subsection', 'subsection', 'subsection']);
-    expect(crcSubsections?.map((block) => block.heading)).toEqual(['一、定義與用途', '二、傳送與接收流程', '三、算法']);
+    expect(crcSubsections?.map((block) => block.kind)).toEqual(['subsection', 'subsection', 'subsection', 'subsection']);
+    expect(crcSubsections?.map((block) => block.heading)).toEqual(['一、定義與用途', '二、傳送與接收流程', '三、算法', '四、範例']);
     expect(JSON.stringify(crcSubsections?.[0])).toContain('CRC（Cyclic Redundancy Check，循環冗餘檢查）常用在網路傳輸與儲存裝置。');
     expect(JSON.stringify(crcSubsections?.[0])).toContain('主要用來偵測錯誤，不是一般拿來更正錯誤。');
     expect(JSON.stringify(crcSubsections?.[1])).toContain('CRC 傳送資料前，先根據資料算出一串「檢查位元」');
@@ -1198,6 +1201,16 @@ describe('professional topic skeleton data', () => {
     expect(JSON.stringify(crcSubsections?.[2])).toContain('看生成多項式長度。ex. 1011');
     expect(JSON.stringify(crcSubsections?.[2])).toContain('用生成多項式做模 2 除法');
     expect(JSON.stringify(crcSubsections?.[2])).toContain('接收端再除一次，餘數為 0 表示通過。');
+    expect(JSON.stringify(crcSubsections?.[3])).toContain('原資料 1001，補 3 個 0：1001000');
+    expect(JSON.stringify(crcSubsections?.[3])).toContain('1001000');
+    expect(crcSubsections?.[3]?.blocks?.[0]).toEqual({
+      kind: 'paragraph',
+      text: '原資料 1001，補 3 個 0：1001000\n生成多項式：1011'
+    });
+    expect(crcSubsections?.[3]?.blocks?.[1]).toEqual({
+      kind: 'codeBlock',
+      text: '1001000\n1011\n-------\n0010000\n  1011\n-------\n0000110\n    110  這是CRC'
+    });
 
     const hammingSection = codesLessonArticle.sections.find((section) => section.heading === 'Hamming Code（漢明碼）');
     const hammingBlocks = hammingSection?.blocks as
@@ -1250,7 +1263,7 @@ describe('professional topic skeleton data', () => {
     const hammingCheckBitDetails = hammingStepGroup?.[6]?.blocks;
 
     expect(JSON.stringify(hammingCheckBitDetails)).toContain('P1 檢查「位置編號轉成二進位後，最右邊是 1」的位置');
-    expect(JSON.stringify(hammingCheckBitDetails)).toContain('P4 檢查「位置編號轉成二進位後，最左邊是 1」的位置');
+    expect(JSON.stringify(hammingCheckBitDetails)).toContain('P4 檢查「位置編號轉成二進位後，從右邊數第 3 位是 1」的位置');
     expect(JSON.stringify(hammingCheckBitDetails)).toContain('此步驟可以得出全部漢明碼。');
     expect(JSON.stringify(hammingStepGroup)).toContain('3-4. 驗證，把漢明碼的值重新檢查 P1、P2、P4 負責的範圍是否符合校驗');
     expect(JSON.stringify(hammingBlocks)).toContain('Syndrome（症候值/症狀碼/校驗子）：');

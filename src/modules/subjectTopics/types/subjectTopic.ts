@@ -42,6 +42,10 @@ export type LessonArticleContentBlock =
       text: string;
     }
   | {
+      kind: 'codeBlock';
+      text: string;
+    }
+  | {
       kind: 'bulletList';
       items: readonly string[];
     }

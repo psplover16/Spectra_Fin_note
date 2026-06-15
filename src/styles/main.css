@@ -158,7 +158,16 @@
   }
 
   .subject-topic-text {
-    white-space: pre-line;
+    white-space: pre-wrap;
+  }
+
+  .subject-topic-code-block {
+    @apply m-0 max-w-full overflow-x-auto rounded bg-ink p-3 text-sm leading-6 text-parchment;
+  }
+
+  .subject-topic-code-text {
+    @apply block min-w-max whitespace-pre;
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
   }
 
   .subject-topic-block {

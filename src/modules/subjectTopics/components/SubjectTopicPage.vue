@@ -238,6 +238,7 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                   <template v-if="isLessonSectionExpanded(topic, section)">
                     <template v-for="contentBlock in section.blocks" :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`">
                       <p v-if="contentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">{{ contentBlock.text }}</p>
+                      <pre v-else-if="contentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ contentBlock.text }}</code></pre>
                       <ul v-else-if="contentBlock.kind === 'bulletList'">
                         <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                       </ul>
@@ -275,6 +276,7 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                           <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                             {{ nestedContentBlock.text }}
                           </p>
+                          <pre v-else-if="nestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ nestedContentBlock.text }}</code></pre>
                           <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
                             <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                           </ul>
@@ -309,6 +311,7 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                               <p v-if="deepNestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                                 {{ deepNestedContentBlock.text }}
                               </p>
+                              <pre v-else-if="deepNestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ deepNestedContentBlock.text }}</code></pre>
                               <ul v-else-if="deepNestedContentBlock.kind === 'bulletList'">
                                 <li v-for="item in deepNestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                               </ul>
@@ -348,6 +351,7 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                           <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                             {{ nestedContentBlock.text }}
                           </p>
+                          <pre v-else-if="nestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ nestedContentBlock.text }}</code></pre>
                           <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
                             <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                           </ul>
@@ -503,6 +507,7 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                   <template v-if="isLessonSectionExpanded(topic, section)">
                     <template v-for="contentBlock in section.blocks" :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`">
                       <p v-if="contentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">{{ contentBlock.text }}</p>
+                      <pre v-else-if="contentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ contentBlock.text }}</code></pre>
                       <ul v-else-if="contentBlock.kind === 'bulletList'">
                         <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                       </ul>
@@ -540,6 +545,7 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                           <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                             {{ nestedContentBlock.text }}
                           </p>
+                          <pre v-else-if="nestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ nestedContentBlock.text }}</code></pre>
                           <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
                             <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                           </ul>
@@ -574,6 +580,7 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                               <p v-if="deepNestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                                 {{ deepNestedContentBlock.text }}
                               </p>
+                              <pre v-else-if="deepNestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ deepNestedContentBlock.text }}</code></pre>
                               <ul v-else-if="deepNestedContentBlock.kind === 'bulletList'">
                                 <li v-for="item in deepNestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                               </ul>
@@ -613,6 +620,7 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                           <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                             {{ nestedContentBlock.text }}
                           </p>
+                          <pre v-else-if="nestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ nestedContentBlock.text }}</code></pre>
                           <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
                             <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                           </ul>
