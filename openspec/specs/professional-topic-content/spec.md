@@ -10267,7 +10267,7 @@ The Computer Principles topic with id `cp-machine-instruction-cycle` SHALL conta
 #### Scenario: Machine instruction cycle article preserves the learning structure
 
 - **WHEN** the `cp-machine-instruction-cycle` lesson article sections are read
-- **THEN** the section headings include `考前小抄`, `機器指令範例`, `指令週期怎麼理解`, `指令週期關鍵字`, `易混淆比較`, and `國考怎麼判斷`
+- **THEN** the section headings include `機器指令`, `機器指令範例`, `指令週期怎麼理解`, `指令週期關鍵字`, `易混淆比較`, and `國考怎麼判斷`
 - **THEN** the quick review, instruction-cycle stages, and exam judgment cues are represented with `orderedList` content blocks
 - **THEN** instruction examples, cycle keyword explanations, and confusing comparisons are represented with `table` content blocks
 - **THEN** every ordered list uses the existing ordered-list data shape and contains no icon-specific data property

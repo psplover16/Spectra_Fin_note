@@ -2888,7 +2888,7 @@ const turingMachineAndTestLessonSections = [
 
 const machineInstructionCycleLessonSections = [
   {
-    heading: '考前小抄',
+    heading: '機器指令',
     blocks: [
       {
         kind: 'orderedList',
@@ -2899,8 +2899,8 @@ const machineInstructionCycleLessonSections = [
           'Operand：運算元，回答「對誰做」，可以是資料、暫存器或位置資訊。',
           '位址欄位(Address Field)：指令中用來指出資料位置的欄位。',
           'Effective Address：有效位址，是真正要存取資料的記憶體位址。',
-          'PC：下一個要取出的指令位址。',
-          'IR：目前已取出的指令。',
+          'PC(Program Counter，程式計數器)：下一個要取出的指令位址。',
+          'IR(Instruction Register，指令暫存器)：目前已取出的指令。',
           'Fetch：取指令。',
           'Operand Fetch：取指令要用的資料。',
           'Execute：真的做運算、跳躍、比較或 I/O。'

@@ -616,7 +616,7 @@ describe('professional topic skeleton data', () => {
     expect(lessonArticle.sourceSection).toBe('3a. 基本計概 / 機器指令與指令週期');
     expect(lessonArticle.lead.length).toBeGreaterThanOrEqual(1);
     expect(lessonArticle.sections.map((section) => section.heading)).toEqual([
-      '考前小抄',
+      '機器指令',
       '機器指令範例',
       '指令週期怎麼理解',
       '指令週期關鍵字',
@@ -626,7 +626,7 @@ describe('professional topic skeleton data', () => {
     expect(lessonArticle.sections.every((section) => section.sourceLabel === undefined)).toBe(true);
 
     const sectionByHeading = Object.fromEntries(lessonArticle.sections.map((section) => [section.heading, section]));
-    const quickReviewBlock = sectionByHeading['考前小抄']?.blocks[0];
+    const machineInstructionBlock = sectionByHeading['機器指令']?.blocks[0];
     const exampleTableBlock = sectionByHeading['機器指令範例']?.blocks[1];
     const cycleStepBlock = sectionByHeading['指令週期怎麼理解']?.blocks[1];
     const cycleTableBlock = sectionByHeading['指令週期怎麼理解']?.blocks[2];
@@ -641,8 +641,8 @@ describe('professional topic skeleton data', () => {
     expect(serializedTopic).not.toContain('[比較]');
     expect(serializedTopic).not.toContain('sourceLabel');
 
-    expect(quickReviewBlock?.kind).toBe('orderedList');
-    expect(quickReviewBlock?.kind === 'orderedList' ? quickReviewBlock.items : []).toEqual([
+    expect(machineInstructionBlock?.kind).toBe('orderedList');
+    expect(machineInstructionBlock?.kind === 'orderedList' ? machineInstructionBlock.items : []).toEqual([
       expect.stringContaining('機器指令'),
       expect.stringContaining('Opcode'),
       expect.stringContaining('Operand'),
@@ -654,8 +654,8 @@ describe('professional topic skeleton data', () => {
       expect.stringContaining('Operand Fetch'),
       expect.stringContaining('Execute')
     ]);
-    expect(quickReviewBlock?.kind === 'orderedList' ? quickReviewBlock.markerStyle : undefined).toBe('decimal');
-    expect(quickReviewBlock?.kind === 'orderedList' ? 'icons' in quickReviewBlock : false).toBe(false);
+    expect(machineInstructionBlock?.kind === 'orderedList' ? machineInstructionBlock.markerStyle : undefined).toBe('decimal');
+    expect(machineInstructionBlock?.kind === 'orderedList' ? 'icons' in machineInstructionBlock : false).toBe(false);
 
     expect(exampleTableBlock?.kind).toBe('table');
     if (exampleTableBlock?.kind !== 'table') {
