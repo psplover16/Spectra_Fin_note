@@ -16,6 +16,33 @@ test('production PWA shell loads professional routes offline after an online war
   expect(manifest.short_name).toBe('國營資訊');
   expect(manifest.display).toBe('standalone');
   expect(manifest.start_url).toBe('/');
+  expect(manifest.icons).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        src: expect.stringMatching(/(^|\/)icons\/icon-192\.png$/),
+        sizes: '192x192',
+        type: 'image/png'
+      }),
+      expect.objectContaining({
+        src: expect.stringMatching(/(^|\/)icons\/icon-512\.png$/),
+        sizes: '512x512',
+        type: 'image/png'
+      }),
+      expect.objectContaining({
+        src: expect.stringMatching(/(^|\/)icons\/icon-maskable-512\.png$/),
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable'
+      })
+    ])
+  );
+
+  for (const icon of manifest.icons) {
+    const iconPath = new URL(icon.src, page.url()).pathname;
+    const iconResponse = await request.get(iconPath);
+    expect(iconResponse.ok()).toBe(true);
+    expect(iconResponse.headers()['content-type']).toContain('image/png');
+  }
 
   await page.waitForFunction(async () => {
     if (!('serviceWorker' in navigator)) {
