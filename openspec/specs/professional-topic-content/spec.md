@@ -10964,15 +10964,16 @@ tests:
 -->
 
 ---
-### Requirement: Algorithm import records approved Markdown source
+### Requirement: Algorithm import records approved source files
 
-Imported first-batch algorithm topics SHALL record the approved Markdown source path used for the import. The source path MUST be `_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md` for Bubble Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Selection Sort, and Insertion Sort.
+Imported first-batch algorithm topics SHALL record the approved source path used for the import. The source path MUST be `_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md` for Bubble Sort, Selection Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, and Insertion Sort. Bucket Sort MUST use `_private/MD/演算法/GeneralBucketSort.java` as its approved source.
 
 #### Scenario: Imported algorithm topics expose the approved source file
 
 - **WHEN** the Algorithms subject formal topic list is loaded
-- **THEN** topics `bubble-sort`, `quick-sort`, `fibonacci-sequence`, `greatest-common-divisor`, `binary-search`, `selection-sort`, and `insertion-sort` each include `_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md` in `sourceFiles`
-- **AND** each listed topic includes a source summary that identifies the corresponding algorithm section from the approved Markdown source
+- **THEN** topics `bubble-sort`, `selection-sort`, `quick-sort`, `fibonacci-sequence`, `greatest-common-divisor`, `binary-search`, and `insertion-sort` each include `_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md` in `sourceFiles`
+- **AND** topic `bucket-sort` includes `_private/MD/演算法/GeneralBucketSort.java` in `sourceFiles`
+- **AND** each listed topic includes a source summary that identifies the corresponding algorithm section from the approved source
 
 <!-- @trace
 source: fill-algorithm-code-content
@@ -15221,6 +15222,17 @@ The Computer Principles formal topic data SHALL replace the empty lessonArticle 
 - **THEN** the stored topic data retains the newline character
 - **THEN** serialized learner-facing content does not replace it with visible `\n` characters
 - **THEN** the subject topic page renders the newline as a line break in the corresponding paragraph or list item
+
+#### Scenario: RISC/CISC comparison keeps the current teaching cues
+
+- **WHEN** the `cp-risc-cisc` lessonArticle is loaded
+- **THEN** the `RISC vs CISC` section keeps a table with headers `項目`, `RISC(精簡指令集電腦)`, and `CISC(複雜指令集電腦)`
+- **THEN** the `代表架構` row uses `用猜的` as the RISC-side cue
+- **THEN** the CISC-side representative architecture cell lists `型號裡面帶有86`, `IA-32`, `AMD64`, `Motorola 68K`, `IBM System/360或370`, `Intel 8080`, and `Zilog Z80`
+- **THEN** the CISC-side representative architecture cell preserves actual newline characters between grouped examples
+- **THEN** the `名詞解釋` section remains an orderedList whose first item explains that RISC starts from simple, uniformly shaped instructions
+- **THEN** the terminology list includes the micro-instruction wording with `micro-instruction`, `micro-op`, and `μop`
+- **THEN** the terminology list keeps the modern CISC note that externally complex instructions may be split into simpler internal micro-instructions
 
 #### Scenario: Cache lower memory wording is clarified
 

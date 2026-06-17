@@ -20,7 +20,7 @@ const expectedCounts = {
   database: 11,
   informationManagement: 7,
   programming: 39,
-  algorithms: 21
+  algorithms: 22
 } as const;
 
 const staleDisplayedBlockKinds = [
@@ -112,14 +112,16 @@ const markdownBackedComputerPrinciplesTopicCases = [
   }
 ] as const;
 const algorithmSource = '_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md';
+const bucketSortSource = '_private/MD/演算法/GeneralBucketSort.java';
 const firstBatchAlgorithmTopicIds = [
   'bubble-sort',
+  'selection-sort',
   'quick-sort',
   'fibonacci-sequence',
   'greatest-common-divisor',
   'binary-search',
-  'selection-sort',
-  'insertion-sort'
+  'insertion-sort',
+  'bucket-sort'
 ] as const;
 const firstBatchAlgorithmTopicIdSet = new Set<string>(firstBatchAlgorithmTopicIds);
 const unfilledAlgorithmTopicIds = ['merge-sort', 'heap-sort', 'shell-sort'] as const;
@@ -146,7 +148,8 @@ const algorithmCodeMethodNames = {
   'greatest-common-divisor': ['gcdRecursive', 'gcdIterative'],
   'binary-search': ['binarySearchRecursive', 'binarySearchIterative'],
   'selection-sort': ['selectionSortRecursive', 'selectionSortIterative'],
-  'insertion-sort': ['insertionSortRecursive', 'insertionSortIterative']
+  'insertion-sort': ['insertionSortRecursive', 'insertionSortIterative'],
+  'bucket-sort': ['bucketSortRecursive', 'bucketSortIterative']
 } as const satisfies Record<(typeof firstBatchAlgorithmTopicIds)[number], readonly string[]>;
 const algorithmWorstTimes = {
   'bubble-sort': 'O(n²)',
@@ -155,8 +158,19 @@ const algorithmWorstTimes = {
   'greatest-common-divisor': 'O(log min(a,b))',
   'binary-search': 'O(log n)',
   'selection-sort': 'O(n²)',
-  'insertion-sort': 'O(n²)'
+  'insertion-sort': 'O(n²)',
+  'bucket-sort': 'O(n log n)'
 } as const satisfies Record<(typeof firstBatchAlgorithmTopicIds)[number], string>;
+const algorithmExpectedSources = {
+  'bubble-sort': [algorithmSource],
+  'selection-sort': [algorithmSource],
+  'quick-sort': [algorithmSource],
+  'fibonacci-sequence': [algorithmSource],
+  'greatest-common-divisor': [algorithmSource],
+  'binary-search': [algorithmSource],
+  'insertion-sort': [algorithmSource],
+  'bucket-sort': [bucketSortSource]
+} as const satisfies Record<(typeof firstBatchAlgorithmTopicIds)[number], readonly string[]>;
 const filledTopicIds = new Set([
   commonUnitsTopicId,
   filledTopicId,
@@ -423,7 +437,7 @@ describe('professional topic skeleton data', () => {
 
       expect(topic).toBeDefined();
       expect(topic?.summary).not.toBe('');
-      expect(topic?.sourceFiles).toEqual(expect.arrayContaining([algorithmSource]));
+      expect(topic?.sourceFiles).toEqual(expect.arrayContaining(Array.from(algorithmExpectedSources[topicId])));
       expect(topic?.sourceSummary).not.toBe('');
       expect(topic?.terms.length).toBeGreaterThan(0);
       expect(topic?.blocks.some((block) => block.kind === 'complexityTable')).toBe(false);
@@ -438,7 +452,7 @@ describe('professional topic skeleton data', () => {
         throw new Error(`${topicId} should render algorithm explanation as lessonArticle`);
       }
 
-      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining([algorithmSource]));
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining(Array.from(algorithmExpectedSources[topicId])));
       expect(lessonArticle.lead.length).toBeGreaterThanOrEqual(1);
       expect(lessonArticle.sections.map((section) => section.heading)).toEqual(['演算法概念', '核心規則', '最壞時間複雜度']);
 
@@ -491,6 +505,33 @@ describe('professional topic skeleton data', () => {
       expect(lessonArticle.sections).toEqual([]);
       expect(topic?.blocks.some((block) => block.kind === 'teachingCode')).toBe(false);
     }
+  });
+
+  it('explains the Bucket Sort recursive Java version with detailed teaching comments', () => {
+    const topic = professionalTopicsBySubject.algorithms.find((algorithmTopic) => algorithmTopic.id === 'bucket-sort');
+    const recursiveCodeBlock = topic?.blocks.find(
+      (block) => block.kind === 'teachingCode' && block.title === '桶裝排序法遞迴版本'
+    );
+
+    expect(recursiveCodeBlock?.kind).toBe('teachingCode');
+    if (recursiveCodeBlock?.kind !== 'teachingCode') {
+      throw new Error('bucket-sort should include a recursive teachingCode block');
+    }
+
+    const explanatoryCommentSnippets = [
+      '第 1 步：用遞迴找出 min 與 max',
+      'index 從 1 開始',
+      '第 2 步：用遞迴建立桶子',
+      '第 3 步：用遞迴把每個數字放進對應桶子',
+      '第 4 步：用遞迴逐桶排序',
+      '第 5 步：用遞迴把桶子內容寫回原陣列',
+      '遞迴終止條件'
+    ];
+
+    for (const commentSnippet of explanatoryCommentSnippets) {
+      expect(recursiveCodeBlock.code).toContain(commentSnippet);
+    }
+    expect(recursiveCodeBlock.code.split('\n').filter((line) => line.trim().startsWith('//')).length).toBeGreaterThanOrEqual(24);
   });
 
   it('moves imported first-batch algorithm topics to the top of the Algorithms route and preserves the remaining order', () => {
@@ -1343,6 +1384,56 @@ describe('professional topic skeleton data', () => {
         expect(serializedTopic, `${topicCase.id} should not expose ${rawFormattingNote}`).not.toContain(rawFormattingNote);
       }
     }
+  });
+
+  it('keeps the current RISC/CISC comparison table and teaching notes testable', () => {
+    const topic = professionalTopicsBySubject.computerPrinciples.find((computerPrinciplesTopic) => computerPrinciplesTopic.id === 'cp-risc-cisc');
+    const lessonArticle = topic?.blocks[0];
+
+    expect(lessonArticle?.kind).toBe('lessonArticle');
+    if (lessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cp-risc-cisc should render as lessonArticle');
+    }
+
+    const comparisonTable = lessonArticle.sections
+      .find((section) => section.heading === 'RISC vs CISC')
+      ?.blocks.find((block) => block.kind === 'table');
+
+    expect(comparisonTable?.kind).toBe('table');
+    if (comparisonTable?.kind !== 'table') {
+      throw new Error('cp-risc-cisc should keep the RISC vs CISC comparison as a table');
+    }
+
+    expect(comparisonTable.headers).toEqual(['項目', 'RISC(精簡指令集電腦)', 'CISC(複雜指令集電腦)']);
+
+    const representativeArchitectureRow = comparisonTable.rows.find((row) => row[0] === '代表架構');
+
+    expect(representativeArchitectureRow).toEqual([
+      '代表架構',
+      '用猜的',
+      '型號裡面帶有86、IA-32、AMD64、\nMotorola 68K、IBM System/360或370、\nIntel 8080、Zilog Z80'
+    ]);
+    expect(representativeArchitectureRow?.[2]).toContain('\n');
+
+    const terminologyList = lessonArticle.sections
+      .find((section) => section.heading === '名詞解釋')
+      ?.blocks.find((block) => block.kind === 'orderedList');
+
+    expect(terminologyList?.kind).toBe('orderedList');
+    if (terminologyList?.kind !== 'orderedList') {
+      throw new Error('cp-risc-cisc should keep terminology notes as an orderedList');
+    }
+
+    expect(terminologyList.items[0]).toBe('RISC 的出發點＝讓每個指令「簡單、規格統一」，這樣硬體才能跑得又快又順，以此可以做推論');
+    expect(terminologyList.items).toEqual(
+      expect.arrayContaining([
+        'Load/Store 架構是 RISC 常見的設計方式，常要求「先把資料搬到暫存器，再做運算，最後再存回記憶體」。CISC 則較常允許某些指令直接操作記憶體中的資料。',
+        '微指令（micro-instruction，也叫 micro-op、μop）＝ CPU 內部把「一條複雜指令」拆解出來的一連串小步驟，每個步驟都很簡單、規格接近一致（長得很像 RISC 指令）',
+        '在現代 CISC 處理器中，外部看起來是複雜指令，但 CPU 內部可能會先把它拆成多個較簡單的微指令，再交給內部執行單元處理。'
+      ])
+    );
+    expect(terminologyList.items).not.toContain('RISC，精簡指令集電腦。');
+    expect(terminologyList.items).not.toContain('CISC，複雜指令集電腦。單一指令可能完成較多工作。');
   });
 
   it('fills the Von Neumann lesson article with clean headings, bilingual terms, newline text, and no subtitle fields', () => {

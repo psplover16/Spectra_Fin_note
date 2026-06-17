@@ -69,12 +69,13 @@ describe('subject topic route data helpers', () => {
 
     expect(algorithmTitles).toEqual([
       '氣泡排序法(Bubble Sort)',
+      '選擇排序法(Selection Sort)',
       '快速排序法(Quick Sort)',
       'Fibonacci 序列(Fibonacci Sequence)',
       '最大公因數(Greatest Common Divisor)',
       '二元搜尋法(Binary Search)',
-      '選擇排序法(Selection Sort)',
-      '插入排序法(Insertion Sort)'
+      '插入排序法(Insertion Sort)',
+      '桶裝排序法(Bucket Sort)'
     ]);
   });
 

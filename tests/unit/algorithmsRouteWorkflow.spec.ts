@@ -177,7 +177,7 @@ describe('algorithms route-scoped content workflow', () => {
     const manifestRows = readRouteManifestRows();
     const formalTopics = professionalTopicsBySubject.algorithms;
 
-    expect(formalTopics).toHaveLength(manifestRows.length);
+    expect(formalTopics).toHaveLength(manifestRows.length + 1);
 
     for (const row of manifestRows) {
       const topic = formalTopics.find((formalTopic) => formalTopic.id === row.id);
@@ -204,5 +204,12 @@ describe('algorithms route-scoped content workflow', () => {
       expect(topic?.blocks.some((block) => block.kind === 'pitfall')).toBe(false);
       expect(topic?.blocks.some((block) => block.kind === 'complexityTable')).toBe(false);
     }
+
+    const bucketSortTopic = formalTopics.find((formalTopic) => formalTopic.id === 'bucket-sort');
+
+    expect(bucketSortTopic).toBeDefined();
+    expect(bucketSortTopic?.sourceFiles).toEqual(expect.arrayContaining(['_private/MD/演算法/GeneralBucketSort.java']));
+    expect(bucketSortTopic?.blocks[0]).toEqual(expect.objectContaining({ kind: 'lessonArticle' }));
+    expect(bucketSortTopic?.blocks.some((block) => block.kind === 'teachingCode')).toBe(true);
   });
 });

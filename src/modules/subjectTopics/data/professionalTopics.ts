@@ -1452,6 +1452,18 @@ const professionalTopicSkeletonConfigs = [
     topicType: "algorithm"
   },
   {
+    id: "bucket-sort",
+    subjectKey: "algorithms",
+    titleZh: "桶裝排序法",
+    titleEn: "Bucket Sort",
+    sourceFiles: [
+      "_private/MD/演算法/GeneralBucketSort.java"
+    ],
+    sourceSection: "GeneralBucketSort.java / 通用桶裝排序法",
+    difficulty: "core",
+    topicType: "algorithm"
+  },
+  {
     id: "merge-sort",
     subjectKey: "algorithms",
     titleZh: "合併排序法",
@@ -1785,8 +1797,6 @@ const codesAndCheckCodesTerms = [
   { zh: '漢明距', en: 'Hamming Distance' },
   { zh: '症候值', en: 'Syndrome' }
 ] as const;
-
-const algorithmExampleSourceFiles = ['_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md'] as const;
 
 const algorithmExampleContentById = {
   'bubble-sort': {
@@ -2570,13 +2580,349 @@ private static void insertionSortRecursive(int[] arr, int n) {
 }`
       }
     ]
+  },
+  'bucket-sort': {
+    summary: '整理桶裝排序的 min/max 分桶公式、索引邊界修正、遞迴與非遞迴 Java 寫法，以及使用 Collections.sort 時的最壞時間複雜度 O(n log n)。',
+    terms: [
+      { zh: '桶裝排序法', en: 'Bucket Sort' },
+      { zh: '標準化比例', en: 'Normalized Position' },
+      { zh: '桶子索引', en: 'Bucket Index' },
+      { zh: '桶內排序', en: 'In-bucket Sort' }
+    ],
+    lead: [
+      '桶裝排序法(Bucket Sort)會先把資料依數值範圍分到多個桶子，再排序每個桶子，最後依桶子順序合併回原陣列。',
+      '這裡採用 GeneralBucketSort.java 的通用模式：先找 min/max，用標準化比例計算桶子索引，並特別修正最大值落到 bucketCount 的邊界情況。'
+    ],
+    sections: [
+      {
+        heading: '演算法概念',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text:
+              '桶裝排序的重點不是直接比較每一對元素，而是先把資料映射到不同區間。若桶子分布均勻，合併時會很順；若資料全部集中在同一桶，效能就會被桶內排序主導。'
+          }
+        ]
+      },
+      {
+        heading: '核心規則',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '若陣列為 null、長度小於等於 1，直接返回。',
+              '掃描所有資料，找出最小值 min 與最大值 max。',
+              '若 min == max，代表所有資料相同，不需要分桶。',
+              '建立 bucketCount 個桶子，常見做法是讓桶子數量等於資料數量。',
+              '用 (num - min) / (max - min) 算出 0 到 1 之間的標準化比例。',
+              '把比例乘上 bucketCount 得到桶子索引，並修正 index == bucketCount、index < 0、index >= bucketCount 的邊界。',
+              '排序每個桶子，再從第一個桶子開始依序寫回原陣列。'
+            ]
+          }
+        ]
+      },
+      {
+        heading: '最壞時間複雜度',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['版本', '最壞時間複雜度', '推導重點'],
+            rows: [
+              [
+                '遞迴版本',
+                'O(n log n)',
+                '最壞時所有資料集中在同一桶，本版本桶內使用 Collections.sort，因此由該比較排序主導；若桶內改用插入排序，常見最壞會記為 O(n²)。'
+              ],
+              [
+                '非遞迴版本',
+                'O(n log n)',
+                '分桶與合併各為 O(n)，最壞瓶頸仍是單一大桶的 Collections.sort。'
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    codeBlocks: [
+      {
+        title: '桶裝排序法遞迴版本',
+        description: '保留 GeneralBucketSort.java 的 min/max、標準化比例與邊界修正，改用遞迴拆解掃描、分桶、桶內排序與合併。',
+        code: `import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public static void bucketSortRecursive(double[] arr) {
+    // 入口檢查：null 代表沒有資料，長度 0 或 1 代表本來就有序。
+    // 這個判斷一定要放在讀 arr[0] 之前，避免 null 或空陣列造成錯誤。
+    if (arr == null || arr.length <= 1) {
+        return;
+    }
+
+    // 第 1 步：用遞迴找出 min 與 max。
+    // index 從 1 開始，因為 arr[0] 已經先拿來當作目前的 min 與 max。
+    // 回傳 double[] {min, max}，讓後面的分桶公式知道整體資料範圍。
+    double[] minMax = findMinMaxRecursive(arr, 1, arr[0], arr[0]);
+    double min = minMax[0];
+    double max = minMax[1];
+
+    // 若最小值等於最大值，代表所有資料都相同。
+    // 此時每個元素放到哪個桶子都沒有意義，原陣列已經視為排序完成。
+    if (min == max) {
+        return;
+    }
+
+    // bucketCount 使用資料筆數，是 GeneralBucketSort.java 採用的通用做法。
+    // 每個桶子會負責整體數值範圍中的一小段區間。
+    int bucketCount = arr.length;
+    List<List<Double>> buckets = new ArrayList<>();
+
+    // 第 2 步：用遞迴建立桶子。
+    // 第 3 步：用遞迴把每個數字放進對應桶子。
+    // 第 4 步：用遞迴逐桶排序。
+    // 第 5 步：用遞迴把桶子內容寫回原陣列。
+    createBucketsRecursive(buckets, bucketCount);
+    distributeRecursive(arr, 0, buckets, min, max);
+    sortBucketsRecursive(buckets, 0);
+    writeBackRecursive(arr, buckets, 0, 0);
+}
+
+private static double[] findMinMaxRecursive(double[] arr, int index, double min, double max) {
+    // 遞迴終止條件：index 已經走到陣列尾端，代表全部資料都看過了。
+    // 這時候 min 與 max 就是整個陣列的最小值與最大值。
+    if (index == arr.length) {
+        return new double[] {min, max};
+    }
+
+    // current 是這一層遞迴正在檢查的資料。
+    // 每一層只負責一個位置，檢查完就交給下一層處理 index + 1。
+    double current = arr[index];
+
+    // 如果 current 比目前 min 更小，就更新 min。
+    if (current < min) {
+        min = current;
+    }
+    // 如果 current 比目前 max 更大，就更新 max。
+    if (current > max) {
+        max = current;
+    }
+
+    // 往下一格繼續找，直到 index == arr.length。
+    return findMinMaxRecursive(arr, index + 1, min, max);
+}
+
+private static void createBucketsRecursive(List<List<Double>> buckets, int bucketCount) {
+    // 遞迴終止條件：桶子的數量已經等於 bucketCount。
+    // 例如 bucketCount 是 7，就要建立 bucket[0] 到 bucket[6]。
+    if (buckets.size() == bucketCount) {
+        return;
+    }
+
+    // 每次遞迴只新增一個空桶子。
+    // 這個桶子之後會放入落在某個數值區間內的資料。
+    buckets.add(new ArrayList<>());
+
+    // 新增完一個桶子後，再呼叫自己補下一個桶子。
+    createBucketsRecursive(buckets, bucketCount);
+}
+
+private static void distributeRecursive(
+        double[] arr,
+        int index,
+        List<List<Double>> buckets,
+        double min,
+        double max
+) {
+    // 遞迴終止條件：index 已經走完 arr，代表所有數字都已放入桶子。
+    if (index == arr.length) {
+        return;
+    }
+
+    // 先依照 min/max 把 arr[index] 標準化，再換算成桶子索引。
+    // bucketIndex 代表這個數字應該放進哪一個桶子。
+    int bucketIndex = getBucketIndex(arr[index], min, max, buckets.size());
+
+    // 把目前數字放進算出的桶子。
+    // 同一個桶子內可能有多個數字，所以桶內稍後仍需要排序。
+    buckets.get(bucketIndex).add(arr[index]);
+
+    // 處理下一個陣列元素。
+    distributeRecursive(arr, index + 1, buckets, min, max);
+}
+
+private static void sortBucketsRecursive(List<List<Double>> buckets, int index) {
+    // 遞迴終止條件：index 已經走完所有桶子。
+    if (index == buckets.size()) {
+        return;
+    }
+
+    // Bucket Sort 只保證不同桶子的區間順序。
+    // 同一桶內的資料仍可能是亂序，所以要做桶內排序。
+    // 這裡沿用 GeneralBucketSort.java 的 Collections.sort。
+    Collections.sort(buckets.get(index));
+
+    // 排完目前桶子後，繼續排序下一個桶子。
+    sortBucketsRecursive(buckets, index + 1);
+}
+
+private static int writeBackRecursive(
+        double[] arr,
+        List<List<Double>> buckets,
+        int bucketIndex,
+        int arrIndex
+) {
+    // 遞迴終止條件：所有桶子都寫回原陣列。
+    // arrIndex 會回傳給上一層，表示目前原陣列已寫到哪個位置。
+    if (bucketIndex == buckets.size()) {
+        return arrIndex;
+    }
+
+    // 先把目前桶子的內容全部寫回 arr。
+    // nextIndex 是寫完目前桶子後，下一個桶子應該開始寫入的位置。
+    int nextIndex = writeBucketRecursive(arr, buckets.get(bucketIndex), 0, arrIndex);
+
+    // 接著處理下一個桶子。
+    return writeBackRecursive(arr, buckets, bucketIndex + 1, nextIndex);
+}
+
+private static int writeBucketRecursive(double[] arr, List<Double> bucket, int itemIndex, int arrIndex) {
+    // 遞迴終止條件：目前桶子內的元素都已經寫回 arr。
+    // 回傳 arrIndex，讓外層知道下一個桶子要接在哪裡。
+    if (itemIndex == bucket.size()) {
+        return arrIndex;
+    }
+
+    // 把目前桶子的第 itemIndex 個元素寫回原陣列。
+    // 因為外層會按照 bucket[0]、bucket[1]、bucket[2] 的順序寫回，
+    // 加上每個桶子內部已排序，所以整體就會由小到大。
+    arr[arrIndex] = bucket.get(itemIndex);
+
+    // itemIndex 往下一個桶內元素前進，arrIndex 也往下一格前進。
+    return writeBucketRecursive(arr, bucket, itemIndex + 1, arrIndex + 1);
+}
+
+private static int getBucketIndex(double num, double min, double max, int bucketCount) {
+    // range 是整體資料範圍，也就是最大值與最小值的距離。
+    double range = max - min;
+
+    // normalized 會把 num 轉成 0 到 1 之間的位置比例。
+    // 例如資料範圍是 10 到 50，num 是 30，normalized 就是 0.5。
+    double normalized = (num - min) / range;
+
+    // 把 0 到 1 的比例放大成 0 到 bucketCount 的桶子索引範圍。
+    // 轉成 int 會取整數部分，例如 5.7 會變成 5。
+    int index = (int)(normalized * bucketCount);
+
+    // num == max 時，index 會等於 bucketCount，需要修正到最後一個桶子。
+    if (index == bucketCount) {
+        index = bucketCount - 1;
+    }
+    // double 小數運算可能有極小誤差；若算到負數，就保護成第一個桶子。
+    if (index < 0) {
+        index = 0;
+    }
+    // 若索引超過最後一個桶子，就保護成最後一個桶子。
+    if (index >= bucketCount) {
+        index = bucketCount - 1;
+    }
+
+    // 回傳安全範圍內的桶子索引。
+    return index;
+}`
+      },
+      {
+        title: '桶裝排序法非遞迴版本',
+        description: '依照 GeneralBucketSort.java 的流程，用迴圈完成找 min/max、分桶、桶內排序與合併。',
+        code: `import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public static void bucketSortIterative(double[] arr) {
+    // null、空陣列或只有一筆資料時，不需要排序。
+    if (arr == null || arr.length <= 1) {
+        return;
+    }
+
+    int bucketCount = arr.length;
+
+    // 第 1 步：找出最小值 min 和最大值 max。
+    double min = arr[0];
+    double max = arr[0];
+
+    for (double num : arr) {
+        if (num < min) {
+            min = num;
+        }
+        if (num > max) {
+            max = num;
+        }
+    }
+
+    // 特殊情況：所有數字都一樣，不需要分桶。
+    if (min == max) {
+        return;
+    }
+
+    // 第 2 步：建立 bucketCount 個空桶子。
+    List<List<Double>> buckets = new ArrayList<>();
+
+    for (int i = 0; i < bucketCount; i++) {
+        buckets.add(new ArrayList<>());
+    }
+
+    // 第 3 步：把每個數字放進對應桶子。
+    for (double num : arr) {
+        double range = max - min;
+        double normalized = (num - min) / range;
+        int index = (int)(normalized * bucketCount);
+
+        // num == max 時會算到 bucketCount，必須改成最後一個桶子。
+        if (index == bucketCount) {
+            index = bucketCount - 1;
+        }
+        if (index < 0) {
+            index = 0;
+        }
+        if (index >= bucketCount) {
+            index = bucketCount - 1;
+        }
+
+        buckets.get(index).add(num);
+    }
+
+    // 第 4 步：每個桶子內部排序。
+    for (List<Double> bucket : buckets) {
+        Collections.sort(bucket);
+    }
+
+    // 第 5 步：把桶子依序合併回原本陣列。
+    int arrIndex = 0;
+
+    for (List<Double> bucket : buckets) {
+        for (double num : bucket) {
+            arr[arrIndex] = num;
+            arrIndex++;
+        }
+    }
+}`
+      }
+    ]
   }
 } as const;
 
 type AlgorithmExampleTopicId = keyof typeof algorithmExampleContentById;
 
 const isAlgorithmExampleTopicId = (id: string): id is AlgorithmExampleTopicId => id in algorithmExampleContentById;
-const algorithmExampleTopicOrder = Object.keys(algorithmExampleContentById) as readonly AlgorithmExampleTopicId[];
+const algorithmExampleTopicOrder = [
+  'bubble-sort',
+  'selection-sort',
+  'quick-sort',
+  'fibonacci-sequence',
+  'greatest-common-divisor',
+  'binary-search',
+  'insertion-sort',
+  'bucket-sort'
+] as const satisfies readonly AlgorithmExampleTopicId[];
 
 const getAlgorithmExampleTopicRank = (id: string): number => {
   if (!isAlgorithmExampleTopicId(id)) {
@@ -3289,7 +3635,7 @@ const riscCiscLessonSections = [
     blocks: [
       {
         kind: 'table',
-        headers: ['項目', 'RISC', 'CISC'],
+        headers: ['項目', 'RISC(精簡指令集電腦)', 'CISC(複雜指令集電腦)'],
         rows: [
           ['全名', 'Reduced Instruction Set Computer', 'Complex Instruction Set Computer'],
           ['指令數', '少而精簡', '多而複雜'],
@@ -3301,7 +3647,7 @@ const riscCiscLessonSections = [
           ['編譯器需求', '較需要強力 compiler 做最佳化', '硬體指令較複雜，compiler 壓力相對不同'],
           ['翻譯出的指令數', '同一高階語言動作可能較多', '同一動作可能較少'],
           ['Pipeline', '較適合', '較不易，但現代 CISC 會轉成微指令改善'],
-          ['代表架構', 'ARM、MIPS、RISC-V、SPARC', 'x86、VAX']
+          ['代表架構', '用猜的', '型號裡面帶有86、IA-32、AMD64、\nMotorola 68K、IBM System/360或370、\nIntel 8080、Zilog Z80']
         ]
       }
     ]
@@ -3312,15 +3658,12 @@ const riscCiscLessonSections = [
       {
         kind: 'orderedList',
         items: [
-          'RISC，精簡指令集電腦。',
-          'CISC，複雜指令集電腦。單一指令可能完成較多工作。',
+          'RISC 的出發點＝讓每個指令「簡單、規格統一」，這樣硬體才能跑得又快又順，以此可以做推論',
           '定址模式是指 CPU 指令「找到資料位置」的方法。',
           '指令長度是指一個機器指令在記憶體中占用的位元數或位元組數，會影響解碼難易度。',
-          '執行週期是指 CPU 執行一個指令大約需要多少個時脈週期。',
-          '暫存器是 CPU 內部速度非常快的小型儲存空間。暫存器，可以想成 CPU 手邊的工作桌，記憶體則像比較遠的書櫃。',
           'Load/Store 架構是 RISC 常見的設計方式，常要求「先把資料搬到暫存器，再做運算，最後再存回記憶體」。CISC 則較常允許某些指令直接操作記憶體中的資料。',
-          'Pipeline 中文常譯為「管線化」或「指令管線」。它的概念像工廠生產線：一個指令正在解碼時，另一個指令可以在取指令，第三個指令可能正在執行。',
-          '微指令是 CPU 內部更細小的操作步驟。在現代 CISC 處理器中，外部看起來是複雜指令，但 CPU 內部可能會先把它拆成多個較簡單的微指令，再交給內部執行單元處理。'
+          '微指令（micro-instruction，也叫 micro-op、μop）＝ CPU 內部把「一條複雜指令」拆解出來的一連串小步驟，每個步驟都很簡單、規格接近一致（長得很像 RISC 指令）',
+          '在現代 CISC 處理器中，外部看起來是複雜指令，但 CPU 內部可能會先把它拆成多個較簡單的微指令，再交給內部執行單元處理。'
         ]
       }
     ]
@@ -4668,7 +5011,7 @@ const createAlgorithmExampleTopic = (
     title: config.titleZh + '(' + config.titleEn + ')',
     summary: content.summary,
     sourceBatch: 'manual-section-fill-20260613',
-    sourceFiles: algorithmExampleSourceFiles,
+    sourceFiles: config.sourceFiles,
     sourceSummary: config.sourceSection,
     examOutline: [],
     memoryPoints: [],
@@ -4679,7 +5022,7 @@ const createAlgorithmExampleTopic = (
     blocks: [
       {
         kind: 'lessonArticle',
-        sourceFiles: algorithmExampleSourceFiles,
+        sourceFiles: config.sourceFiles,
         sourceSection: config.sourceSection,
         lead: content.lead,
         sections: content.sections

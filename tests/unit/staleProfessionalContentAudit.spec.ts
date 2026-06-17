@@ -59,7 +59,7 @@ describe('stale professional content audit', () => {
     expect(professionalTopicsBySubject.database).toHaveLength(11);
     expect(professionalTopicsBySubject.informationManagement).toHaveLength(7);
     expect(professionalTopicsBySubject.programming).toHaveLength(39);
-    expect(professionalTopicsBySubject.algorithms).toHaveLength(21);
+    expect(professionalTopicsBySubject.algorithms).toHaveLength(22);
 
     const allTopicIds = Object.values(professionalTopicsBySubject)
       .flat()

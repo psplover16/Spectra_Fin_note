@@ -8,12 +8,12 @@ TBD - created by archiving change 'ingest-professional-subject-content'. Update 
 
 ### Requirement: Algorithm content includes required first-batch examples
 
-Algorithm content SHALL include first-batch learning topics for Bubble Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Selection Sort, and Insertion Sort.
+Algorithm content SHALL include first-batch learning topics for Bubble Sort, Selection Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Insertion Sort, and Bucket Sort.
 
 #### Scenario: First-batch algorithm inventory is checked
 
 - **WHEN** the Algorithms subject formal topic list is loaded
-- **THEN** it includes topics for Bubble Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Selection Sort, and Insertion Sort
+- **THEN** it includes topics for Bubble Sort, Selection Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Insertion Sort, and Bucket Sort
 
 
 <!-- @trace
@@ -4379,12 +4379,12 @@ tests:
 ---
 ### Requirement: First-batch algorithm topics include learning articles
 
-The Algorithms subject first-batch topics for Bubble Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Selection Sort, and Insertion Sort SHALL include formal learning content in the route data. Each imported topic SHALL include a `lessonArticle` block with an introductory concept section and an ordered core-rules section.
+The Algorithms subject first-batch topics for Bubble Sort, Selection Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Insertion Sort, and Bucket Sort SHALL include formal learning content in the route data. Each imported topic SHALL include a `lessonArticle` block with an introductory concept section and an ordered core-rules section.
 
 #### Scenario: First-batch algorithm learning content is loaded
 
 - **WHEN** the Algorithms subject formal topic list is loaded
-- **THEN** topics `bubble-sort`, `quick-sort`, `fibonacci-sequence`, `greatest-common-divisor`, `binary-search`, `selection-sort`, and `insertion-sort` each include a non-empty `lessonArticle`
+- **THEN** topics `bubble-sort`, `selection-sort`, `quick-sort`, `fibonacci-sequence`, `greatest-common-divisor`, `binary-search`, `insertion-sort`, and `bucket-sort` each include a non-empty `lessonArticle`
 - **AND** each listed `lessonArticle` includes a section that explains the algorithm concept
 - **AND** each listed `lessonArticle` includes an ordered list that states the algorithm core rules
 
@@ -4393,12 +4393,13 @@ The Algorithms subject first-batch topics for Bubble Sort, Quick Sort, Fibonacci
 | Topic id | Expected content state |
 | ----- | --------------- |
 | `bubble-sort` | non-empty lesson article |
+| `selection-sort` | non-empty lesson article |
 | `quick-sort` | non-empty lesson article |
 | `fibonacci-sequence` | non-empty lesson article |
 | `greatest-common-divisor` | non-empty lesson article |
 | `binary-search` | non-empty lesson article |
-| `selection-sort` | non-empty lesson article |
 | `insertion-sort` | non-empty lesson article |
+| `bucket-sort` | non-empty lesson article |
 
 
 <!-- @trace
@@ -5088,7 +5089,7 @@ tests:
 ---
 ### Requirement: First-batch algorithm topics include Java teaching code
 
-Each imported first-batch algorithm topic SHALL display complete Java code through `teachingCode` blocks for every recursive or iterative implementation present in the approved Markdown source. The route data MUST NOT invent a recursive or iterative version that is absent from the approved source.
+Each imported first-batch algorithm topic SHALL display complete Java code through `teachingCode` blocks for every recursive or iterative implementation present in the approved source. Markdown-backed topics MUST NOT invent a recursive or iterative version that is absent from the approved Markdown source. Bucket Sort SHALL use `_private/MD/演算法/GeneralBucketSort.java` as its approved source and SHALL include both a non-recursive version that follows that Java flow and a recursive teaching version derived from the same min/max, bucket-index, bucket-sort, and write-back steps.
 
 #### Scenario: Algorithm Java code is displayed through teaching blocks
 
@@ -5096,6 +5097,14 @@ Each imported first-batch algorithm topic SHALL display complete Java code throu
 - **THEN** the topic includes a `teachingCode` block for each available Java version
 - **AND** each `teachingCode` block uses language `java`
 - **AND** each `teachingCode` block preserves the full code body with comments and indentation
+
+#### Scenario: Bucket Sort code variants are displayed
+
+- **WHEN** the `bucket-sort` topic is loaded
+- **THEN** it includes a `teachingCode` block titled as a recursive version with `bucketSortRecursive`
+- **AND** it includes a `teachingCode` block titled as a non-recursive version with `bucketSortIterative`
+- **AND** both Java examples preserve the GeneralBucketSort flow of finding `min` and `max`, assigning bucket indexes, sorting each bucket, and writing values back to the original array
+- **AND** the recursive Java example includes explanatory comments for each recursive helper's purpose, termination condition, and next recursive step
 
 
 <!-- @trace
@@ -5793,6 +5802,12 @@ Each imported first-batch algorithm topic SHALL present time complexity using wo
 - **THEN** the visible lesson content includes a table or equivalent article section naming the worst-case time complexity
 - **AND** the same topic does not display best-case complexity
 - **AND** the same topic does not display average-case complexity
+
+#### Scenario: Bucket Sort worst-case complexity follows the implemented bucket sorter
+
+- **WHEN** the `bucket-sort` topic is expanded
+- **THEN** the worst-case complexity section names `O(n log n)` for the provided `Collections.sort` bucket-internal sorting implementation
+- **AND** the derivation explains that if the bucket-internal sorter were changed to insertion sort, the commonly taught worst case may be `O(n²)`
 
 ##### Example: complexity presentation columns
 
@@ -6492,25 +6507,26 @@ tests:
 ---
 ### Requirement: Imported first-batch algorithm topics appear first
 
-The Algorithms subject formal topic list SHALL place the imported first-batch algorithm topics before the remaining Algorithms subject topics. The imported first-batch topic order SHALL be Bubble Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Selection Sort, and Insertion Sort.
+The Algorithms subject formal topic list SHALL place the imported first-batch algorithm topics before the remaining Algorithms subject topics. The imported first-batch topic order SHALL be Bubble Sort, Selection Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Insertion Sort, and Bucket Sort.
 
 #### Scenario: Imported algorithm topics are listed at the top
 
 - **WHEN** the Algorithms subject formal topic list is loaded
-- **THEN** the first seven topic ids are `bubble-sort`, `quick-sort`, `fibonacci-sequence`, `greatest-common-divisor`, `binary-search`, `selection-sort`, and `insertion-sort`
-- **AND** the remaining Algorithms subject topics keep their existing relative order after those seven imported topics
+- **THEN** the first eight topic ids are `bubble-sort`, `selection-sort`, `quick-sort`, `fibonacci-sequence`, `greatest-common-divisor`, `binary-search`, `insertion-sort`, and `bucket-sort`
+- **AND** the remaining Algorithms subject topics keep their existing relative order after those eight imported topics
 
-##### Example: first seven algorithm route topic ids
+##### Example: first eight algorithm route topic ids
 
 | Position | Topic id |
 | ----- | --------------- |
 | 1 | `bubble-sort` |
-| 2 | `quick-sort` |
-| 3 | `fibonacci-sequence` |
-| 4 | `greatest-common-divisor` |
-| 5 | `binary-search` |
-| 6 | `selection-sort` |
+| 2 | `selection-sort` |
+| 3 | `quick-sort` |
+| 4 | `fibonacci-sequence` |
+| 5 | `greatest-common-divisor` |
+| 6 | `binary-search` |
 | 7 | `insertion-sort` |
+| 8 | `bucket-sort` |
 
 <!-- @trace
 source: fill-algorithm-code-content
