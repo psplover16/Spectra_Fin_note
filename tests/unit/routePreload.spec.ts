@@ -28,10 +28,12 @@ describe('route preload registry', () => {
     expect(registry.isLoaded('/unknown')).toBe(false);
   });
 
-  it('includes database and algorithms in primary route preload loaders', () => {
+  it('includes database, algorithms, and system design in primary route preload loaders', () => {
     expect(primaryRoutePaths).toContain('/database');
     expect(primaryRoutePaths).toContain('/algorithms');
+    expect(primaryRoutePaths).toContain('/system-design');
     expect(routeComponentLoaders['/database']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/algorithms']).toEqual(expect.any(Function));
+    expect(routeComponentLoaders['/system-design']).toEqual(expect.any(Function));
   });
 });

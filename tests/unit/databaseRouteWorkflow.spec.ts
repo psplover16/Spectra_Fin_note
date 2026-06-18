@@ -99,7 +99,7 @@ describe('database route-scoped content workflow', () => {
     const manifestRows = readDatabaseManifestRows();
     const formalTopics = professionalTopicsBySubject.database;
 
-    expect(formalTopics).toHaveLength(manifestRows.length);
+    expect(formalTopics.length).toBeGreaterThanOrEqual(manifestRows.length);
 
     for (const row of manifestRows) {
       const topic = formalTopics.find((formalTopic) => formalTopic.id === row.id);

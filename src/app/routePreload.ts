@@ -7,6 +7,7 @@ export type PrimaryRoutePath =
   | '/programming'
   | '/database'
   | '/algorithms'
+  | '/system-design'
   | '/english'
   | '/chinese';
 
@@ -21,6 +22,7 @@ export const primaryRoutePaths = [
   '/programming',
   '/database',
   '/algorithms',
+  '/system-design',
   '/english',
   '/chinese'
 ] as const satisfies readonly PrimaryRoutePath[];
@@ -32,6 +34,7 @@ export const routeComponentLoaders: Record<PrimaryRoutePath, RouteComponentLoade
   '/programming': () => import('@/modules/programming/views/ProgrammingView.vue'),
   '/database': () => import('@/modules/database/views/DatabaseView.vue'),
   '/algorithms': () => import('@/modules/algorithms/views/AlgorithmsView.vue'),
+  '/system-design': () => import('@/modules/systemDesign/views/SystemDesignView.vue'),
   '/english': () => import('@/modules/english/views/EnglishView.vue'),
   '/chinese': () => import('@/modules/chinese/views/ChineseView.vue')
 };

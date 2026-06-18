@@ -11,16 +11,18 @@ const professionalSubjectKeys = [
   'database',
   'informationManagement',
   'programming',
-  'algorithms'
+  'algorithms',
+  'systemDesign'
 ] as const;
 
 const expectedCounts = {
   computerPrinciples: 34,
   networking: 11,
-  database: 11,
+  database: 17,
   informationManagement: 7,
-  programming: 39,
-  algorithms: 21
+  programming: 46,
+  algorithms: 31,
+  systemDesign: 5
 } as const;
 
 const staleDisplayedBlockKinds = [
@@ -257,14 +259,73 @@ const markdownBackedComputerPrinciplesTopicCases = [
   }
 ] as const;
 const algorithmSource = '_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md';
+const bucketSortSource = '_private/MD/演算法/GeneralBucketSort.java';
+const dataStructureAlgorithmTopicCases = [
+  {
+    id: 'algorithm-big-o-complexity',
+    title: '資料結構與演算法 1：演算法定義 + Big-O 複雜度 ★',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md',
+    keywords: ['演算法 5 條件', 'O(log n)', '時間複雜度']
+  },
+  {
+    id: 'algorithm-array-linked-list',
+    title: '資料結構與演算法 2：陣列 Array + 鏈結串列 Linked List',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md',
+    keywords: ['Row-major', 'Column-major', 'Doubly Linked List']
+  },
+  {
+    id: 'algorithm-stack-queue',
+    title: '資料結構與演算法 3：堆疊 Stack + 佇列 Queue',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md',
+    keywords: ['LIFO', 'FIFO', 'Circular Queue']
+  },
+  {
+    id: 'algorithm-tree-traversal-basics',
+    title: '資料結構與演算法 4：樹 Tree（基本）+ 前中後序走訪',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md',
+    keywords: ['Preorder', 'Inorder', 'Postorder']
+  },
+  {
+    id: 'algorithm-advanced-trees',
+    title: '資料結構與演算法 5：高等樹 ★（AVL／B-Tree／Heap／紅黑樹）',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_5_高等樹.md',
+    keywords: ['AVL', 'B-Tree', 'Red-Black Tree']
+  },
+  {
+    id: 'algorithm-graph-basics-traversal',
+    title: '資料結構與演算法 6（上）：圖 Graph 基礎 + DFS／BFS ★',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md',
+    keywords: ['Adjacency Matrix', 'DFS', 'BFS']
+  },
+  {
+    id: 'algorithm-graph-algorithms',
+    title: '資料結構與演算法 6（下）：圖演算法 ★（MST／最短路徑／AOV-AOE）',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_6下_圖演算法.md',
+    keywords: ['Minimum Spanning Tree', 'Dijkstra', 'Topological Sort']
+  },
+  {
+    id: 'algorithm-sorting-overview',
+    title: '資料結構與演算法 7：排序 Sorting ★',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_7_排序.md',
+    keywords: ['Stable', 'Quick Sort', 'Heap Sort']
+  },
+  {
+    id: 'algorithm-hashing',
+    title: '資料結構與演算法 8：雜湊 Hashing',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_8_雜湊.md',
+    keywords: ['Hash Table', 'Collision', 'Open Addressing']
+  }
+] as const;
+const dataStructureAlgorithmTopicIds = dataStructureAlgorithmTopicCases.map((topicCase) => topicCase.id);
 const firstBatchAlgorithmTopicIds = [
   'bubble-sort',
+  'selection-sort',
   'quick-sort',
   'fibonacci-sequence',
   'greatest-common-divisor',
   'binary-search',
-  'selection-sort',
-  'insertion-sort'
+  'insertion-sort',
+  'bucket-sort'
 ] as const;
 const firstBatchAlgorithmTopicIdSet = new Set<string>(firstBatchAlgorithmTopicIds);
 const unfilledAlgorithmTopicIds = ['merge-sort', 'heap-sort', 'shell-sort'] as const;
@@ -284,6 +345,133 @@ const expectedAlgorithmTopicIdsAfterImportedTopics = [
   'heap-sort',
   'shell-sort'
 ] as const;
+const expectedAlgorithmTopicIdsAfterDataStructureTopics = [
+  ...firstBatchAlgorithmTopicIds,
+  ...expectedAlgorithmTopicIdsAfterImportedTopics
+] as const;
+const importedDatabaseProgrammingSystemDesignBatch = 'fill-database-programming-system-design-content';
+const databaseMarkdownTopicCases = [
+  {
+    id: 'database-md-foundations-architecture',
+    title: '資料庫 1：基礎概念 + ANSI/SPARC 架構',
+    source: '_private/MD/資料庫/資料庫_1_基礎概念與架構.md',
+    keyword: 'ANSI/SPARC 三層架構'
+  },
+  {
+    id: 'database-md-keys-erd',
+    title: '資料庫 2：Key（鍵）+ ERD（實體關係圖）',
+    source: '_private/MD/資料庫/資料庫_2_鍵與ERD.md',
+    keyword: '超鍵'
+  },
+  {
+    id: 'database-md-normalization',
+    title: '資料庫 3：正規化 Normalization ★',
+    source: '_private/MD/資料庫/資料庫_3_正規化.md',
+    keyword: '1NF'
+  },
+  {
+    id: 'database-md-sql-crud',
+    title: '資料庫 4：SQL 分類 + CRUD 基礎語法 ★',
+    source: '_private/MD/資料庫/資料庫_4_SQL分類與CRUD.md',
+    keyword: 'UPDATE／DELETE 必加 WHERE'
+  },
+  {
+    id: 'database-md-sql-advanced-query',
+    title: '資料庫 5：SQL 查詢進階 ★',
+    source: '_private/MD/資料庫/資料庫_5_SQL查詢進階.md',
+    keyword: 'WHERE vs HAVING'
+  },
+  {
+    id: 'database-md-transactions-nosql',
+    title: '資料庫 6：交易 ACID + NoSQL',
+    source: '_private/MD/資料庫/資料庫_6_交易ACID與NoSQL.md',
+    keyword: 'ACID'
+  }
+] as const;
+const programmingMarkdownTopicCases = [
+  {
+    id: 'programming-md-language-execution-basics',
+    title: '程式設計 1：語言執行方式 + 程式基礎',
+    source: '_private/MD/程式設計/程式設計_1_語言執行方式與程式基礎.md',
+    keyword: 'Assembler'
+  },
+  {
+    id: 'programming-md-functions-parameter-passing',
+    title: '程式設計 2：函式 + 參數傳遞 ★',
+    source: '_private/MD/程式設計/程式設計_2_函式與參數傳遞.md',
+    keyword: 'Java 全部都是「傳值」'
+  },
+  {
+    id: 'programming-md-arrays-strings-exceptions',
+    title: '程式設計 3：陣列 + 字串函式 + 例外處理',
+    source: '_private/MD/程式設計/程式設計_3_陣列字串與例外處理.md',
+    keyword: '.equals()'
+  },
+  {
+    id: 'programming-md-pointers',
+    title: '程式設計 4：指標 Pointer ★（C／C++）',
+    source: '_private/MD/程式設計/程式設計_4_指標.md',
+    keyword: '指標存的是「位址」'
+  },
+  {
+    id: 'programming-md-oop',
+    title: '程式設計 5：物件導向 OOP 三大特性 ★',
+    source: '_private/MD/程式設計/程式設計_5_物件導向OOP.md',
+    keyword: '封裝'
+  },
+  {
+    id: 'programming-md-recursion',
+    title: '程式設計 6：遞迴 Recursion ★',
+    source: '_private/MD/程式設計/程式設計_6_遞迴.md',
+    keyword: '終止條件'
+  },
+  {
+    id: 'programming-md-language-features',
+    title: '程式設計 7：各語言特性（Java GC／Python 容器）',
+    source: '_private/MD/程式設計/程式設計_7_各語言特性.md',
+    keyword: 'Python 四種內建容器'
+  }
+] as const;
+const systemDesignMarkdownTopicCases = [
+  {
+    id: 'system-design-sdlc-ssdlc',
+    title: '系統分析與設計 1：SDLC + SSDLC',
+    source: '_private/MD/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md',
+    keyword: 'Security by Design'
+  },
+  {
+    id: 'system-design-cohesion-coupling',
+    title: '系統分析與設計 2：內聚力 Cohesion + 耦合力 Coupling ★',
+    source: '_private/MD/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md',
+    keyword: '高內聚、低耦合'
+  },
+  {
+    id: 'system-design-oo-uml',
+    title: '系統分析與設計 3：OO 四種關係 + UML 四種圖',
+    source: '_private/MD/系統分析與設計/系統分析與設計_3_OO關係與UML.md',
+    keyword: '聚合 vs 組合'
+  },
+  {
+    id: 'system-design-testing',
+    title: '系統分析與設計 4：測試 Testing',
+    source: '_private/MD/系統分析與設計/系統分析與設計_4_測試.md',
+    keyword: 'Alpha 在內部、Beta 給外部真實使用者'
+  },
+  {
+    id: 'system-design-conversion-pdca',
+    title: '系統分析與設計 5：系統導入 + PDCA',
+    source: '_private/MD/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md',
+    keyword: 'Plan（計畫）→ Do（執行）→ Check（檢核）→ Act（行動／改善）'
+  }
+] as const;
+const importedDatabaseProgrammingSystemDesignSubjectCases = [
+  { subjectKey: 'database', topicCases: databaseMarkdownTopicCases },
+  { subjectKey: 'programming', topicCases: programmingMarkdownTopicCases },
+  { subjectKey: 'systemDesign', topicCases: systemDesignMarkdownTopicCases }
+] as const;
+const importedDatabaseProgrammingSystemDesignTopicIdSet = new Set<string>(
+  importedDatabaseProgrammingSystemDesignSubjectCases.flatMap(({ topicCases }) => topicCases.map((topicCase) => topicCase.id))
+);
 const algorithmCodeMethodNames = {
   'bubble-sort': ['bubbleSortRecursive', 'bubbleSortIterative'],
   'quick-sort': ['quickSortRecursive', 'quickSortIterative'],
@@ -291,7 +479,8 @@ const algorithmCodeMethodNames = {
   'greatest-common-divisor': ['gcdRecursive', 'gcdIterative'],
   'binary-search': ['binarySearchRecursive', 'binarySearchIterative'],
   'selection-sort': ['selectionSortRecursive', 'selectionSortIterative'],
-  'insertion-sort': ['insertionSortRecursive', 'insertionSortIterative']
+  'insertion-sort': ['insertionSortRecursive', 'insertionSortIterative'],
+  'bucket-sort': ['bucketSortRecursive', 'bucketSortIterative']
 } as const satisfies Record<(typeof firstBatchAlgorithmTopicIds)[number], readonly string[]>;
 const algorithmWorstTimes = {
   'bubble-sort': 'O(n²)',
@@ -300,8 +489,19 @@ const algorithmWorstTimes = {
   'greatest-common-divisor': 'O(log min(a,b))',
   'binary-search': 'O(log n)',
   'selection-sort': 'O(n²)',
-  'insertion-sort': 'O(n²)'
+  'insertion-sort': 'O(n²)',
+  'bucket-sort': 'O(n log n)'
 } as const satisfies Record<(typeof firstBatchAlgorithmTopicIds)[number], string>;
+const algorithmExpectedSources = {
+  'bubble-sort': [algorithmSource],
+  'selection-sort': [algorithmSource],
+  'quick-sort': [algorithmSource],
+  'fibonacci-sequence': [algorithmSource],
+  'greatest-common-divisor': [algorithmSource],
+  'binary-search': [algorithmSource],
+  'insertion-sort': [algorithmSource],
+  'bucket-sort': [bucketSortSource]
+} as const satisfies Record<(typeof firstBatchAlgorithmTopicIds)[number], readonly string[]>;
 const filledTopicIds = new Set([
   commonUnitsTopicId,
   filledTopicId,
@@ -319,7 +519,11 @@ const filledTopicIds = new Set([
   ...operatingSystemTopicIds,
   ...markdownBackedComputerPrinciplesTopicIds,
   ...networkingTopicIds,
-  ...firstBatchAlgorithmTopicIds
+  ...dataStructureAlgorithmTopicIds,
+  ...firstBatchAlgorithmTopicIds,
+  ...databaseMarkdownTopicCases.map((topicCase) => topicCase.id),
+  ...programmingMarkdownTopicCases.map((topicCase) => topicCase.id),
+  ...systemDesignMarkdownTopicCases.map((topicCase) => topicCase.id)
 ]);
 
 const getLessonArticleNonTableBlocks = (lessonArticle: Extract<(typeof professionalTopicsBySubject.computerPrinciples)[number]['blocks'][number], { kind: 'lessonArticle' }>) =>
@@ -352,6 +556,7 @@ describe('professional topic skeleton data', () => {
 
       for (const topic of professionalTopicsBySubject[subjectKey]) {
         const isFilledTopic = filledTopicIds.has(topic.id);
+        const isImportedDatabaseProgrammingSystemDesignTopic = importedDatabaseProgrammingSystemDesignTopicIdSet.has(topic.id);
 
         expect(topic.id).not.toBe('');
         expect(topic.title).not.toBe('');
@@ -362,9 +567,15 @@ describe('professional topic skeleton data', () => {
         }
         expect(topic.sourceFiles.length).toBeGreaterThan(0);
         expect(topic.sourceSummary).not.toBe('');
-        expect(topic.examOutline).toEqual([]);
-        expect(topic.memoryPoints).toEqual([]);
-        expect(topic.understandingNotes).toEqual([]);
+        if (isImportedDatabaseProgrammingSystemDesignTopic) {
+          expect(topic.examOutline.length).toBeGreaterThan(0);
+          expect(topic.memoryPoints.length).toBeGreaterThan(0);
+          expect(topic.understandingNotes.length).toBeGreaterThan(0);
+        } else {
+          expect(topic.examOutline).toEqual([]);
+          expect(topic.memoryPoints).toEqual([]);
+          expect(topic.understandingNotes).toEqual([]);
+        }
         if (isFilledTopic) {
           expect(topic.terms.length).toBeGreaterThan(0);
         } else {
@@ -571,7 +782,7 @@ describe('professional topic skeleton data', () => {
 
       expect(topic).toBeDefined();
       expect(topic?.summary).not.toBe('');
-      expect(topic?.sourceFiles).toEqual(expect.arrayContaining([algorithmSource]));
+      expect(topic?.sourceFiles).toEqual(expect.arrayContaining(Array.from(algorithmExpectedSources[topicId])));
       expect(topic?.sourceSummary).not.toBe('');
       expect(topic?.terms.length).toBeGreaterThan(0);
       expect(topic?.blocks.some((block) => block.kind === 'complexityTable')).toBe(false);
@@ -586,7 +797,7 @@ describe('professional topic skeleton data', () => {
         throw new Error(`${topicId} should render algorithm explanation as lessonArticle`);
       }
 
-      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining([algorithmSource]));
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining(Array.from(algorithmExpectedSources[topicId])));
       expect(lessonArticle.lead.length).toBeGreaterThanOrEqual(1);
       expect(lessonArticle.sections.map((section) => section.heading)).toEqual(['演算法概念', '核心規則', '最壞時間複雜度']);
 
@@ -641,11 +852,85 @@ describe('professional topic skeleton data', () => {
     }
   });
 
-  it('moves imported first-batch algorithm topics to the top of the Algorithms route and preserves the remaining order', () => {
+  it('explains the Bucket Sort recursive Java version with detailed teaching comments', () => {
+    const topic = professionalTopicsBySubject.algorithms.find((algorithmTopic) => algorithmTopic.id === 'bucket-sort');
+    const recursiveCodeBlock = topic?.blocks.find(
+      (block) => block.kind === 'teachingCode' && block.title === '桶裝排序法遞迴版本'
+    );
+
+    expect(recursiveCodeBlock?.kind).toBe('teachingCode');
+    if (recursiveCodeBlock?.kind !== 'teachingCode') {
+      throw new Error('bucket-sort should include a recursive teachingCode block');
+    }
+
+    const explanatoryCommentSnippets = [
+      '第 1 步：用遞迴找出 min 與 max',
+      'index 從 1 開始',
+      '第 2 步：用遞迴建立桶子',
+      '第 3 步：用遞迴把每個數字放進對應桶子',
+      '第 4 步：用遞迴逐桶排序',
+      '第 5 步：用遞迴把桶子內容寫回原陣列',
+      '遞迴終止條件'
+    ];
+
+    for (const commentSnippet of explanatoryCommentSnippets) {
+      expect(recursiveCodeBlock.code).toContain(commentSnippet);
+    }
+    expect(recursiveCodeBlock.code.split('\n').filter((line) => line.trim().startsWith('//')).length).toBeGreaterThanOrEqual(24);
+  });
+
+  it('imports data-structure Markdown topics as source-traceable Algorithms lesson articles', () => {
+    const algorithmTopics = professionalTopicsBySubject.algorithms;
+
+    expect(algorithmTopics.slice(0, dataStructureAlgorithmTopicIds.length).map((topic) => topic.id)).toEqual(
+      dataStructureAlgorithmTopicIds
+    );
+
+    for (const topicCase of dataStructureAlgorithmTopicCases) {
+      const topic = algorithmTopics.find((algorithmTopic) => algorithmTopic.id === topicCase.id);
+
+      expect(topic, `${topicCase.id} should exist`).toBeDefined();
+      expect(topic?.title).toBe(topicCase.title);
+      expect(topic?.sourceFiles).toEqual(expect.arrayContaining([topicCase.source]));
+      expect(topic?.summary, `${topicCase.id} should have a summary`).not.toBe('');
+      expect(topic?.terms.length, `${topicCase.id} should have terms`).toBeGreaterThan(0);
+      expect(topic?.blocks).toHaveLength(1);
+
+      const lessonArticle = topic?.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topicCase.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining([topicCase.source]));
+      expect(lessonArticle.sourceSection).toBe(topic?.sourceSummary);
+      expect(lessonArticle.lead.length, `${topicCase.id} should keep source lead content`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.length, `${topicCase.id} should have lesson sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topicCase.id} should not have empty sections`).toBe(
+        true
+      );
+      expect(
+        lessonArticle.sections.every((section) => !/TODO|待補|來源大綱|教材本文/.test(section.heading)),
+        `${topicCase.id} should not expose placeholder headings`
+      ).toBe(true);
+
+      const serializedTopic = JSON.stringify(topic);
+
+      for (const keyword of topicCase.keywords) {
+        expect(serializedTopic, `${topicCase.id} should contain ${keyword}`).toContain(keyword);
+      }
+      for (const phrase of generatedContentPhrases) {
+        expect(serializedTopic, `${topicCase.id} should not expose generated phrase ${phrase}`).not.toContain(phrase);
+      }
+    }
+  });
+
+  it('moves data-structure Markdown topics to the top of the Algorithms route and preserves the remaining order', () => {
     const algorithmTopicIds = professionalTopicsBySubject.algorithms.map((topic) => topic.id);
 
-    expect(algorithmTopicIds.slice(0, firstBatchAlgorithmTopicIds.length)).toEqual(firstBatchAlgorithmTopicIds);
-    expect(algorithmTopicIds.slice(firstBatchAlgorithmTopicIds.length)).toEqual(expectedAlgorithmTopicIdsAfterImportedTopics);
+    expect(algorithmTopicIds.slice(0, dataStructureAlgorithmTopicIds.length)).toEqual(dataStructureAlgorithmTopicIds);
+    expect(algorithmTopicIds.slice(dataStructureAlgorithmTopicIds.length)).toEqual(expectedAlgorithmTopicIdsAfterDataStructureTopics);
   });
 
   it('fills the Turing machine and test lesson article with source traceability and teaching sections', () => {
@@ -1576,6 +1861,71 @@ describe('professional topic skeleton data', () => {
         true
       );
       expect(JSON.stringify(topic), `${topic.id} should contain ${topicCase.keyword}`).toContain(topicCase.keyword);
+    }
+  });
+
+  it('imports Database, Programming, and System Design Markdown topics with exact source traceability and lessonArticle content', () => {
+    const rawInstructionPhrases = ['用table', 'ul/li做', '紅色文字顏色', '你幫我設計顯示方式'];
+
+    for (const { subjectKey, topicCases } of importedDatabaseProgrammingSystemDesignSubjectCases) {
+      const importedTopics = professionalTopicsBySubject[subjectKey].slice(0, topicCases.length);
+
+      expect(importedTopics.map((topic) => topic.id)).toEqual(topicCases.map((topicCase) => topicCase.id));
+
+      for (const topicCase of topicCases) {
+        const topic = professionalTopicsBySubject[subjectKey].find((subjectTopic) => subjectTopic.id === topicCase.id);
+
+        if (!topic) {
+          throw new Error(`${topicCase.id} should exist`);
+        }
+
+        expect(topic.subjectKey).toBe(subjectKey);
+        expect(topic.title).toBe(topicCase.title);
+        expect(topic.sourceBatch).toBe(importedDatabaseProgrammingSystemDesignBatch);
+        expect(topic.sourceFiles).toEqual([topicCase.source]);
+        expect(topic.sourceFiles.some((sourceFile) => sourceFile.includes('/TMP/'))).toBe(false);
+        expect(topic.sourceFiles.some((sourceFile) => sourceFile.endsWith('.txt'))).toBe(false);
+        expect(topic.sourceSummary).toContain(topicCase.title);
+        expect(topic.summary, `${topic.id} should have summary`).not.toBe('');
+        expect(topic.examOutline.length, `${topic.id} should have exam outline`).toBeGreaterThan(0);
+        expect(topic.memoryPoints.length, `${topic.id} should have memory points`).toBeGreaterThan(0);
+        expect(topic.understandingNotes.length, `${topic.id} should have understanding notes`).toBeGreaterThan(0);
+        expect(topic.terms.length, `${topic.id} should have terms`).toBeGreaterThan(0);
+        expect(topic.blocks).toHaveLength(1);
+
+        const lessonArticle = topic.blocks[0];
+
+        expect(lessonArticle?.kind).toBe('lessonArticle');
+        if (lessonArticle?.kind !== 'lessonArticle') {
+          throw new Error(`${topic.id} should render as lessonArticle`);
+        }
+
+        expect(lessonArticle.sourceFiles).toEqual([topicCase.source]);
+        expect(lessonArticle.sourceSection).toBe(topic.sourceSummary);
+        expect(lessonArticle.lead.length, `${topic.id} should preserve source guidance in lead`).toBeGreaterThan(0);
+        expect(lessonArticle.sections.length, `${topic.id} should have sections`).toBeGreaterThan(0);
+        expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topic.id} should not have empty sections`).toBe(
+          true
+        );
+
+        const serializedTopic = JSON.stringify(topic);
+
+        expect(serializedTopic, `${topic.id} should contain ${topicCase.keyword}`).toContain(topicCase.keyword);
+        expect(serializedTopic).not.toContain('questionText');
+        expect(serializedTopic).not.toContain('correctAnswer');
+        expect(serializedTopic).not.toContain('backendSyncId');
+        expect(serializedTopic).not.toContain('remoteQuestionId');
+      }
+    }
+
+    const serializedImportedTopics = JSON.stringify(
+      importedDatabaseProgrammingSystemDesignSubjectCases.flatMap(({ subjectKey, topicCases }) =>
+        professionalTopicsBySubject[subjectKey].slice(0, topicCases.length)
+      )
+    );
+
+    for (const rawInstructionPhrase of rawInstructionPhrases) {
+      expect(serializedImportedTopics).not.toContain(rawInstructionPhrase);
     }
   });
 

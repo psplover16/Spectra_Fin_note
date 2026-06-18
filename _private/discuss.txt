@@ -1,4 +1,4 @@
-@/_private/MD/資料結構與演算法/  內部全部MD檔 都要引入。
+@/_private/MD/資料庫/  內部全部MD檔 都要引入。
 要按照順序 放入section，目前應該能從名稱辨別順序。
 
 每個md檔，要先讀取其內容，propose階段一次，apply的時候一次。
@@ -9,11 +9,39 @@
 別隨意新增、刪除、修改資料。
 
 
-上述資料是路由 networking 所需要的內容，
-networking 路由所需要的 section樣式，請參考 路由 computer-principles
+上述資料是路由 database 所需要的內容，
+database 路由所需要的 section樣式，請參考 路由 networking
 
-幫我為路由 networking 新增各個 section，標題採用各md的 主題
+幫我為路由 database 新增各個 section，標題採用各md的 主題。
+目前既有的section，要在 這一次新增的 下方。(也就是排序上，目前有的在後面位置)
 
 
 
 
+
+
+上述做完之後，在幫我 改成 針對以下做排程，
+@/_private/MD/程式設計/  內部全部MD檔 都要引入。
+引入到路由 programming
+與上面的要求都一樣，
+
+
+
+每個md檔，要先讀取其內容，propose階段一次，apply的時候一次。
+每個內容 我已經做過 編排、整理，請盡量以md檔內的編排來放入本專案。
+每個MD僅做 錯誤 辨別，與"最小幅度"的修正，目標只有不要有錯誤就好。
+別隨意新增、刪除、修改資料。
+
+上述資料是路由 programming 所需要的內容，
+programming 路由所需要的 section樣式，請參考 路由 networking
+
+幫我為路由 programming 新增各個 section，標題採用各md的 主題。
+目前既有的section，要在 這一次新增的 下方。(也就是排序上，目前有的在後面位置)
+
+
+
+@/_private/MD/系統分析與設計/  內部全部MD檔 都要引入。
+他需要再 英文 的按鈕旁邊，另開一個新的 按鈕，叫做系統設計。
+然後把 英文、國文路由的按鈕隱藏。
+
+@/_private/MD/系統分析與設計/ 裡面MD的內容也要引入至 新的 系統設計路由內

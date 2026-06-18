@@ -5,6 +5,7 @@ export const subjectKeys = [
   'programming',
   'database',
   'algorithms',
+  'systemDesign',
   'english',
   'chinese'
 ] as const;

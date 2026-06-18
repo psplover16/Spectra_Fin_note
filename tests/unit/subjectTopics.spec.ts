@@ -25,6 +25,30 @@ const oldNetworkingSkeletonTopicIds: readonly string[] = [
   'networking-application-layer',
   'networking-security'
 ];
+const expectedDatabaseImportedRouteTopicIds: readonly string[] = [
+  'database-md-foundations-architecture',
+  'database-md-keys-erd',
+  'database-md-normalization',
+  'database-md-sql-crud',
+  'database-md-sql-advanced-query',
+  'database-md-transactions-nosql'
+];
+const expectedProgrammingImportedRouteTopicIds: readonly string[] = [
+  'programming-md-language-execution-basics',
+  'programming-md-functions-parameter-passing',
+  'programming-md-arrays-strings-exceptions',
+  'programming-md-pointers',
+  'programming-md-oop',
+  'programming-md-recursion',
+  'programming-md-language-features'
+];
+const expectedSystemDesignImportedRouteTopicIds: readonly string[] = [
+  'system-design-sdlc-ssdlc',
+  'system-design-cohesion-coupling',
+  'system-design-oo-uml',
+  'system-design-testing',
+  'system-design-conversion-pdca'
+];
 
 describe('subject topic route data helpers', () => {
   it('treats an empty lessonArticle skeleton as no route-visible content', () => {
@@ -131,13 +155,23 @@ describe('subject topic route data helpers', () => {
     expect(computerPrinciplesIds).not.toContain('cp-hardware-protection');
 
     expect(algorithmTitles).toEqual([
+      '資料結構與演算法 1：演算法定義 + Big-O 複雜度 ★',
+      '資料結構與演算法 2：陣列 Array + 鏈結串列 Linked List',
+      '資料結構與演算法 3：堆疊 Stack + 佇列 Queue',
+      '資料結構與演算法 4：樹 Tree（基本）+ 前中後序走訪',
+      '資料結構與演算法 5：高等樹 ★（AVL／B-Tree／Heap／紅黑樹）',
+      '資料結構與演算法 6（上）：圖 Graph 基礎 + DFS／BFS ★',
+      '資料結構與演算法 6（下）：圖演算法 ★（MST／最短路徑／AOV-AOE）',
+      '資料結構與演算法 7：排序 Sorting ★',
+      '資料結構與演算法 8：雜湊 Hashing',
       '氣泡排序法(Bubble Sort)',
+      '選擇排序法(Selection Sort)',
       '快速排序法(Quick Sort)',
       'Fibonacci 序列(Fibonacci Sequence)',
       '最大公因數(Greatest Common Divisor)',
       '二元搜尋法(Binary Search)',
-      '選擇排序法(Selection Sort)',
-      '插入排序法(Insertion Sort)'
+      '插入排序法(Insertion Sort)',
+      '桶裝排序法(Bucket Sort)'
     ]);
   });
 
@@ -146,6 +180,36 @@ describe('subject topic route data helpers', () => {
 
     expect(networkingTopicIds).toEqual(expectedNetworkingRouteTopicIds);
     expect(networkingTopicIds.filter((topicId) => oldNetworkingSkeletonTopicIds.includes(topicId))).toEqual([]);
+  });
+
+  it('exposes imported database, programming, and system design topics before skeleton topics', () => {
+    const databaseTopicIds = getSubjectTopics('database').map((topic) => topic.id);
+    const programmingTopicIds = getSubjectTopics('programming').map((topic) => topic.id);
+    const systemDesignTopicIds = getSubjectTopics('systemDesign').map((topic) => topic.id);
+
+    expect(databaseTopicIds.slice(0, expectedDatabaseImportedRouteTopicIds.length)).toEqual(expectedDatabaseImportedRouteTopicIds);
+    expect(programmingTopicIds.slice(0, expectedProgrammingImportedRouteTopicIds.length)).toEqual(expectedProgrammingImportedRouteTopicIds);
+    expect(systemDesignTopicIds).toEqual(expectedSystemDesignImportedRouteTopicIds);
+  });
+
+  it('keeps system design Markdown topics owned by the systemDesign route', () => {
+    const programmingTopics = getSubjectTopics('programming');
+    const systemDesignTopics = getSubjectTopics('systemDesign');
+
+    expect(
+      programmingTopics.some((topic) =>
+        topic.blocks.some(
+          (block) => block.kind === 'lessonArticle' && block.sourceFiles.some((sourceFile) => sourceFile.includes('_private/MD/系統分析與設計/'))
+        )
+      )
+    ).toBe(false);
+    expect(
+      systemDesignTopics.every((topic) =>
+        topic.blocks.some(
+          (block) => block.kind === 'lessonArticle' && block.sourceFiles.some((sourceFile) => sourceFile.includes('_private/MD/系統分析與設計/'))
+        )
+      )
+    ).toBe(true);
   });
 
   it('keeps networking route topics on the existing lessonArticle contract', () => {
@@ -168,8 +232,6 @@ describe('subject topic route data helpers', () => {
 
   it('does not fall back to placeholder topics when a route has no filled content', () => {
     expect(getSubjectTopics('informationManagement')).toEqual([]);
-    expect(getSubjectTopics('programming')).toEqual([]);
-    expect(getSubjectTopics('database')).toEqual([]);
     expect(getSubjectTopics('english')).toEqual([]);
     expect(getSubjectTopics('chinese')).toEqual([]);
   });

@@ -7,8 +7,8 @@
 - `src/app/`
   - 應用骨幹，包含 Vue 入口、AppShell、router 與 route preload registry。
   - 只負責整體外殼、route region、PWA 啟動鉤子與主要 route 載入策略。
-  - `router.ts` 註冊主要科目路由；專業科目包含 `/computer-principles`、`/networking`、`/information-management`、`/programming`、`/database`、`/algorithms`。
-  - `routePreload.ts` 的 route preload registry 必須包含 `/database` 與 `/algorithms`，讓 hover、focus、touch 與 idle preload 可載入對應 route component。
+  - `router.ts` 註冊主要科目路由；專業科目包含 `/computer-principles`、`/networking`、`/information-management`、`/programming`、`/database`、`/algorithms`、`/system-design`。
+  - `routePreload.ts` 的 route preload registry 必須包含 `/database`、`/algorithms` 與 `/system-design`，讓 hover、focus、touch 與 idle preload 可載入對應 route component。
 - `src/shared/`
   - 跨模組共用的純 UI 元件與工具。
   - 共用元件只放視覺與互動確實相同的行為，例如 `RouteSubMenu`、`RouteTabs` 與 `TeachingCodeBlock`。
@@ -18,12 +18,13 @@
   - 科目頁放在各自模組，跨科目主題卡與進度儲存放在 `src/modules/subjectTopics/`。
   - `src/modules/database/views/DatabaseView.vue` 擁有資料庫 route view，使用 `SubjectTopicPage` 與 `database` subject key。
   - `src/modules/algorithms/views/AlgorithmsView.vue` 擁有演算法 route view，使用 `SubjectTopicPage` 與 `algorithms` subject key。
+  - `src/modules/systemDesign/views/SystemDesignView.vue` 擁有系統設計 route view，使用 `SubjectTopicPage` 與 `systemDesign` subject key。
   - `src/modules/commonSubjects/` 管理共同科目選項與 `CommonSubjectSwitcher`；共同科目 route 仍由 `src/app/router.ts` 統一註冊。
   - `src/modules/subjectTopics/` 管理：
-    - `types/subjectTopic.ts`：`SubjectKey`、`SubjectTopic`、`SubjectTopicBlock`；`SubjectKey` 包含 `database` 與 `algorithms`。
-    - `data/placeholderTopics.ts`：八科 placeholder topics；不得放正式題庫欄位。
+    - `types/subjectTopic.ts`：`SubjectKey`、`SubjectTopic`、`SubjectTopicBlock`；`SubjectKey` 包含 `database`、`algorithms` 與 `systemDesign`。
+    - `data/placeholderTopics.ts`：九科 placeholder topics；不得放正式題庫欄位。
     - `data/professionalTopics.ts`：正式專業 topic data 的靜態 bundle 入口；目前專業 topic 只保留 route、topic id、title、sourceFiles、sourceSummary 與 source section skeleton。
-      - 專業科目 route（`computerPrinciples`、`networking`、`database`、`informationManagement`、`programming`、`algorithms`）正式顯示內容必須是單一 `lessonArticle` block；舊的 `sourceNote`、`examOutline`、`memoryPoints`、`understanding`、`termList`、`workedExample`、`pitfall`、`complexityTable`、`teachingCode` 不得作為 professional topic 的 top-level displayed blocks。
+      - 專業科目 route（`computerPrinciples`、`networking`、`database`、`informationManagement`、`programming`、`algorithms`、`systemDesign`）正式顯示內容必須是單一 `lessonArticle` block；舊的 `sourceNote`、`examOutline`、`memoryPoints`、`understanding`、`termList`、`workedExample`、`pitfall`、`complexityTable`、`teachingCode` 不得作為 professional topic 的 top-level displayed blocks。
       - `summary`、`examOutline`、`memoryPoints`、`understandingNotes`、`terms`、`verifiedBy`、`verifiedAt` 與 `verifierSummary` 在 skeleton 狀態不可放入 AI 生成正文或驗證摘要。
       - skeleton 狀態的 `lessonArticle.lead` 與 `lessonArticle.sections` 必須是空陣列；未來由使用者提供 section 標題與內容後，再把整理後內容填入對應 topic 的 `lessonArticle.sections`。
       - 演算法 skeleton 保留排序基準、Bubble/Selection/Insertion/Merge/Quick/Heap/Shell，以及 Fibonacci、GCD、Binary Search 等 topic id 與來源定位，但不保留複雜度表、Java 範例或教學正文。

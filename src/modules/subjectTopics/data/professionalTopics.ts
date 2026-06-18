@@ -1,4 +1,6 @@
 import type {
+  LessonArticleContentBlock,
+  LessonArticleSection,
   ProfessionalSubjectTopic,
   ProfessionalTopicDifficulty,
   ProfessionalTopicType,
@@ -1255,6 +1257,114 @@ const professionalTopicSkeletonConfigs = [
     topicType: "concept"
   },
   {
+    id: "algorithm-big-o-complexity",
+    subjectKey: "algorithms",
+    titleZh: "資料結構與演算法 1：演算法定義 + Big-O 複雜度 ★",
+    titleEn: "Algorithm and Big-O Complexity",
+    sourceFiles: [
+      "_private/MD/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md"
+    ],
+    sourceSection: "資料結構與演算法 1：演算法定義 + Big-O 複雜度",
+    difficulty: "core",
+    topicType: "algorithm"
+  },
+  {
+    id: "algorithm-array-linked-list",
+    subjectKey: "algorithms",
+    titleZh: "資料結構與演算法 2：陣列 Array + 鏈結串列 Linked List",
+    titleEn: "Array and Linked List",
+    sourceFiles: [
+      "_private/MD/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md"
+    ],
+    sourceSection: "資料結構與演算法 2：陣列 Array + 鏈結串列 Linked List",
+    difficulty: "core",
+    topicType: "dataStructure"
+  },
+  {
+    id: "algorithm-stack-queue",
+    subjectKey: "algorithms",
+    titleZh: "資料結構與演算法 3：堆疊 Stack + 佇列 Queue",
+    titleEn: "Stack and Queue",
+    sourceFiles: [
+      "_private/MD/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md"
+    ],
+    sourceSection: "資料結構與演算法 3：堆疊 Stack + 佇列 Queue",
+    difficulty: "core",
+    topicType: "dataStructure"
+  },
+  {
+    id: "algorithm-tree-traversal-basics",
+    subjectKey: "algorithms",
+    titleZh: "資料結構與演算法 4：樹 Tree（基本）+ 前中後序走訪",
+    titleEn: "Tree Basics and Traversal",
+    sourceFiles: [
+      "_private/MD/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md"
+    ],
+    sourceSection: "資料結構與演算法 4：樹 Tree（基本）+ 前中後序走訪",
+    difficulty: "core",
+    topicType: "dataStructure"
+  },
+  {
+    id: "algorithm-advanced-trees",
+    subjectKey: "algorithms",
+    titleZh: "資料結構與演算法 5：高等樹 ★（AVL／B-Tree／Heap／紅黑樹）",
+    titleEn: "Advanced Trees",
+    sourceFiles: [
+      "_private/MD/資料結構與演算法/資料結構與演算法_5_高等樹.md"
+    ],
+    sourceSection: "資料結構與演算法 5：高等樹",
+    difficulty: "advanced",
+    topicType: "dataStructure"
+  },
+  {
+    id: "algorithm-graph-basics-traversal",
+    subjectKey: "algorithms",
+    titleZh: "資料結構與演算法 6（上）：圖 Graph 基礎 + DFS／BFS ★",
+    titleEn: "Graph Basics and Traversal",
+    sourceFiles: [
+      "_private/MD/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md"
+    ],
+    sourceSection: "資料結構與演算法 6（上）：圖 Graph 基礎 + DFS／BFS",
+    difficulty: "advanced",
+    topicType: "dataStructure"
+  },
+  {
+    id: "algorithm-graph-algorithms",
+    subjectKey: "algorithms",
+    titleZh: "資料結構與演算法 6（下）：圖演算法 ★（MST／最短路徑／AOV-AOE）",
+    titleEn: "Graph Algorithms",
+    sourceFiles: [
+      "_private/MD/資料結構與演算法/資料結構與演算法_6下_圖演算法.md"
+    ],
+    sourceSection: "資料結構與演算法 6（下）：圖演算法",
+    difficulty: "advanced",
+    topicType: "algorithm"
+  },
+  {
+    id: "algorithm-sorting-overview",
+    subjectKey: "algorithms",
+    titleZh: "資料結構與演算法 7：排序 Sorting ★",
+    titleEn: "Sorting",
+    sourceFiles: [
+      "_private/MD/資料結構與演算法/資料結構與演算法_7_排序.md"
+    ],
+    sourceSection: "資料結構與演算法 7：排序 Sorting",
+    difficulty: "advanced",
+    topicType: "algorithm"
+  },
+  {
+    id: "algorithm-hashing",
+    subjectKey: "algorithms",
+    titleZh: "資料結構與演算法 8：雜湊 Hashing",
+    titleEn: "Hashing",
+    sourceFiles: [
+      "_private/MD/資料結構與演算法/資料結構與演算法_8_雜湊.md"
+    ],
+    sourceSection: "資料結構與演算法 8：雜湊 Hashing",
+    difficulty: "core",
+    topicType: "dataStructure"
+  },
+  {
     id: "algorithms-study-strategy",
     subjectKey: "algorithms",
     titleZh: "資料結構與演算法準備方向",
@@ -1471,6 +1581,18 @@ const professionalTopicSkeletonConfigs = [
       "_private/資料結構與演算法.txt"
     ],
     sourceSection: "七、插入排序法 Insertion Sort",
+    difficulty: "core",
+    topicType: "algorithm"
+  },
+  {
+    id: "bucket-sort",
+    subjectKey: "algorithms",
+    titleZh: "桶裝排序法",
+    titleEn: "Bucket Sort",
+    sourceFiles: [
+      "_private/MD/演算法/GeneralBucketSort.java"
+    ],
+    sourceSection: "GeneralBucketSort.java / 通用桶裝排序法",
     difficulty: "core",
     topicType: "algorithm"
   },
@@ -2169,7 +2291,946 @@ const networkingDefenseAttacksTerms = [
   { zh: '端點偵測與回應', en: 'EDR' }
 ] as const;
 
-const algorithmExampleSourceFiles = ['_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md'] as const;
+const dataStructureAlgorithmContentById = {
+  'algorithm-big-o-complexity': {
+    summary: '整理演算法 5 條件、Big-O 判斷規則、常見複雜度級距，以及時間複雜度與空間複雜度的考點。',
+    terms: [
+      { zh: '演算法', en: 'Algorithm' },
+      { zh: '時間複雜度', en: 'Time Complexity' },
+      { zh: '空間複雜度', en: 'Space Complexity' },
+      { zh: '大 O 記號', en: 'Big-O Notation' }
+    ],
+    lead: [
+      '演算法是解決問題的一組明確、有限步驟；考試最愛把定義、5 條件與 Big-O 判斷混在選項裡。',
+      'Big-O 不是在算實際秒數，而是在看資料量 n 變大時，執行次數或額外空間成長得多快。'
+    ],
+    sections: [
+      {
+        heading: '演算法定義與 5 條件',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: '演算法 Algorithm 是解決問題的一組明確、有限步驟。演算法 5 條件是輸入、輸出、明確性、有限性、有效性。'
+          },
+          {
+            kind: 'table',
+            headers: ['條件', '考點'],
+            rows: [
+              ['輸入 Input', '可有 0 個或多個輸入；沒有輸入也可以是演算法。'],
+              ['輸出 Output', '至少要有 1 個輸出，否則無法得到結果。'],
+              ['明確性 Definiteness', '每個步驟都要清楚，不可含糊。'],
+              ['有限性 Finiteness', '有限步驟後必須停止，不能無限迴圈。'],
+              ['有效性 Effectiveness', '每個步驟都要基本且可實際執行。']
+            ]
+          }
+        ]
+      },
+      {
+        heading: 'Big-O 的核心想法',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              'Big-O 用來描述執行次數或記憶體使用量隨 n 成長的數量級。',
+              '只保留成長最快的最高次項，丟掉常數、係數與低次項。',
+              '例如 3n² + 5n + 100 會化成 O(n²)。',
+              '相加取最高次；巢狀迴圈通常相乘。'
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '常見成長順序：O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ) < O(n!)。'
+          }
+        ]
+      },
+      {
+        heading: '看程式判斷複雜度',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['程式長相', '複雜度', '理解方式'],
+            rows: [
+              ['固定次數、沒有迴圈', 'O(1)', '例如加法、陣列索引存取。'],
+              ['一層迴圈跑 n 次', 'O(n)', '資料量加倍，執行次數約加倍。'],
+              ['兩層各跑 n 次的巢狀迴圈', 'O(n²)', '外層 n 乘內層 n。'],
+              ['每次把問題減半', 'O(log n)', '例如二分搜尋。'],
+              ['分治且每層處理 n 筆', 'O(n log n)', '例如合併排序。']
+            ]
+          }
+        ]
+      },
+      {
+        heading: '最佳、平均、最壞與空間',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '最佳 Best Case 是輸入最有利時的表現。',
+              '平均 Average Case 是一般輸入分布下的表現。',
+              '最壞 Worst Case 是最不利輸入下的上界；Big-O 選擇題常指這個。',
+              '時間複雜度看執行次數成長；空間複雜度看額外記憶體成長。'
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '常見取捨是 time-space tradeoff：想更快可能要用更多空間，想省空間可能會犧牲速度。'
+          }
+        ]
+      },
+      {
+        heading: '常見複雜度速查',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['複雜度', '名稱', '典型例子'],
+            rows: [
+              ['O(1)', '常數', '陣列用索引取值、一次加法。'],
+              ['O(log n)', '對數', '二分搜尋。'],
+              ['O(n)', '線性', '一層迴圈、線性搜尋。'],
+              ['O(n log n)', '線性對數', '合併排序、快速排序平均情況。'],
+              ['O(n²)', '平方', '兩層巢狀迴圈、氣泡排序、選擇排序、插入排序。'],
+              ['O(2ⁿ)', '指數', '窮舉所有子集。'],
+              ['O(n!)', '階乘', '全排列。']
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  'algorithm-array-linked-list': {
+    summary: '整理陣列連續儲存與位址計算、鏈結串列指標操作，以及 Array 和 Linked List 的存取與插刪差異。',
+    terms: [
+      { zh: '陣列', en: 'Array' },
+      { zh: '鏈結串列', en: 'Linked List' },
+      { zh: '列優先', en: 'Row-major' },
+      { zh: '行優先', en: 'Column-major' },
+      { zh: '雙向鏈結串列', en: 'Doubly Linked List' }
+    ],
+    lead: [
+      '陣列與鏈結串列是線性資料結構的基本對照題：陣列靠索引快取值，鏈結串列靠指標快插刪。',
+      '位址計算要理解公式裡每個符號的意思；鏈結串列插入則要記住先接後面，再改前面。'
+    ],
+    sections: [
+      {
+        heading: '陣列 Array',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '陣列用連續記憶體存放相同型別元素。',
+              '給定索引就能直接定位，因此隨機存取是 O(1)。',
+              '大小通常在宣告時決定，中間插入或刪除需要搬移後方元素，所以是 O(n)。'
+            ]
+          },
+          {
+            kind: 'table',
+            headers: ['優點', '缺點'],
+            rows: [['隨機存取快 O(1)、不用額外指標、省空間', '大小固定、插入與刪除慢，因為要搬移元素']]
+          }
+        ]
+      },
+      {
+        heading: '陣列位址計算',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: '一維陣列 A[i] 位址 = B + (i - L) x d；B 是起始位址，L 是下界，d 是每個元素大小。'
+          },
+          {
+            kind: 'table',
+            headers: ['二維儲存方式', '公式概念', '常見語境'],
+            rows: [
+              ['Row-major', '一列一列存，A[i][j] 位移常看成 i x 欄數 + j。', 'C、Java 常用。'],
+              ['Column-major', '一行一行存，A[i][j] 位移常看成 j x 列數 + i。', 'Fortran 常用。']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '同一格在 Row-major 與 Column-major 可能算出不同位址；題目若沒說，通常先檢查語境是否預設 row-major。'
+          }
+        ]
+      },
+      {
+        heading: '鏈結串列 Linked List',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '每個節點 node 通常包含 data 與 next 指標。',
+              '節點在記憶體中不必連續，靠指標串起來。',
+              '大小可動態增減，但不能直接用索引跳到第 k 個，查找通常要從頭走 O(n)。',
+              '已知位置時插入與刪除主要是改指標，可視為 O(1)。'
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '中間插入新節點時，正確順序是 new.next = p.next，再 p.next = new；若先改 p.next，後面整串可能斷鏈。'
+          }
+        ]
+      },
+      {
+        heading: 'Array vs Linked List',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['比較', 'Array', 'Linked List'],
+            rows: [
+              ['記憶體', '連續', '不連續，靠指標'],
+              ['大小', '固定', '動態'],
+              ['隨機存取', 'O(1)', 'O(n)'],
+              ['插入/刪除', 'O(n)，需要搬移', '已知位置時 O(1)，主要改指標'],
+              ['額外空間', '少', '每節點需額外指標']
+            ]
+          }
+        ]
+      },
+      {
+        heading: '鏈結串列種類',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['種類', '結構', '特點'],
+            rows: [
+              ['Singly Linked List', '每節點只有 next', '只能往一個方向走。'],
+              ['Doubly Linked List', '每節點有 prev 與 next', '可往前往後走，但多一個指標空間。'],
+              ['Circular Linked List', '最後一個 next 指回頭', '形成環，可從任一點繞遍全部。']
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  'algorithm-stack-queue': {
+    summary: '整理 Stack 的 LIFO、Queue 的 FIFO、ADT 觀念，以及 Circular Queue 的假性溢位、取餘數與滿空判斷。',
+    terms: [
+      { zh: '堆疊', en: 'Stack' },
+      { zh: '佇列', en: 'Queue' },
+      { zh: '後進先出', en: 'LIFO' },
+      { zh: '先進先出', en: 'FIFO' },
+      { zh: '環狀佇列', en: 'Circular Queue' }
+    ],
+    lead: [
+      'Stack 與 Queue 是限制存取方式的抽象資料型別 ADT，重點不是怎麼存，而是資料怎麼進出。',
+      '選擇題常把 Stack/Queue 和 Array/Linked List 混問：Array/Linked List 是底層儲存方式，Stack/Queue 是操作規則。'
+    ],
+    sections: [
+      {
+        heading: 'Stack：LIFO',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              'Stack 採 LIFO，Last In First Out，後進先出。',
+              '只能從同一端 top 進出；push 是壓入，pop 是彈出，peek/top 是只看頂端。',
+              '常見應用包含函式呼叫的 call stack、遞迴、括號配對、運算式轉換、Undo。'
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '把 Stack 想成一疊盤子：最後放上去的盤子會最先拿下來。'
+          }
+        ]
+      },
+      {
+        heading: 'Queue：FIFO',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              'Queue 採 FIFO，First In First Out，先進先出。',
+              '通常 rear 端 enqueue 加入，front 端 dequeue 取出。',
+              '常見應用包含 CPU 排程、列印佇列、BFS、buffer 與訊息佇列。'
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '把 Queue 想成排隊：先來的人先被服務，後來的人排在後面。'
+          }
+        ]
+      },
+      {
+        heading: 'Array、Linked List、Stack、Queue 比較',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['結構', '進出方式', '特性'],
+            rows: [
+              ['Array', '用索引隨機存取任一格', '連續、存取 O(1)、大小固定。'],
+              ['Linked List', '從頭循序走或改指標', '不連續、動態、插刪改指標。'],
+              ['Stack', '只在頂端進出', 'LIFO 後進先出。'],
+              ['Queue', '後端進、前端出', 'FIFO 先進先出。']
+            ]
+          }
+        ]
+      },
+      {
+        heading: 'Circular Queue',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: 'Circular Queue 用環狀方式重複利用陣列空間，解決 front 已往後移但尾端已到陣列末端的假性溢位。'
+          },
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '索引往下一格時用 (index + 1) % size 回到開頭。',
+              '犧牲一格版本中，空的判斷是 front == rear。',
+              '滿的判斷是 (rear + 1) % size == front。',
+              '容量為 size 時，實際只能放 size - 1 個元素；若用 count 計數器才可放滿 size 個。'
+            ]
+          },
+          {
+            kind: 'table',
+            headers: ['狀態', '判斷'],
+            rows: [
+              ['空', 'front == rear'],
+              ['滿', '(rear + 1) % size == front']
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  'algorithm-tree-traversal-basics': {
+    summary: '整理樹的階層結構、基本術語、二元樹種類與公式，以及 Preorder、Inorder、Postorder 的走訪規則。',
+    terms: [
+      { zh: '樹', en: 'Tree' },
+      { zh: '二元樹', en: 'Binary Tree' },
+      { zh: '前序走訪', en: 'Preorder Traversal' },
+      { zh: '中序走訪', en: 'Inorder Traversal' },
+      { zh: '後序走訪', en: 'Postorder Traversal' }
+    ],
+    lead: [
+      'Tree 的名詞與公式偏背誦，走訪偏流程題；最有效的理解方式是盯著根的位置。',
+      '前、中、後序的前中後，指的是根節點被 visit 的時機；左子樹永遠在右子樹前面。'
+    ],
+    sections: [
+      {
+        heading: 'Tree 定義',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '樹是階層式 hierarchical 的非線性結構，由節點 node 與邊 edge 組成。',
+              '有唯一根；除了根以外，每個節點恰有一個父節點。',
+              '沒有環 acyclic；n 個節點有 n - 1 條邊。',
+              '任兩節點間只有一條路徑。'
+            ]
+          }
+        ]
+      },
+      {
+        heading: '基本術語',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['術語', '意思'],
+            rows: [
+              ['Root', '最上層、沒有父節點。'],
+              ['Leaf', '沒有子節點，也叫終端節點。'],
+              ['Internal Node', '有子節點的非終端節點。'],
+              ['Parent/Child', '上下層直接相連的節點關係。'],
+              ['Sibling', '同一個父節點底下的節點。'],
+              ['Degree', '節點的子節點數；樹的分支度是所有節點 degree 最大值。'],
+              ['Level/Height', '層與高度的起算可能從 0 或 1，考題若有定義要依題目。'],
+              ['Forest', '多棵樹的集合；把樹的根拿掉會形成森林。']
+            ]
+          }
+        ]
+      },
+      {
+        heading: 'Binary Tree',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['種類', '條件'],
+            rows: [
+              ['Full Binary Tree', '每個節點不是葉，就是恰好有 2 個子節點。'],
+              ['Complete Binary Tree', '除最後一層外都填滿，最後一層靠左排。'],
+              ['Perfect Binary Tree', '每一層都填滿，所有葉在同一層。'],
+              ['Skewed Tree', '每個節點只有一邊子節點，退化得像鏈結串列。']
+            ]
+          },
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '第 i 層最多 2^(i-1) 個節點。',
+              '高度 h 的二元樹最多 2^h - 1 個節點。',
+              '葉節點數 n0 = 分支度為 2 的節點數 n2 + 1，這個公式很常考。',
+              'n 個節點有 n + 1 個 null link。'
+            ]
+          }
+        ]
+      },
+      {
+        heading: 'Preorder、Inorder、Postorder',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['走訪', '順序', '根的位置'],
+            rows: [
+              ['Preorder', '根 -> 左 -> 右', '根先被 visit。'],
+              ['Inorder', '左 -> 根 -> 右', '根在中間被 visit。'],
+              ['Postorder', '左 -> 右 -> 根', '根最後被 visit。']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '層序 Level-order 是一層一層走，使用 Queue，本質上就是 BFS。'
+          },
+          {
+            kind: 'paragraph',
+            text: '同一棵樹若根為 A，左子樹 B(D,E)，右子樹 C(,F)，則 Preorder 是 A B D E C F，Inorder 是 D B E A C F，Postorder 是 D E B F C A。'
+          }
+        ]
+      }
+    ]
+  },
+  'algorithm-advanced-trees': {
+    summary: '整理 BST 退化問題、AVL 旋轉、B-Tree/B+ Tree、Heap、Red-Black Tree 的特性與複雜度比較。',
+    terms: [
+      { zh: '二元搜尋樹', en: 'Binary Search Tree' },
+      { zh: 'AVL 樹', en: 'AVL Tree' },
+      { zh: 'B 樹', en: 'B-Tree' },
+      { zh: '堆積', en: 'Heap' },
+      { zh: '紅黑樹', en: 'Red-Black Tree' }
+    ],
+    lead: [
+      '高等樹的核心問題是：普通 BST 若失衡，搜尋會從 O(log n) 退化成 O(n)。',
+      'AVL、B-Tree、Heap、Red-Black Tree 各自用不同規則維持效率，選擇題常考特色與複雜度配對。'
+    ],
+    sections: [
+      {
+        heading: 'BST 與平衡需求',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              'BST 規則是左子樹所有值 < 節點 < 右子樹所有值。',
+              '搜尋與插入都從根開始，小往左、大往右，成本是 O(樹高)。',
+              '中序走訪 BST 會得到由小到大的排序結果。',
+              '若資料照順序插入，BST 會退化成偏斜樹，樹高變 O(n)，搜尋也退化成 O(n)。'
+            ]
+          }
+        ]
+      },
+      {
+        heading: 'AVL Tree',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: 'AVL 是自我平衡的二元搜尋樹，每個節點平衡因子 BF = 左子樹高 - 右子樹高，必須維持在 -1、0、+1。'
+          },
+          {
+            kind: 'table',
+            headers: ['失衡型', '形狀', '解法'],
+            rows: [
+              ['LL', '左邊太高，且偏左子的左邊', '右旋，單旋。'],
+              ['RR', '右邊太高，且偏右子的右邊', '左旋，單旋。'],
+              ['LR', '左邊太高，但偏左子的右邊', '先左旋再右旋，雙旋。'],
+              ['RL', '右邊太高，但偏右子的左邊', '先右旋再左旋，雙旋。']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: 'AVL 的搜尋、插入、刪除都是 O(log n)，查詢快但插入刪除調整較頻繁。'
+          }
+        ]
+      },
+      {
+        heading: 'B-Tree 與 B+ Tree',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              'B-Tree 是多路 m-way 平衡搜尋樹，一個節點可放多個鍵與多個子節點。',
+              'm 階 B-Tree 每節點最多 m 個子、最多 m - 1 個鍵。',
+              '除根與葉外，每節點至少 ceil(m/2) 個子，所有葉在同一層。',
+              '節點胖、樹矮，所以磁碟 I/O 次數少，常用於資料庫與檔案系統索引。',
+              'B+ Tree 通常把資料存葉節點，葉節點用鏈結串列串起來，適合範圍查詢。'
+            ]
+          }
+        ]
+      },
+      {
+        heading: 'Heap',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              'Heap 是完全二元樹 Complete Binary Tree，且符合堆積性質。',
+              'Max-Heap 每個節點 >= 子節點，根最大；Min-Heap 每個節點 <= 子節點，根最小。',
+              'Heap 只管父子大小，不管左右或兄弟順序，因此搜尋任意值是 O(n)。',
+              '常用於 Priority Queue、Heap Sort，以及隨時拿最大或最小值。'
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '若陣列索引從 1 開始，節點 i 的左子是 2i、右子是 2i+1、父節點是 floor(i/2)。插入與刪除根皆為 O(log n)，取根 O(1)。'
+          }
+        ]
+      },
+      {
+        heading: 'Red-Black Tree',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '每個節點非紅即黑。',
+              '根是黑色。',
+              'NIL 葉節點是黑色。',
+              '紅節點的子節點都是黑色，不能連續兩個紅。',
+              '從任一節點到其底下所有葉的路徑，黑節點數相同。'
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: 'Red-Black Tree 用顏色規則維持大致平衡，保證最長路徑不超過最短路徑的 2 倍，因此搜尋、插入、刪除都是 O(log n)。'
+          }
+        ]
+      },
+      {
+        heading: '高等樹比較',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['結構', '搜尋', '插入', '刪除', '備註'],
+            rows: [
+              ['BST 平均', 'O(log n)', 'O(log n)', 'O(log n)', '取決於樹高。'],
+              ['BST 最壞', 'O(n)', 'O(n)', 'O(n)', '偏斜時退化。'],
+              ['AVL', 'O(log n)', 'O(log n)', 'O(log n)', '嚴格平衡，查詢快。'],
+              ['Red-Black Tree', 'O(log n)', 'O(log n)', 'O(log n)', '較鬆平衡，插刪較快。'],
+              ['B-Tree/B+ Tree', 'O(log n)', 'O(log n)', 'O(log n)', '多路、磁碟友善。'],
+              ['Heap', 'O(n)', 'O(log n)', 'O(log n)', '取根 O(1)，搜尋任意值慢。']
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  'algorithm-graph-basics-traversal': {
+    summary: '整理 Graph 的頂點與邊、鄰接矩陣/串列、DFS/BFS 流程，以及 Spanning Tree 與 MST 的基本概念。',
+    terms: [
+      { zh: '圖', en: 'Graph' },
+      { zh: '鄰接矩陣', en: 'Adjacency Matrix' },
+      { zh: '鄰接串列', en: 'Adjacency List' },
+      { zh: '深度優先搜尋', en: 'DFS' },
+      { zh: '廣度優先搜尋', en: 'BFS' }
+    ],
+    lead: [
+      'Graph 比 Tree 更一般：可以有環，也能表示多對多關係。',
+      '這一章先掌握術語、表示法、DFS/BFS，再把 Spanning Tree 接到下一篇 MST。'
+    ],
+    sections: [
+      {
+        heading: 'Graph 定義與術語',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: '圖 G = (V, E)，由頂點 Vertex 與邊 Edge 組成，用來表示頂點間多對多關係。'
+          },
+          {
+            kind: 'table',
+            headers: ['術語', '意思'],
+            rows: [
+              ['Directed Graph', '邊有方向，例如 A -> B。'],
+              ['Undirected Graph', '邊無方向，例如 A - B。'],
+              ['Weighted Graph', '邊上有權重或成本，例如距離、花費。'],
+              ['Degree', '一個頂點連幾條邊；有向圖分入度與出度。'],
+              ['Path', '一連串相連的頂點。'],
+              ['Cycle', '繞回起點的路徑。'],
+              ['Connected', '任兩頂點都有路徑相連。'],
+              ['Complete Graph', '每兩頂點都有邊；n 頂點無向完全圖有 n(n-1)/2 條邊。']
+            ]
+          }
+        ]
+      },
+      {
+        heading: '圖的表示法',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['比較', 'Adjacency Matrix', 'Adjacency List'],
+            rows: [
+              ['做法', 'n x n 矩陣，[i][j] = 1 或權重表示 i 到 j 有邊。', '每個頂點存一份鄰居清單。'],
+              ['空間', 'O(n²)', 'O(V+E)'],
+              ['查兩點是否相連', 'O(1)，很快。', '要掃鄰居清單。'],
+              ['適合', '稠密圖，邊多。', '稀疏圖，邊少。']
+            ]
+          }
+        ]
+      },
+      {
+        heading: 'DFS vs BFS',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['比較', 'DFS', 'BFS'],
+            rows: [
+              ['策略', '一條路走到底，走不通再回頭。', '一層一層擴散，先訪問所有鄰居。'],
+              ['使用工具', 'Stack 或遞迴。', 'Queue。'],
+              ['直覺', '走迷宮先往深處鑽。', '水波一圈圈擴散。'],
+              ['鄰接串列複雜度', 'O(V+E)', 'O(V+E)'],
+              ['鄰接矩陣複雜度', 'O(V²)', 'O(V²)']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '記憶方式：DFS 的 D 可想成 Deep，往深處鑽；BFS 的 B 可想成 Breadth，一層層展開。'
+          }
+        ]
+      },
+      {
+        heading: 'Spanning Tree',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '生成樹是連通圖的子圖，包含全部頂點。',
+              '生成樹剛好使用 n - 1 條邊，且沒有環。',
+              '一張圖可以有多種生成樹。',
+              '在權重圖中，總權重最小的生成樹叫 Minimum Spanning Tree。'
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: 'MST 的經典演算法是 Kruskal 與 Prim，流程與比較放在下一篇圖演算法。'
+          }
+        ]
+      }
+    ]
+  },
+  'algorithm-graph-algorithms': {
+    summary: '整理 MST 的 Kruskal/Prim、最短路徑的 Dijkstra/Floyd-Warshall、AOV/AOE，以及圖演算法複雜度表。',
+    terms: [
+      { zh: '最小生成樹', en: 'Minimum Spanning Tree' },
+      { zh: '克魯斯克演算法', en: 'Kruskal Algorithm' },
+      { zh: '普林演算法', en: 'Prim Algorithm' },
+      { zh: '戴克斯特拉演算法', en: 'Dijkstra Algorithm' },
+      { zh: '拓樸排序', en: 'Topological Sort' }
+    ],
+    lead: [
+      '圖演算法選擇題通常不是背程式碼，而是辨認「用來解什麼問題」與「流程怎麼選下一步」。',
+      'MST 看 Kruskal/Prim，最短路徑看 Dijkstra/Floyd-Warshall，AOV/AOE 看 Topological Sort 與 Critical Path。'
+    ],
+    sections: [
+      {
+        heading: 'MST：Kruskal vs Prim',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['比較', 'Kruskal', 'Prim'],
+            rows: [
+              ['核心', '從最小的邊開始挑。', '從一個頂點集合往外長。'],
+              ['規則', '邊由小到大選，不成環就加入，直到 n - 1 條。', '每次選連到已選集合、權重最小的跨界邊。'],
+              ['導向', '邊導向，常說適合稀疏圖。', '頂點導向，常說適合稠密圖。'],
+              ['複雜度', 'O(E log E)', 'O(E log V) 或 O(V²)。']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: 'Minimum Spanning Tree 的共同目標是連通全部頂點、沒有環、總權重最小；Kruskal 與 Prim 可能選邊順序不同，但結果都應是 MST。'
+          }
+        ]
+      },
+      {
+        heading: '最短路徑：Dijkstra vs Floyd-Warshall',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['比較', 'Dijkstra', 'Floyd-Warshall'],
+            rows: [
+              ['求什麼', '單一起點到所有點的 single-source shortest path。', '所有點對之間的 all-pairs shortest path。'],
+              ['做法', '每次挑目前最短的未確定點，再更新鄰居。', '用每個頂點當中繼站，檢查 i 到 j 繞過 k 是否更短。'],
+              ['負權邊', '不可有負權邊。', '可有負權邊，但不可有負環。'],
+              ['複雜度', 'O((V+E) log V) 或 O(V²)。', 'O(V³)。']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: 'Dijkstra 的關鍵動作是 relaxation：若 A -> B -> C 比 A -> C 更短，就把 C 的目前距離更新成較小值。'
+          }
+        ]
+      },
+      {
+        heading: 'AOV 與 AOE',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['比較', 'AOV Network', 'AOE Network'],
+            rows: [
+              ['全名', 'Activity On Vertex', 'Activity On Edge'],
+              ['頂點代表', '活動', '事件或里程碑'],
+              ['邊代表', '先後順序或前置關係', '活動與所需時間'],
+              ['對應演算法', 'Topological Sort', 'Critical Path'],
+              ['用途', '排出可行先後順序，例如課程先修。', '算專案最短完成時間，例如 CPM/PERT。']
+            ]
+          },
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              'Topological Sort 反覆找入度為 0 的頂點輸出，並移除它連出去的邊。',
+              'Critical Path 是從起點到終點總時間最長的路徑，決定整個專案最短完成時間。',
+              '關鍵路徑上的活動沒有寬裕時間 slack，延誤就會讓整個專案延誤。'
+            ]
+          }
+        ]
+      },
+      {
+        heading: '圖演算法複雜度速查',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['演算法', '複雜度', '用途'],
+            rows: [
+              ['DFS/BFS', 'O(V+E)', '走訪。'],
+              ['Kruskal', 'O(E log E)', 'MST，挑邊。'],
+              ['Prim', 'O(E log V) 或 O(V²)', 'MST，長頂點集合。'],
+              ['Dijkstra', 'O((V+E) log V) 或 O(V²)', '單源最短路，不可負權。'],
+              ['Floyd-Warshall', 'O(V³)', '全點對最短路。'],
+              ['Topological Sort', 'O(V+E)', 'AOV 先後順序。']
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  'algorithm-sorting-overview': {
+    summary: '整理排序穩定性、簡單排序與進階排序流程，以及七大排序的最好、平均、最差、Stable 與空間比較表。',
+    terms: [
+      { zh: '排序', en: 'Sorting' },
+      { zh: '穩定性', en: 'Stability' },
+      { zh: '合併排序', en: 'Merge Sort' },
+      { zh: '快速排序', en: 'Quick Sort' },
+      { zh: '堆積排序', en: 'Heap Sort' }
+    ],
+    lead: [
+      '排序題最重要的是比較表：時間複雜度、Stable/Unstable、額外空間常被做成選項。',
+      '理解每種排序在做什麼，會比硬背一串 O 更不容易混淆。'
+    ],
+    sections: [
+      {
+        heading: '排序與穩定性',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: '排序是把資料按大小或某個鍵值排成順序。Stable sorting 表示值相等的元素，排序後相對順序不變。'
+          },
+          {
+            kind: 'paragraph',
+            text: '穩定性在多欄位排序很重要：先依部門排，再依薪水排時，穩定排序能保留前一次部門排序的相對順序。'
+          }
+        ]
+      },
+      {
+        heading: '簡單排序',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['排序法', '核心動作', '時間與穩定性'],
+            rows: [
+              ['Bubble Sort', '相鄰比較，較大的往右冒。', '最好可 O(n)，平均/最差 O(n²)，穩定。'],
+              ['Selection Sort', '每輪從未排序區找最小值放到前面。', '最好/平均/最差皆 O(n²)，不穩定。'],
+              ['Insertion Sort', '把新元素插入左側已排序區。', '最好 O(n)，平均/最差 O(n²)，穩定；小資料或近乎有序時好用。']
+            ]
+          }
+        ]
+      },
+      {
+        heading: '進階排序',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['排序法', '核心動作', '考點'],
+            rows: [
+              ['Merge Sort', '先拆半，再合併有序序列。', '最好/平均/最差皆 O(n log n)，Stable，但需要 O(n) 額外空間。'],
+              ['Quick Sort', '選 pivot，partition 後分治左右區間。', '平均 O(n log n)，最差 O(n²)，Unstable，實務常很快。'],
+              ['Heap Sort', '建 Heap，反覆取根完成排序。', '最好/平均/最差皆 O(n log n)，Unstable，額外空間 O(1)。']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: 'Radix Sort 是非比較排序，適合整數或固定長度鍵，時間 O(d x (n+k))，常簡化理解為線性級距，且穩定。'
+          }
+        ]
+      },
+      {
+        heading: '七大排序比較表',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['排序法', '最好', '平均', '最差', '穩定性', '額外空間'],
+            rows: [
+              ['Bubble', 'O(n)', 'O(n²)', 'O(n²)', 'Stable', 'O(1)'],
+              ['Selection', 'O(n²)', 'O(n²)', 'O(n²)', 'Unstable', 'O(1)'],
+              ['Insertion', 'O(n)', 'O(n²)', 'O(n²)', 'Stable', 'O(1)'],
+              ['Merge', 'O(n log n)', 'O(n log n)', 'O(n log n)', 'Stable', 'O(n)'],
+              ['Quick', 'O(n log n)', 'O(n log n)', 'O(n²)', 'Unstable', 'O(log n)'],
+              ['Heap', 'O(n log n)', 'O(n log n)', 'O(n log n)', 'Unstable', 'O(1)'],
+              ['Radix', 'O(n)', 'O(n)', 'O(n)', 'Stable', 'O(n+k)']
+            ]
+          }
+        ]
+      },
+      {
+        heading: '選擇題記憶鉤子',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '穩定排序：Bubble、Insertion、Merge、Radix。',
+              '不穩定排序：Selection、Quick、Heap、Shell。',
+              '保證 O(n log n)：Merge、Heap。',
+              'Quick Sort 平均快，但 pivot 極差時最差會掉到 O(n²)。',
+              'Shell Sort 是 Insertion Sort 改良，平均常記約 O(n^1.5)，不穩定，視 gap 序列而定。'
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  'algorithm-hashing': {
+    summary: '整理 Hashing 的 hash function、Hash Table、Collision/Overflow、Open Addressing、Chaining、Load Factor 與複雜度。',
+    terms: [
+      { zh: '雜湊法', en: 'Hashing' },
+      { zh: '雜湊表', en: 'Hash Table' },
+      { zh: '雜湊函數', en: 'Hash Function' },
+      { zh: '碰撞', en: 'Collision' },
+      { zh: '開放定址法', en: 'Open Addressing' }
+    ],
+    lead: [
+      'Hashing 的理想狀態是不用一個個比對，而是用函數直接算出位置，因此查找、插入、刪除可接近 O(1)。',
+      '真正會考的是 Collision 產生後怎麼處理，以及載入因子變大時為什麼會變慢。'
+    ],
+    sections: [
+      {
+        heading: 'Hashing 核心想法',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '雜湊法用 hash function 把 key 算成 Hash Table 的索引位置。',
+              '例如表大小 10，h(key) = key % 10，key 25 會放到索引 5。',
+              '理想無碰撞時，查找、插入、刪除都是 O(1)。'
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '好的 hash function 要算得快且分布均勻，讓 Collision 變少。'
+          }
+        ]
+      },
+      {
+        heading: '常見雜湊函數',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['方法', '做法'],
+            rows: [
+              ['Division', 'h(k) = k % m，m 常取質數，分布較均勻。'],
+              ['Mid-square', '把 key 平方後取中間幾位。'],
+              ['Folding', '把 key 切段相加。']
+            ]
+          }
+        ]
+      },
+      {
+        heading: 'Collision 與 Overflow',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: 'Collision 是不同 key 算出相同位置；Overflow 是要存的位置已經滿了。碰撞處理主要分成 Open Addressing 與 Chaining。'
+          },
+          {
+            kind: 'table',
+            headers: ['處理法', '做法', '考點'],
+            rows: [
+              ['Linear Probing', '從原位置往後一格一格找 h, h+1, h+2，並對 m 取餘數。', '簡單但容易 clustering。'],
+              ['Quadratic Probing', '用 h+1², h+2², h+3² 的距離找空位。', '減少一次群聚。'],
+              ['Double Hashing', '用第二個 hash function 決定探測間隔。', '分布通常較好。'],
+              ['Chaining', '每格接一條 linked list。', '不會溢位、刪除簡單，但需額外指標。']
+            ]
+          }
+        ]
+      },
+      {
+        heading: '碰撞處理範例',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: '若表大小 m = 7 且 h(k) = k % 7，10、17、24、3 都會算到索引 3，因為餘數都等於 3。'
+          },
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              'Linear Probing 會把第一個放 3，下一個從 4、5、6、0 繼續找空格。',
+              'Chaining 會把所有算到 3 的 key 接在索引 3 的串列上。'
+            ]
+          }
+        ]
+      },
+      {
+        heading: 'Load Factor 與複雜度',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: 'Load Factor alpha = n / m，n 是已存資料數，m 是表大小。alpha 越大，碰撞越多，查找越慢；Open Addressing 的 alpha 必須小於等於 1。'
+          },
+          {
+            kind: 'table',
+            headers: ['情況', '時間複雜度', '原因'],
+            rows: [
+              ['理想無碰撞', 'O(1)', '直接算出位置。'],
+              ['平均分布良好', '接近 O(1)', '探測或串列長度短。'],
+              ['最差全碰撞', 'O(n)', '全部擠在同一段或同一條鏈。']
+            ]
+          }
+        ]
+      }
+    ]
+  }
+} as const;
+
+type DataStructureAlgorithmTopicId = keyof typeof dataStructureAlgorithmContentById;
+
+const isDataStructureAlgorithmTopicId = (id: string): id is DataStructureAlgorithmTopicId => id in dataStructureAlgorithmContentById;
+const dataStructureAlgorithmTopicOrder = [
+  'algorithm-big-o-complexity',
+  'algorithm-array-linked-list',
+  'algorithm-stack-queue',
+  'algorithm-tree-traversal-basics',
+  'algorithm-advanced-trees',
+  'algorithm-graph-basics-traversal',
+  'algorithm-graph-algorithms',
+  'algorithm-sorting-overview',
+  'algorithm-hashing'
+] as const satisfies readonly DataStructureAlgorithmTopicId[];
+
+const getDataStructureAlgorithmTopicRank = (id: string): number => {
+  if (!isDataStructureAlgorithmTopicId(id)) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  return dataStructureAlgorithmTopicOrder.indexOf(id);
+};
 
 const algorithmExampleContentById = {
   'bubble-sort': {
@@ -2953,13 +4014,349 @@ private static void insertionSortRecursive(int[] arr, int n) {
 }`
       }
     ]
+  },
+  'bucket-sort': {
+    summary: '整理桶裝排序的 min/max 分桶公式、索引邊界修正、遞迴與非遞迴 Java 寫法，以及使用 Collections.sort 時的最壞時間複雜度 O(n log n)。',
+    terms: [
+      { zh: '桶裝排序法', en: 'Bucket Sort' },
+      { zh: '標準化比例', en: 'Normalized Position' },
+      { zh: '桶子索引', en: 'Bucket Index' },
+      { zh: '桶內排序', en: 'In-bucket Sort' }
+    ],
+    lead: [
+      '桶裝排序法(Bucket Sort)會先把資料依數值範圍分到多個桶子，再排序每個桶子，最後依桶子順序合併回原陣列。',
+      '這裡採用 GeneralBucketSort.java 的通用模式：先找 min/max，用標準化比例計算桶子索引，並特別修正最大值落到 bucketCount 的邊界情況。'
+    ],
+    sections: [
+      {
+        heading: '演算法概念',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text:
+              '桶裝排序的重點不是直接比較每一對元素，而是先把資料映射到不同區間。若桶子分布均勻，合併時會很順；若資料全部集中在同一桶，效能就會被桶內排序主導。'
+          }
+        ]
+      },
+      {
+        heading: '核心規則',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '若陣列為 null、長度小於等於 1，直接返回。',
+              '掃描所有資料，找出最小值 min 與最大值 max。',
+              '若 min == max，代表所有資料相同，不需要分桶。',
+              '建立 bucketCount 個桶子，常見做法是讓桶子數量等於資料數量。',
+              '用 (num - min) / (max - min) 算出 0 到 1 之間的標準化比例。',
+              '把比例乘上 bucketCount 得到桶子索引，並修正 index == bucketCount、index < 0、index >= bucketCount 的邊界。',
+              '排序每個桶子，再從第一個桶子開始依序寫回原陣列。'
+            ]
+          }
+        ]
+      },
+      {
+        heading: '最壞時間複雜度',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['版本', '最壞時間複雜度', '推導重點'],
+            rows: [
+              [
+                '遞迴版本',
+                'O(n log n)',
+                '最壞時所有資料集中在同一桶，本版本桶內使用 Collections.sort，因此由該比較排序主導；若桶內改用插入排序，常見最壞會記為 O(n²)。'
+              ],
+              [
+                '非遞迴版本',
+                'O(n log n)',
+                '分桶與合併各為 O(n)，最壞瓶頸仍是單一大桶的 Collections.sort。'
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    codeBlocks: [
+      {
+        title: '桶裝排序法遞迴版本',
+        description: '保留 GeneralBucketSort.java 的 min/max、標準化比例與邊界修正，改用遞迴拆解掃描、分桶、桶內排序與合併。',
+        code: `import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public static void bucketSortRecursive(double[] arr) {
+    // 入口檢查：null 代表沒有資料，長度 0 或 1 代表本來就有序。
+    // 這個判斷一定要放在讀 arr[0] 之前，避免 null 或空陣列造成錯誤。
+    if (arr == null || arr.length <= 1) {
+        return;
+    }
+
+    // 第 1 步：用遞迴找出 min 與 max。
+    // index 從 1 開始，因為 arr[0] 已經先拿來當作目前的 min 與 max。
+    // 回傳 double[] {min, max}，讓後面的分桶公式知道整體資料範圍。
+    double[] minMax = findMinMaxRecursive(arr, 1, arr[0], arr[0]);
+    double min = minMax[0];
+    double max = minMax[1];
+
+    // 若最小值等於最大值，代表所有資料都相同。
+    // 此時每個元素放到哪個桶子都沒有意義，原陣列已經視為排序完成。
+    if (min == max) {
+        return;
+    }
+
+    // bucketCount 使用資料筆數，是 GeneralBucketSort.java 採用的通用做法。
+    // 每個桶子會負責整體數值範圍中的一小段區間。
+    int bucketCount = arr.length;
+    List<List<Double>> buckets = new ArrayList<>();
+
+    // 第 2 步：用遞迴建立桶子。
+    // 第 3 步：用遞迴把每個數字放進對應桶子。
+    // 第 4 步：用遞迴逐桶排序。
+    // 第 5 步：用遞迴把桶子內容寫回原陣列。
+    createBucketsRecursive(buckets, bucketCount);
+    distributeRecursive(arr, 0, buckets, min, max);
+    sortBucketsRecursive(buckets, 0);
+    writeBackRecursive(arr, buckets, 0, 0);
+}
+
+private static double[] findMinMaxRecursive(double[] arr, int index, double min, double max) {
+    // 遞迴終止條件：index 已經走到陣列尾端，代表全部資料都看過了。
+    // 這時候 min 與 max 就是整個陣列的最小值與最大值。
+    if (index == arr.length) {
+        return new double[] {min, max};
+    }
+
+    // current 是這一層遞迴正在檢查的資料。
+    // 每一層只負責一個位置，檢查完就交給下一層處理 index + 1。
+    double current = arr[index];
+
+    // 如果 current 比目前 min 更小，就更新 min。
+    if (current < min) {
+        min = current;
+    }
+    // 如果 current 比目前 max 更大，就更新 max。
+    if (current > max) {
+        max = current;
+    }
+
+    // 往下一格繼續找，直到 index == arr.length。
+    return findMinMaxRecursive(arr, index + 1, min, max);
+}
+
+private static void createBucketsRecursive(List<List<Double>> buckets, int bucketCount) {
+    // 遞迴終止條件：桶子的數量已經等於 bucketCount。
+    // 例如 bucketCount 是 7，就要建立 bucket[0] 到 bucket[6]。
+    if (buckets.size() == bucketCount) {
+        return;
+    }
+
+    // 每次遞迴只新增一個空桶子。
+    // 這個桶子之後會放入落在某個數值區間內的資料。
+    buckets.add(new ArrayList<>());
+
+    // 新增完一個桶子後，再呼叫自己補下一個桶子。
+    createBucketsRecursive(buckets, bucketCount);
+}
+
+private static void distributeRecursive(
+        double[] arr,
+        int index,
+        List<List<Double>> buckets,
+        double min,
+        double max
+) {
+    // 遞迴終止條件：index 已經走完 arr，代表所有數字都已放入桶子。
+    if (index == arr.length) {
+        return;
+    }
+
+    // 先依照 min/max 把 arr[index] 標準化，再換算成桶子索引。
+    // bucketIndex 代表這個數字應該放進哪一個桶子。
+    int bucketIndex = getBucketIndex(arr[index], min, max, buckets.size());
+
+    // 把目前數字放進算出的桶子。
+    // 同一個桶子內可能有多個數字，所以桶內稍後仍需要排序。
+    buckets.get(bucketIndex).add(arr[index]);
+
+    // 處理下一個陣列元素。
+    distributeRecursive(arr, index + 1, buckets, min, max);
+}
+
+private static void sortBucketsRecursive(List<List<Double>> buckets, int index) {
+    // 遞迴終止條件：index 已經走完所有桶子。
+    if (index == buckets.size()) {
+        return;
+    }
+
+    // Bucket Sort 只保證不同桶子的區間順序。
+    // 同一桶內的資料仍可能是亂序，所以要做桶內排序。
+    // 這裡沿用 GeneralBucketSort.java 的 Collections.sort。
+    Collections.sort(buckets.get(index));
+
+    // 排完目前桶子後，繼續排序下一個桶子。
+    sortBucketsRecursive(buckets, index + 1);
+}
+
+private static int writeBackRecursive(
+        double[] arr,
+        List<List<Double>> buckets,
+        int bucketIndex,
+        int arrIndex
+) {
+    // 遞迴終止條件：所有桶子都寫回原陣列。
+    // arrIndex 會回傳給上一層，表示目前原陣列已寫到哪個位置。
+    if (bucketIndex == buckets.size()) {
+        return arrIndex;
+    }
+
+    // 先把目前桶子的內容全部寫回 arr。
+    // nextIndex 是寫完目前桶子後，下一個桶子應該開始寫入的位置。
+    int nextIndex = writeBucketRecursive(arr, buckets.get(bucketIndex), 0, arrIndex);
+
+    // 接著處理下一個桶子。
+    return writeBackRecursive(arr, buckets, bucketIndex + 1, nextIndex);
+}
+
+private static int writeBucketRecursive(double[] arr, List<Double> bucket, int itemIndex, int arrIndex) {
+    // 遞迴終止條件：目前桶子內的元素都已經寫回 arr。
+    // 回傳 arrIndex，讓外層知道下一個桶子要接在哪裡。
+    if (itemIndex == bucket.size()) {
+        return arrIndex;
+    }
+
+    // 把目前桶子的第 itemIndex 個元素寫回原陣列。
+    // 因為外層會按照 bucket[0]、bucket[1]、bucket[2] 的順序寫回，
+    // 加上每個桶子內部已排序，所以整體就會由小到大。
+    arr[arrIndex] = bucket.get(itemIndex);
+
+    // itemIndex 往下一個桶內元素前進，arrIndex 也往下一格前進。
+    return writeBucketRecursive(arr, bucket, itemIndex + 1, arrIndex + 1);
+}
+
+private static int getBucketIndex(double num, double min, double max, int bucketCount) {
+    // range 是整體資料範圍，也就是最大值與最小值的距離。
+    double range = max - min;
+
+    // normalized 會把 num 轉成 0 到 1 之間的位置比例。
+    // 例如資料範圍是 10 到 50，num 是 30，normalized 就是 0.5。
+    double normalized = (num - min) / range;
+
+    // 把 0 到 1 的比例放大成 0 到 bucketCount 的桶子索引範圍。
+    // 轉成 int 會取整數部分，例如 5.7 會變成 5。
+    int index = (int)(normalized * bucketCount);
+
+    // num == max 時，index 會等於 bucketCount，需要修正到最後一個桶子。
+    if (index == bucketCount) {
+        index = bucketCount - 1;
+    }
+    // double 小數運算可能有極小誤差；若算到負數，就保護成第一個桶子。
+    if (index < 0) {
+        index = 0;
+    }
+    // 若索引超過最後一個桶子，就保護成最後一個桶子。
+    if (index >= bucketCount) {
+        index = bucketCount - 1;
+    }
+
+    // 回傳安全範圍內的桶子索引。
+    return index;
+}`
+      },
+      {
+        title: '桶裝排序法非遞迴版本',
+        description: '依照 GeneralBucketSort.java 的流程，用迴圈完成找 min/max、分桶、桶內排序與合併。',
+        code: `import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public static void bucketSortIterative(double[] arr) {
+    // null、空陣列或只有一筆資料時，不需要排序。
+    if (arr == null || arr.length <= 1) {
+        return;
+    }
+
+    int bucketCount = arr.length;
+
+    // 第 1 步：找出最小值 min 和最大值 max。
+    double min = arr[0];
+    double max = arr[0];
+
+    for (double num : arr) {
+        if (num < min) {
+            min = num;
+        }
+        if (num > max) {
+            max = num;
+        }
+    }
+
+    // 特殊情況：所有數字都一樣，不需要分桶。
+    if (min == max) {
+        return;
+    }
+
+    // 第 2 步：建立 bucketCount 個空桶子。
+    List<List<Double>> buckets = new ArrayList<>();
+
+    for (int i = 0; i < bucketCount; i++) {
+        buckets.add(new ArrayList<>());
+    }
+
+    // 第 3 步：把每個數字放進對應桶子。
+    for (double num : arr) {
+        double range = max - min;
+        double normalized = (num - min) / range;
+        int index = (int)(normalized * bucketCount);
+
+        // num == max 時會算到 bucketCount，必須改成最後一個桶子。
+        if (index == bucketCount) {
+            index = bucketCount - 1;
+        }
+        if (index < 0) {
+            index = 0;
+        }
+        if (index >= bucketCount) {
+            index = bucketCount - 1;
+        }
+
+        buckets.get(index).add(num);
+    }
+
+    // 第 4 步：每個桶子內部排序。
+    for (List<Double> bucket : buckets) {
+        Collections.sort(bucket);
+    }
+
+    // 第 5 步：把桶子依序合併回原本陣列。
+    int arrIndex = 0;
+
+    for (List<Double> bucket : buckets) {
+        for (double num : bucket) {
+            arr[arrIndex] = num;
+            arrIndex++;
+        }
+    }
+}`
+      }
+    ]
   }
 } as const;
 
 type AlgorithmExampleTopicId = keyof typeof algorithmExampleContentById;
 
 const isAlgorithmExampleTopicId = (id: string): id is AlgorithmExampleTopicId => id in algorithmExampleContentById;
-const algorithmExampleTopicOrder = Object.keys(algorithmExampleContentById) as readonly AlgorithmExampleTopicId[];
+const algorithmExampleTopicOrder = [
+  'bubble-sort',
+  'selection-sort',
+  'quick-sort',
+  'fibonacci-sequence',
+  'greatest-common-divisor',
+  'binary-search',
+  'insertion-sort',
+  'bucket-sort'
+] as const satisfies readonly AlgorithmExampleTopicId[];
 
 const getAlgorithmExampleTopicRank = (id: string): number => {
   if (!isAlgorithmExampleTopicId(id)) {
@@ -2967,6 +4364,22 @@ const getAlgorithmExampleTopicRank = (id: string): number => {
   }
 
   return algorithmExampleTopicOrder.indexOf(id);
+};
+
+const getAlgorithmTopicRank = (id: string): number => {
+  const dataStructureRank = getDataStructureAlgorithmTopicRank(id);
+
+  if (Number.isFinite(dataStructureRank)) {
+    return dataStructureRank;
+  }
+
+  const exampleRank = getAlgorithmExampleTopicRank(id);
+
+  if (Number.isFinite(exampleRank)) {
+    return dataStructureAlgorithmTopicOrder.length + exampleRank;
+  }
+
+  return Number.POSITIVE_INFINITY;
 };
 
 const commonUnitsLessonSections = [
@@ -7778,7 +9191,7 @@ const createAlgorithmExampleTopic = (
     title: config.titleZh + '(' + config.titleEn + ')',
     summary: content.summary,
     sourceBatch: 'manual-section-fill-20260613',
-    sourceFiles: algorithmExampleSourceFiles,
+    sourceFiles: config.sourceFiles,
     sourceSummary: config.sourceSection,
     examOutline: [],
     memoryPoints: [],
@@ -7789,7 +9202,7 @@ const createAlgorithmExampleTopic = (
     blocks: [
       {
         kind: 'lessonArticle',
-        sourceFiles: algorithmExampleSourceFiles,
+        sourceFiles: config.sourceFiles,
         sourceSection: config.sourceSection,
         lead: content.lead,
         sections: content.sections
@@ -7804,6 +9217,1108 @@ const createAlgorithmExampleTopic = (
     ]
   };
 };
+
+const createDataStructureAlgorithmTopic = (
+  config: ProfessionalTopicSkeletonConfig & { id: DataStructureAlgorithmTopicId }
+): ProfessionalSubjectTopic => {
+  const content = dataStructureAlgorithmContentById[config.id];
+
+  return {
+    id: config.id,
+    subjectKey: config.subjectKey,
+    title: config.titleZh,
+    summary: content.summary,
+    sourceBatch: 'manual-section-fill-algorithms-data-structure-20260619',
+    sourceFiles: config.sourceFiles,
+    sourceSummary: config.sourceSection,
+    examOutline: [],
+    memoryPoints: [],
+    understandingNotes: [],
+    difficulty: config.difficulty,
+    topicType: config.topicType,
+    terms: content.terms,
+    blocks: [
+      {
+        kind: 'lessonArticle',
+        sourceFiles: config.sourceFiles,
+        sourceSection: config.sourceSection,
+        lead: content.lead,
+        sections: content.sections
+      }
+    ]
+  };
+};
+
+interface ImportedMarkdownTopicConfig {
+  id: string;
+  subjectKey: 'database' | 'programming' | 'systemDesign';
+  title: string;
+  summary: string;
+  sourceFile: string;
+  sourceSection: string;
+  examOutline: readonly string[];
+  memoryPoints: readonly string[];
+  understandingNotes: readonly string[];
+  difficulty: ProfessionalTopicDifficulty;
+  topicType: ProfessionalTopicType;
+  terms: readonly { zh: string; en: string }[];
+  lead: readonly string[];
+  sections: readonly LessonArticleSection[];
+}
+
+const importedMarkdownBatch = 'fill-database-programming-system-design-content';
+
+const paragraph = (text: string): LessonArticleContentBlock => ({ kind: 'paragraph', text });
+const bulletList = (items: readonly string[]): LessonArticleContentBlock => ({ kind: 'bulletList', items });
+const orderedList = (items: readonly string[]): LessonArticleContentBlock => ({ kind: 'orderedList', items });
+const table = (headers: readonly string[], rows: readonly (readonly string[])[]): LessonArticleContentBlock => ({
+  kind: 'table',
+  headers,
+  rows
+});
+const section = (heading: string, blocks: readonly LessonArticleContentBlock[]): LessonArticleSection => ({
+  heading,
+  blocks
+});
+
+const createImportedMarkdownTopic = (config: ImportedMarkdownTopicConfig): ProfessionalSubjectTopic => ({
+  id: config.id,
+  subjectKey: config.subjectKey,
+  title: config.title,
+  summary: config.summary,
+  sourceBatch: importedMarkdownBatch,
+  sourceFiles: [config.sourceFile],
+  sourceSummary: config.sourceSection,
+  examOutline: config.examOutline,
+  memoryPoints: config.memoryPoints,
+  understandingNotes: config.understandingNotes,
+  difficulty: config.difficulty,
+  topicType: config.topicType,
+  terms: config.terms,
+  blocks: [
+    {
+      kind: 'lessonArticle',
+      sourceFiles: [config.sourceFile],
+      sourceSection: config.sourceSection,
+      lead: config.lead,
+      sections: config.sections
+    }
+  ]
+});
+
+const databaseMarkdownTopics = [
+  createImportedMarkdownTopic({
+    id: 'database-md-foundations-architecture',
+    subjectKey: 'database',
+    title: '資料庫 1：基礎概念 + ANSI/SPARC 架構',
+    summary: '整理 ANSI/SPARC 三層架構、資料獨立性、資料庫優缺點與四種資料庫模型。',
+    sourceFile: '_private/MD/資料庫/資料庫_1_基礎概念與架構.md',
+    sourceSection: '資料庫 1：基礎概念 + ANSI/SPARC 架構',
+    examOutline: ['ANSI/SPARC 外部層、概念層、內部層', '邏輯資料獨立與實體資料獨立', '階層式、網路式、關聯式、物件導向式資料庫'],
+    memoryPoints: ['外部層看 view，概念層看整體邏輯，內部層看實際儲存。', '邏輯獨立是概念層改不影響外部層；實體獨立是內部層改不影響概念層。', '現在主流是關聯式資料庫。'],
+    understandingNotes: ['三層架構的核心是隔離改動範圍。', '資料庫優點多半來自集中管理；缺點也多半來自集中管理成本。'],
+    difficulty: 'intro',
+    topicType: 'concept',
+    terms: [
+      { zh: '外部層', en: 'External Level' },
+      { zh: '概念層', en: 'Conceptual Level' },
+      { zh: '內部層', en: 'Internal Level' },
+      { zh: '資料獨立性', en: 'Data Independence' }
+    ],
+    lead: ['科目：資料庫。', '你朋友提醒：這科重在寫題目，SQL 語法要熟；本篇先補基本知識點。', '學習方式：架構與獨立性屬理解；資料庫種類屬硬背。'],
+    sections: [
+      section('ANSI/SPARC 三層架構', [
+        paragraph('ANSI/SPARC 把資料庫分成三層，目的是資料獨立性，也就是某一層改動時不要牽動其他層。'),
+        table(
+          ['層', '看到什麼', '誰在用', '例子'],
+          [
+            ['外部層 External', '個別使用者需要的那部分，也就是 view', '各使用者', '員工只看得到自己部門資料'],
+            ['概念層 Conceptual', '整個資料庫的邏輯結構', 'DBA', '所有資料表、欄位與關係定義'],
+            ['內部層 Internal', '資料實際怎麼存在磁碟', '系統', 'B+ Tree 索引、儲存結構']
+          ]
+        ),
+        bulletList(['邏輯資料獨立：概念層改動，例如加欄位，外部層 view 不受影響。', '實體資料獨立：內部層改動，例如加索引或換儲存方式，概念層不受影響。'])
+      ]),
+      section('資料庫優缺點', [
+        table(
+          ['優點', '缺點'],
+          [
+            ['減少資料重複、保持一致性', '成本高，需要軟硬體與人力'],
+            ['資料共享、集中安全控制', '系統複雜'],
+            ['資料獨立性高、較易維護', '需要 DBA 專人管理']
+          ]
+        )
+      ]),
+      section('資料庫種類', [
+        table(
+          ['模型', '結構', '關係', '特點'],
+          [
+            ['階層式 Hierarchical', '樹狀', '一對多', '像組織圖，難表達多對多'],
+            ['網路式 Network', '圖狀', '多對多', '比階層式靈活但複雜'],
+            ['關聯式 Relational', '表格 table', '用鍵關聯', '最主流，用 SQL 操作'],
+            ['物件導向式 OO', '物件', '屬性加方法', '適合多媒體、CAD 等複雜資料']
+          ]
+        )
+      ]),
+      section('重點整理', [
+        bulletList(['ANSI/SPARC 三層：外部層、概念層、內部層。', '資料獨立性分邏輯獨立與實體獨立。', '四種模型要背結構與特色：階層樹、網路圖、關聯表格、物件導向。'])
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'database-md-keys-erd',
+    subjectKey: 'database',
+    title: '資料庫 2：Key（鍵）+ ERD（實體關係圖）',
+    summary: '整理關聯式資料庫各種鍵、ERD 三元素與基數，並強調多對多要拆中介表。',
+    sourceFile: '_private/MD/資料庫/資料庫_2_鍵與ERD.md',
+    sourceSection: '資料庫 2：Key（鍵）+ ERD（實體關係圖）',
+    examOutline: ['超鍵、候選鍵、主鍵、替代鍵、外鍵', 'ERD 實體、屬性、關係符號', '1:1、1:N、M:N 與中介表'],
+    memoryPoints: ['超鍵最寬鬆，候選鍵是最小超鍵，主鍵是被選中的候選鍵。', 'ERD：實體矩形、屬性橢圓、關係菱形。', 'M:N 多對多實作時要拆中介表。'],
+    understandingNotes: ['鍵是用來唯一辨識紀錄或建立表間關聯。', 'ERD 是把資料庫設計先畫成實體、屬性與關係。'],
+    difficulty: 'core',
+    topicType: 'concept',
+    terms: [
+      { zh: '超鍵', en: 'Super Key' },
+      { zh: '候選鍵', en: 'Candidate Key' },
+      { zh: '主鍵', en: 'Primary Key' },
+      { zh: '外鍵', en: 'Foreign Key' },
+      { zh: '實體關係圖', en: 'Entity-Relationship Diagram' }
+    ],
+    lead: ['科目：資料庫。', '學習方式：鍵的定義容易混，屬硬背；ERD 符號屬硬背，概念屬理解。', '這兩個主題是看懂正規化的基礎。'],
+    sections: [
+      section('各種鍵 Key', [
+        paragraph('在關聯式表格中，鍵用來唯一辨識一筆紀錄，或建立不同資料表之間的關聯。'),
+        table(
+          ['鍵', '定義', '特點'],
+          [
+            ['超鍵 Super Key', '能唯一辨識一筆紀錄的欄位或組合', '最寬鬆，可含多餘欄位'],
+            ['候選鍵 Candidate Key', '最小的超鍵', '無多餘欄位，可有多個'],
+            ['主鍵 Primary Key', '從候選鍵中選一個當主要識別', '唯一、不可 NULL、只有一個'],
+            ['替代鍵 Alternate Key', '未被選為主鍵的其他候選鍵', '仍可唯一辨識'],
+            ['外鍵 Foreign Key', '參考另一表主鍵的欄位', '建立表間關聯，可重複、可 NULL']
+          ]
+        ),
+        paragraph('關係由寬到窄是：超鍵包含候選鍵，候選鍵包含主鍵。')
+      ]),
+      section('ERD 實體關係圖', [
+        paragraph('ERD 用圖描述資料庫的實體、屬性與關係，是設計資料庫的工具。'),
+        table(
+          ['元素', '圖形', '意思', '例子'],
+          [
+            ['實體 Entity', '矩形', '一個東西或物件', '學生、課程'],
+            ['屬性 Attribute', '橢圓', '實體特徵', '姓名、學號'],
+            ['關係 Relationship', '菱形', '實體間關聯', '學生選修課程']
+          ]
+        )
+      ]),
+      section('基數 Cardinality', [
+        table(
+          ['類型', '意思', '例子'],
+          [
+            ['1:1', '一個 A 對一個 B', '人和身分證'],
+            ['1:N', '一個 A 對多個 B', '一個系有多個學生'],
+            ['M:N', '多個 A 對多個 B', '學生和課程']
+          ]
+        ),
+        paragraph('M:N 在關聯式實作時要拆成中介表，例如選課表連接學生和課程。')
+      ]),
+      section('重點整理', [bulletList(['鍵的階層：超鍵、候選鍵、主鍵。', 'ERD 三符號：矩形、橢圓、菱形。', 'M:N 必須拆中介表。'])])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'database-md-normalization',
+    subjectKey: 'database',
+    title: '資料庫 3：正規化 Normalization ★',
+    summary: '用學生選課表說明 1NF、2NF、3NF、BCNF 與 4NF，並整理正規化要消除的異常。',
+    sourceFile: '_private/MD/資料庫/資料庫_3_正規化.md',
+    sourceSection: '資料庫 3：正規化 Normalization ★',
+    examOutline: ['更新、插入、刪除異常', '函數相依、部分相依、遞移相依', '1NF、2NF、3NF、BCNF、4NF'],
+    memoryPoints: ['1NF 原子值，2NF 去部分相依，3NF 去遞移相依。', 'BCNF 要求每個決定因素都是候選鍵。', '4NF 消除多值相依。'],
+    understandingNotes: ['正規化是把設計不良的表拆成多個良好表，降低重複與異常。', '階越高通常越一致，但查詢可能需要更多 JOIN。'],
+    difficulty: 'core',
+    topicType: 'procedure',
+    terms: [
+      { zh: '正規化', en: 'Normalization' },
+      { zh: '函數相依', en: 'Functional Dependency' },
+      { zh: '部分相依', en: 'Partial Dependency' },
+      { zh: '遞移相依', en: 'Transitive Dependency' }
+    ],
+    lead: ['科目：資料庫；正規化是最常考的判斷與計算題之一。', '學習方式：概念要理解，拆解過程要練流程。'],
+    sections: [
+      section('為什麼要正規化', [
+        paragraph('正規化把有重複、有異常的表依規則拆成多個良好的表，目標是減少資料重複與異常。'),
+        table(
+          ['異常', '問題'],
+          [
+            ['更新異常 Update', '同資料重複存多處，改一處漏改其他造成不一致'],
+            ['插入異常 Insert', '想新增資料卻因缺其他資料而無法插入'],
+            ['刪除異常 Delete', '刪一筆資料時意外刪掉不該刪的資訊']
+          ]
+        )
+      ]),
+      section('函數相依', [
+        bulletList(['函數相依 A → B：知道 A 就能唯一決定 B。', '部分相依：非主鍵欄位只相依於複合主鍵的一部分。', '遞移相依：A → B → C，非主鍵透過另一個非主鍵間接相依主鍵。'])
+      ]),
+      section('1NF 到 BCNF', [
+        orderedList([
+          '1NF：每個欄位都是單一值，沒有重複群或多值欄位。',
+          '2NF：在 1NF 上消除部分相依，非主鍵必須相依整個複合主鍵。',
+          '3NF：在 2NF 上消除遞移相依，非主鍵不能透過另一個非主鍵相依主鍵。',
+          'BCNF：每個決定因素都必須是候選鍵，處理 3NF 沒解掉的特例。',
+          '4NF：消除多值相依。'
+        ])
+      ]),
+      section('重點整理', [
+        table(
+          ['正規化', '消除什麼'],
+          [
+            ['1NF', '欄位單一值與重複群'],
+            ['2NF', '部分相依'],
+            ['3NF', '遞移相依'],
+            ['BCNF', '非候選鍵決定因素'],
+            ['4NF', '多值相依']
+          ]
+        ),
+        paragraph('口訣：1 原子、2 去部分相依、3 去遞移相依、BC 決定因素皆候選鍵、4 去多值相依。')
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'database-md-sql-crud',
+    subjectKey: 'database',
+    title: '資料庫 4：SQL 分類 + CRUD 基礎語法 ★',
+    summary: '整理 SQL DDL/DML/DCL 分類、DELETE/TRUNCATE/DROP 差異與 CRUD 基礎語法。',
+    sourceFile: '_private/MD/資料庫/資料庫_4_SQL分類與CRUD.md',
+    sourceSection: '資料庫 4：SQL 分類 + CRUD 基礎語法 ★',
+    examOutline: ['DDL、DML、DCL', 'DELETE、TRUNCATE、DROP', 'INSERT、SELECT、UPDATE、DELETE'],
+    memoryPoints: ['DDL 定義結構，DML 操作資料，DCL 控制權限。', 'DELETE 刪資料列，TRUNCATE 清空整表，DROP 刪掉整張表。', 'UPDATE／DELETE 必加 WHERE。'],
+    understandingNotes: ['SQL 基礎要能從分類背到語法。', '安全陷阱通常在忘記 WHERE，會動到整張表。'],
+    difficulty: 'core',
+    topicType: 'procedure',
+    terms: [
+      { zh: '資料定義語言', en: 'Data Definition Language' },
+      { zh: '資料操作語言', en: 'Data Manipulation Language' },
+      { zh: '資料控制語言', en: 'Data Control Language' },
+      { zh: '增查改刪', en: 'CRUD' }
+    ],
+    lead: ['科目：資料庫；朋友強調 SQL 語法要熟。', '學習方式：分類屬硬背；CRUD 語法屬練流程，務必刷題。'],
+    sections: [
+      section('SQL 三大指令分類', [
+        table(
+          ['類別', '全名', '管什麼', '主要指令'],
+          [
+            ['DDL', 'Data Definition Language', '定義表的架構', 'CREATE、ALTER、DROP、TRUNCATE'],
+            ['DML', 'Data Manipulation Language', '操作表的內容', 'INSERT、UPDATE、DELETE、SELECT'],
+            ['DCL', 'Data Control Language', '控制權限', 'GRANT、REVOKE']
+          ]
+        ),
+        paragraph('SELECT 有時獨立叫 DQL；COMMIT 與 ROLLBACK 屬 TCL，會和交易一起考。')
+      ]),
+      section('DELETE、TRUNCATE、DROP', [
+        bulletList(['DELETE 是 DML，刪資料列，可加 WHERE，也可 rollback。', 'TRUNCATE 是 DDL，清空整表資料並保留結構，通常快但不可 rollback。', 'DROP 是 DDL，整張表含結構刪掉。'])
+      ]),
+      section('CRUD 基礎語法', [
+        table(
+          ['CRUD', 'SQL', '作用'],
+          [
+            ['Create', 'INSERT', '新增資料列'],
+            ['Read', 'SELECT', '查詢資料'],
+            ['Update', 'UPDATE', '修改資料'],
+            ['Delete', 'DELETE', '刪除資料列']
+          ]
+        ),
+        paragraph("INSERT INTO Students (id, name, age, dept) VALUES (1, '張三', 20, '資工');"),
+        paragraph('SELECT * FROM Students WHERE age >= 20;'),
+        paragraph('UPDATE Students SET age = 21 WHERE id = 1;'),
+        paragraph('DELETE FROM Students WHERE id = 1;')
+      ]),
+      section('安全提醒', [
+        paragraph('UPDATE／DELETE 必加 WHERE；沒有 WHERE 會更新或刪除整張表。'),
+        paragraph('DELETE FROM Students; 會刪光所有列；UPDATE Students SET age = 0; 會把所有列 age 改成 0。')
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'database-md-sql-advanced-query',
+    subjectKey: 'database',
+    title: '資料庫 5：SQL 查詢進階 ★',
+    summary: '整理 WHERE 運算子、ORDER BY、聚合函數、GROUP BY/HAVING、JOIN 與 SQL 邏輯執行順序。',
+    sourceFile: '_private/MD/資料庫/資料庫_5_SQL查詢進階.md',
+    sourceSection: '資料庫 5：SQL 查詢進階 ★',
+    examOutline: ['WHERE 運算子與 NULL 判斷', 'ORDER BY 與聚合函數', 'GROUP BY、HAVING、JOIN', 'SQL 邏輯執行順序'],
+    memoryPoints: ['NULL 要用 IS NULL，不能用 = NULL。', 'WHERE 分組前篩列，HAVING 分組後篩組。', 'FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY。'],
+    understandingNotes: ['進階查詢是刷題最常用的部分。', 'JOIN 題要先判斷保留哪一邊或取交集。'],
+    difficulty: 'core',
+    topicType: 'procedure',
+    terms: [
+      { zh: '分組', en: 'GROUP BY' },
+      { zh: '分組篩選', en: 'HAVING' },
+      { zh: '內連接', en: 'INNER JOIN' },
+      { zh: '左連接', en: 'LEFT JOIN' }
+    ],
+    lead: ['科目：資料庫；這是刷題真正會用到的 SQL 部分。', '學習方式：全是練流程，建議搭配歷屆與面試 SQL 題練。'],
+    sections: [
+      section('WHERE 常用運算子', [
+        table(
+          ['類型', '運算子', '例'],
+          [
+            ['比較', '=、<>、>、<、>=、<=', 'WHERE age >= 20'],
+            ['邏輯', 'AND、OR、NOT', "WHERE age > 18 AND dept = '資工'"],
+            ['範圍', 'BETWEEN a AND b', 'WHERE age BETWEEN 18 AND 22'],
+            ['集合', 'IN (v1, v2...)', "WHERE dept IN ('資工','電機')"],
+            ['模糊', 'LIKE，% 任意多字，_ 單一字', "WHERE name LIKE '張%'"],
+            ['空值', 'IS NULL / IS NOT NULL', 'WHERE dept IS NULL']
+          ]
+        ),
+        paragraph('判斷空值要用 IS NULL，不能寫 = NULL。')
+      ]),
+      section('排序與聚合', [
+        paragraph('ORDER BY 可用 ASC 升序與 DESC 降序；ASC 是預設。'),
+        table(
+          ['函數', '作用'],
+          [
+            ['COUNT()', '計數'],
+            ['SUM()', '總和'],
+            ['AVG()', '平均'],
+            ['MAX() / MIN()', '最大 / 最小']
+          ]
+        ),
+        paragraph('COUNT(*) 算所有列；COUNT(欄位) 不算該欄位為 NULL 的列。')
+      ]),
+      section('GROUP BY + HAVING', [
+        paragraph('GROUP BY 依某欄位分組，通常搭配聚合函數；HAVING 對分組後的結果篩選。'),
+        paragraph('WHERE vs HAVING 是選擇題常考比較：WHERE 在分組前篩列，HAVING 在分組後篩組。'),
+        table(
+          ['比較', 'WHERE', 'HAVING'],
+          [
+            ['篩選時機', '分組前篩列', '分組後篩組'],
+            ['能否用聚合函數', '不行', '可以']
+          ]
+        )
+      ]),
+      section('JOIN 表的連接', [
+        table(
+          ['JOIN 種類', '結果'],
+          [
+            ['INNER JOIN', '只取兩表都有對應的交集'],
+            ['LEFT JOIN', '左表全留，右表沒對應補 NULL'],
+            ['RIGHT JOIN', '右表全留，左表沒對應補 NULL'],
+            ['FULL JOIN', '兩表都留，沒對應補 NULL']
+          ]
+        ),
+        paragraph('CROSS JOIN 是笛卡爾積，每列配每列。')
+      ]),
+      section('SQL 邏輯執行順序', [paragraph('FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY。這也解釋 WHERE 不能用 SELECT 取出的別名。')])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'database-md-transactions-nosql',
+    subjectKey: 'database',
+    title: '資料庫 6：交易 ACID + NoSQL',
+    summary: '整理交易、COMMIT/ROLLBACK、ACID 四特性、並行讀取問題與 NoSQL/BASE 概念。',
+    sourceFile: '_private/MD/資料庫/資料庫_6_交易ACID與NoSQL.md',
+    sourceSection: '資料庫 6：交易 ACID + NoSQL',
+    examOutline: ['交易與交易控制指令', 'ACID 四特性', '髒讀、不可重複讀、幻讀', 'NoSQL 四類型與 BASE'],
+    memoryPoints: ['ACID 是原子、一致、隔離、持久。', 'COMMIT 提交、ROLLBACK 回復、SAVEPOINT 設儲存點。', 'NoSQL 四型：Key-Value、Document、Column-family、Graph。'],
+    understandingNotes: ['交易把一組操作視為不可分割的工作單位。', 'NoSQL 用彈性與水平擴展換取最終一致。'],
+    difficulty: 'core',
+    topicType: 'concept',
+    terms: [
+      { zh: '交易', en: 'Transaction' },
+      { zh: '原子性', en: 'Atomicity' },
+      { zh: '一致性', en: 'Consistency' },
+      { zh: '隔離性', en: 'Isolation' },
+      { zh: '持久性', en: 'Durability' },
+      { zh: '最終一致', en: 'Eventually Consistent' }
+    ],
+    lead: ['科目：資料庫最後一篇。', '學習方式：ACID 四特性屬硬背加理解；NoSQL 概念與種類屬理解加硬背。'],
+    sections: [
+      section('交易 Transaction', [
+        paragraph('交易是一組要嘛全部成功、要嘛全部失敗的資料庫操作，視為一個不可分割的工作單位。'),
+        paragraph('轉帳例子：A 扣 1000 與 B 加 1000 必須同時成功或同時失敗，不能只扣不加。'),
+        bulletList(['COMMIT：提交並永久生效。', 'ROLLBACK：回復並撤銷整筆交易。', 'SAVEPOINT：設儲存點。'])
+      ]),
+      section('ACID 四特性', [
+        table(
+          ['特性', '意思', '轉帳例子'],
+          [
+            ['原子性 Atomicity', '全部成功或全部失敗', '扣款加款要嘛都成、要嘛都不做'],
+            ['一致性 Consistency', '交易前後資料庫維持合法狀態', '總金額不變'],
+            ['隔離性 Isolation', '多交易彼此不互相干擾', '不讀到對方中間狀態'],
+            ['持久性 Durability', 'COMMIT 後結果永久保存', '斷電重開資料還在']
+          ]
+        )
+      ]),
+      section('並行問題', [bulletList(['髒讀 Dirty Read：讀到別的交易還沒 commit 的資料。', '不可重複讀 Non-repeatable Read：同一筆資料前後讀到不一樣。', '幻讀 Phantom Read：同一查詢前後筆數不一樣。'])]),
+      section('NoSQL 與 BASE', [
+        paragraph('NoSQL 是非關聯式資料庫，不用固定 schema，不一定用 SQL，適合大量、非結構化、高擴展資料。'),
+        table(
+          ['類型', '怎麼存', '代表'],
+          [
+            ['鍵值 Key-Value', 'key 到 value', 'Redis、DynamoDB'],
+            ['文件 Document', 'JSON/BSON 文件', 'MongoDB'],
+            ['欄位族 Column-family', '按欄位族存', 'Cassandra、HBase'],
+            ['圖形 Graph', '節點加關係', 'Neo4j']
+          ]
+        ),
+        paragraph('BASE 是 Basically Available、Soft state、Eventually consistent，用最終一致換取高可用與擴展性。')
+      ])
+    ]
+  })
+] as const;
+
+const programmingMarkdownTopics = [
+  createImportedMarkdownTopic({
+    id: 'programming-md-language-execution-basics',
+    subjectKey: 'programming',
+    title: '程式設計 1：語言執行方式 + 程式基礎',
+    summary: '整理 Assembler、Compiler、Interpreter、Java bytecode/JVM、型別系統與流程控制易考陷阱。',
+    sourceFile: '_private/MD/程式設計/程式設計_1_語言執行方式與程式基礎.md',
+    sourceSection: '程式設計 1：語言執行方式 + 程式基礎',
+    examOutline: ['Assembler、Compiler、Interpreter', 'Java bytecode 與 JVM', '靜態型別與動態型別', 'switch fall-through 與迴圈差異'],
+    memoryPoints: ['Compiler 整個翻成執行檔，Interpreter 一行一行邊翻邊執行。', 'Java 先編譯成 bytecode，再由 JVM/JIT 執行。', 'switch 少 break 會 fall-through。'],
+    understandingNotes: ['程式語言執行方式會影響速度、除錯與跨平台。', '流程控制已熟，但考試愛問語法陷阱。'],
+    difficulty: 'intro',
+    topicType: 'concept',
+    terms: [
+      { zh: '組譯器', en: 'Assembler' },
+      { zh: '編譯器', en: 'Compiler' },
+      { zh: '直譯器', en: 'Interpreter' },
+      { zh: '位元組碼', en: 'Bytecode' }
+    ],
+    lead: ['科目：程式設計，專業 B 佔比最重。', '學習方式：Assembler／Compiler／Interpreter 對照屬硬背；流程控制重點放考試語法與陷阱。', '範例語言以 C、Java、Python 為主。'],
+    sections: [
+      section('Assembler vs Compiler vs Interpreter', [
+        table(
+          ['工具', '翻譯什麼', '特點', '例子'],
+          [
+            ['Assembler', '組合語言到機器碼', '一對一翻譯', '低階組合語言'],
+            ['Compiler', '高階語言一次翻成機器碼並產生執行檔', '執行快，要先編譯', 'C、C++'],
+            ['Interpreter', '高階語言一行一行邊翻邊執行', '較慢，跨平台且好除錯', 'Python、JavaScript']
+          ]
+        ),
+        paragraph('Java 是混合型：先編譯成 bytecode，再由 JVM 直譯或 JIT 執行，達成跨平台。')
+      ]),
+      section('變數與資料型別', [
+        table(
+          ['比較', '靜態型別 Static', '動態型別 Dynamic'],
+          [
+            ['何時定型別', '宣告時就定死', '執行時才決定'],
+            ['例子', 'C、C++、Java', 'Python、JavaScript']
+          ]
+        ),
+        paragraph('常見型別包含 int、float/double、char、boolean、string；常數在 C/C++ 用 const，Java 用 final。')
+      ]),
+      section('流程控制陷阱', [
+        bulletList(['switch 對單一變數多個值做分支。', '每個 case 後要 break，否則會 fall-through 繼續執行下面 case。', 'for 用於計次；while 先判斷且可能一次都不跑；do-while 至少執行一次。', 'break 跳出整個迴圈，continue 跳過這一輪。'])
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'programming-md-functions-parameter-passing',
+    subjectKey: 'programming',
+    title: '程式設計 2：函式 + 參數傳遞 ★',
+    summary: '整理函式、參數與引數、傳值/傳址/傳參考/傳名、swap 範例與 static 關鍵字。',
+    sourceFile: '_private/MD/程式設計/程式設計_2_函式與參數傳遞.md',
+    sourceSection: '程式設計 2：函式 + 參數傳遞 ★',
+    examOutline: ['參數與引數', 'Call by Value/Address/Reference/Name', 'C swap 傳值與傳址', 'Java pass by value', 'static'],
+    memoryPoints: ['傳值不影響外面；傳址與傳參考會影響外面。', 'Java 全部都是「傳值」。', 'static 屬類別層級或讓區域變數保留值。'],
+    understandingNotes: ['核心問題是在函式內改參數，外面的原變數會不會跟著變。', 'Java 物件傳的是參考的值，所以改內容會影響，但重新指派不影響。'],
+    difficulty: 'core',
+    topicType: 'procedure',
+    terms: [
+      { zh: '參數', en: 'Parameter' },
+      { zh: '引數', en: 'Argument' },
+      { zh: '傳值', en: 'Call by Value' },
+      { zh: '傳址', en: 'Call by Address' },
+      { zh: '傳參考', en: 'Call by Reference' }
+    ],
+    lead: ['科目：程式設計；參數傳遞超常考，很多人搞混。', '核心問題：在函式裡改參數，外面原本的變數會不會跟著變。'],
+    sections: [
+      section('函式 Function', [
+        paragraph('函式是一段有名字、可重複呼叫的程式碼，接收參數、做事，也可以回傳結果。'),
+        bulletList(['參數 parameter：函式定義時的變數。', '引數 argument：呼叫時實際傳入的值。'])
+      ]),
+      section('參數傳遞方式', [
+        table(
+          ['方式', '傳進去的是', '改參數會影響外面嗎'],
+          [
+            ['傳值 Call by Value', '值的複製品', '不影響'],
+            ['傳址 Call by Address', '變數記憶體位址', '影響'],
+            ['傳參考 Call by Reference', '變數別名', '影響'],
+            ['傳名 Call by Name', '整個表達式，用到才求值', '影響且每次重算']
+          ]
+        ),
+        paragraph('swap 要成功需用傳址或傳參考；傳值只換到影本。')
+      ]),
+      section('Java 的常見誤解', [
+        paragraph('Java 全部都是「傳值」：基本型別傳值的複製，物件傳的是參考的值。'),
+        bulletList(['透過參考改物件內容會影響外面。', '把參數重新指向新物件不影響外面。', '嚴格說 Java 沒有 call by reference。'])
+      ]),
+      section('static 關鍵字', [
+        bulletList(['C 函式內 static 區域變數生命週期持續整個程式，值會保留到下次呼叫。', 'Java/C++ 類別裡的 static 成員屬於類別本身，所有物件共用同一份。', 'static 方法不用建立物件就能呼叫，不能用 this，也不能直接存取非 static 成員。'])
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'programming-md-arrays-strings-exceptions',
+    subjectKey: 'programming',
+    title: '程式設計 3：陣列 + 字串函式 + 例外處理',
+    summary: '整理陣列宣告、索引、多維陣列、字串函式跨語言對照與 try/catch/finally 例外處理。',
+    sourceFile: '_private/MD/程式設計/程式設計_3_陣列字串與例外處理.md',
+    sourceSection: '程式設計 3：陣列 + 字串函式 + 例外處理',
+    examOutline: ['陣列索引與走訪', '字串函式 Java/Python/C 對照', 'Java 字串比較 .equals()', 'try/catch/finally 與 checked/runtime exception'],
+    memoryPoints: ['陣列索引從 0 開始。', 'Java 比字串內容用 .equals()，不是 ==。', 'try 放可能錯的程式，catch 接住，finally 一定執行。'],
+    understandingNotes: ['陣列語法呼應資料結構的連續記憶體與 O(1) 索引。', '例外處理是不讓非預期錯誤直接中斷程式。'],
+    difficulty: 'intro',
+    topicType: 'concept',
+    terms: [
+      { zh: '陣列', en: 'Array' },
+      { zh: '字串', en: 'String' },
+      { zh: '例外', en: 'Exception' },
+      { zh: '例外處理', en: 'Exception Handling' }
+    ],
+    lead: ['科目：程式設計。', '學習方式：陣列補語法，字串函式屬硬背，例外處理屬理解。'],
+    sections: [
+      section('陣列 Array', [
+        paragraph('陣列特性是連續記憶體、索引存取 O(1)、大小固定；索引從 0 開始。'),
+        bulletList(['Java 宣告：int[] arr = new int[5]; 或 int[] arr2 = {1, 2, 3};', 'C 宣告：int arr[5]; 或 int arr2[] = {1, 2, 3};', 'Java 用 arr.length 取長度，多維陣列可寫 int[][] m = new int[3][4];'])
+      ]),
+      section('字串常用函式', [
+        table(
+          ['操作', 'Java', 'Python', 'C'],
+          [
+            ['長度', 's.length()', 'len(s)', 'strlen(s)'],
+            ['取第 i 字元', 's.charAt(i)', 's[i]', 's[i]'],
+            ['取子字串', 's.substring(a, b)', 's[a:b]', '-'],
+            ['串接', 's1 + s2', 's1 + s2', 'strcat(s1, s2)'],
+            ['搜尋位置', 's.indexOf("x")', 's.find("x")', 'strstr(s, "x")'],
+            ['分割', 's.split(",")', 's.split(",")', '-']
+          ]
+        ),
+        paragraph('Java 比字串要用 .equals()，不是 ==；== 比的是參考位址，.equals() 比內容。C 用 strcmp，Python 可用 == 比內容。')
+      ]),
+      section('例外處理', [
+        paragraph('例外是程式執行時的非預期錯誤，例如除以 0、陣列越界或找不到檔案。'),
+        table(
+          ['關鍵字', '作用'],
+          [
+            ['try', '放可能出錯的程式碼'],
+            ['catch', '捕捉並處理某種例外'],
+            ['finally', '不管有沒有錯都一定執行'],
+            ['throw', '主動拋出例外'],
+            ['throws', 'Java 方法宣告可能拋出的例外']
+          ]
+        ),
+        paragraph('Java 例外分 checked 與 unchecked/runtime；checked 如檔案 IO 會被編譯器強制處理。')
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'programming-md-pointers',
+    subjectKey: 'programming',
+    title: '程式設計 4：指標 Pointer ★（C／C++）',
+    summary: '用房間號碼比喻說明指標、取址、解參考、指標與陣列、用途與常見陷阱。',
+    sourceFile: '_private/MD/程式設計/程式設計_4_指標.md',
+    sourceSection: '程式設計 4：指標 Pointer ★（C／C++）',
+    examOutline: ['指標儲存位址', '& 取址與 * 解參考', '指標與陣列', 'NULL、dangling pointer、memory leak'],
+    memoryPoints: ['指標存的是「位址」，不是值本身。', '& 拿地址，* 順著地址拿值。', '陣列名就是第一個元素位址。'],
+    understandingNotes: ['指標可用紙條寫房號理解：紙條不是房間裡的值，而是找到房間的地址。', '指標強大但容易出錯，所以 Java/Python 以參考與 GC 避免直接碰位址。'],
+    difficulty: 'core',
+    topicType: 'concept',
+    terms: [
+      { zh: '指標', en: 'Pointer' },
+      { zh: '位址', en: 'Address' },
+      { zh: '取址', en: 'Address-of' },
+      { zh: '解參考', en: 'Dereference' }
+    ],
+    lead: ['科目：程式設計；指標是很多人最頭痛的 C/C++ 考點。', '核心只有一句：指標存的是「位址」，不是值本身。'],
+    sections: [
+      section('指標是什麼', [
+        paragraph('記憶體像一排有編號的房間；一般變數是房間裡的值，指標是寫著某房間號碼的紙條。'),
+        paragraph('例如 x 住在 0x100，值是 10；p 住在 0x200，裡面放 0x100，所以 p 指向 x。')
+      ]),
+      section('兩個關鍵符號', [
+        table(
+          ['符號', '名稱', '意思'],
+          [
+            ['&', '取址 address-of', '&x 取得 x 的位址'],
+            ['* 宣告時', '指標型別', 'int *p 表示 p 是指向 int 的指標'],
+            ['* 使用時', '解參考 dereference', '*p 順著 p 的位址拿該房間裡的值']
+          ]
+        ),
+        paragraph('口訣：& 拿地址、* 順著地址拿值。')
+      ]),
+      section('指標與陣列', [
+        bulletList(['陣列名稱本身就是第一個元素的位址，也就是 arr = &arr[0]。', 'int *p = arr; 代表 p 指向 arr[0]。', '*(p + 1) 等於 arr[1]；p + 1 不是加 1 byte，而是跳一個元素大小。'])
+      ]),
+      section('用途與陷阱', [
+        table(
+          ['用途', '陷阱'],
+          [
+            ['傳址讓函式改到外面的變數', 'NULL 指標解參考會崩潰'],
+            ['動態記憶體配置 malloc/free、new/delete', '迷途指標 dangling 指向無效記憶體'],
+            ['高效處理大資料與串接資料結構', '記憶體洩漏 leak 是配置後忘了釋放']
+          ]
+        )
+      ]),
+      section('C/C++ vs Java/Python', [
+        table(
+          ['比較', 'C/C++', 'Java/Python'],
+          [
+            ['指標', '有，可直接操作位址', '沒有明確指標，用參考概念'],
+            ['記憶體管理', '手動 malloc/free、new/delete', '自動 GC'],
+            ['取捨', '強大底層但易出錯', '較安全但較不底層']
+          ]
+        )
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'programming-md-oop',
+    subjectKey: 'programming',
+    title: '程式設計 5：物件導向 OOP 三大特性 ★',
+    summary: '整理類別與物件、封裝、繼承、多型，以及抽象類別與介面的差異。',
+    sourceFile: '_private/MD/程式設計/程式設計_5_物件導向OOP.md',
+    sourceSection: '程式設計 5：物件導向 OOP 三大特性 ★',
+    examOutline: ['Class 與 Object', '封裝、繼承、多型', 'Override 與 Overload', 'Abstract Class 與 Interface'],
+    memoryPoints: ['封裝是包起來藏細節，繼承是子承父可重用，多型是同操作不同表現。', 'Override 是執行期多型，Overload 是編譯期多型。', '抽象類別 is-a，介面 can-do。'],
+    understandingNotes: ['類別是藍圖，物件是照藍圖造出的實例。', 'OOP 的核心是讓資料與行為有清楚邊界，方便擴充與維護。'],
+    difficulty: 'core',
+    topicType: 'concept',
+    terms: [
+      { zh: '類別', en: 'Class' },
+      { zh: '物件', en: 'Object' },
+      { zh: '封裝', en: 'Encapsulation' },
+      { zh: '繼承', en: 'Inheritance' },
+      { zh: '多型', en: 'Polymorphism' }
+    ],
+    lead: ['科目：程式設計；物件導向 OOP 三大特性必考。', '來源用動物、狗、貓與 Java 例子把三大特性具體化。'],
+    sections: [
+      section('類別與物件', [
+        bulletList(['類別 Class：藍圖或模板，定義屬性與方法。', '物件 Object：根據類別造出的具體實例。', '比喻：類別是餅乾模具，物件是做出的一塊塊餅乾。'])
+      ]),
+      section('三大特性', [
+        table(
+          ['特性', '核心', '做法或例子'],
+          [
+            ['封裝 Encapsulation', '把資料和方法包在類別裡並隱藏細節', '屬性 private，提供 public getter/setter'],
+            ['繼承 Inheritance', '子類別繼承父類別，可重用與擴充', 'Dog extends Animal，is-a 關係'],
+            ['多型 Polymorphism', '同一操作，不同物件有不同表現', 'Animal a = new Dog(); a.sound() 執行 Dog 的版本']
+          ]
+        ),
+        paragraph('口訣：封裝＝包起來藏細節、繼承＝子承父可重用、多型＝同操作不同表現。')
+      ]),
+      section('Override vs Overload', [
+        table(
+          ['種類', '說明', '時機'],
+          [
+            ['覆寫 Override', '子類別重新定義父類別同名方法', '執行期多型'],
+            ['重載 Overload', '同名但參數數量或型別不同', '編譯期多型']
+          ]
+        )
+      ]),
+      section('抽象類別 vs 介面', [
+        table(
+          ['比較', '抽象類別 Abstract Class', '介面 Interface'],
+          [
+            ['能否 new', '不能', '不能'],
+            ['內容', '可含已實作方法、抽象方法與欄位', '傳統上只有方法宣告'],
+            ['關係', 'is-a', 'can-do'],
+            ['Java 關鍵字', 'extends', 'implements']
+          ]
+        )
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'programming-md-recursion',
+    subjectKey: 'programming',
+    title: '程式設計 6：遞迴 Recursion ★',
+    summary: '整理遞迴定義、終止條件與遞迴呼叫、階乘、Fibonacci、遞迴與迴圈比較，以及 call stack。',
+    sourceFile: '_private/MD/程式設計/程式設計_6_遞迴.md',
+    sourceSection: '程式設計 6：遞迴 Recursion ★',
+    examOutline: ['遞迴與 base case', 'factorial 與 Fibonacci', '遞迴 vs 迴圈', 'call stack 與 stack overflow'],
+    memoryPoints: ['遞迴一定要有終止條件與遞迴呼叫。', '直接遞迴 Fibonacci 是 O(2ⁿ)。', '遞迴靠呼叫堆疊 LIFO 運作。'],
+    understandingNotes: ['遞迴是函式呼叫自己，把大問題拆成同形式的小問題。', '少了終止條件會無限遞迴直到 stack overflow。'],
+    difficulty: 'core',
+    topicType: 'procedure',
+    terms: [
+      { zh: '遞迴', en: 'Recursion' },
+      { zh: '終止條件', en: 'Base Case' },
+      { zh: '遞迴呼叫', en: 'Recursive Case' },
+      { zh: '呼叫堆疊', en: 'Call Stack' }
+    ],
+    lead: ['科目：程式設計；來源把較少使用的遞迴從概念講到流程。', '核心：函式呼叫自己，把大問題拆成同形式的小問題。'],
+    sections: [
+      section('遞迴是什麼', [
+        paragraph('遞迴是一個函式呼叫自己，將大問題拆成同樣形式的小問題，直到小到可以直接回答。'),
+        paragraph('比喻：俄羅斯娃娃一層層打開，直到最小那個不能再打開。')
+      ]),
+      section('兩個必要元素', [
+        table(
+          ['元素', '意思'],
+          [
+            ['終止條件 Base Case', '小到不用再遞迴，可直接回答；少了會 stack overflow'],
+            ['遞迴呼叫 Recursive Case', '把問題縮小一點，呼叫自己處理更小子問題']
+          ]
+        )
+      ]),
+      section('階乘 Factorial', [
+        paragraph('n! = n × (n−1) × ... × 1；遞迴定義是 0! = 1，n! = n × (n−1)!。'),
+        paragraph('factorial(4) 會一路展開到 factorial(0)=1，再往回乘成 24。')
+      ]),
+      section('Fibonacci', [
+        paragraph('F(0)=0，F(1)=1，F(n)=F(n−1)+F(n−2)。'),
+        paragraph('直接遞迴 Fibonacci 會重複計算，時間複雜度是 O(2ⁿ)，實務常改用迴圈或 memoization。')
+      ]),
+      section('遞迴 vs 迴圈與堆疊', [
+        table(
+          ['比較', '遞迴', '迴圈'],
+          [
+            ['寫法', '函式呼叫自己', 'for/while'],
+            ['可讀性', '樹、分治等問題較簡潔', '一般運算直接'],
+            ['記憶體', '每次呼叫佔 call stack', '較省記憶體'],
+            ['速度', '有函式呼叫開銷', '通常較快']
+          ]
+        ),
+        paragraph('每次遞迴呼叫都把目前狀態壓入 call stack；到終止條件後再一層層 return。')
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'programming-md-language-features',
+    subjectKey: 'programming',
+    title: '程式設計 7：各語言特性（Java GC／Python 容器）',
+    summary: '整理 Java GC、C/C++ 手動記憶體、Python List/Tuple/Dict/Set，以及 C/C++、Java、Python 代表特性。',
+    sourceFile: '_private/MD/程式設計/程式設計_7_各語言特性.md',
+    sourceSection: '程式設計 7：各語言特性（Java GC／Python 容器）',
+    examOutline: ['Java Garbage Collection', 'Python 四種內建容器', 'C/C++、Java、Python 代表特性'],
+    memoryPoints: ['Java GC 自動回收沒有參考指向的物件。', 'List 可變可重複，Tuple 不可變，Dict 是鍵值對，Set 無序不重複。', '空的 {} 是 Dict，不是 Set；空集合要 set()。'],
+    understandingNotes: ['語言特性題多半是硬背比較表。', 'GC 降低手動釋放負擔，但可能 stop-the-world 且時機不可控。'],
+    difficulty: 'intro',
+    topicType: 'concept',
+    terms: [
+      { zh: '垃圾回收', en: 'Garbage Collection' },
+      { zh: '串列', en: 'List' },
+      { zh: '元組', en: 'Tuple' },
+      { zh: '字典', en: 'Dictionary' },
+      { zh: '集合', en: 'Set' }
+    ],
+    lead: ['科目：程式設計最後一篇。', '學習方式：語言特性屬硬背；重點是 Java GC 與 Python 四種內建容器。'],
+    sections: [
+      section('Java 的垃圾回收 GC', [
+        bulletList(['GC 自動找出不再被使用的物件並回收，程式設計師不用手動釋放。', '判斷沒用的方式是沒有任何參考指向它，也就是 unreachable。', 'C/C++ 要手動 malloc/free 或 new/delete；忘記就可能 memory leak。', 'GC 優點是減少記憶體洩漏；缺點是可能短暫暫停且無法精準控制回收時機。'])
+      ]),
+      section('Python 四種內建容器', [
+        table(
+          ['型別', '符號', '有序', '可變', '可重複', '一句話'],
+          [
+            ['List', '[]', '是', '是', '是', '像可動態增減的陣列'],
+            ['Tuple', '()', '是', '否', '是', '建立後不能改'],
+            ['Dict', '{ k:v }', '插入序', '是', '鍵不可重複', '鍵值對，用鍵查值'],
+            ['Set', '{ }', '否', '是', '否', '自動去重、集合運算']
+          ]
+        ),
+        paragraph('Dict 在 Python 3.7+ 保留插入順序，但仍是用鍵存取，不是用位置。空的 {} 是 Dict，不是 Set；空集合要寫 set()。')
+      ]),
+      section('語言特性總對照', [
+        table(
+          ['語言', '代表特性'],
+          [
+            ['C/C++', '指標與手動記憶體管理'],
+            ['Java', 'GC 自動垃圾回收、bytecode + JVM 跨平台'],
+            ['Python', '動態型別、List/Tuple/Dict/Set']
+          ]
+        )
+      ])
+    ]
+  })
+] as const;
+
+const systemDesignMarkdownTopics = [
+  createImportedMarkdownTopic({
+    id: 'system-design-sdlc-ssdlc',
+    subjectKey: 'systemDesign',
+    title: '系統分析與設計 1：SDLC + SSDLC',
+    summary: '整理 SDLC 七階段、常見開發模型與 SSDLC 在每個階段內建資安的觀念。',
+    sourceFile: '_private/MD/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md',
+    sourceSection: '系統分析與設計 1：SDLC + SSDLC',
+    examOutline: ['SDLC 七階段', '瀑布、雛形、螺旋、敏捷', 'SSDLC、Security by Design、Shift Left'],
+    memoryPoints: ['SDLC：規劃、分析、設計、實作、測試、導入、維護。', '維護通常佔生命週期成本最大。', 'SSDLC 是每階段內建資安，不是做完才補。'],
+    understandingNotes: ['你工作上跑過需求到維護，本篇把實務流程對上正式名稱。', '開發模型題通常考特色與適用情境。'],
+    difficulty: 'intro',
+    topicType: 'concept',
+    terms: [
+      { zh: '系統開發生命週期', en: 'System Development Life Cycle' },
+      { zh: '安全系統開發生命週期', en: 'Secure SDLC' },
+      { zh: '威脅建模', en: 'Threat Modeling' },
+      { zh: '安全內建', en: 'Security by Design' }
+    ],
+    lead: ['科目：系統分析與設計，歸在資訊管理底下。', '學習方式：大多屬理解；開發模型與階段名稱屬硬背。', '你朋友提醒：這科很散，先補知識點，再刷歷屆確認範圍。'],
+    sections: [
+      section('SDLC 系統開發生命週期', [
+        paragraph('SDLC 是開發資訊系統的標準階段流程，從規劃到維護。'),
+        table(
+          ['階段', '在做什麼', '誰主導'],
+          [
+            ['規劃 Planning', '確定目標、可行性分析', '管理層'],
+            ['分析 Analysis', '蒐集需求、了解現況', '系統分析師'],
+            ['設計 Design', '設計系統架構、資料庫、介面', '設計師'],
+            ['實作 Implementation', '寫程式 coding', '程式設計師'],
+            ['測試 Testing', '驗證功能正確', '測試'],
+            ['導入 Deployment', '系統上線', '專案團隊'],
+            ['維護 Maintenance', '修錯、更新', '維護團隊']
+          ]
+        )
+      ]),
+      section('常見開發模型', [
+        table(
+          ['模型', '特點', '優缺'],
+          [
+            ['瀑布 Waterfall', '線性，一階段完成才下一階段', '文件清楚但難應對需求變更'],
+            ['雛形 Prototyping', '先做簡單原型給使用者看', '早確認需求但可能東拼西湊'],
+            ['螺旋 Spiral', '瀑布加原型加風險分析，反覆迭代', '適合大型高風險但成本高'],
+            ['敏捷 Agile', '小步快跑、反覆交付', '適應變更快但文件較少']
+          ]
+        )
+      ]),
+      section('SSDLC', [
+        paragraph('SSDLC 在 SDLC 每個階段都融入資安，而不是系統做完才補。核心理念是 Security by Design 與 Shift Left。'),
+        table(
+          ['SDLC 階段', '融入的資安'],
+          [
+            ['規劃／分析', '安全需求、風險評估'],
+            ['設計', '威脅建模 Threat Modeling、安全架構'],
+            ['開發', '安全編碼、程式碼審查'],
+            ['測試', '滲透測試、漏洞掃描 SAST/DAST'],
+            ['導入／維護', '安全設定、持續監控、修補']
+          ]
+        )
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'system-design-cohesion-coupling',
+    subjectKey: 'systemDesign',
+    title: '系統分析與設計 2：內聚力 Cohesion + 耦合力 Coupling ★',
+    summary: '整理高內聚低耦合原則、7 種內聚與 5 種耦合的好壞排序。',
+    sourceFile: '_private/MD/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md',
+    sourceSection: '系統分析與設計 2：內聚力 Cohesion + 耦合力 Coupling ★',
+    examOutline: ['高內聚、低耦合', '內聚力 7 種排序', '耦合力 5 種排序'],
+    memoryPoints: ['內聚越高越好，耦合越低越好。', '內聚最好是功能內聚，最差是偶發內聚。', '耦合最好是資料耦合，最差是內容耦合。'],
+    understandingNotes: ['高內聚表示模組只做一件事；低耦合表示模組之間改動影響小。', '這其實就是日常寫元件時的單一職責與減少依賴。'],
+    difficulty: 'core',
+    topicType: 'concept',
+    terms: [
+      { zh: '內聚力', en: 'Cohesion' },
+      { zh: '耦合力', en: 'Coupling' },
+      { zh: '功能內聚', en: 'Functional Cohesion' },
+      { zh: '資料耦合', en: 'Data Coupling' }
+    ],
+    lead: ['科目：系統分析與設計；這科最常考的一塊。', '核心原則你天天在用，但 7 種內聚加 5 種耦合的好壞排序要硬背。'],
+    sections: [
+      section('核心原則', [
+        table(
+          ['比較', '內聚力 Cohesion', '耦合力 Coupling'],
+          [
+            ['是什麼', '模組內部元素關聯緊密度', '模組之間相互依賴程度'],
+            ['越高/低好', '越高越好', '越低越好']
+          ]
+        ),
+        paragraph('好設計目標是高內聚、低耦合。高內聚讓模組單純好維護；低耦合讓改一個不容易影響其他。')
+      ]),
+      section('內聚力 7 種', [
+        table(
+          ['排序', '內聚種類', '意思'],
+          [
+            ['1 最好', '功能內聚 Functional', '所有元素合力完成單一明確功能'],
+            ['2', '順序內聚 Sequential', '前一個輸出是下一個輸入'],
+            ['3', '溝通內聚 Communicational', '元素使用相同輸入或輸出資料'],
+            ['4', '程序內聚 Procedural', '依特定執行順序跑'],
+            ['5', '暫時內聚 Temporal', '同一時間點一起執行'],
+            ['6', '邏輯內聚 Logical', '邏輯上同類，靠參數選要做什麼'],
+            ['7 最差', '偶發內聚 Coincidental', '元素沒什麼關聯，只是湊在一起']
+          ]
+        )
+      ]),
+      section('耦合力 5 種', [
+        table(
+          ['排序', '耦合種類', '意思'],
+          [
+            ['1 最好', '資料耦合 Data', '只透過參數傳簡單資料'],
+            ['2', '資料結構耦合 Stamp', '傳整個資料結構，但只用其中一部分'],
+            ['3', '控制耦合 Control', '傳控制旗標去左右另一模組行為'],
+            ['4', '共同耦合 Common', '多個模組共用全域變數'],
+            ['5 最差', '內容耦合 Content', '直接存取或修改另一模組內部資料']
+          ]
+        )
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'system-design-oo-uml',
+    subjectKey: 'systemDesign',
+    title: '系統分析與設計 3：OO 四種關係 + UML 四種圖',
+    summary: '整理物件導向四種關係弱到強、聚合與組合差異，以及 UML 類別圖、使用個案圖、活動圖、循序圖。',
+    sourceFile: '_private/MD/系統分析與設計/系統分析與設計_3_OO關係與UML.md',
+    sourceSection: '系統分析與設計 3：OO 四種關係 + UML 四種圖',
+    examOutline: ['Dependency、Association、Aggregation、Composition', 'Aggregation vs Composition', 'UML 四種圖與結構/行為分類'],
+    memoryPoints: ['OO 關係弱到強：相依、結合、聚合、組合。', '聚合空心菱形，部分可獨立；組合實心菱形，部分同生死。', '類別圖是結構圖；使用個案、活動、循序是行為圖。'],
+    understandingNotes: ['聚合與組合最易混，用共享 vs 獨佔、可否獨立存在來判斷。', 'UML 題常考每種圖表達什麼。'],
+    difficulty: 'core',
+    topicType: 'concept',
+    terms: [
+      { zh: '相依', en: 'Dependency' },
+      { zh: '結合', en: 'Association' },
+      { zh: '聚合', en: 'Aggregation' },
+      { zh: '組合', en: 'Composition' },
+      { zh: '統一塑模語言', en: 'Unified Modeling Language' }
+    ],
+    lead: ['科目：系統分析與設計。', '學習方式：概念屬理解；四種關係強弱與 UML 各圖用途屬硬背。', '聚合 vs 組合最容易混，要用共享 vs 獨佔理解。'],
+    sections: [
+      section('OO 四種關係', [
+        table(
+          ['強度', '關係', '意思', 'UML 符號'],
+          [
+            ['最弱', '相依 Dependency', '暫時用到，uses-a', '虛線箭頭'],
+            ['較弱', '結合 Association', '長期結構關係，has-a', '實線'],
+            ['較強', '聚合 Aggregation', '整體-部分，部分可獨立或共享', '空心菱形'],
+            ['最強', '組合 Composition', '整體-部分，部分不可脫離整體、同生死', '實心菱形']
+          ]
+        )
+      ]),
+      section('聚合 vs 組合', [
+        table(
+          ['比較', '聚合 Aggregation', '組合 Composition'],
+          [
+            ['部分能否獨立', '能，可共享', '不能，同生死、獨佔'],
+            ['例子', '班級和學生', '房子和房間、訂單和訂單明細'],
+            ['符號', '空心菱形', '實心菱形']
+          ]
+        )
+      ]),
+      section('UML 四種圖', [
+        table(
+          ['圖', '類型', '表達什麼'],
+          [
+            ['類別圖 Class Diagram', '結構圖', '類別、屬性、方法、類別間關係'],
+            ['使用個案圖 Use Case', '行為圖', 'actor 與系統功能互動'],
+            ['活動圖 Activity', '行為圖', '流程、工作流、分支、並行'],
+            ['循序圖 Sequence', '行為圖', '物件之間隨時間的訊息傳遞順序']
+          ]
+        )
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'system-design-testing',
+    subjectKey: 'systemDesign',
+    title: '系統分析與設計 4：測試 Testing',
+    summary: '整理測試目的、測試層級、白箱黑箱、迴歸/復原/安全/效能，以及 Alpha/Beta。',
+    sourceFile: '_private/MD/系統分析與設計/系統分析與設計_4_測試.md',
+    sourceSection: '系統分析與設計 4：測試 Testing',
+    examOutline: ['測試只能證明有 bug', '單元、整合、系統、驗收', '白箱、黑箱、灰箱', '迴歸、復原、安全、效能', 'Alpha、Beta'],
+    memoryPoints: ['層級由小到大：單元、整合、系統、驗收。', '白箱看內部，黑箱只看輸入輸出。', 'Alpha 在內部、Beta 給外部真實使用者。'],
+    understandingNotes: ['測試目的是找出缺陷並降低上線後出錯成本。', '越早發現 bug，修復成本越低。'],
+    difficulty: 'intro',
+    topicType: 'concept',
+    terms: [
+      { zh: '單元測試', en: 'Unit Testing' },
+      { zh: '整合測試', en: 'Integration Testing' },
+      { zh: '白箱測試', en: 'White-box Testing' },
+      { zh: '黑箱測試', en: 'Black-box Testing' },
+      { zh: '迴歸測試', en: 'Regression Testing' }
+    ],
+    lead: ['科目：系統分析與設計。', '學習方式：類型多，屬硬背；單元、整合、迴歸、黑白箱你工作上碰過，分組記比較好背。'],
+    sections: [
+      section('為什麼要測試', [
+        bulletList(['目的：找出缺陷、確保符合需求、提升品質與可靠度、降低上線後出錯成本。', '重要觀念：測試只能證明有 bug，不能證明完全沒 bug。', '越早發現 bug，修復成本越低。'])
+      ]),
+      section('測試層級', [
+        table(
+          ['層級', '測什麼', '誰做'],
+          [
+            ['單元測試 Unit', '單一最小單元是否正確', '開發者'],
+            ['整合測試 Integration', '多模組組合能否正確協作', '開發或測試'],
+            ['系統測試 System', '整個系統是否符合需求', '測試團隊'],
+            ['驗收測試 Acceptance', '使用者或客戶驗證可否接受', '使用者或客戶']
+          ]
+        )
+      ]),
+      section('白箱 vs 黑箱', [
+        table(
+          ['比較', '白箱測試 White-box', '黑箱測試 Black-box'],
+          [
+            ['看得到內部', '看得到程式結構與邏輯', '看不到，只看輸入到輸出'],
+            ['測什麼', '路徑、分支是否走過', '功能是否符合規格'],
+            ['常用於', '單元測試', '功能或驗收測試']
+          ]
+        )
+      ]),
+      section('特定目的測試與 Alpha/Beta', [
+        table(
+          ['測試', '測什麼'],
+          [
+            ['迴歸測試 Regression', '改程式後重測原功能有沒有被改壞'],
+            ['復原測試 Recovery', '系統當機或故障後能否正常復原'],
+            ['安全測試 Security', '漏洞與權限防護是否足夠'],
+            ['效能測試 Performance', '速度、回應時間與負載']
+          ]
+        ),
+        paragraph('Alpha 在內部、Beta 給外部真實使用者；Beta 通常在 Alpha 之後，接近上線。')
+      ])
+    ]
+  }),
+  createImportedMarkdownTopic({
+    id: 'system-design-conversion-pdca',
+    subjectKey: 'systemDesign',
+    title: '系統分析與設計 5：系統導入 + PDCA',
+    summary: '整理直接、平行、領航、階段四種系統導入方式，以及 PDCA 持續改善循環。',
+    sourceFile: '_private/MD/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md',
+    sourceSection: '系統分析與設計 5：系統導入 + PDCA',
+    examOutline: ['直接導入、平行導入、領航導入、階段導入', '風險與成本取捨', 'PDCA 戴明環'],
+    memoryPoints: ['直接最快最便宜但風險最高；平行最安全但成本最高。', '領航先試點，階段逐模組上線。', 'PDCA 是 Plan、Do、Check、Act。'],
+    understandingNotes: ['導入方式本質是在風險、成本與速度之間取捨。', 'PDCA 用於品質管理與持續改善。'],
+    difficulty: 'intro',
+    topicType: 'concept',
+    terms: [
+      { zh: '直接導入', en: 'Direct Conversion' },
+      { zh: '平行導入', en: 'Parallel Conversion' },
+      { zh: '領航導入', en: 'Pilot Conversion' },
+      { zh: '階段導入', en: 'Phased Conversion' },
+      { zh: '戴明環', en: 'PDCA Cycle' }
+    ],
+    lead: ['科目：系統分析與設計最後一篇。', '學習方式：4 種導入方式的優缺點屬硬背；PDCA 屬理解。'],
+    sections: [
+      section('系統導入四種方式', [
+        table(
+          ['方式', '做法', '優點', '缺點'],
+          [
+            ['直接導入 Direct', '舊系統立刻停，新系統直接上', '最快、成本最低', '風險最高，出事沒退路'],
+            ['平行導入 Parallel', '新舊系統同時跑一段時間', '最安全，可比對也可備援', '成本最高，人力加倍'],
+            ['領航導入 Pilot', '先在一個部門或地點試用，成功再推廣', '風險局限小範圍，可先抓問題', '推廣較慢'],
+            ['階段導入 Phased', '一個模組一個模組逐步上線', '風險分散，逐步適應', '過渡期長，新舊介接複雜']
+          ]
+        ),
+        paragraph('兩個極端：直接＝最便宜但最危險；平行＝最安全但最貴。')
+      ]),
+      section('PDCA 戴明環', [
+        paragraph('PDCA 是持續改善循環，不斷重複讓品質螺旋上升。'),
+        table(
+          ['步驟', '做什麼'],
+          [
+            ['P — Plan 計畫', '訂目標、擬計畫'],
+            ['D — Do 執行', '實施計畫'],
+            ['C — Check 檢核', '檢查結果、與目標比對'],
+            ['A — Act 行動', '依結果調整或標準化，再進入下一循環']
+          ]
+        ),
+        paragraph('Plan（計畫）→ Do（執行）→ Check（檢核）→ Act（行動／改善），核心精神是持續循環改善。')
+      ])
+    ]
+  })
+] as const;
 
 const createProfessionalTopicSkeleton = (config: ProfessionalTopicSkeletonConfig): ProfessionalSubjectTopic => {
   if (config.id === 'cp-common-units') {
@@ -7829,6 +10344,9 @@ const createProfessionalTopicSkeleton = (config: ProfessionalTopicSkeletonConfig
   }
   if (isMarkdownBackedComputerPrinciplesTopicId(config.id)) {
     return createMarkdownBackedComputerPrinciplesTopic({ ...config, id: config.id });
+  }
+  if (isDataStructureAlgorithmTopicId(config.id)) {
+    return createDataStructureAlgorithmTopic({ ...config, id: config.id });
   }
   if (isAlgorithmExampleTopicId(config.id)) {
     return createAlgorithmExampleTopic({ ...config, id: config.id });
@@ -7864,7 +10382,12 @@ const getProfessionalTopicSkeletons = (subjectKey: SubjectKey): readonly Profess
   const configs = professionalTopicSkeletonConfigs.filter((config) => config.subjectKey === subjectKey);
   const orderedConfigs =
     subjectKey === 'algorithms'
-      ? [...configs].sort((left, right) => getAlgorithmExampleTopicRank(left.id) - getAlgorithmExampleTopicRank(right.id))
+      ? [...configs].sort((left, right) => {
+          const leftRank = getAlgorithmTopicRank(left.id);
+          const rightRank = getAlgorithmTopicRank(right.id);
+
+          return leftRank === rightRank ? 0 : leftRank - rightRank;
+        })
       : configs;
 
   return orderedConfigs.map(createProfessionalTopicSkeleton);
@@ -7874,9 +10397,10 @@ export const professionalTopicsBySubject = {
   computerPrinciples: getProfessionalTopicSkeletons('computerPrinciples'),
   networking: getProfessionalTopicSkeletons('networking'),
   informationManagement: getProfessionalTopicSkeletons('informationManagement'),
-  programming: getProfessionalTopicSkeletons('programming'),
-  database: getProfessionalTopicSkeletons('database'),
+  programming: [...programmingMarkdownTopics, ...getProfessionalTopicSkeletons('programming')],
+  database: [...databaseMarkdownTopics, ...getProfessionalTopicSkeletons('database')],
   algorithms: getProfessionalTopicSkeletons('algorithms'),
+  systemDesign: systemDesignMarkdownTopics,
   english: [],
   chinese: []
 } as const satisfies ProfessionalTopicsBySubject;
