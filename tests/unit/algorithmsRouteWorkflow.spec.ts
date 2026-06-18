@@ -66,6 +66,54 @@ const readSortingExpansionRows = () => [
   }
 ];
 
+const readDataStructureMarkdownRows = () => [
+  {
+    id: 'algorithm-big-o-complexity',
+    title: '資料結構與演算法 1：演算法定義 + Big-O 複雜度 ★',
+    formalSourceFile: '_private/MD/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md'
+  },
+  {
+    id: 'algorithm-array-linked-list',
+    title: '資料結構與演算法 2：陣列 Array + 鏈結串列 Linked List',
+    formalSourceFile: '_private/MD/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md'
+  },
+  {
+    id: 'algorithm-stack-queue',
+    title: '資料結構與演算法 3：堆疊 Stack + 佇列 Queue',
+    formalSourceFile: '_private/MD/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md'
+  },
+  {
+    id: 'algorithm-tree-traversal-basics',
+    title: '資料結構與演算法 4：樹 Tree（基本）+ 前中後序走訪',
+    formalSourceFile: '_private/MD/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md'
+  },
+  {
+    id: 'algorithm-advanced-trees',
+    title: '資料結構與演算法 5：高等樹 ★（AVL／B-Tree／Heap／紅黑樹）',
+    formalSourceFile: '_private/MD/資料結構與演算法/資料結構與演算法_5_高等樹.md'
+  },
+  {
+    id: 'algorithm-graph-basics-traversal',
+    title: '資料結構與演算法 6（上）：圖 Graph 基礎 + DFS／BFS ★',
+    formalSourceFile: '_private/MD/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md'
+  },
+  {
+    id: 'algorithm-graph-algorithms',
+    title: '資料結構與演算法 6（下）：圖演算法 ★（MST／最短路徑／AOV-AOE）',
+    formalSourceFile: '_private/MD/資料結構與演算法/資料結構與演算法_6下_圖演算法.md'
+  },
+  {
+    id: 'algorithm-sorting-overview',
+    title: '資料結構與演算法 7：排序 Sorting ★',
+    formalSourceFile: '_private/MD/資料結構與演算法/資料結構與演算法_7_排序.md'
+  },
+  {
+    id: 'algorithm-hashing',
+    title: '資料結構與演算法 8：雜湊 Hashing',
+    formalSourceFile: '_private/MD/資料結構與演算法/資料結構與演算法_8_雜湊.md'
+  }
+];
+
 const readRouteManifestRows = () => [
   ...readAlgorithmsManifestRows(),
   ...readCommonAlgorithmRows(),
@@ -174,10 +222,29 @@ describe('algorithms route-scoped content workflow', () => {
   });
 
   it('imports formal algorithms app data for every route topic', () => {
+    const dataStructureRows = readDataStructureMarkdownRows();
     const manifestRows = readRouteManifestRows();
     const formalTopics = professionalTopicsBySubject.algorithms;
 
-    expect(formalTopics).toHaveLength(manifestRows.length + 1);
+    expect(formalTopics).toHaveLength(manifestRows.length + dataStructureRows.length + 1);
+    expect(formalTopics.slice(0, dataStructureRows.length).map((topic) => topic.id)).toEqual(
+      dataStructureRows.map((row) => row.id)
+    );
+
+    for (const row of dataStructureRows) {
+      const topic = formalTopics.find((formalTopic) => formalTopic.id === row.id);
+
+      expect(topic).toBeDefined();
+      expect(topic?.title).toBe(row.title);
+      expect(topic?.sourceFiles).toEqual(expect.arrayContaining([row.formalSourceFile]));
+      expect(topic?.blocks).toHaveLength(1);
+      expect(topic?.blocks[0]).toEqual(expect.objectContaining({ kind: 'lessonArticle' }));
+      if (topic?.blocks[0]?.kind === 'lessonArticle') {
+        expect(topic.blocks[0].lead.length).toBeGreaterThan(0);
+        expect(topic.blocks[0].sections.length).toBeGreaterThan(0);
+      }
+      expect(topic?.blocks.some((block) => block.kind === 'teachingCode')).toBe(false);
+    }
 
     for (const row of manifestRows) {
       const topic = formalTopics.find((formalTopic) => formalTopic.id === row.id);

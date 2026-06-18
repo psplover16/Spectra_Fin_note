@@ -36,6 +36,11 @@ export default createRouter({
       meta: { title: '演算法' }
     },
     {
+      path: '/system-design',
+      component: routeComponentLoaders['/system-design'],
+      meta: { title: '系統設計' }
+    },
+    {
       path: '/english',
       component: routeComponentLoaders['/english'],
       meta: { title: '英文' }

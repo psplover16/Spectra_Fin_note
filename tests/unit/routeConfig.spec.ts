@@ -16,6 +16,7 @@ describe('route config', () => {
         '/programming',
         '/database',
         '/algorithms',
+        '/system-design',
         '/english',
         '/chinese'
       ])
@@ -30,6 +31,7 @@ describe('route config', () => {
       '/programming',
       '/database',
       '/algorithms',
+      '/system-design',
       '/english',
       '/chinese'
     ]);

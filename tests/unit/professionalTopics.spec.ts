@@ -11,16 +11,18 @@ const professionalSubjectKeys = [
   'database',
   'informationManagement',
   'programming',
-  'algorithms'
+  'algorithms',
+  'systemDesign'
 ] as const;
 
 const expectedCounts = {
-  computerPrinciples: 33,
+  computerPrinciples: 34,
   networking: 11,
-  database: 11,
+  database: 17,
   informationManagement: 7,
-  programming: 39,
-  algorithms: 22
+  programming: 46,
+  algorithms: 31,
+  systemDesign: 5
 } as const;
 
 const staleDisplayedBlockKinds = [
@@ -79,6 +81,151 @@ const baseConversionSources = ['_private/計算機概論.txt', '_private/MD/計�
 const complementConversionSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十五、補數轉換_新手國考教材.md'];
 const floatingPointConversionSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十六、浮點數轉換_新手國考教材.md'];
 const codesAndCheckCodesSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十七、數碼、文字碼與檢查碼_新手國考教材.md'];
+const digitalLogicTopicIds = [
+  'cp-digital-logic-basics',
+  'cp-sop-pos',
+  'cp-karnaugh-map',
+  'cp-universal-gates',
+  'cp-combinational-sequential-circuits'
+] as const;
+const digitalLogicSourcesByTopicId = {
+  'cp-digital-logic-basics': ['_private/計算機概論.txt', '_private/MD/計概/3b數位邏輯/一、基本邏輯_新手國考教材.md'],
+  'cp-sop-pos': ['_private/計算機概論.txt', '_private/MD/計概/3b數位邏輯/二、SOP 與 POS_新手國考教材.md'],
+  'cp-karnaugh-map': ['_private/計算機概論.txt', '_private/MD/計概/3b數位邏輯/三、卡諾圖化簡_新手國考教材.md'],
+  'cp-universal-gates': ['_private/計算機概論.txt', '_private/MD/計概/3b數位邏輯/四、萬用閘_新手國考教材.md'],
+  'cp-combinational-sequential-circuits': [
+    '_private/計算機概論.txt',
+    '_private/MD/計概/3b數位邏輯/五、組合與循序電路_新手國考教材.md'
+  ]
+} as const satisfies Record<(typeof digitalLogicTopicIds)[number], readonly string[]>;
+const digitalLogicExpectedTitlesByTopicId = {
+  'cp-digital-logic-basics': '基本邏輯(Digital Logic Basics)',
+  'cp-sop-pos': 'SOP 與 POS(SOP and POS)',
+  'cp-karnaugh-map': '卡諾圖化簡(Karnaugh Map Simplification)',
+  'cp-universal-gates': '萬用閘(Universal Gates)',
+  'cp-combinational-sequential-circuits': '組合與循序電路(Combinational and Sequential Circuits)'
+} as const satisfies Record<(typeof digitalLogicTopicIds)[number], string>;
+const operatingSystemTopicIds = [
+  'cp-os-basics',
+  'cp-io-and-interrupts',
+  'cp-os-structure',
+  'cp-process',
+  'cp-cpu-scheduling',
+  'cp-deadlock',
+  'cp-process-communication',
+  'cp-memory-management',
+  'cp-virtual-memory',
+  'cp-disk-management'
+] as const;
+const operatingSystemSourcesByTopicId = {
+  'cp-os-basics': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/3-1. OS 基礎概念.md'],
+  'cp-io-and-interrupts': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/3-2. IO 中斷方式 與 硬體保護.md'],
+  'cp-os-structure': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/3-4_OS結構.md'],
+  'cp-process': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-5上_Process基礎.md'],
+  'cp-cpu-scheduling': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-5下_CPU排程演算法.md'],
+  'cp-deadlock': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-6_Deadlock.md'],
+  'cp-process-communication': [
+    '_private/計算機概論.txt',
+    '_private/MD/計概/3c作業系統/作業系統_3-7_ProcessCommunication_跳過分析.md'
+  ],
+  'cp-memory-management': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-8_記憶體管理.md'],
+  'cp-virtual-memory': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-9_虛擬記憶體.md'],
+  'cp-disk-management': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-10_磁碟管理.md']
+} as const satisfies Record<(typeof operatingSystemTopicIds)[number], readonly string[]>;
+const operatingSystemExpectedTitlesByTopicId = {
+  'cp-os-basics': '作業系統 1：OS 基礎概念(Operating System Basics)',
+  'cp-io-and-interrupts': '作業系統 2：I/O 中斷方式 與 硬體保護(I/O and Interrupts)',
+  'cp-os-structure': '作業系統 3-4：OS 的結構(Operating System Structure)',
+  'cp-process': '作業系統 3-5（上）：Process 基礎(Process)',
+  'cp-cpu-scheduling': '作業系統 3-5（下）：CPU 排程演算法(CPU Scheduling)',
+  'cp-deadlock': '作業系統 3-6：Deadlock（死結）(Deadlock)',
+  'cp-process-communication': '作業系統 3-7：Process Communication(Process Communication)',
+  'cp-memory-management': '作業系統 3-8：Memory Management（記憶體管理）(Memory Management)',
+  'cp-virtual-memory': '作業系統 3-9：Virtual Memory（虛擬記憶體）(Virtual Memory)',
+  'cp-disk-management': '作業系統 3-10：Disk Management（磁碟管理）(Disk Management)'
+} as const satisfies Record<(typeof operatingSystemTopicIds)[number], string>;
+const operatingSystemRepresentativeKeywordsByTopicId = {
+  'cp-os-basics': ['OS 分類比較表'],
+  'cp-io-and-interrupts': ['Polling', 'DMA'],
+  'cp-os-structure': ['Command', 'System Call'],
+  'cp-process': ['Process State'],
+  'cp-cpu-scheduling': ['甘特圖', '平均等待'],
+  'cp-deadlock': ['銀行家演算法'],
+  'cp-process-communication': ['這章我跳過'],
+  'cp-memory-management': ['TLB', 'Fragmentation'],
+  'cp-virtual-memory': ['EMAT', 'Page Replacement'],
+  'cp-disk-management': ['Disk Scheduling', 'RAID']
+} as const satisfies Record<(typeof operatingSystemTopicIds)[number], readonly string[]>;
+const networkingSourceText = '_private/網概.txt';
+const networkingTopicCases = [
+  {
+    id: 'networking-osi-tcpip',
+    mdSource: '_private/MD/網概/網路概論_1_OSI七層與TCPIP.md',
+    sourceSummaryPhrase: 'OSI',
+    keyword: 'OSI 七層'
+  },
+  {
+    id: 'networking-basics',
+    mdSource: '_private/MD/網概/網路概論_2_基礎概念.md',
+    sourceSummaryPhrase: '基礎概念',
+    keyword: 'LAN vs MAN vs WAN'
+  },
+  {
+    id: 'networking-devices-osi',
+    mdSource: '_private/MD/網概/網路概論_3_網路設備對應層級.md',
+    sourceSummaryPhrase: '網路設備',
+    keyword: '碰撞域'
+  },
+  {
+    id: 'networking-ip-subnetting',
+    mdSource: '_private/MD/網概/網路概論_4上_IP與子網路計算.md',
+    sourceSummaryPhrase: 'IP',
+    keyword: 'VLSM'
+  },
+  {
+    id: 'networking-routing-l3-protocols',
+    mdSource: '_private/MD/網概/網路概論_4下_路由與L3協定.md',
+    sourceSummaryPhrase: '路由',
+    keyword: 'RIP'
+  },
+  {
+    id: 'networking-transport-layer',
+    mdSource: '_private/MD/網概/網路概論_5_傳輸層.md',
+    sourceSummaryPhrase: '傳輸層',
+    keyword: '三方交握'
+  },
+  {
+    id: 'networking-application-ports',
+    mdSource: '_private/MD/網概/網路概論_6_應用層與Port對照.md',
+    sourceSummaryPhrase: '應用層',
+    keyword: 'Port Number'
+  },
+  {
+    id: 'networking-physical-layer',
+    mdSource: '_private/MD/網概/網路概論_7上_實體層.md',
+    sourceSummaryPhrase: '實體層',
+    keyword: 'WiFi'
+  },
+  {
+    id: 'networking-data-link-layer',
+    mdSource: '_private/MD/網概/網路概論_7下_資料鏈結層.md',
+    sourceSummaryPhrase: '資料鏈結層',
+    keyword: 'CSMA/CD'
+  },
+  {
+    id: 'networking-security-crypto',
+    mdSource: '_private/MD/網概/網路概論_8上_資安觀念與加密.md',
+    sourceSummaryPhrase: '資安',
+    keyword: '數位簽章'
+  },
+  {
+    id: 'networking-defense-attacks',
+    mdSource: '_private/MD/網概/網路概論_8下_防禦設備與攻擊.md',
+    sourceSummaryPhrase: '防禦',
+    keyword: 'IDS vs IPS'
+  }
+] as const;
+const networkingTopicIds = networkingTopicCases.map((topicCase) => topicCase.id);
 const markdownBackedComputerPrinciplesTopicCases = [
   {
     id: 'cp-performance-formulas',
@@ -113,6 +260,63 @@ const markdownBackedComputerPrinciplesTopicCases = [
 ] as const;
 const algorithmSource = '_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md';
 const bucketSortSource = '_private/MD/演算法/GeneralBucketSort.java';
+const dataStructureAlgorithmTopicCases = [
+  {
+    id: 'algorithm-big-o-complexity',
+    title: '資料結構與演算法 1：演算法定義 + Big-O 複雜度 ★',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md',
+    keywords: ['演算法 5 條件', 'O(log n)', '時間複雜度']
+  },
+  {
+    id: 'algorithm-array-linked-list',
+    title: '資料結構與演算法 2：陣列 Array + 鏈結串列 Linked List',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md',
+    keywords: ['Row-major', 'Column-major', 'Doubly Linked List']
+  },
+  {
+    id: 'algorithm-stack-queue',
+    title: '資料結構與演算法 3：堆疊 Stack + 佇列 Queue',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md',
+    keywords: ['LIFO', 'FIFO', 'Circular Queue']
+  },
+  {
+    id: 'algorithm-tree-traversal-basics',
+    title: '資料結構與演算法 4：樹 Tree（基本）+ 前中後序走訪',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md',
+    keywords: ['Preorder', 'Inorder', 'Postorder']
+  },
+  {
+    id: 'algorithm-advanced-trees',
+    title: '資料結構與演算法 5：高等樹 ★（AVL／B-Tree／Heap／紅黑樹）',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_5_高等樹.md',
+    keywords: ['AVL', 'B-Tree', 'Red-Black Tree']
+  },
+  {
+    id: 'algorithm-graph-basics-traversal',
+    title: '資料結構與演算法 6（上）：圖 Graph 基礎 + DFS／BFS ★',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md',
+    keywords: ['Adjacency Matrix', 'DFS', 'BFS']
+  },
+  {
+    id: 'algorithm-graph-algorithms',
+    title: '資料結構與演算法 6（下）：圖演算法 ★（MST／最短路徑／AOV-AOE）',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_6下_圖演算法.md',
+    keywords: ['Minimum Spanning Tree', 'Dijkstra', 'Topological Sort']
+  },
+  {
+    id: 'algorithm-sorting-overview',
+    title: '資料結構與演算法 7：排序 Sorting ★',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_7_排序.md',
+    keywords: ['Stable', 'Quick Sort', 'Heap Sort']
+  },
+  {
+    id: 'algorithm-hashing',
+    title: '資料結構與演算法 8：雜湊 Hashing',
+    source: '_private/MD/資料結構與演算法/資料結構與演算法_8_雜湊.md',
+    keywords: ['Hash Table', 'Collision', 'Open Addressing']
+  }
+] as const;
+const dataStructureAlgorithmTopicIds = dataStructureAlgorithmTopicCases.map((topicCase) => topicCase.id);
 const firstBatchAlgorithmTopicIds = [
   'bubble-sort',
   'selection-sort',
@@ -141,6 +345,133 @@ const expectedAlgorithmTopicIdsAfterImportedTopics = [
   'heap-sort',
   'shell-sort'
 ] as const;
+const expectedAlgorithmTopicIdsAfterDataStructureTopics = [
+  ...firstBatchAlgorithmTopicIds,
+  ...expectedAlgorithmTopicIdsAfterImportedTopics
+] as const;
+const importedDatabaseProgrammingSystemDesignBatch = 'fill-database-programming-system-design-content';
+const databaseMarkdownTopicCases = [
+  {
+    id: 'database-md-foundations-architecture',
+    title: '資料庫 1：基礎概念 + ANSI/SPARC 架構',
+    source: '_private/MD/資料庫/資料庫_1_基礎概念與架構.md',
+    keyword: 'ANSI/SPARC 三層架構'
+  },
+  {
+    id: 'database-md-keys-erd',
+    title: '資料庫 2：Key（鍵）+ ERD（實體關係圖）',
+    source: '_private/MD/資料庫/資料庫_2_鍵與ERD.md',
+    keyword: '超鍵'
+  },
+  {
+    id: 'database-md-normalization',
+    title: '資料庫 3：正規化 Normalization ★',
+    source: '_private/MD/資料庫/資料庫_3_正規化.md',
+    keyword: '1NF'
+  },
+  {
+    id: 'database-md-sql-crud',
+    title: '資料庫 4：SQL 分類 + CRUD 基礎語法 ★',
+    source: '_private/MD/資料庫/資料庫_4_SQL分類與CRUD.md',
+    keyword: 'UPDATE／DELETE 必加 WHERE'
+  },
+  {
+    id: 'database-md-sql-advanced-query',
+    title: '資料庫 5：SQL 查詢進階 ★',
+    source: '_private/MD/資料庫/資料庫_5_SQL查詢進階.md',
+    keyword: 'WHERE vs HAVING'
+  },
+  {
+    id: 'database-md-transactions-nosql',
+    title: '資料庫 6：交易 ACID + NoSQL',
+    source: '_private/MD/資料庫/資料庫_6_交易ACID與NoSQL.md',
+    keyword: 'ACID'
+  }
+] as const;
+const programmingMarkdownTopicCases = [
+  {
+    id: 'programming-md-language-execution-basics',
+    title: '程式設計 1：語言執行方式 + 程式基礎',
+    source: '_private/MD/程式設計/程式設計_1_語言執行方式與程式基礎.md',
+    keyword: 'Assembler'
+  },
+  {
+    id: 'programming-md-functions-parameter-passing',
+    title: '程式設計 2：函式 + 參數傳遞 ★',
+    source: '_private/MD/程式設計/程式設計_2_函式與參數傳遞.md',
+    keyword: 'Java 全部都是「傳值」'
+  },
+  {
+    id: 'programming-md-arrays-strings-exceptions',
+    title: '程式設計 3：陣列 + 字串函式 + 例外處理',
+    source: '_private/MD/程式設計/程式設計_3_陣列字串與例外處理.md',
+    keyword: '.equals()'
+  },
+  {
+    id: 'programming-md-pointers',
+    title: '程式設計 4：指標 Pointer ★（C／C++）',
+    source: '_private/MD/程式設計/程式設計_4_指標.md',
+    keyword: '指標存的是「位址」'
+  },
+  {
+    id: 'programming-md-oop',
+    title: '程式設計 5：物件導向 OOP 三大特性 ★',
+    source: '_private/MD/程式設計/程式設計_5_物件導向OOP.md',
+    keyword: '封裝'
+  },
+  {
+    id: 'programming-md-recursion',
+    title: '程式設計 6：遞迴 Recursion ★',
+    source: '_private/MD/程式設計/程式設計_6_遞迴.md',
+    keyword: '終止條件'
+  },
+  {
+    id: 'programming-md-language-features',
+    title: '程式設計 7：各語言特性（Java GC／Python 容器）',
+    source: '_private/MD/程式設計/程式設計_7_各語言特性.md',
+    keyword: 'Python 四種內建容器'
+  }
+] as const;
+const systemDesignMarkdownTopicCases = [
+  {
+    id: 'system-design-sdlc-ssdlc',
+    title: '系統分析與設計 1：SDLC + SSDLC',
+    source: '_private/MD/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md',
+    keyword: 'Security by Design'
+  },
+  {
+    id: 'system-design-cohesion-coupling',
+    title: '系統分析與設計 2：內聚力 Cohesion + 耦合力 Coupling ★',
+    source: '_private/MD/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md',
+    keyword: '高內聚、低耦合'
+  },
+  {
+    id: 'system-design-oo-uml',
+    title: '系統分析與設計 3：OO 四種關係 + UML 四種圖',
+    source: '_private/MD/系統分析與設計/系統分析與設計_3_OO關係與UML.md',
+    keyword: '聚合 vs 組合'
+  },
+  {
+    id: 'system-design-testing',
+    title: '系統分析與設計 4：測試 Testing',
+    source: '_private/MD/系統分析與設計/系統分析與設計_4_測試.md',
+    keyword: 'Alpha 在內部、Beta 給外部真實使用者'
+  },
+  {
+    id: 'system-design-conversion-pdca',
+    title: '系統分析與設計 5：系統導入 + PDCA',
+    source: '_private/MD/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md',
+    keyword: 'Plan（計畫）→ Do（執行）→ Check（檢核）→ Act（行動／改善）'
+  }
+] as const;
+const importedDatabaseProgrammingSystemDesignSubjectCases = [
+  { subjectKey: 'database', topicCases: databaseMarkdownTopicCases },
+  { subjectKey: 'programming', topicCases: programmingMarkdownTopicCases },
+  { subjectKey: 'systemDesign', topicCases: systemDesignMarkdownTopicCases }
+] as const;
+const importedDatabaseProgrammingSystemDesignTopicIdSet = new Set<string>(
+  importedDatabaseProgrammingSystemDesignSubjectCases.flatMap(({ topicCases }) => topicCases.map((topicCase) => topicCase.id))
+);
 const algorithmCodeMethodNames = {
   'bubble-sort': ['bubbleSortRecursive', 'bubbleSortIterative'],
   'quick-sort': ['quickSortRecursive', 'quickSortIterative'],
@@ -184,8 +515,15 @@ const filledTopicIds = new Set([
   complementConversionTopicId,
   floatingPointConversionTopicId,
   codesAndCheckCodesTopicId,
+  ...digitalLogicTopicIds,
+  ...operatingSystemTopicIds,
   ...markdownBackedComputerPrinciplesTopicIds,
-  ...firstBatchAlgorithmTopicIds
+  ...networkingTopicIds,
+  ...dataStructureAlgorithmTopicIds,
+  ...firstBatchAlgorithmTopicIds,
+  ...databaseMarkdownTopicCases.map((topicCase) => topicCase.id),
+  ...programmingMarkdownTopicCases.map((topicCase) => topicCase.id),
+  ...systemDesignMarkdownTopicCases.map((topicCase) => topicCase.id)
 ]);
 
 const getLessonArticleNonTableBlocks = (lessonArticle: Extract<(typeof professionalTopicsBySubject.computerPrinciples)[number]['blocks'][number], { kind: 'lessonArticle' }>) =>
@@ -218,6 +556,7 @@ describe('professional topic skeleton data', () => {
 
       for (const topic of professionalTopicsBySubject[subjectKey]) {
         const isFilledTopic = filledTopicIds.has(topic.id);
+        const isImportedDatabaseProgrammingSystemDesignTopic = importedDatabaseProgrammingSystemDesignTopicIdSet.has(topic.id);
 
         expect(topic.id).not.toBe('');
         expect(topic.title).not.toBe('');
@@ -228,9 +567,15 @@ describe('professional topic skeleton data', () => {
         }
         expect(topic.sourceFiles.length).toBeGreaterThan(0);
         expect(topic.sourceSummary).not.toBe('');
-        expect(topic.examOutline).toEqual([]);
-        expect(topic.memoryPoints).toEqual([]);
-        expect(topic.understandingNotes).toEqual([]);
+        if (isImportedDatabaseProgrammingSystemDesignTopic) {
+          expect(topic.examOutline.length).toBeGreaterThan(0);
+          expect(topic.memoryPoints.length).toBeGreaterThan(0);
+          expect(topic.understandingNotes.length).toBeGreaterThan(0);
+        } else {
+          expect(topic.examOutline).toEqual([]);
+          expect(topic.memoryPoints).toEqual([]);
+          expect(topic.understandingNotes).toEqual([]);
+        }
         if (isFilledTopic) {
           expect(topic.terms.length).toBeGreaterThan(0);
         } else {
@@ -534,11 +879,58 @@ describe('professional topic skeleton data', () => {
     expect(recursiveCodeBlock.code.split('\n').filter((line) => line.trim().startsWith('//')).length).toBeGreaterThanOrEqual(24);
   });
 
-  it('moves imported first-batch algorithm topics to the top of the Algorithms route and preserves the remaining order', () => {
+  it('imports data-structure Markdown topics as source-traceable Algorithms lesson articles', () => {
+    const algorithmTopics = professionalTopicsBySubject.algorithms;
+
+    expect(algorithmTopics.slice(0, dataStructureAlgorithmTopicIds.length).map((topic) => topic.id)).toEqual(
+      dataStructureAlgorithmTopicIds
+    );
+
+    for (const topicCase of dataStructureAlgorithmTopicCases) {
+      const topic = algorithmTopics.find((algorithmTopic) => algorithmTopic.id === topicCase.id);
+
+      expect(topic, `${topicCase.id} should exist`).toBeDefined();
+      expect(topic?.title).toBe(topicCase.title);
+      expect(topic?.sourceFiles).toEqual(expect.arrayContaining([topicCase.source]));
+      expect(topic?.summary, `${topicCase.id} should have a summary`).not.toBe('');
+      expect(topic?.terms.length, `${topicCase.id} should have terms`).toBeGreaterThan(0);
+      expect(topic?.blocks).toHaveLength(1);
+
+      const lessonArticle = topic?.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topicCase.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining([topicCase.source]));
+      expect(lessonArticle.sourceSection).toBe(topic?.sourceSummary);
+      expect(lessonArticle.lead.length, `${topicCase.id} should keep source lead content`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.length, `${topicCase.id} should have lesson sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topicCase.id} should not have empty sections`).toBe(
+        true
+      );
+      expect(
+        lessonArticle.sections.every((section) => !/TODO|待補|來源大綱|教材本文/.test(section.heading)),
+        `${topicCase.id} should not expose placeholder headings`
+      ).toBe(true);
+
+      const serializedTopic = JSON.stringify(topic);
+
+      for (const keyword of topicCase.keywords) {
+        expect(serializedTopic, `${topicCase.id} should contain ${keyword}`).toContain(keyword);
+      }
+      for (const phrase of generatedContentPhrases) {
+        expect(serializedTopic, `${topicCase.id} should not expose generated phrase ${phrase}`).not.toContain(phrase);
+      }
+    }
+  });
+
+  it('moves data-structure Markdown topics to the top of the Algorithms route and preserves the remaining order', () => {
     const algorithmTopicIds = professionalTopicsBySubject.algorithms.map((topic) => topic.id);
 
-    expect(algorithmTopicIds.slice(0, firstBatchAlgorithmTopicIds.length)).toEqual(firstBatchAlgorithmTopicIds);
-    expect(algorithmTopicIds.slice(firstBatchAlgorithmTopicIds.length)).toEqual(expectedAlgorithmTopicIdsAfterImportedTopics);
+    expect(algorithmTopicIds.slice(0, dataStructureAlgorithmTopicIds.length)).toEqual(dataStructureAlgorithmTopicIds);
+    expect(algorithmTopicIds.slice(dataStructureAlgorithmTopicIds.length)).toEqual(expectedAlgorithmTopicIdsAfterDataStructureTopics);
   });
 
   it('fills the Turing machine and test lesson article with source traceability and teaching sections', () => {
@@ -657,7 +1049,7 @@ describe('professional topic skeleton data', () => {
     expect(lessonArticle.sourceSection).toBe('3a. 基本計概 / 機器指令與指令週期');
     expect(lessonArticle.lead.length).toBeGreaterThanOrEqual(1);
     expect(lessonArticle.sections.map((section) => section.heading)).toEqual([
-      '機器指令',
+      '考前小抄',
       '機器指令範例',
       '指令週期怎麼理解',
       '指令週期關鍵字',
@@ -667,7 +1059,7 @@ describe('professional topic skeleton data', () => {
     expect(lessonArticle.sections.every((section) => section.sourceLabel === undefined)).toBe(true);
 
     const sectionByHeading = Object.fromEntries(lessonArticle.sections.map((section) => [section.heading, section]));
-    const machineInstructionBlock = sectionByHeading['機器指令']?.blocks[0];
+    const quickReviewBlock = sectionByHeading['考前小抄']?.blocks[0];
     const exampleTableBlock = sectionByHeading['機器指令範例']?.blocks[1];
     const cycleStepBlock = sectionByHeading['指令週期怎麼理解']?.blocks[1];
     const cycleTableBlock = sectionByHeading['指令週期怎麼理解']?.blocks[2];
@@ -682,8 +1074,8 @@ describe('professional topic skeleton data', () => {
     expect(serializedTopic).not.toContain('[比較]');
     expect(serializedTopic).not.toContain('sourceLabel');
 
-    expect(machineInstructionBlock?.kind).toBe('orderedList');
-    expect(machineInstructionBlock?.kind === 'orderedList' ? machineInstructionBlock.items : []).toEqual([
+    expect(quickReviewBlock?.kind).toBe('orderedList');
+    expect(quickReviewBlock?.kind === 'orderedList' ? quickReviewBlock.items : []).toEqual([
       expect.stringContaining('機器指令'),
       expect.stringContaining('Opcode'),
       expect.stringContaining('Operand'),
@@ -695,8 +1087,8 @@ describe('professional topic skeleton data', () => {
       expect.stringContaining('Operand Fetch'),
       expect.stringContaining('Execute')
     ]);
-    expect(machineInstructionBlock?.kind === 'orderedList' ? machineInstructionBlock.markerStyle : undefined).toBe('decimal');
-    expect(machineInstructionBlock?.kind === 'orderedList' ? 'icons' in machineInstructionBlock : false).toBe(false);
+    expect(quickReviewBlock?.kind === 'orderedList' ? quickReviewBlock.markerStyle : undefined).toBe('decimal');
+    expect(quickReviewBlock?.kind === 'orderedList' ? 'icons' in quickReviewBlock : false).toBe(false);
 
     expect(exampleTableBlock?.kind).toBe('table');
     if (exampleTableBlock?.kind !== 'table') {
@@ -1129,9 +1521,6 @@ describe('professional topic skeleton data', () => {
           'Binary 1011 = Gray 1110',
           'Gray 1110 = Binary 1011',
           'CRC 位數 = 生成多項式長度 - 1',
-          '原資料 1001，補 3 個 0：1001000',
-          '0000110',
-          '    110  這是CRC',
           '2^r ≥ m + r + 1',
           'S4 S2 S1',
           'floor((Dmin - 1) / 2)'
@@ -1233,8 +1622,8 @@ describe('professional topic skeleton data', () => {
         }[]
       | undefined;
 
-    expect(crcSubsections?.map((block) => block.kind)).toEqual(['subsection', 'subsection', 'subsection', 'subsection']);
-    expect(crcSubsections?.map((block) => block.heading)).toEqual(['一、定義與用途', '二、傳送與接收流程', '三、算法', '四、範例']);
+    expect(crcSubsections?.map((block) => block.kind)).toEqual(['subsection', 'subsection', 'subsection']);
+    expect(crcSubsections?.map((block) => block.heading)).toEqual(['一、定義與用途', '二、傳送與接收流程', '三、算法']);
     expect(JSON.stringify(crcSubsections?.[0])).toContain('CRC（Cyclic Redundancy Check，循環冗餘檢查）常用在網路傳輸與儲存裝置。');
     expect(JSON.stringify(crcSubsections?.[0])).toContain('主要用來偵測錯誤，不是一般拿來更正錯誤。');
     expect(JSON.stringify(crcSubsections?.[1])).toContain('CRC 傳送資料前，先根據資料算出一串「檢查位元」');
@@ -1242,16 +1631,6 @@ describe('professional topic skeleton data', () => {
     expect(JSON.stringify(crcSubsections?.[2])).toContain('看生成多項式長度。ex. 1011');
     expect(JSON.stringify(crcSubsections?.[2])).toContain('用生成多項式做模 2 除法');
     expect(JSON.stringify(crcSubsections?.[2])).toContain('接收端再除一次，餘數為 0 表示通過。');
-    expect(JSON.stringify(crcSubsections?.[3])).toContain('原資料 1001，補 3 個 0：1001000');
-    expect(JSON.stringify(crcSubsections?.[3])).toContain('1001000');
-    expect(crcSubsections?.[3]?.blocks?.[0]).toEqual({
-      kind: 'paragraph',
-      text: '原資料 1001，補 3 個 0：1001000\n生成多項式：1011'
-    });
-    expect(crcSubsections?.[3]?.blocks?.[1]).toEqual({
-      kind: 'codeBlock',
-      text: '1001000\n1011\n-------\n0010000\n  1011\n-------\n0000110\n    110  這是CRC'
-    });
 
     const hammingSection = codesLessonArticle.sections.find((section) => section.heading === 'Hamming Code（漢明碼）');
     const hammingBlocks = hammingSection?.blocks as
@@ -1304,12 +1683,250 @@ describe('professional topic skeleton data', () => {
     const hammingCheckBitDetails = hammingStepGroup?.[6]?.blocks;
 
     expect(JSON.stringify(hammingCheckBitDetails)).toContain('P1 檢查「位置編號轉成二進位後，最右邊是 1」的位置');
-    expect(JSON.stringify(hammingCheckBitDetails)).toContain('P4 檢查「位置編號轉成二進位後，從右邊數第 3 位是 1」的位置');
+    expect(JSON.stringify(hammingCheckBitDetails)).toContain('P4 檢查「位置編號轉成二進位後，最左邊是 1」的位置');
     expect(JSON.stringify(hammingCheckBitDetails)).toContain('此步驟可以得出全部漢明碼。');
     expect(JSON.stringify(hammingStepGroup)).toContain('3-4. 驗證，把漢明碼的值重新檢查 P1、P2、P4 負責的範圍是否符合校驗');
     expect(JSON.stringify(hammingBlocks)).toContain('Syndrome（症候值/症狀碼/校驗子）：');
     expect(JSON.stringify(hammingBlocks)).toContain('組成 S4 S2 S1，得到 Syndrome');
     expect(JSON.stringify(hammingBlocks)).toContain('轉成十進位，就是錯誤位置');
+  });
+
+  it('fills 3b digital logic topics with source traceability, confirmed corrections, and reveal metadata', () => {
+    const digitalLogicTopics = digitalLogicTopicIds.map((topicId) =>
+      professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId)
+    );
+    const rawInstructionPhrases = ['用table做', '內部值都是空的', '點選標題，才會讓值跑出來'];
+
+    for (const topic of digitalLogicTopics) {
+      if (!topic) {
+        throw new Error('3b digital logic topic should exist');
+      }
+
+      const topicId = topic.id as (typeof digitalLogicTopicIds)[number];
+
+      expect(topic.title).toBe(digitalLogicExpectedTitlesByTopicId[topicId]);
+      expect(topic.sourceFiles).toEqual(expect.arrayContaining([...digitalLogicSourcesByTopicId[topicId]]));
+      expect(topic.summary, `${topic.id} should have a summary`).not.toBe('');
+      expect(topic.terms.length, `${topic.id} should have terms`).toBeGreaterThan(0);
+      expect(topic.blocks).toHaveLength(1);
+
+      const lessonArticle = topic.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topic.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining([...digitalLogicSourcesByTopicId[topicId]]));
+      expect(lessonArticle.lead).toEqual([]);
+      expect(lessonArticle.sections.length, `${topic.id} should have lesson sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topic.id} should not have empty sections`).toBe(
+        true
+      );
+      expect(lessonArticle.sections.every((section) => section.sourceLabel === undefined), `${topic.id} should omit sourceLabel`).toBe(
+        true
+      );
+    }
+
+    const serializedDigitalLogicTopics = JSON.stringify(digitalLogicTopics);
+
+    for (const rawInstructionPhrase of rawInstructionPhrases) {
+      expect(serializedDigitalLogicTopics).not.toContain(rawInstructionPhrase);
+    }
+    expect(serializedDigitalLogicTopics).toContain("B'");
+    expect(serializedDigitalLogicTopics).toContain('德摩根定律');
+    expect(JSON.stringify(digitalLogicTopics[1])).toContain('標準 SOP');
+    expect(JSON.stringify(digitalLogicTopics[1])).toContain('標準 POS');
+    expect(JSON.stringify(digitalLogicTopics[2])).toContain('欄');
+    expect(JSON.stringify(digitalLogicTopics[3])).toContain('5 個 NOR');
+
+    const circuitsTopicText = JSON.stringify(digitalLogicTopics[4]);
+
+    expect(circuitsTopicText).toContain('組合電路');
+    expect(circuitsTopicText).toContain('循序電路');
+    expect(circuitsTopicText).not.toContain('Sum = A XOR B');
+    expect(circuitsTopicText).not.toContain('Cout =');
+    expect(circuitsTopicText).not.toContain('Y0 =');
+    expect(circuitsTopicText).not.toContain('D0 =');
+    expect(circuitsTopicText).not.toContain('S1 S0');
+
+    const basicsLessonArticle = digitalLogicTopics[0]?.blocks[0];
+
+    expect(basicsLessonArticle?.kind).toBe('lessonArticle');
+    if (basicsLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cp-digital-logic-basics should render as lessonArticle');
+    }
+
+    const truthTableBlock = basicsLessonArticle.sections
+      .find((section) => section.heading === '兩輸入真值表(Two-Input Truth Table)')
+      ?.blocks.find((block) => block.kind === 'table');
+
+    expect(truthTableBlock).toMatchObject({
+      kind: 'table',
+      headers: ['A', 'B', 'AND', 'OR', 'NAND', 'NOR', 'XOR', 'XNOR']
+    });
+    expect((truthTableBlock as { revealableColumnIndexes?: readonly number[] } | undefined)?.revealableColumnIndexes).toEqual([
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]);
+  });
+
+  it('fills 3c operating-system topics with source traceability and source-preserving lesson articles', () => {
+    const operatingSystemTopics = operatingSystemTopicIds.map((topicId) =>
+      professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId)
+    );
+
+    for (const topic of operatingSystemTopics) {
+      if (!topic) {
+        throw new Error('3c operating-system topic should exist');
+      }
+
+      const topicId = topic.id as (typeof operatingSystemTopicIds)[number];
+
+      expect(topic.title).toBe(operatingSystemExpectedTitlesByTopicId[topicId]);
+      expect(topic.sourceFiles).toEqual(expect.arrayContaining([...operatingSystemSourcesByTopicId[topicId]]));
+      expect(topic.summary, `${topic.id} should have a summary`).not.toBe('');
+      expect(topic.terms.length, `${topic.id} should have terms`).toBeGreaterThan(0);
+      expect(topic.blocks).toHaveLength(1);
+
+      const lessonArticle = topic.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topic.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining([...operatingSystemSourcesByTopicId[topicId]]));
+      expect(lessonArticle.lead).toEqual([]);
+      expect(lessonArticle.sections.length, `${topic.id} should have lesson sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topic.id} should not have empty sections`).toBe(
+        true
+      );
+      expect(lessonArticle.sections.every((section) => section.sourceLabel === undefined), `${topic.id} should omit sourceLabel`).toBe(
+        true
+      );
+
+      const serializedTopic = JSON.stringify(topic);
+
+      for (const keyword of operatingSystemRepresentativeKeywordsByTopicId[topicId]) {
+        expect(serializedTopic, `${topic.id} should contain ${keyword}`).toContain(keyword);
+      }
+    }
+
+    const hardwareProtectionTopic = professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === 'cp-hardware-protection');
+    const hardwareProtectionLessonArticle = hardwareProtectionTopic?.blocks[0];
+
+    expect(hardwareProtectionTopic?.summary).toBe('');
+    expect(hardwareProtectionTopic?.terms).toEqual([]);
+    expect(hardwareProtectionLessonArticle?.kind).toBe('lessonArticle');
+    if (hardwareProtectionLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cp-hardware-protection should stay as an empty lessonArticle skeleton');
+    }
+    expect(hardwareProtectionLessonArticle.lead).toEqual([]);
+    expect(hardwareProtectionLessonArticle.sections).toEqual([]);
+  });
+
+  it('fills networking Markdown topics with source traceability and source-preserving lesson articles', () => {
+    expect(professionalTopicsBySubject.networking.map((topic) => topic.id)).toEqual([...networkingTopicIds]);
+
+    for (const topicCase of networkingTopicCases) {
+      const topic = professionalTopicsBySubject.networking.find((networkingTopic) => networkingTopic.id === topicCase.id);
+      const expectedSources = [networkingSourceText, topicCase.mdSource];
+
+      if (!topic) {
+        throw new Error(`${topicCase.id} should exist`);
+      }
+
+      expect(topic.sourceFiles).toEqual(expect.arrayContaining(expectedSources));
+      expect(topic.sourceSummary, `${topic.id} should point to the chapter topic`).toContain(topicCase.sourceSummaryPhrase);
+      expect(topic.summary, `${topic.id} should have a summary`).not.toBe('');
+      expect(topic.terms.length, `${topic.id} should have terms`).toBeGreaterThan(0);
+      expect(topic.blocks).toHaveLength(1);
+
+      const lessonArticle = topic.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topic.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining(expectedSources));
+      expect(lessonArticle.sourceSection).toBe(topic.sourceSummary);
+      expect(lessonArticle.sections.length, `${topic.id} should have lesson sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topic.id} should not have empty sections`).toBe(
+        true
+      );
+      expect(JSON.stringify(topic), `${topic.id} should contain ${topicCase.keyword}`).toContain(topicCase.keyword);
+    }
+  });
+
+  it('imports Database, Programming, and System Design Markdown topics with exact source traceability and lessonArticle content', () => {
+    const rawInstructionPhrases = ['用table', 'ul/li做', '紅色文字顏色', '你幫我設計顯示方式'];
+
+    for (const { subjectKey, topicCases } of importedDatabaseProgrammingSystemDesignSubjectCases) {
+      const importedTopics = professionalTopicsBySubject[subjectKey].slice(0, topicCases.length);
+
+      expect(importedTopics.map((topic) => topic.id)).toEqual(topicCases.map((topicCase) => topicCase.id));
+
+      for (const topicCase of topicCases) {
+        const topic = professionalTopicsBySubject[subjectKey].find((subjectTopic) => subjectTopic.id === topicCase.id);
+
+        if (!topic) {
+          throw new Error(`${topicCase.id} should exist`);
+        }
+
+        expect(topic.subjectKey).toBe(subjectKey);
+        expect(topic.title).toBe(topicCase.title);
+        expect(topic.sourceBatch).toBe(importedDatabaseProgrammingSystemDesignBatch);
+        expect(topic.sourceFiles).toEqual([topicCase.source]);
+        expect(topic.sourceFiles.some((sourceFile) => sourceFile.includes('/TMP/'))).toBe(false);
+        expect(topic.sourceFiles.some((sourceFile) => sourceFile.endsWith('.txt'))).toBe(false);
+        expect(topic.sourceSummary).toContain(topicCase.title);
+        expect(topic.summary, `${topic.id} should have summary`).not.toBe('');
+        expect(topic.examOutline.length, `${topic.id} should have exam outline`).toBeGreaterThan(0);
+        expect(topic.memoryPoints.length, `${topic.id} should have memory points`).toBeGreaterThan(0);
+        expect(topic.understandingNotes.length, `${topic.id} should have understanding notes`).toBeGreaterThan(0);
+        expect(topic.terms.length, `${topic.id} should have terms`).toBeGreaterThan(0);
+        expect(topic.blocks).toHaveLength(1);
+
+        const lessonArticle = topic.blocks[0];
+
+        expect(lessonArticle?.kind).toBe('lessonArticle');
+        if (lessonArticle?.kind !== 'lessonArticle') {
+          throw new Error(`${topic.id} should render as lessonArticle`);
+        }
+
+        expect(lessonArticle.sourceFiles).toEqual([topicCase.source]);
+        expect(lessonArticle.sourceSection).toBe(topic.sourceSummary);
+        expect(lessonArticle.lead.length, `${topic.id} should preserve source guidance in lead`).toBeGreaterThan(0);
+        expect(lessonArticle.sections.length, `${topic.id} should have sections`).toBeGreaterThan(0);
+        expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topic.id} should not have empty sections`).toBe(
+          true
+        );
+
+        const serializedTopic = JSON.stringify(topic);
+
+        expect(serializedTopic, `${topic.id} should contain ${topicCase.keyword}`).toContain(topicCase.keyword);
+        expect(serializedTopic).not.toContain('questionText');
+        expect(serializedTopic).not.toContain('correctAnswer');
+        expect(serializedTopic).not.toContain('backendSyncId');
+        expect(serializedTopic).not.toContain('remoteQuestionId');
+      }
+    }
+
+    const serializedImportedTopics = JSON.stringify(
+      importedDatabaseProgrammingSystemDesignSubjectCases.flatMap(({ subjectKey, topicCases }) =>
+        professionalTopicsBySubject[subjectKey].slice(0, topicCases.length)
+      )
+    );
+
+    for (const rawInstructionPhrase of rawInstructionPhrases) {
+      expect(serializedImportedTopics).not.toContain(rawInstructionPhrase);
+    }
   });
 
   it('normalizes imported Computer Principles Markdown instructions and obvious input errors', () => {
@@ -1319,12 +1936,16 @@ describe('professional topic skeleton data', () => {
       baseConversionTopicId,
       complementConversionTopicId,
       floatingPointConversionTopicId,
-      codesAndCheckCodesTopicId
+      codesAndCheckCodesTopicId,
+      ...digitalLogicTopicIds,
+      ...operatingSystemTopicIds
     ].map((topicId) => professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId));
     const serializedTopics = JSON.stringify(importedTopics);
 
     expect(serializedTopics).not.toContain('用table');
     expect(serializedTopics).not.toContain('用table做');
+    expect(serializedTopics).not.toContain('內部值都是空的');
+    expect(serializedTopics).not.toContain('點選標題，才會讓值跑出來');
     expect(serializedTopics).not.toContain('ul/li做');
     expect(serializedTopics).not.toContain('用UL/LI表示');
     expect(serializedTopics).not.toContain('此處用 UL/LI表示');
@@ -1384,56 +2005,6 @@ describe('professional topic skeleton data', () => {
         expect(serializedTopic, `${topicCase.id} should not expose ${rawFormattingNote}`).not.toContain(rawFormattingNote);
       }
     }
-  });
-
-  it('keeps the current RISC/CISC comparison table and teaching notes testable', () => {
-    const topic = professionalTopicsBySubject.computerPrinciples.find((computerPrinciplesTopic) => computerPrinciplesTopic.id === 'cp-risc-cisc');
-    const lessonArticle = topic?.blocks[0];
-
-    expect(lessonArticle?.kind).toBe('lessonArticle');
-    if (lessonArticle?.kind !== 'lessonArticle') {
-      throw new Error('cp-risc-cisc should render as lessonArticle');
-    }
-
-    const comparisonTable = lessonArticle.sections
-      .find((section) => section.heading === 'RISC vs CISC')
-      ?.blocks.find((block) => block.kind === 'table');
-
-    expect(comparisonTable?.kind).toBe('table');
-    if (comparisonTable?.kind !== 'table') {
-      throw new Error('cp-risc-cisc should keep the RISC vs CISC comparison as a table');
-    }
-
-    expect(comparisonTable.headers).toEqual(['項目', 'RISC(精簡指令集電腦)', 'CISC(複雜指令集電腦)']);
-
-    const representativeArchitectureRow = comparisonTable.rows.find((row) => row[0] === '代表架構');
-
-    expect(representativeArchitectureRow).toEqual([
-      '代表架構',
-      '用猜的',
-      '型號裡面帶有86、IA-32、AMD64、\nMotorola 68K、IBM System/360或370、\nIntel 8080、Zilog Z80'
-    ]);
-    expect(representativeArchitectureRow?.[2]).toContain('\n');
-
-    const terminologyList = lessonArticle.sections
-      .find((section) => section.heading === '名詞解釋')
-      ?.blocks.find((block) => block.kind === 'orderedList');
-
-    expect(terminologyList?.kind).toBe('orderedList');
-    if (terminologyList?.kind !== 'orderedList') {
-      throw new Error('cp-risc-cisc should keep terminology notes as an orderedList');
-    }
-
-    expect(terminologyList.items[0]).toBe('RISC 的出發點＝讓每個指令「簡單、規格統一」，這樣硬體才能跑得又快又順，以此可以做推論');
-    expect(terminologyList.items).toEqual(
-      expect.arrayContaining([
-        'Load/Store 架構是 RISC 常見的設計方式，常要求「先把資料搬到暫存器，再做運算，最後再存回記憶體」。CISC 則較常允許某些指令直接操作記憶體中的資料。',
-        '微指令（micro-instruction，也叫 micro-op、μop）＝ CPU 內部把「一條複雜指令」拆解出來的一連串小步驟，每個步驟都很簡單、規格接近一致（長得很像 RISC 指令）',
-        '在現代 CISC 處理器中，外部看起來是複雜指令，但 CPU 內部可能會先把它拆成多個較簡單的微指令，再交給內部執行單元處理。'
-      ])
-    );
-    expect(terminologyList.items).not.toContain('RISC，精簡指令集電腦。');
-    expect(terminologyList.items).not.toContain('CISC，複雜指令集電腦。單一指令可能完成較多工作。');
   });
 
   it('fills the Von Neumann lesson article with clean headings, bilingual terms, newline text, and no subtitle fields', () => {

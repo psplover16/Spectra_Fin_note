@@ -37,6 +37,7 @@ const initialProgress = readSubjectTopicProgress().subjects[props.subjectKey];
 const completedTopicIds = ref<ReadonlySet<string>>(new Set(initialProgress.completedTopicIds));
 const bookmarkedTopicId = ref<string | null>(initialProgress.bookmarkedTopicId);
 const lessonSectionExpansionOverrides = ref<Record<string, boolean>>({});
+const revealedLessonTableColumns = ref<Record<string, readonly number[]>>({});
 const unfinishedTopics = computed(() => props.topics.filter((topic) => !completedTopicIds.value.has(topic.id)));
 const finishedTopics = computed(() => props.topics.filter((topic) => completedTopicIds.value.has(topic.id)));
 const lastRouteTopicId = computed(() => props.topics[props.topics.length - 1]?.id ?? null);
@@ -173,6 +174,55 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
 
   return classes;
 }
+
+function lessonTableKey(topic: SubjectTopic, section: LessonArticleSection, tablePath: string): string {
+  return `${topic.id}::${section.heading}::${tablePath}`;
+}
+
+function revealableColumnIndexes(block: TableContentBlock): readonly number[] {
+  return Array.from(
+    new Set(
+      (block.revealableColumnIndexes ?? []).filter(
+        (columnIndex) => Number.isInteger(columnIndex) && columnIndex >= 0 && columnIndex < block.headers.length
+      )
+    )
+  );
+}
+
+function isTableColumnRevealable(block: TableContentBlock, columnIndex: number): boolean {
+  return revealableColumnIndexes(block).includes(columnIndex);
+}
+
+function isLessonTableColumnRevealed(tableKey: string, columnIndex: number): boolean {
+  return revealedLessonTableColumns.value[tableKey]?.includes(columnIndex) ?? false;
+}
+
+function isLessonTableCellVisible(tableKey: string, block: TableContentBlock, columnIndex: number): boolean {
+  return !isTableColumnRevealable(block, columnIndex) || isLessonTableColumnRevealed(tableKey, columnIndex);
+}
+
+function lessonTableCellText(tableKey: string, block: TableContentBlock, cell: string, columnIndex: number): string {
+  return isLessonTableCellVisible(tableKey, block, columnIndex) ? cell : '';
+}
+
+function toggleLessonTableColumn(tableKey: string, block: TableContentBlock, columnIndex: number): void {
+  if (!isTableColumnRevealable(block, columnIndex)) {
+    return;
+  }
+
+  const nextRevealedColumns = new Set(revealedLessonTableColumns.value[tableKey] ?? []);
+
+  if (nextRevealedColumns.has(columnIndex)) {
+    nextRevealedColumns.delete(columnIndex);
+  } else {
+    nextRevealedColumns.add(columnIndex);
+  }
+
+  revealedLessonTableColumns.value = {
+    ...revealedLessonTableColumns.value,
+    [tableKey]: Array.from(nextRevealedColumns).sort((left, right) => left - right)
+  };
+}
 </script>
 
 <template>
@@ -236,9 +286,11 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                     </button>
                   </h3>
                   <template v-if="isLessonSectionExpanded(topic, section)">
-                    <template v-for="contentBlock in section.blocks" :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`">
+                    <template
+                      v-for="(contentBlock, contentBlockIndex) in section.blocks"
+                      :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`"
+                    >
                       <p v-if="contentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">{{ contentBlock.text }}</p>
-                      <pre v-else-if="contentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ contentBlock.text }}</code></pre>
                       <ul v-else-if="contentBlock.kind === 'bulletList'">
                         <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                       </ul>
@@ -252,7 +304,18 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                         <table class="subject-topic-table">
                           <thead>
                             <tr>
-                              <th v-for="header in contentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                              <th v-for="(header, headerIndex) in contentBlock.headers" :key="header" class="subject-topic-text">
+                                <button
+                                  v-if="isTableColumnRevealable(contentBlock, headerIndex)"
+                                  type="button"
+                                  class="subject-topic-table-column-toggle"
+                                  :aria-expanded="isLessonTableColumnRevealed(lessonTableKey(topic, section, 'block-' + contentBlockIndex), headerIndex)"
+                                  @click="toggleLessonTableColumn(lessonTableKey(topic, section, 'block-' + contentBlockIndex), contentBlock, headerIndex)"
+                                >
+                                  {{ header }}
+                                </button>
+                                <template v-else>{{ header }}</template>
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
@@ -262,7 +325,7 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                                 :key="`${rowIndex}-${cellIndex}`"
                                 :class="['subject-topic-text', tableCellStyleClasses(contentBlock, rowIndex, cellIndex)]"
                               >
-                                {{ cell }}
+                                {{ lessonTableCellText(lessonTableKey(topic, section, 'block-' + contentBlockIndex), contentBlock, cell, cellIndex) }}
                               </td>
                             </tr>
                           </tbody>
@@ -270,13 +333,12 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                       </div>
                       <div v-else-if="contentBlock.kind === 'indentedGroup'" class="subject-topic-lesson-indent-group">
                         <template
-                          v-for="nestedContentBlock in contentBlock.blocks"
+                          v-for="(nestedContentBlock, nestedContentBlockIndex) in contentBlock.blocks"
                           :key="`${section.heading}-indent-${nestedContentBlock.kind}-${JSON.stringify(nestedContentBlock)}`"
                         >
                           <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                             {{ nestedContentBlock.text }}
                           </p>
-                          <pre v-else-if="nestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ nestedContentBlock.text }}</code></pre>
                           <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
                             <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                           </ul>
@@ -287,7 +349,29 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                             <table class="subject-topic-table">
                               <thead>
                                 <tr>
-                                  <th v-for="header in nestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                  <th v-for="(header, headerIndex) in nestedContentBlock.headers" :key="header" class="subject-topic-text">
+                                    <button
+                                      v-if="isTableColumnRevealable(nestedContentBlock, headerIndex)"
+                                      type="button"
+                                      class="subject-topic-table-column-toggle"
+                                      :aria-expanded="
+                                        isLessonTableColumnRevealed(
+                                          lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-indent-' + nestedContentBlockIndex),
+                                          headerIndex
+                                        )
+                                      "
+                                      @click="
+                                        toggleLessonTableColumn(
+                                          lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-indent-' + nestedContentBlockIndex),
+                                          nestedContentBlock,
+                                          headerIndex
+                                        )
+                                      "
+                                    >
+                                      {{ header }}
+                                    </button>
+                                    <template v-else>{{ header }}</template>
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -297,7 +381,14 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                                     :key="`${rowIndex}-${cellIndex}`"
                                     :class="['subject-topic-text', tableCellStyleClasses(nestedContentBlock, rowIndex, cellIndex)]"
                                   >
-                                    {{ cell }}
+                                    {{
+                                      lessonTableCellText(
+                                        lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-indent-' + nestedContentBlockIndex),
+                                        nestedContentBlock,
+                                        cell,
+                                        cellIndex
+                                      )
+                                    }}
                                   </td>
                                 </tr>
                               </tbody>
@@ -305,13 +396,12 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                           </div>
                           <div v-else-if="nestedContentBlock.kind === 'indentedGroup'" class="subject-topic-lesson-indent-group">
                             <template
-                              v-for="deepNestedContentBlock in nestedContentBlock.blocks"
+                              v-for="(deepNestedContentBlock, deepNestedContentBlockIndex) in nestedContentBlock.blocks"
                               :key="`${section.heading}-indent-deep-${deepNestedContentBlock.kind}-${JSON.stringify(deepNestedContentBlock)}`"
                             >
                               <p v-if="deepNestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                                 {{ deepNestedContentBlock.text }}
                               </p>
-                              <pre v-else-if="deepNestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ deepNestedContentBlock.text }}</code></pre>
                               <ul v-else-if="deepNestedContentBlock.kind === 'bulletList'">
                                 <li v-for="item in deepNestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                               </ul>
@@ -322,7 +412,47 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                                 <table class="subject-topic-table">
                                   <thead>
                                     <tr>
-                                      <th v-for="header in deepNestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                      <th v-for="(header, headerIndex) in deepNestedContentBlock.headers" :key="header" class="subject-topic-text">
+                                        <button
+                                          v-if="isTableColumnRevealable(deepNestedContentBlock, headerIndex)"
+                                          type="button"
+                                          class="subject-topic-table-column-toggle"
+                                          :aria-expanded="
+                                            isLessonTableColumnRevealed(
+                                              lessonTableKey(
+                                                topic,
+                                                section,
+                                                'block-' +
+                                                  contentBlockIndex +
+                                                  '-indent-' +
+                                                  nestedContentBlockIndex +
+                                                  '-deep-' +
+                                                  deepNestedContentBlockIndex
+                                              ),
+                                              headerIndex
+                                            )
+                                          "
+                                          @click="
+                                            toggleLessonTableColumn(
+                                              lessonTableKey(
+                                                topic,
+                                                section,
+                                                'block-' +
+                                                  contentBlockIndex +
+                                                  '-indent-' +
+                                                  nestedContentBlockIndex +
+                                                  '-deep-' +
+                                                  deepNestedContentBlockIndex
+                                              ),
+                                              deepNestedContentBlock,
+                                              headerIndex
+                                            )
+                                          "
+                                        >
+                                          {{ header }}
+                                        </button>
+                                        <template v-else>{{ header }}</template>
+                                      </th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -332,7 +462,23 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                                         :key="`${rowIndex}-${cellIndex}`"
                                         :class="['subject-topic-text', tableCellStyleClasses(deepNestedContentBlock, rowIndex, cellIndex)]"
                                       >
-                                        {{ cell }}
+                                        {{
+                                          lessonTableCellText(
+                                            lessonTableKey(
+                                              topic,
+                                              section,
+                                              'block-' +
+                                                contentBlockIndex +
+                                                '-indent-' +
+                                                nestedContentBlockIndex +
+                                                '-deep-' +
+                                                deepNestedContentBlockIndex
+                                            ),
+                                            deepNestedContentBlock,
+                                            cell,
+                                            cellIndex
+                                          )
+                                        }}
                                       </td>
                                     </tr>
                                   </tbody>
@@ -345,13 +491,12 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                       <section v-else-if="contentBlock.kind === 'subsection'" class="subject-topic-lesson-subsection">
                         <h4>{{ contentBlock.heading }}</h4>
                         <template
-                          v-for="nestedContentBlock in contentBlock.blocks"
+                          v-for="(nestedContentBlock, nestedContentBlockIndex) in contentBlock.blocks"
                           :key="`${section.heading}-${contentBlock.heading}-${nestedContentBlock.kind}-${JSON.stringify(nestedContentBlock)}`"
                         >
                           <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                             {{ nestedContentBlock.text }}
                           </p>
-                          <pre v-else-if="nestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ nestedContentBlock.text }}</code></pre>
                           <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
                             <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                           </ul>
@@ -362,7 +507,29 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                             <table class="subject-topic-table">
                               <thead>
                                 <tr>
-                                  <th v-for="header in nestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                  <th v-for="(header, headerIndex) in nestedContentBlock.headers" :key="header" class="subject-topic-text">
+                                    <button
+                                      v-if="isTableColumnRevealable(nestedContentBlock, headerIndex)"
+                                      type="button"
+                                      class="subject-topic-table-column-toggle"
+                                      :aria-expanded="
+                                        isLessonTableColumnRevealed(
+                                          lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-subsection-' + nestedContentBlockIndex),
+                                          headerIndex
+                                        )
+                                      "
+                                      @click="
+                                        toggleLessonTableColumn(
+                                          lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-subsection-' + nestedContentBlockIndex),
+                                          nestedContentBlock,
+                                          headerIndex
+                                        )
+                                      "
+                                    >
+                                      {{ header }}
+                                    </button>
+                                    <template v-else>{{ header }}</template>
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -372,7 +539,14 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                                     :key="`${rowIndex}-${cellIndex}`"
                                     :class="['subject-topic-text', tableCellStyleClasses(nestedContentBlock, rowIndex, cellIndex)]"
                                   >
-                                    {{ cell }}
+                                    {{
+                                      lessonTableCellText(
+                                        lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-subsection-' + nestedContentBlockIndex),
+                                        nestedContentBlock,
+                                        cell,
+                                        cellIndex
+                                      )
+                                    }}
                                   </td>
                                 </tr>
                               </tbody>
@@ -505,9 +679,11 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                     </button>
                   </h3>
                   <template v-if="isLessonSectionExpanded(topic, section)">
-                    <template v-for="contentBlock in section.blocks" :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`">
+                    <template
+                      v-for="(contentBlock, contentBlockIndex) in section.blocks"
+                      :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`"
+                    >
                       <p v-if="contentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">{{ contentBlock.text }}</p>
-                      <pre v-else-if="contentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ contentBlock.text }}</code></pre>
                       <ul v-else-if="contentBlock.kind === 'bulletList'">
                         <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                       </ul>
@@ -521,7 +697,18 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                         <table class="subject-topic-table">
                           <thead>
                             <tr>
-                              <th v-for="header in contentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                              <th v-for="(header, headerIndex) in contentBlock.headers" :key="header" class="subject-topic-text">
+                                <button
+                                  v-if="isTableColumnRevealable(contentBlock, headerIndex)"
+                                  type="button"
+                                  class="subject-topic-table-column-toggle"
+                                  :aria-expanded="isLessonTableColumnRevealed(lessonTableKey(topic, section, 'block-' + contentBlockIndex), headerIndex)"
+                                  @click="toggleLessonTableColumn(lessonTableKey(topic, section, 'block-' + contentBlockIndex), contentBlock, headerIndex)"
+                                >
+                                  {{ header }}
+                                </button>
+                                <template v-else>{{ header }}</template>
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
@@ -531,7 +718,7 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                                 :key="`${rowIndex}-${cellIndex}`"
                                 :class="['subject-topic-text', tableCellStyleClasses(contentBlock, rowIndex, cellIndex)]"
                               >
-                                {{ cell }}
+                                {{ lessonTableCellText(lessonTableKey(topic, section, 'block-' + contentBlockIndex), contentBlock, cell, cellIndex) }}
                               </td>
                             </tr>
                           </tbody>
@@ -539,13 +726,12 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                       </div>
                       <div v-else-if="contentBlock.kind === 'indentedGroup'" class="subject-topic-lesson-indent-group">
                         <template
-                          v-for="nestedContentBlock in contentBlock.blocks"
+                          v-for="(nestedContentBlock, nestedContentBlockIndex) in contentBlock.blocks"
                           :key="`${section.heading}-indent-${nestedContentBlock.kind}-${JSON.stringify(nestedContentBlock)}`"
                         >
                           <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                             {{ nestedContentBlock.text }}
                           </p>
-                          <pre v-else-if="nestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ nestedContentBlock.text }}</code></pre>
                           <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
                             <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                           </ul>
@@ -556,7 +742,29 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                             <table class="subject-topic-table">
                               <thead>
                                 <tr>
-                                  <th v-for="header in nestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                  <th v-for="(header, headerIndex) in nestedContentBlock.headers" :key="header" class="subject-topic-text">
+                                    <button
+                                      v-if="isTableColumnRevealable(nestedContentBlock, headerIndex)"
+                                      type="button"
+                                      class="subject-topic-table-column-toggle"
+                                      :aria-expanded="
+                                        isLessonTableColumnRevealed(
+                                          lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-indent-' + nestedContentBlockIndex),
+                                          headerIndex
+                                        )
+                                      "
+                                      @click="
+                                        toggleLessonTableColumn(
+                                          lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-indent-' + nestedContentBlockIndex),
+                                          nestedContentBlock,
+                                          headerIndex
+                                        )
+                                      "
+                                    >
+                                      {{ header }}
+                                    </button>
+                                    <template v-else>{{ header }}</template>
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -566,7 +774,14 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                                     :key="`${rowIndex}-${cellIndex}`"
                                     :class="['subject-topic-text', tableCellStyleClasses(nestedContentBlock, rowIndex, cellIndex)]"
                                   >
-                                    {{ cell }}
+                                    {{
+                                      lessonTableCellText(
+                                        lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-indent-' + nestedContentBlockIndex),
+                                        nestedContentBlock,
+                                        cell,
+                                        cellIndex
+                                      )
+                                    }}
                                   </td>
                                 </tr>
                               </tbody>
@@ -574,13 +789,12 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                           </div>
                           <div v-else-if="nestedContentBlock.kind === 'indentedGroup'" class="subject-topic-lesson-indent-group">
                             <template
-                              v-for="deepNestedContentBlock in nestedContentBlock.blocks"
+                              v-for="(deepNestedContentBlock, deepNestedContentBlockIndex) in nestedContentBlock.blocks"
                               :key="`${section.heading}-indent-deep-${deepNestedContentBlock.kind}-${JSON.stringify(deepNestedContentBlock)}`"
                             >
                               <p v-if="deepNestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                                 {{ deepNestedContentBlock.text }}
                               </p>
-                              <pre v-else-if="deepNestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ deepNestedContentBlock.text }}</code></pre>
                               <ul v-else-if="deepNestedContentBlock.kind === 'bulletList'">
                                 <li v-for="item in deepNestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                               </ul>
@@ -591,7 +805,47 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                                 <table class="subject-topic-table">
                                   <thead>
                                     <tr>
-                                      <th v-for="header in deepNestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                      <th v-for="(header, headerIndex) in deepNestedContentBlock.headers" :key="header" class="subject-topic-text">
+                                        <button
+                                          v-if="isTableColumnRevealable(deepNestedContentBlock, headerIndex)"
+                                          type="button"
+                                          class="subject-topic-table-column-toggle"
+                                          :aria-expanded="
+                                            isLessonTableColumnRevealed(
+                                              lessonTableKey(
+                                                topic,
+                                                section,
+                                                'block-' +
+                                                  contentBlockIndex +
+                                                  '-indent-' +
+                                                  nestedContentBlockIndex +
+                                                  '-deep-' +
+                                                  deepNestedContentBlockIndex
+                                              ),
+                                              headerIndex
+                                            )
+                                          "
+                                          @click="
+                                            toggleLessonTableColumn(
+                                              lessonTableKey(
+                                                topic,
+                                                section,
+                                                'block-' +
+                                                  contentBlockIndex +
+                                                  '-indent-' +
+                                                  nestedContentBlockIndex +
+                                                  '-deep-' +
+                                                  deepNestedContentBlockIndex
+                                              ),
+                                              deepNestedContentBlock,
+                                              headerIndex
+                                            )
+                                          "
+                                        >
+                                          {{ header }}
+                                        </button>
+                                        <template v-else>{{ header }}</template>
+                                      </th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -601,7 +855,23 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                                         :key="`${rowIndex}-${cellIndex}`"
                                         :class="['subject-topic-text', tableCellStyleClasses(deepNestedContentBlock, rowIndex, cellIndex)]"
                                       >
-                                        {{ cell }}
+                                        {{
+                                          lessonTableCellText(
+                                            lessonTableKey(
+                                              topic,
+                                              section,
+                                              'block-' +
+                                                contentBlockIndex +
+                                                '-indent-' +
+                                                nestedContentBlockIndex +
+                                                '-deep-' +
+                                                deepNestedContentBlockIndex
+                                            ),
+                                            deepNestedContentBlock,
+                                            cell,
+                                            cellIndex
+                                          )
+                                        }}
                                       </td>
                                     </tr>
                                   </tbody>
@@ -614,13 +884,12 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                       <section v-else-if="contentBlock.kind === 'subsection'" class="subject-topic-lesson-subsection">
                         <h4>{{ contentBlock.heading }}</h4>
                         <template
-                          v-for="nestedContentBlock in contentBlock.blocks"
+                          v-for="(nestedContentBlock, nestedContentBlockIndex) in contentBlock.blocks"
                           :key="`${section.heading}-${contentBlock.heading}-${nestedContentBlock.kind}-${JSON.stringify(nestedContentBlock)}`"
                         >
                           <p v-if="nestedContentBlock.kind === 'paragraph'" class="subject-topic-paragraph subject-topic-text">
                             {{ nestedContentBlock.text }}
                           </p>
-                          <pre v-else-if="nestedContentBlock.kind === 'codeBlock'" class="subject-topic-code-block"><code class="subject-topic-code-text">{{ nestedContentBlock.text }}</code></pre>
                           <ul v-else-if="nestedContentBlock.kind === 'bulletList'">
                             <li v-for="item in nestedContentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
                           </ul>
@@ -631,7 +900,29 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                             <table class="subject-topic-table">
                               <thead>
                                 <tr>
-                                  <th v-for="header in nestedContentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                                  <th v-for="(header, headerIndex) in nestedContentBlock.headers" :key="header" class="subject-topic-text">
+                                    <button
+                                      v-if="isTableColumnRevealable(nestedContentBlock, headerIndex)"
+                                      type="button"
+                                      class="subject-topic-table-column-toggle"
+                                      :aria-expanded="
+                                        isLessonTableColumnRevealed(
+                                          lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-subsection-' + nestedContentBlockIndex),
+                                          headerIndex
+                                        )
+                                      "
+                                      @click="
+                                        toggleLessonTableColumn(
+                                          lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-subsection-' + nestedContentBlockIndex),
+                                          nestedContentBlock,
+                                          headerIndex
+                                        )
+                                      "
+                                    >
+                                      {{ header }}
+                                    </button>
+                                    <template v-else>{{ header }}</template>
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -641,7 +932,14 @@ function tableCellStyleClasses(block: TableContentBlock, rowIndex: number, cellI
                                     :key="`${rowIndex}-${cellIndex}`"
                                     :class="['subject-topic-text', tableCellStyleClasses(nestedContentBlock, rowIndex, cellIndex)]"
                                   >
-                                    {{ cell }}
+                                    {{
+                                      lessonTableCellText(
+                                        lessonTableKey(topic, section, 'block-' + contentBlockIndex + '-subsection-' + nestedContentBlockIndex),
+                                        nestedContentBlock,
+                                        cell,
+                                        cellIndex
+                                      )
+                                    }}
                                   </td>
                                 </tr>
                               </tbody>

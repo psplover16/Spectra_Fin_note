@@ -15,10 +15,6 @@ function hasLessonArticleContent(block: LessonArticleContentBlock): boolean {
     return hasVisibleText(block.text);
   }
 
-  if (block.kind === 'codeBlock') {
-    return hasVisibleText(block.text);
-  }
-
   if (block.kind === 'bulletList' || block.kind === 'orderedList') {
     return block.items.some(hasVisibleText);
   }
@@ -31,11 +27,7 @@ function hasLessonArticleContent(block: LessonArticleContentBlock): boolean {
     return block.blocks.some(hasLessonArticleContent);
   }
 
-  if (block.kind === 'table') {
-    return block.headers.some(hasVisibleText) || block.rows.some((row) => row.some(hasVisibleText));
-  }
-
-  return false;
+  return block.headers.some(hasVisibleText) || block.rows.some((row) => row.some(hasVisibleText));
 }
 
 function hasTopicBlockContent(block: SubjectTopicBlock): boolean {

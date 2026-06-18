@@ -5,6 +5,7 @@ export const subjectKeys = [
   'programming',
   'database',
   'algorithms',
+  'systemDesign',
   'english',
   'chinese'
 ] as const;
@@ -42,10 +43,6 @@ export type LessonArticleContentBlock =
       text: string;
     }
   | {
-      kind: 'codeBlock';
-      text: string;
-    }
-  | {
       kind: 'bulletList';
       items: readonly string[];
     }
@@ -58,6 +55,7 @@ export type LessonArticleContentBlock =
       kind: 'table';
       headers: readonly string[];
       rows: readonly (readonly string[])[];
+      revealableColumnIndexes?: readonly number[];
       rowStyles?: Readonly<Record<number, LessonArticleTableCellStyle>>;
       columnStyles?: Readonly<Record<number, LessonArticleTableCellStyle>>;
       cellStyles?: Readonly<Record<LessonArticleTableCellCoordinate, LessonArticleTableCellStyle>>;

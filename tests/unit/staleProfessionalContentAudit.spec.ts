@@ -56,10 +56,11 @@ describe('stale professional content audit', () => {
 
     expect(professionalTopicsBySubject.computerPrinciples).toHaveLength(33);
     expect(professionalTopicsBySubject.networking).toHaveLength(11);
-    expect(professionalTopicsBySubject.database).toHaveLength(11);
+    expect(professionalTopicsBySubject.database).toHaveLength(17);
     expect(professionalTopicsBySubject.informationManagement).toHaveLength(7);
-    expect(professionalTopicsBySubject.programming).toHaveLength(39);
-    expect(professionalTopicsBySubject.algorithms).toHaveLength(22);
+    expect(professionalTopicsBySubject.programming).toHaveLength(46);
+    expect(professionalTopicsBySubject.algorithms).toHaveLength(21);
+    expect(professionalTopicsBySubject.systemDesign).toHaveLength(5);
 
     const allTopicIds = Object.values(professionalTopicsBySubject)
       .flat()
@@ -113,7 +114,8 @@ describe('stale professional content audit', () => {
       'database',
       'informationManagement',
       'programming',
-      'algorithms'
+      'algorithms',
+      'systemDesign'
     ];
 
     for (const subjectKey of professionalSubjectKeys) {

@@ -9,9 +9,11 @@ const expectedSubjectKeys = [
   'programming',
   'database',
   'algorithms',
+  'systemDesign',
   'english',
   'chinese'
 ] as const;
+const expectedRenderablePlaceholderSubjectKeys = expectedSubjectKeys.filter((subjectKey) => subjectKey !== 'systemDesign');
 const allowedTopicKeys = ['blocks', 'id', 'subjectKey', 'summary', 'title'];
 const allowedParagraphBlockKeys = ['kind', 'text'];
 const allowedTeachingCodeBlockKeys = ['code', 'description', 'kind', 'language', 'title'];
@@ -64,11 +66,11 @@ function expectBlockShape(block: SubjectTopicBlock) {
 }
 
 describe('placeholder topic data', () => {
-  it('provides renderable placeholder topics for all six subjects', () => {
+  it('tracks every subject key and provides renderable placeholder topics where placeholders are defined', () => {
     expect(subjectKeys).toEqual(expectedSubjectKeys);
     expect(Object.keys(placeholderTopicsBySubject).sort()).toEqual([...expectedSubjectKeys].sort());
 
-    for (const subjectKey of subjectKeys) {
+    for (const subjectKey of expectedRenderablePlaceholderSubjectKeys) {
       const topics = getPlaceholderTopics(subjectKey);
       const topicIds = new Set(topics.map((topic) => topic.id));
 

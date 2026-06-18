@@ -10,7 +10,8 @@ test('header and route region fit at 375px', async ({ page }) => {
   await expect(page.getByTestId('route-tab-programming')).toBeVisible();
   await expect(page.getByTestId('route-tab-database')).toBeVisible();
   await expect(page.getByTestId('route-tab-algorithms')).toBeVisible();
-  await expect(page.getByTestId('route-tab-common-subject')).toBeVisible();
+  await expect(page.getByTestId('route-tab-system-design')).toBeVisible();
+  await expect(page.getByTestId('route-tab-common-subject')).toHaveCount(0);
   await expect(page.getByTestId('subject-view-computer-principles')).toBeVisible();
 
   const hasPageOverflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);

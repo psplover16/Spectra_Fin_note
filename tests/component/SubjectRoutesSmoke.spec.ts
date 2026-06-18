@@ -8,6 +8,7 @@ import EnglishView from '@/modules/english/views/EnglishView.vue';
 import InformationManagementView from '@/modules/informationManagement/views/InformationManagementView.vue';
 import NetworkingView from '@/modules/networking/views/NetworkingView.vue';
 import ProgrammingView from '@/modules/programming/views/ProgrammingView.vue';
+import SystemDesignView from '@/modules/systemDesign/views/SystemDesignView.vue';
 import SubjectTopicPage from '@/modules/subjectTopics/components/SubjectTopicPage.vue';
 
 const subjectRouteCases = [
@@ -17,14 +18,15 @@ const subjectRouteCases = [
     'subject-topic-list-computerPrinciples',
     ['電腦常用單位', '馮紐曼架構']
   ],
-  [AlgorithmsView, 'subject-view-algorithms', 'subject-topic-list-algorithms', ['二元搜尋法(Binary Search)']]
+  [AlgorithmsView, 'subject-view-algorithms', 'subject-topic-list-algorithms', ['二元搜尋法(Binary Search)']],
+  [NetworkingView, 'subject-view-networking', 'subject-topic-list-networking', ['網路概論 1：OSI 七層 + TCP/IP ★']],
+  [ProgrammingView, 'subject-view-programming', 'subject-topic-list-programming', ['程式設計 1：語言執行方式 + 程式基礎']],
+  [DatabaseView, 'subject-view-database', 'subject-topic-list-database', ['資料庫 1：基礎概念 + ANSI/SPARC 架構']],
+  [SystemDesignView, 'subject-view-system-design', 'subject-topic-list-systemDesign', ['系統分析與設計 1：SDLC + SSDLC']]
 ] as const;
 
 const emptySubjectRouteCases = [
-  [NetworkingView, 'subject-view-networking', '網路概論', ['準備方向']],
   [InformationManagementView, 'subject-view-information-management', '資訊管理', ['資訊管理總覽']],
-  [ProgrammingView, 'subject-view-programming', '程式設計', ['程式(Programming Overview)']],
-  [DatabaseView, 'subject-view-database', '資料庫', ['資料庫總章']],
   [EnglishView, 'subject-view-english', '英文', ['閱讀策略']],
   [ChineseView, 'subject-view-chinese', '國文', ['文章結構']]
 ] as const;

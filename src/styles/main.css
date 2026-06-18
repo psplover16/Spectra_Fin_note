@@ -158,16 +158,7 @@
   }
 
   .subject-topic-text {
-    white-space: pre-wrap;
-  }
-
-  .subject-topic-code-block {
-    @apply m-0 max-w-full overflow-x-auto rounded bg-ink p-3 text-sm leading-6 text-parchment;
-  }
-
-  .subject-topic-code-text {
-    @apply block min-w-max whitespace-pre;
-    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    white-space: pre-line;
   }
 
   .subject-topic-block {
@@ -266,6 +257,11 @@
 
   .subject-topic-table th {
     @apply bg-sand/60 font-semibold text-ink;
+  }
+
+  .subject-topic-table-column-toggle {
+    @apply block w-full rounded bg-transparent px-1 py-0.5 text-left font-semibold text-ink underline decoration-clay/40 underline-offset-2 transition-colors hover:bg-white/70 focus:bg-white/70;
+    border: 0;
   }
 
   .subject-topic-table-cell-default-text {

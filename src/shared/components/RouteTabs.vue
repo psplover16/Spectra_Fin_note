@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router';
 import { preloadRouteComponent } from '@/app/routePreload';
-import CommonSubjectSwitcher from '@/modules/commonSubjects/components/CommonSubjectSwitcher.vue';
 
 interface RouteTab {
   to: string;
@@ -17,7 +16,8 @@ const primaryTabs = [
   { to: '/information-management', label: '資管', testId: 'route-tab-information-management' },
   { to: '/programming', label: '程式', testId: 'route-tab-programming' },
   { to: '/database', label: '資料庫', testId: 'route-tab-database' },
-  { to: '/algorithms', label: '演算法', testId: 'route-tab-algorithms' }
+  { to: '/algorithms', label: '演算法', testId: 'route-tab-algorithms' },
+  { to: '/system-design', label: '系統設計', testId: 'route-tab-system-design' }
 ] as const satisfies readonly RouteTab[];
 
 function prepareRoute(to: string) {
@@ -44,6 +44,5 @@ function routeTabClass(to: string): string {
     >
       {{ tab.label }}
     </RouterLink>
-    <CommonSubjectSwitcher />
   </nav>
 </template>
