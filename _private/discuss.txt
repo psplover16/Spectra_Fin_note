@@ -1,12 +1,18 @@
-@/_private/MD/計概/3c作業系統/  內部全部MD檔 都要引入
-
+@/_private/MD/網概/  內部全部MD檔 都要引入。
 要按照順序 放入section，目前應該能從名稱辨別順序。
-另外，每個內容 我已經做過 編排、整理，盡量以md檔內的編排來放入本專案。
+
+每個md檔，要先讀取其內容，propose階段一次，apply的時候一次。
+
+每個內容 我已經做過 編排、整理，請盡量以md檔內的編排來放入本專案。
+每個MD僅做 錯誤 辨別，與"最小幅度"的修正，目標只有不要有錯誤就好。
+
 別隨意新增、刪除、修改資料。
 
 
-上述資料是路由 computer-principles所需要的內容，
-幫我新增各個 section，標題採用各md的 主題
+上述資料是路由 networking 所需要的內容，
+networking 路由所需要的 section樣式，請參考 路由 computer-principles
+
+幫我為路由 networking 新增各個 section，標題採用各md的 主題
 
 
 

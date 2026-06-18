@@ -1,382 +1,200 @@
-# Computer Principles 3b 數位邏輯內容匯入討論稿
+# networking MD 匯入討論草案
 
-## 來源
+> 請直接在每個 `> 回答：` 後方作答。  
+> 本文件只整理討論與待確認事項，尚未進入實作。
 
-- 討論輸入：`_private/discuss.txt`
-- 內容來源資料夾：`_private/MD/計概/3b數位邏輯/`
-- 目標 route：`/computer-principles`
-- 目前讀到的 Markdown 檔：
+## 來源需求摘要
 
-| Markdown | 建議 topic id | 建議 route/topic 標題 |
-| --- | --- | --- |
-| `一、基本邏輯_新手國考教材.md` | `cp-digital-logic-basics` | `基本邏輯(Digital Logic Basics)` |
-| `二、SOP 與 POS_新手國考教材.md` | `cp-sop-pos` | `SOP 與 POS(SOP and POS)` |
-| `三、卡諾圖化簡_新手國考教材.md` | `cp-karnaugh-map` | `卡諾圖化簡(Karnaugh Map Simplification)` |
-| `四、萬用閘_新手國考教材.md` | `cp-universal-gates` | `萬用閘(Universal Gates)` |
-| `五、組合與循序電路_新手國考教材.md` | `cp-combinational-sequential-circuits` | `組合與循序電路(Combinational and Sequential Circuits)` |
+來自 `_private/discuss.txt`：
 
-## 目標理解
+- 匯入 `@/_private/MD/網概/` 內全部 Markdown。
+- 依檔名可辨識的順序放入 networking 路由。
+- 每個 MD 檔在 propose 階段與 apply 階段都要讀取一次。
+- 內容已由使用者編排整理，應盡量保留 MD 內編排。
+- 僅做錯誤辨別與最小幅度修正，不可任意新增、刪除、修改資料。
+- networking 路由 section 樣式參考 computer-principles。
+- 每個 section/topic 標題採用各 MD 的主題。
 
-目前理解是：
+## 已讀來源
 
-```text
-本次不是重新改寫 Markdown 原檔。
-本次要把 3b 數位邏輯資料夾內的 Markdown 內容，引入 /computer-principles route。
-```
+已讀 `_private/discuss.txt` 與以下 11 個 MD：
 
-「別隨意新增、刪除、修改資料」先解讀為：
+1. `_private/MD/網概/網路概論_1_OSI七層與TCPIP.md`
+2. `_private/MD/網概/網路概論_2_基礎概念.md`
+3. `_private/MD/網概/網路概論_3_網路設備對應層級.md`
+4. `_private/MD/網概/網路概論_4上_IP與子網路計算.md`
+5. `_private/MD/網概/網路概論_4下_路由與L3協定.md`
+6. `_private/MD/網概/網路概論_5_傳輸層.md`
+7. `_private/MD/網概/網路概論_6_應用層與Port對照.md`
+8. `_private/MD/網概/網路概論_7上_實體層.md`
+9. `_private/MD/網概/網路概論_7下_資料鏈結層.md`
+10. `_private/MD/網概/網路概論_8上_資安觀念與加密.md`
+11. `_private/MD/網概/網路概論_8下_防禦設備與攻擊.md`
 
-```text
-1. 不改原始 Markdown 檔。
-2. 匯入 app 時盡量照 Markdown 原本編排轉成 lessonArticle blocks。
-3. Markdown 內的「用table做」「點選標題才顯示」等文字視為製作指令，不直接顯示給學習者。
-4. 發現明顯錯字、術語不一致、可能造成選擇題誤判的地方，先列在本檔，等你確認後再進入 propose/apply。
-```
+相關程式路徑 scout：
+
+- `src/modules/networking/views/NetworkingView.vue`
+- `src/modules/subjectTopics/data/professionalTopics.ts`
+- `src/modules/subjectTopics/data/subjectTopics.ts`
+- `src/modules/subjectTopics/components/SubjectTopicPage.vue`
+- `src/modules/subjectTopics/types/subjectTopic.ts`
 
 ## 討論模式
 
-使用 `$spectra-discuss` 的 Assumptions mode。
+Found `NetworkingView.vue`, `professionalTopics.ts`, `subjectTopics.ts`, `SubjectTopicPage.vue` — 有足夠現有架構可列 assumptions。
 
-原因：已找到 3 個以上相關 source，可根據現有架構提出假設。
-
-相關檔案：
-
-| 檔案 | 觀察 |
-| --- | --- |
-| `src/modules/subjectTopics/data/professionalTopics.ts` | 已有 3b 五個 skeleton topic，但目前沒有填 lesson sections。 |
-| `src/modules/subjectTopics/data/subjectTopics.ts` | 空 `lessonArticle.sections` 會被視為沒有 route-visible content。 |
-| `src/modules/subjectTopics/types/subjectTopic.ts` | `LessonArticleSection` 已支援 `collapsible` 與 `defaultExpanded`。 |
-| `src/modules/subjectTopics/components/SubjectTopicPage.vue` | 已支援 lesson section 收闔；table 目前支援樣式 metadata，但未看到「點選表頭揭露欄位值」能力。 |
-| `src/modules/computerPrinciples/views/ComputerPrinciplesView.vue` | `/computer-principles` 直接使用 `getSubjectTopics('computerPrinciples')`。 |
-
-介面深度檢查：目前先跳過。這次不需要新增 IPC、storage、新 route 或新模組；若最後確認要做「真值表點選欄位才顯示答案」，那會是既有 `lessonArticle table` 的 UI 行為擴充，不是新的跨層架構。
+本議題是靜態教材資料匯入，不需要新增 module、IPC、跨層流程或 storage abstraction，所以 interface depth check 可略過。
 
 ## My assumptions
 
-### 1. 五份 Markdown 對應五個既有 skeleton topic
+1. **沿用既有 `lessonArticle` / `professionalTopics.ts` 路徑**
+   Approach: 將 networking MD 轉成既有 `LessonArticleContentBlock`，和 computer-principles 作法一致，不新增 parser、store、route 或 UI。
+   Evidence: `NetworkingView.vue` 只呼叫 `getSubjectTopics('networking')`；`subjectTopics.ts` 會過濾有內容的 topic；`SubjectTopicPage.vue` 已支援 paragraph、orderedList、table、subsection、indentedGroup。
+   If wrong: 若要新增 Markdown parser 或 UI，範圍會從資料填充變成架構變更，測試與風險都會變大。
 
-**Approach**：沿用現有 `cp-digital-logic-basics`、`cp-sop-pos`、`cp-karnaugh-map`、`cp-universal-gates`、`cp-combinational-sequential-circuits`，在 `professionalTopics.ts` 補上 sourceFiles、terms、summary、lessonArticle sections。
+   > 回答：依你意見即可
 
-**Evidence**：
+2. **一個 MD 對應一個 route-visible networking topic**
+   Approach: 11 個 MD 產生 11 個可見 topic，順序為 1、2、3、4上、4下、5、6、7上、7下、8上、8下。
+   Evidence: `discuss.txt` 說「內部全部MD檔 都要引入」且「每個MD標題採用各md的主題」。
+   If wrong: 若要合併 4上/4下、7上/7下、8上/8下，路由數量、測試與 topic ID 都會不同。
 
-- `professionalTopics.ts` 已有上述五個 topic skeleton。
-- `subjectTopics.ts` 會過濾空內容；填入 sections 後才會出現在 `/computer-principles`。
-- `_private/discuss.txt` 指定資料是 route `computer-principles` 所需內容。
+   > 回答：依你意見即可
 
-**If wrong**：若你想把五份 Markdown 合成一個大 topic，而不是五個 topic，現有 skeleton 會繼續空著，route 順序與測試也要重設。
+3. **以 MD 的 H1 作為 route topic 標題**
+   Approach: route 顯示標題優先採用每篇 H1，例如 `網路概論 1：OSI 七層 + TCP/IP ★`。
+   Evidence: `discuss.txt` 指定「標題採用各md的 主題」；各 MD H1 已是整理過的主題名稱。
+   If wrong: 若星號 `★` 只表示重要度、不應顯示在 route，需另外放到 summary 或 terms，否則畫面標題會與期待不同。
 
-### 2. route/topic 標題採「中文(英文)」，內部 section 依 Markdown 編排
+   > 回答：依你意見即可
 
-**Approach**：topic 大標題用各 Markdown 主題轉成中文(英文)；內部 lesson section 盡量沿用 Markdown 的章節，例如 `常見邏輯閘`、`兩輸入真值表`、`題目 1：真值表 → 寫 SOP 和 POS`。
+4. **保留 MD 編排，但不保留純作者備註到可見教材**
+   Approach: 表格、條列、公式、例題、重點整理都轉成 lessonArticle；像「皆已上網查證」、「非憑記憶」這類 meta 註記，預設可保留在內容中，除非你希望它不要出現在正式頁面。
+   Evidence: MD 多篇在 blockquote 中標註學習方式與查證狀態；使用者要求盡量照 MD 編排。
+   If wrong: 若正式頁面不該顯示查證/學習方式註記，就需要在轉換時最小幅度移除或改放 summary。
 
-**Evidence**：
+   > 回答：依你意見即可
 
-- `_private/discuss.txt` 寫「section標題 是 中文(英文)的格式，標題採用各md的 主題」。
-- 現有 topic title 多用 `中文(English)`。
+5. **只做最小錯誤修正，不主動重寫教材**
+   Approach: apply 時只修明顯錯字、格式不適合 renderer 的地方、或測試可明確抓到的矛盾；不擴寫新內容。
+   Evidence: `discuss.txt` 明確要求「別隨意新增、刪除、修改資料」。
+   If wrong: 若你期待我順手補充缺漏知識，實作會違反目前「最小幅度」邊界。
 
-**If wrong**：若你要求「每個內部小段標題」也都必須中文(英文)，實作時要把所有 lesson section heading 改成雙語，不只是 route/topic title。
+   > 回答：這部分，也要針對內容去讀取，內容如果有錯誤，需要修正。但補充缺漏知識則不需要
 
-### 3. Markdown 內的製作指令要轉成 UI metadata，不直接顯示
+## 發現問題與待確認
 
-**Approach**：`用table做` 轉成 table block；`德摩根那一行用紅色文字標註` 轉成 table cell/row style；真值表「點選標題才顯示值」若確認要做，則新增 table column reveal 行為或用現有收闔能力替代。
+### 1. 現有 networking skeleton 與新 MD 結構不完全對齊
 
-**Evidence**：
+目前 `professionalTopics.ts` 內 networking skeleton 是：
 
-- `一、基本邏輯_新手國考教材.md` 有 `用table做`、`點選標題，才會讓值跑出來` 等指令。
-- `SubjectTopicPage.vue` 已支援 lesson section 收闔，但目前沒有 per-column reveal table。
-- `LessonArticleContentBlock` table 已支援 `rowStyles`、`columnStyles`、`cellStyles`。
+- `networking-prep-direction`
+- `networking-overview`
+- `networking-devices-osi`
+- `networking-ports`
+- `networking-osi-tcpip-models`
+- `networking-physical-layer`
+- `networking-data-link-layer`
+- `networking-network-layer`
+- `networking-transport-layer`
+- `networking-application-layer`
+- `networking-security`
 
-**If wrong**：若這些文字其實要原樣顯示，app 內容會看起來像開發備註；若 reveal table 是硬需求，實作範圍會比單純內容匯入多一個 UI 行為。
+但新 MD 是：
 
-### 4. 這次不應額外擴寫第五章
+- 1 OSI/TCPIP
+- 2 基礎概念
+- 3 網路設備
+- 4上 IP/子網路
+- 4下 路由/L3
+- 5 傳輸層
+- 6 應用層與 Port
+- 7上 實體層
+- 7下 資料鏈結層
+- 8上 資安觀念與加密
+- 8下 防禦設備與攻擊
 
-**Approach**：`五、組合與循序電路` 目前內容很短，建議只照原文整理成精簡 section，不主動補半加器、全加器、編碼器、解碼器等長內容，除非你確認要補。
+建議：以新 MD 結構為準，改成 11 個 topic；`networking-ports` 併入 `網路概論 6`，`networking-network-layer` 拆成 4上/4下，`networking-security` 拆成 8上/8下，`networking-prep-direction` 不 route-visible。
 
-**Evidence**：
+> 回答：
 
-- 該 Markdown 目前只有「組合電路 vs 循序電路」的判斷核心與例子。
-- `_private/discuss.txt` 強調「別隨意新增、刪除、修改資料」。
+### 2. 是否允許調整 topic id
 
-**If wrong**：若考試範圍確實需要更完整的組合/循序元件，照原文匯入會偏薄，後續還要再補內容。
+若完全對齊新 MD，建議使用較清楚的新 id：
 
-### 5. sourceFiles 要保留原始追蹤
+- `networking-osi-tcpip`
+- `networking-basics`
+- `networking-devices-osi`
+- `networking-ip-subnetting`
+- `networking-routing-l3-protocols`
+- `networking-transport-layer`
+- `networking-application-ports`
+- `networking-physical-layer`
+- `networking-data-link-layer`
+- `networking-security-crypto`
+- `networking-defense-attacks`
 
-**Approach**：每個 topic 的 `sourceFiles` 保留 `_private/計算機概論.txt`，並新增對應 Markdown 路徑。
+風險：若未來已有 networking 閱讀進度，改 id 會讓舊完成/書籤狀態失效。不過目前 networking route 尚無可見內容，這個風險應該很低。
 
-**Evidence**：
+> 回答：
 
-- 3a 已填內容的 topic 多數使用 `_private/計算機概論.txt` + 對應 Markdown。
-- 3b skeleton 目前只有 `_private/計算機概論.txt`。
+### 3. 是否保留 `_private/網概.txt` 作為 sourceFiles
 
-**If wrong**：若只記 Markdown，不保留原始總筆記來源，stale audit 或來源追蹤可能與既有慣例不一致。
+既有 skeleton 來源是 `_private/網概.txt`；新需求指定 `_private/MD/網概/`。  
+computer-principles 之前的做法通常會同時保留大綱來源與 MD 來源。
 
-## 建議整理範圍
+建議：若 `_private/網概.txt` 是總大綱，sourceFiles 可保留 `_private/網概.txt` + 對應 MD；若它已過時，就只列對應 MD。
 
-### cp-digital-logic-basics
+> 回答：
 
-來源：`一、基本邏輯_新手國考教材.md`
+### 4. 易變資料是否需要再次上網查證
 
-建議 sections：
+MD 中有多處標註已查證或涉及較可能變動的資料：
 
-| section heading | 內容範圍 | block 型態 |
-| --- | --- | --- |
-| 常見邏輯閘(Common Logic Gates) | AND、OR、NOT、NAND、NOR、XOR、XNOR 白話與寫法 | table + paragraph |
-| 兩輸入真值表(Two-Input Truth Table) | A/B 對各邏輯閘輸出 | table，是否互動待確認 |
-| 布林代數常用定律(Boolean Algebra Laws) | 恆等律、零一律、冪等律、互補律、交換律、結合律、分配律、吸收律、德摩根 | table，德摩根 row/cell 強調 |
+- Port number / IANA
+- WiFi 7、USB4、Bluetooth、行動網路速度
+- NIST CSF 2.0 於 2024 新增 Govern
 
-建議 terms：
+目前需求說 apply 階段要讀 MD 並做最小錯誤修正。  
+建議：預設信任 MD，只修顯而易見的內部矛盾；若要我重新查證易變資料，應在 `$spectra-propose` 或 `$spectra-apply` 明確列為驗證任務。
 
-| 中文 | English |
-| --- | --- |
-| 邏輯閘 | Logic Gate |
-| 真值表 | Truth Table |
-| 布林代數 | Boolean Algebra |
-| 反相 | NOT / Inversion |
-| 德摩根定律 | De Morgan's Laws |
-| 互斥或 | XOR |
-| 反互斥或 | XNOR |
+> 回答：
 
-發現問題：
+### 5. `★` 與「學習方式」標註要不要顯示
 
-1. `用table做`、`此處預設...點選標題...` 是製作指令，不應直接顯示在 app。
-2. `XOR = A有且B沒有 或 B有且A沒有，(A AND -B) OR (B AND -A)` 裡的 `-B` 對新手可能像「負 B」，建議顯示時改成 `B'` 或 `NOT B`。
-3. `XNOR` 的邏輯關係目前寫「輸入不同為 0」，正確但不如「輸入相同為 1」直觀；是否調整待確認。
-4. `德摩根` row 要紅字標註；現有 table style 是否已符合「紅色文字」需要實測。若現有 `emphasisText` 不是紅色，可能要新增樣式或改用現有強調樣式。
-5. 真值表要求點選欄位標題才顯示值，目前 app 沒有 per-column reveal table；這是本次最大的 scope 決策點。
+每篇 MD 的 H1 或 blockquote 有 `★`、`【理解】`、`【硬背】`、`【練流程】` 等學習標記。  
+這些對考試準備有幫助，但如果全部顯示在 route title 或第一段，畫面會比較像筆記而非正式教材。
 
-### cp-sop-pos
+建議：H1 的 `★` 可以保留在標題，blockquote 的學習方式保留為 lessonArticle 開頭段落；若你希望畫面更乾淨，請指定要移除或改放 summary。
 
-來源：`二、SOP 與 POS_新手國考教材.md`
+> 回答：
 
-建議 sections：
+### 6. 工作樹已有大量 MD 搬移狀態
 
-| section heading | 內容範圍 | block 型態 |
-| --- | --- | --- |
-| 用途(30 秒看懂)(Purpose) | 真值表如何翻成算式與電路 | paragraph |
-| 題目 1：真值表 → SOP/POS(Truth Table to SOP/POS) | 兩變數基本款完整流程 | table + orderedList |
-| 題目 2：布林函式 → 真值表(Boolean Function to Truth Table) | 先建真值表再轉 SOP/POS | table + orderedList |
-| 題目 3：三變數 SOP(Three-Variable SOP) | 三變數輸出為 1 的列轉 minterm | table + orderedList |
-| 公式整理(Formula Summary) | SOP/POS 對照表與三個必記 | table + orderedList |
+目前 git status 顯示 `_private/MD/網概/` 舊檔刪除與新檔新增，另有其他 MD 資料夾搬移狀態。這看起來像你正在整理來源資料。  
+這不是本討論的 blocker，但後續 commit 若要求「全部非 ignored 變更」會一起進去。
 
-建議 terms：
-
-| 中文 | English |
-| --- | --- |
-| SOP | Sum of Products |
-| POS | Product of Sums |
-| 最小項 | Minterm |
-| 最大項 | Maxterm |
-| 真值表 | Truth Table |
-| 布林函式 | Boolean Function |
+> 回答：
 
-發現問題：
+## 建議結論
 
-1. 內容使用「第 1 列、第 3 列」描述資料列，若搭配 minterm 列號，可能和 `m0, m1...` 混淆。建議 app 顯示時明確寫「第 1 筆資料」或補列號欄。
-2. 「1 多就用 POS、0 多就用 SOP」只適合題目允許自由選較短形式時；若題目明確問「標準 SOP」或「標準 POS」，不能自行改用另一種。建議補一句限制，避免選擇題誤判。
-3. Markdown 使用 `A′` 與 app/其他教材常見的 `A'` 可能不一致。建議統一顯示風格，或至少同 topic 內一致。
+**Decision**: 建議建立 `fill-networking-content` change，把 `_private/MD/網概/` 11 個 MD 依自然章節順序匯入 networking route，每篇 MD 對應一個 visible topic。
 
-### cp-karnaugh-map
+**Rationale**: 這最符合「全部 MD 都要引入」與「盡量照 MD 編排」；同時沿用既有 lessonArticle 架構，避免新增 parser/UI/storage 的額外複雜度。
 
-來源：`三、卡諾圖化簡_新手國考教材.md`
-
-建議 sections：
-
-| section heading | 內容範圍 | block 型態 |
-| --- | --- | --- |
-| 用途(30 秒看懂)(Purpose) | 為何要化簡、流程總覽 | paragraph + orderedList |
-| 題目 1：2 變數(Two-Variable K-map) | 2 格合併成 `B` | table + orderedList |
-| 題目 2：3 變數(Three-Variable K-map) | 圈大、重疊、`B′ + AC` | table + orderedList |
-| 題目 3：4 變數(Four-Variable K-map) | 四角跨邊環繞、`B′D′` | table + orderedList |
-| Don't care(X) | X 可當 1 或 0，為了圈更大 | table + orderedList |
-| 公式整理(Exam Summary) | 圈選規則與固定/變動變數 | orderedList |
-
-建議 terms：
-
-| 中文 | English |
-| --- | --- |
-| 卡諾圖 | Karnaugh Map / K-map |
-| 格雷碼 | Gray Code |
-| Don't care | Don't care |
-| 跨邊 | Wrap-around |
-| 重疊圈選 | Overlapping Group |
-| 最簡 SOP | Simplified SOP |
-
-發現問題：
-
-1. Markdown 標題是 `卡諾圖化簡 與 萬用閘`，但本檔內容實際只到卡諾圖，且 `四、萬用閘` 已是獨立檔。建議 route/topic 標題仍採 `卡諾圖化簡(Karnaugh Map Simplification)`，避免重複。
-2. 文中多處把 `BC=00`、`BC=01` 說成「兩行」，但在表格裡它們是欄位。建議顯示時改成「兩欄」或「兩個欄位」。
-3. 卡諾圖表格以 Markdown 表格表示可以匯入，但若要清楚呈現圈選，現有 table 只能顯示值與文字說明，不能畫圈。可接受做法是保留表格 + 下方步驟文字。
-4. 使用 `B′`、`D′` 等符號需和 SOP/POS 章一致。
+**Capture to**:
 
-### cp-universal-gates
+- `openspec/changes/fill-networking-content/proposal.md`
+- `openspec/changes/fill-networking-content/design.md`
+- `openspec/changes/fill-networking-content/specs/networking-content/spec.md`
+- `openspec/changes/fill-networking-content/tasks.md`
 
-來源：`四、萬用閘_新手國考教材.md`
+## 下一步建議
 
-建議 sections：
+你回答上方問題後，下一步使用：
 
-| section heading | 內容範圍 | block 型態 |
-| --- | --- | --- |
-| 概念(Concept) | NAND/NOR 為何是萬用閘、NOT 快速做法 | paragraph + orderedList |
-| NAND 組閘(NAND Implementations) | NOT、AND、OR、XOR 需要幾個 NAND | table |
-| NOR 組閘(NOR Implementations) | NOT、OR、AND 需要幾個 NOR | table |
-| 必記重點(Exam Essentials) | 常考題型與數字速記 | orderedList |
+`$spectra-propose fill-networking-content`
 
-建議 terms：
+接著再用：
 
-| 中文 | English |
-| --- | --- |
-| 萬用閘 | Universal Gate |
-| NAND | NAND |
-| NOR | NOR |
-| 德摩根定律 | De Morgan's Laws |
-| 對偶 | Duality |
-
-發現問題：
-
-1. 本檔使用 `迪摩根定律`，基本邏輯章使用 `德摩根`。建議統一為 `德摩根定律(De Morgan's Laws)`，但是否要視為「可修正術語」需要你確認。
-2. `實務上工廠只量產單一種閘最便宜` 這句較口語且可能過度簡化，建議改成「實作時常因製程與設計便利而偏好 NAND/NOR 組合」，或原樣保留待確認。
-3. NOR 表格沒有 XOR 列；若要和 NAND 表一致，可補 `XOR：可由 NOR 組成，常見需 5 個 NOR`，但這屬於新增內容，需你確認。
-
-### cp-combinational-sequential-circuits
-
-來源：`五、組合與循序電路_新手國考教材.md`
-
-建議 sections：
-
-| section heading | 內容範圍 | block 型態 |
-| --- | --- | --- |
-| 兩大類(Two Circuit Types) | 組合電路與循序電路定義、例子、判斷口訣 | table + paragraph |
-
-建議 terms：
-
-| 中文 | English |
-| --- | --- |
-| 組合電路 | Combinational Circuit |
-| 循序電路 | Sequential Circuit |
-| 記憶 | Memory |
-| 狀態 | State |
-| 時脈 | Clock |
-| 正反器 | Flip-Flop |
-| 暫存器 | Register |
-| 計數器 | Counter |
-
-發現問題：
-
-1. 此 Markdown 沒有 `#` 標題，topic title 需由檔名推得。
-2. 內容非常短，只足夠做「分類判斷」卡片；若考試也要半加器、全加器、編碼器、解碼器、多工器、解多工器的公式或選擇線，原文目前沒有提供。
-3. 若嚴格遵守「不要新增資料」，此 topic 會比其他四個短很多；若要讓 route 學習體驗一致，需要你確認可以補基本定義或例題。
-
-## 建議測試
-
-實作時至少補這些測試：
-
-1. `tests/unit/professionalTopics.spec.ts`
-   - 五個 3b topic 都有非空 `summary`、`terms`、`lessonArticle.sections`。
-   - 五個 topic 的 `sourceFiles` 包含 `_private/計算機概論.txt` 與各自 Markdown。
-   - 五個 topic 的 route/topic title 符合中文(英文)格式。
-   - 內容不包含 raw 指令：`用table做`、`點選標題`、`內部值都是空的`。
-   - 內容包含關鍵字：`Truth Table`、`SOP`、`POS`、`K-map`、`Don't care`、`NAND`、`NOR`、`Flip-Flop`。
-   - 德摩根 row/cell 有強調 metadata，或至少內容包含 `德摩根定律`。
-2. `tests/unit/subjectTopics.spec.ts`
-   - `/computer-principles` 會顯示這五個 topic，因為 sections 不再為空。
-   - 順序應位於 `cp-codes-and-check-codes` 後、`cp-os-basics` 前，依 skeleton 既有順序為：基本邏輯 → SOP/POS → 卡諾圖 → 萬用閘 → 組合與循序電路。
-3. `tests/unit/SubjectTopicPage.spec.ts`
-   - 若 Q1 確認要做真值表欄位 reveal：預設輸出欄位值隱藏，點選 `AND/OR/NAND...` 表頭後顯示對應欄位。
-   - 若 Q1 不做互動：不需要新增這類 component test。
-4. stale/source audit 類測試
-   - 3b 五個 topic id 視為已填內容。
-   - sourceFiles 與 Markdown 來源一致。
-5. typecheck
-   - 若新增 table reveal metadata，既有 table block 與未互動表格仍可通過。
-
-## 待你確認
-
-Q1. `一、基本邏輯` 的兩輸入真值表，是否一定要做成「點選欄位標題才顯示該欄輸出值」？
-
-我的建議：如果這是你想拿來自測的互動效果，就做；如果只是筆記時的想法，先用一般表格顯示，避免這次 scope 變大。
-
-請回答：要互動
-
-```text
-要互動 / 不要互動，普通表格即可
-```
-
-結論：要互動。基本邏輯的兩輸入真值表要預設隱藏 `AND`、`OR`、`NAND`、`NOR`、`XOR`、`XNOR` 欄位值；點選欄位標題後，再顯示該欄的輸出值。這會讓正式 change 需要擴充 lessonArticle table 的互動 metadata 與 `SubjectTopicPage.vue` 渲染行為。
-
-Q2. 「section標題 是 中文(英文)」是指 route/topic 大標題，還是每個內部 lesson section 也都要雙語？
-
-我的建議：route/topic 大標題雙語即可；內部 section 依 Markdown 原小標題，必要時才雙語，畫面比較不擠。
-
-請回答：route/topic 大標題雙語即可
-
-```text
-只要 topic 大標題雙語 / 內部 section 也都要雙語
-```
-
-結論：只要 route/topic 大標題雙語即可。內部 lesson section 不強制每段都中文(英文)，依 Markdown 原小標題與可讀性處理。
-
-Q3. `五、組合與循序電路` 是否只照目前短文匯入？
-
-我的建議：先只照目前短文匯入，因為你已明確說不要隨意新增資料；若之後覺得太薄，再開另一輪補內容。
-
-請回答：只照目前短文匯入
-
-```text
-只照短文 / 可以補基本例題與公式
-```
-
-結論：只照目前短文匯入。`五、組合與循序電路` 不額外補半加器、全加器、編碼器、解碼器、多工器、解多工器等公式或例題。
-
-Q4. 明顯術語與符號是否可在 app 內容中修正，但不改 Markdown 原檔？
-
-包含：
-
-- `-B` 改為 `B'` 或 `NOT B`
-- `迪摩根` 統一為 `德摩根`
-- 卡諾圖的「兩行」改為「兩欄」
-- SOP/POS 補一句「題目明確指定標準 SOP/POS 時不可自行換形式」
-
-我的建議：可以修正，因為這些是避免學習誤解，不是擴寫內容。
-
-請回答：可以修正
-
-```text
-可以修正 / 盡量原樣保留
-```
-
-結論：可以修正，但只修正會造成誤解的明顯術語與符號，不改 Markdown 原檔。正式匯入 app 時可將 `-B` 改為 `B'` 或 `NOT B`、`迪摩根` 統一為 `德摩根`、卡諾圖「兩行」改為「兩欄」，並在 SOP/POS 補上題目指定標準形式時不可自行改用另一種形式的提醒。
-
-Q5. NOR 表格是否要補 XOR？
-
-我的建議：不補。因為原 Markdown 沒寫，且本章已說萬用閘可組出 XOR；考試若未特別問 NOR 做 XOR 的閘數，先不增加記憶負擔。
-
-請回答：要補，純粹忘記了
-
-```text
-不補 / 補 NOR XOR 常見 5 個
-```
-
-結論：要補。NOR 組閘表格要補上 XOR，寫成可由 NOR 組成，常見做法需要 5 個 NOR。
-
-## 已確認事項
-
-1. 本次處理既有 3b 五個 topic：`cp-digital-logic-basics`、`cp-sop-pos`、`cp-karnaugh-map`、`cp-universal-gates`、`cp-combinational-sequential-circuits`。
-2. 每份 Markdown 對應一個既有 skeleton topic，不合併成單一大 topic。
-3. route/topic 大標題採中文(英文)，內部 lesson section 不強制全部雙語。
-4. Markdown 裡的製作指令不直接顯示給學習者，會轉成 table、style 或互動 metadata。
-5. `一、基本邏輯` 的兩輸入真值表要做互動：預設隱藏輸出欄位值，點選欄位標題後顯示該欄。
-6. `五、組合與循序電路` 只照目前短文匯入，不額外補公式或例題。
-7. app 匯入內容可修正明顯術語與符號，但不修改 Markdown 原檔。
-8. `四、萬用閘` 的 NOR 表格要補 XOR，常見做法記 5 個 NOR。
-9. 每個 topic 的 `sourceFiles` 保留 `_private/計算機概論.txt`，並新增對應 Markdown 路徑。
-10. 需要新增或更新測試，特別是 basic logic 真值表欄位 reveal 互動與五個 3b topic 的 source traceability。
-
-## 結論
-
-**Decision**：建立新的 Spectra change，將 3b 數位邏輯五份 Markdown 匯入 `/computer-principles` 的五個既有 skeleton topic，並擴充 lessonArticle table 以支援真值表欄位點選揭露。
-
-**Rationale**：現有架構已經有五個對應 topic 與 lessonArticle 渲染能力，內容匯入可沿用既有 blocks；Q1 已確認真值表需要互動，因此正式 change 需多包含 table reveal metadata、renderer 行為與 component test。其餘內容以 Markdown 原編排為主，只修正明顯術語與符號問題。
-
-**Remaining**：無。Q1-Q5 已確認，可進入 `$spectra-propose`。
-
-**Capture to**：本檔 `_private/propose.md`。下一步可執行 `$spectra-propose`，建立正式 change artifacts。
+`$spectra-apply fill-networking-content`
