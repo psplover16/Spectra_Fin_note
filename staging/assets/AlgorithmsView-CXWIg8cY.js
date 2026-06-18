@@ -1,0 +1,1 @@
+import{g as s,_ as o}from"./subjectTopics-C64Q_Bqi.js";import{d as c,h as i,b as a,o as r}from"./vendor-vue-lukDf80B.js";const t="algorithms",l=c({__name:"AlgorithmsView",setup(n){const e=s(t);return(p,m)=>(r(),i(o,{title:"演算法","subject-key":t,"test-id":"subject-view-algorithms",topics:a(e)},null,8,["topics"]))}});export{l as default};

@@ -1,0 +1,1 @@
+import{g as o,_ as s}from"./subjectTopics-C64Q_Bqi.js";import{d as c,h as n,b as i,o as r}from"./vendor-vue-lukDf80B.js";const e="networking",f=c({__name:"NetworkingView",setup(a){const t=o(e);return(p,_)=>(r(),n(s,{title:"網路概論","subject-key":e,"test-id":"subject-view-networking",topics:i(t)},null,8,["topics"]))}});export{f as default};

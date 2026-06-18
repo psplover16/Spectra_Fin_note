@@ -1,0 +1,1 @@
+import{g as t,_ as c}from"./subjectTopics-C64Q_Bqi.js";import{d as o,h as n,b as i,o as a}from"./vendor-vue-lukDf80B.js";const e="systemDesign",f=o({__name:"SystemDesignView",setup(p){const s=t(e);return(r,m)=>(a(),n(c,{title:"系統設計","subject-key":e,"test-id":"subject-view-system-design",topics:i(s)},null,8,["topics"]))}});export{f as default};

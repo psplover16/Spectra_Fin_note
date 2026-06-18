@@ -1,0 +1,1 @@
+import{g as s,_ as c}from"./subjectTopics-C64Q_Bqi.js";import{d as o,h as i,b as p,o as r}from"./vendor-vue-lukDf80B.js";const e="computerPrinciples",l=o({__name:"ComputerPrinciplesView",setup(n){const t=s(e);return(a,u)=>(r(),i(c,{title:"計算機原理","subject-key":e,"test-id":"subject-view-computer-principles",topics:p(t)},null,8,["topics"]))}});export{l as default};
