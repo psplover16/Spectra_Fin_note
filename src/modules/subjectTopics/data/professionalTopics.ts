@@ -298,24 +298,24 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "cp-os-basics",
     subjectKey: "computerPrinciples",
-    titleZh: "基本常識",
+    titleZh: "作業系統 1：OS 基礎概念",
     titleEn: "Operating System Basics",
     sourceFiles: [
       "_private/計算機概論.txt"
     ],
-    sourceSection: "3c. 作業系統 / 基本常識",
+    sourceSection: "3c. 作業系統 / OS 基礎概念",
     difficulty: "intro",
     topicType: "concept"
   },
   {
     id: "cp-io-and-interrupts",
     subjectKey: "computerPrinciples",
-    titleZh: "I/O 與中斷",
+    titleZh: "作業系統 2：I/O 中斷方式 與 硬體保護",
     titleEn: "I/O and Interrupts",
     sourceFiles: [
       "_private/計算機概論.txt"
     ],
-    sourceSection: "3c. 作業系統 / I/O 與中斷",
+    sourceSection: "3c. 作業系統 / I/O 中斷方式 與 硬體保護",
     difficulty: "core",
     topicType: "concept"
   },
@@ -334,31 +334,43 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "cp-os-structure",
     subjectKey: "computerPrinciples",
-    titleZh: "OS 結構",
+    titleZh: "作業系統 3-4：OS 的結構",
     titleEn: "Operating System Structure",
     sourceFiles: [
       "_private/計算機概論.txt"
     ],
-    sourceSection: "3c. 作業系統 / OS 結構",
+    sourceSection: "3c. 作業系統 / OS 的結構",
     difficulty: "core",
     topicType: "concept"
   },
   {
     id: "cp-process",
     subjectKey: "computerPrinciples",
-    titleZh: "Process",
+    titleZh: "作業系統 3-5（上）：Process 基礎",
     titleEn: "Process",
     sourceFiles: [
       "_private/計算機概論.txt"
     ],
-    sourceSection: "3c. 作業系統 / Process",
+    sourceSection: "3c. 作業系統 / Process 基礎",
+    difficulty: "core",
+    topicType: "procedure"
+  },
+  {
+    id: "cp-cpu-scheduling",
+    subjectKey: "computerPrinciples",
+    titleZh: "作業系統 3-5（下）：CPU 排程演算法",
+    titleEn: "CPU Scheduling",
+    sourceFiles: [
+      "_private/計算機概論.txt"
+    ],
+    sourceSection: "3c. 作業系統 / CPU 排程演算法",
     difficulty: "core",
     topicType: "procedure"
   },
   {
     id: "cp-deadlock",
     subjectKey: "computerPrinciples",
-    titleZh: "Deadlock",
+    titleZh: "作業系統 3-6：Deadlock（死結）",
     titleEn: "Deadlock",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -370,7 +382,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "cp-process-communication",
     subjectKey: "computerPrinciples",
-    titleZh: "Process Communication",
+    titleZh: "作業系統 3-7：Process Communication",
     titleEn: "Process Communication",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -382,7 +394,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "cp-memory-management",
     subjectKey: "computerPrinciples",
-    titleZh: "Memory Management",
+    titleZh: "作業系統 3-8：Memory Management（記憶體管理）",
     titleEn: "Memory Management",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -394,7 +406,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "cp-virtual-memory",
     subjectKey: "computerPrinciples",
-    titleZh: "Virtual Memory",
+    titleZh: "作業系統 3-9：Virtual Memory（虛擬記憶體）",
     titleEn: "Virtual Memory",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -406,7 +418,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "cp-disk-management",
     subjectKey: "computerPrinciples",
-    titleZh: "Disk Management",
+    titleZh: "作業系統 3-10：Disk Management（磁碟管理）",
     titleEn: "Disk Management",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -1572,6 +1584,46 @@ const combinationalSequentialCircuitsSourceFiles = [
   '_private/計算機概論.txt',
   '_private/MD/計概/3b數位邏輯/五、組合與循序電路_新手國考教材.md'
 ] as const;
+const operatingSystemBasicsSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3c作業系統/3-1. OS 基礎概念.md'
+] as const;
+const ioAndInterruptsSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3c作業系統/3-2. IO 中斷方式 與 硬體保護.md'
+] as const;
+const operatingSystemStructureSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3c作業系統/3-4_OS結構.md'
+] as const;
+const processSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3c作業系統/作業系統_3-5上_Process基礎.md'
+] as const;
+const cpuSchedulingSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3c作業系統/作業系統_3-5下_CPU排程演算法.md'
+] as const;
+const deadlockSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3c作業系統/作業系統_3-6_Deadlock.md'
+] as const;
+const processCommunicationSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3c作業系統/作業系統_3-7_ProcessCommunication_跳過分析.md'
+] as const;
+const memoryManagementSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3c作業系統/作業系統_3-8_記憶體管理.md'
+] as const;
+const virtualMemorySourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3c作業系統/作業系統_3-9_虛擬記憶體.md'
+] as const;
+const diskManagementSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3c作業系統/作業系統_3-10_磁碟管理.md'
+] as const;
 
 const commonUnitsTerms = [
   { zh: '位元', en: 'bit' },
@@ -1845,6 +1897,137 @@ const combinationalSequentialCircuitsTerms = [
   { zh: '記憶', en: 'Memory' },
   { zh: '狀態', en: 'State' },
   { zh: '時脈', en: 'Clock' }
+] as const;
+
+const operatingSystemBasicsTerms = [
+  { zh: '批次處理', en: 'Batch Processing' },
+  { zh: '多元程式', en: 'Multiprogramming' },
+  { zh: '分時系統', en: 'Time-sharing System' },
+  { zh: '即時系統', en: 'Real-time System' },
+  { zh: '分散式系統', en: 'Distributed System' },
+  { zh: '並行', en: 'Concurrency' },
+  { zh: '平行', en: 'Parallelism' },
+  { zh: '多工排隊', en: 'Spooling' },
+  { zh: '緩衝', en: 'Buffering' },
+  { zh: '快取', en: 'Cache' }
+] as const;
+
+const ioAndInterruptsTerms = [
+  { zh: '輪詢', en: 'Polling' },
+  { zh: '中斷', en: 'Interrupt' },
+  { zh: '直接記憶體存取', en: 'DMA' },
+  { zh: '中斷服務程式', en: 'ISR' },
+  { zh: '不可遮罩中斷', en: 'NMI' },
+  { zh: '陷阱', en: 'Trap' },
+  { zh: '錯誤', en: 'Fault' },
+  { zh: '特權指令', en: 'Privileged Instruction' },
+  { zh: '基底暫存器', en: 'Base Register' },
+  { zh: '界限暫存器', en: 'Limit Register' },
+  { zh: '計時器', en: 'Timer' }
+] as const;
+
+const operatingSystemStructureTerms = [
+  { zh: '命令直譯器', en: 'Command Shell' },
+  { zh: '系統呼叫', en: 'System Call' },
+  { zh: '核心', en: 'Kernel' },
+  { zh: '單核心', en: 'Monolithic Kernel' },
+  { zh: '微核心', en: 'Microkernel' },
+  { zh: '行程間通訊', en: 'IPC' },
+  { zh: '虛擬機器', en: 'Virtual Machine' },
+  { zh: '虛擬機器監視器', en: 'Hypervisor' }
+] as const;
+
+const processTerms = [
+  { zh: '行程', en: 'Process' },
+  { zh: '程式', en: 'Program' },
+  { zh: '程式計數器', en: 'Program Counter' },
+  { zh: '行程狀態', en: 'Process State' },
+  { zh: '行程控制區塊', en: 'PCB' },
+  { zh: '上下文切換', en: 'Context Switch' },
+  { zh: '長程排程器', en: 'Long-term Scheduler' },
+  { zh: '短程排程器', en: 'Short-term Scheduler' },
+  { zh: '中程排程器', en: 'Medium-term Scheduler' },
+  { zh: '搶佔式', en: 'Preemptive' },
+  { zh: '飢餓', en: 'Starvation' },
+  { zh: '老化', en: 'Aging' },
+  { zh: '護航效應', en: 'Convoy Effect' }
+] as const;
+
+const cpuSchedulingTerms = [
+  { zh: '週轉時間', en: 'Turnaround Time' },
+  { zh: '等待時間', en: 'Waiting Time' },
+  { zh: '甘特圖', en: 'Gantt Chart' },
+  { zh: '先到先做', en: 'FCFS' },
+  { zh: '最短工作優先', en: 'SJF' },
+  { zh: '最短剩餘時間優先', en: 'SRTF' },
+  { zh: '優先權排程', en: 'Priority Scheduling' },
+  { zh: '輪流排程', en: 'Round Robin' },
+  { zh: '時間量子', en: 'Quantum' }
+] as const;
+
+const deadlockTerms = [
+  { zh: '死結', en: 'Deadlock' },
+  { zh: '互斥', en: 'Mutual Exclusion' },
+  { zh: '持有並等待', en: 'Hold and Wait' },
+  { zh: '不可搶奪', en: 'No Preemption' },
+  { zh: '循環等待', en: 'Circular Wait' },
+  { zh: '預防', en: 'Prevention' },
+  { zh: '避免', en: 'Avoidance' },
+  { zh: '偵測與復原', en: 'Detection and Recovery' },
+  { zh: '安全狀態', en: 'Safe State' },
+  { zh: '銀行家演算法', en: "Banker's Algorithm" }
+] as const;
+
+const processCommunicationTerms = [
+  { zh: '行程間通訊', en: 'Interprocess Communication' },
+  { zh: '共享記憶體', en: 'Shared Memory' },
+  { zh: '訊息傳遞', en: 'Message Passing' },
+  { zh: '競爭情況', en: 'Race Condition' },
+  { zh: '臨界區', en: 'Critical Section' },
+  { zh: '號誌', en: 'Semaphore' },
+  { zh: '互斥鎖', en: 'Mutex' },
+  { zh: '生產者-消費者', en: 'Producer-Consumer' }
+] as const;
+
+const memoryManagementTerms = [
+  { zh: '最先適配', en: 'First Fit' },
+  { zh: '循環適配', en: 'Next Fit' },
+  { zh: '最佳適配', en: 'Best Fit' },
+  { zh: '最差適配', en: 'Worst Fit' },
+  { zh: '外部碎裂', en: 'External Fragmentation' },
+  { zh: '內部碎裂', en: 'Internal Fragmentation' },
+  { zh: '緊縮', en: 'Compaction' },
+  { zh: '分頁', en: 'Paging' },
+  { zh: '分段', en: 'Segmentation' },
+  { zh: '轉譯後備緩衝區', en: 'TLB' }
+] as const;
+
+const virtualMemoryTerms = [
+  { zh: '虛擬記憶體', en: 'Virtual Memory' },
+  { zh: '需求分頁', en: 'Demand Paging' },
+  { zh: '分頁錯誤', en: 'Page Fault' },
+  { zh: '有效記憶體存取時間', en: 'EMAT' },
+  { zh: '頁面替換', en: 'Page Replacement' },
+  { zh: '先進先出', en: 'FIFO' },
+  { zh: '最佳置換', en: 'Optimal' },
+  { zh: '最近最少使用', en: 'LRU' },
+  { zh: '貝雷迪異常', en: "Belady's Anomaly" },
+  { zh: '輾轉現象', en: 'Thrashing' },
+  { zh: '工作集', en: 'Working Set' }
+] as const;
+
+const diskManagementTerms = [
+  { zh: '磁軌', en: 'Track' },
+  { zh: '磁區', en: 'Sector' },
+  { zh: '磁柱', en: 'Cylinder' },
+  { zh: '磁頭', en: 'Head' },
+  { zh: '尋道時間', en: 'Seek Time' },
+  { zh: '旋轉延遲', en: 'Rotational Latency' },
+  { zh: '磁碟排程', en: 'Disk Scheduling' },
+  { zh: '最短尋道優先', en: 'SSTF' },
+  { zh: '電梯演算法', en: 'SCAN' },
+  { zh: '檔案配置表', en: 'FAT' },
+  { zh: '容錯式磁碟陣列', en: 'RAID' }
 ] as const;
 
 const algorithmExampleSourceFiles = ['_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md'] as const;
@@ -4818,6 +5001,910 @@ const combinationalSequentialCircuitsLessonSections = [
   }
 ] as const;
 
+const operatingSystemBasicsLessonSections = [
+  {
+    heading: 'OS 分類比較表',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['類型', '定義（一句話）', '優點', '缺點', '實例'],
+        rows: [
+          ['批次處理 Batch', '把工作集中成一批，依序自動處理，無使用者互動', '吞吐量高、自動化', '不能互動、回應慢、除錯難', '早期主機月結帳'],
+          [
+            '多元程式 Multiprogramming',
+            '記憶體同時放多個工作，某個在等 I/O 時 CPU 改做另一個',
+            'CPU 利用率高',
+            '排程、記憶體管理複雜',
+            '早期多工主機'
+          ],
+          ['分時 Time-sharing', '把 CPU 時間切成小片，輪流給多個使用者，可即時互動', '多人互動、回應快', '切換有 overhead、需保護機制', 'UNIX、Linux'],
+          ['即時 Real-time', '必須在時限內完成回應', '即時、可預測', '彈性低、設計嚴格', '硬性：飛彈/醫療；軟性：串流影音'],
+          [
+            '分散式 Distributed',
+            '多台電腦透過網路共享資源、協同運算',
+            '資源共享、可靠、易擴充',
+            '複雜、依賴網路、安全議題',
+            '雲端、叢集運算'
+          ]
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '即時系統再細分：硬性即時錯過時限就算失敗，例如醫療、飛彈；軟性即時盡量達成即可，偶爾遲到可接受，例如影音串流。'
+      }
+    ]
+  },
+  {
+    heading: 'Concurrency vs Parallelism',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'Concurrency 並行', 'Parallelism 平行'],
+        rows: [
+          ['一句話', '交錯處理多件事，看起來同時', '真的同時做多件事'],
+          ['硬體需求', '單核 CPU 就能做，靠快速切換', '需要多核或多 CPU'],
+          ['重點', '如何結構化地處理多工', '同時執行']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '記憶鉤子：並行是一個執行單位輪流切換多件事；平行是多個執行單位真的同時做。並行不一定平行，平行通常是並行的一種實現。'
+      }
+    ]
+  },
+  {
+    heading: 'Offline / Spooling / Buffering / Cache',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['技術', '定義', '為何用'],
+        rows: [
+          ['Offline 離線', 'I/O 不直接接 CPU，先把資料存到中間媒介', '讓慢速 I/O 與 CPU 分離，但兩者不重疊'],
+          ['Spooling', '用磁碟當緩衝池，慢速裝置與 CPU 重疊作業，多個工作可排隊', 'CPU 不必空等慢速裝置，例如列印佇列'],
+          ['Buffering 緩衝', '在記憶體開一塊區暫存資料', '平衡生產與消費速度差，讓 I/O 與計算重疊'],
+          ['Cache 快取', '把常用資料放在更快、離 CPU 更近的儲存', '利用 locality 加速重複存取']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          'Offline：完全分開、不重疊，是較早期的解法。',
+          'Spooling：重疊、用整個磁碟當池子、可排隊。',
+          'Buffering：用記憶體小區，平衡資料流速度。',
+          'Cache：為了重複存取而加速。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const ioAndInterruptsLessonSections = [
+  {
+    heading: 'I/O 中斷方式：Polling / Interrupt / DMA',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '核心問題是慢速裝置準備資料很慢，CPU 要如何知道裝置好了，以及資料由誰搬。三種做法效率一個比一個好。'
+      },
+      {
+        kind: 'table',
+        headers: ['', 'Polling 輪詢', 'Interrupt 中斷', 'DMA'],
+        rows: [
+          ['CPU 怎麼知道裝置好了', '自己一直問', '裝置發中斷', 'DMA 搬完才中斷'],
+          ['誰搬資料', 'CPU 親自', 'CPU 親自', 'DMA 控制器'],
+          ['中斷次數', '無，但一直忙碌等待', '每筆一次', '整塊只一次'],
+          ['CPU 浪費', '最多', '中等', '最少'],
+          ['適合', '少量、簡單', '中量、互動', '大量資料，例如磁碟/網路']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          'Polling：CPU 反覆問狀態，裝置就緒後 CPU 親自搬資料，缺點是忙碌等待。',
+          'Interrupt：CPU 做別的事，裝置就緒時通知 CPU；CPU 執行 ISR 後再回原工作。',
+          'DMA：CPU 只設定來源、目的與大小，DMA 控制器直接搬整塊，完成後只中斷一次。',
+          '一句話記：效率 Polling < Interrupt < DMA；CPU 插手程度也是 Polling 最多、DMA 最少。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '中斷類型',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['類型', '來源', '同步?', '例子'],
+        rows: [
+          ['外部－可遮罩', '外部裝置', '非同步', '鍵盤、I/O 完成、計時器'],
+          ['外部－NMI', '外部嚴重事件', '非同步', '電源失效、硬體故障、記憶體錯誤'],
+          ['內部－Trap', '程式故意觸發', '同步', '系統呼叫、除錯中斷點'],
+          ['內部－Fault', '指令出錯', '同步', '除以零、page fault、非法指令']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '判斷主軸：外部中斷是別人打斷，跟程式執行非同步；內部中斷是自己造成，跟目前指令同步。NMI 是緊急到不准忽略，Trap 是故意的。'
+      }
+    ]
+  },
+  {
+    heading: '硬體保護',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '多工/多人系統要防止一個程式搞壞 OS 或別人的資料。共同精神是危險動作只准 OS 在核心模式執行，硬體負責把關，出事就 trap 給 OS。'
+      },
+      {
+        kind: 'table',
+        headers: ['保護', '防止什麼', '硬體機制'],
+        rows: [
+          ['I/O Protection', '程式亂下 I/O 指令，搞亂裝置或偷資料', 'I/O 指令設成特權指令；使用者程式透過 system call 請 OS 代勞'],
+          ['Memory Protection', '程式讀寫到別人或 OS 的記憶體', 'Base + Limit 界定合法範圍，每次存取都檢查位址'],
+          ['CPU Protection', '程式無窮迴圈、霸佔 CPU 不放', 'Timer 時間到就中斷，OS 收回 CPU 重新排程']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '一句話記法：I/O 靠特權指令，Memory 靠 Base/Limit，CPU 靠 Timer。'
+      }
+    ]
+  }
+] as const;
+
+const operatingSystemStructureLessonSections = [
+  {
+    heading: 'Command（Shell）vs System Call',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '兩者都是進入 OS 服務的入口，差別在服務對象不同：Command 給人用，System Call 給程式用。'
+      },
+      {
+        kind: 'table',
+        headers: ['', 'Command（Shell）', 'System Call'],
+        rows: [
+          ['是誰的介面', '人與 OS', '程式與 OS 核心'],
+          ['怎麼用', '使用者打指令', '程式碼呼叫'],
+          ['角色', '解讀指令、轉交 OS 執行', '請求 OS 提供服務'],
+          ['例子', 'cmd、bash、ls、cd、copy', 'open()、read()、fork()、exec()']
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'Kernel vs Microkernel',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'Kernel 是 OS 最底層的核心程式，管理 CPU、記憶體、裝置、檔案等資源。單核心與微核心的差別在於核心裡塞多少 OS 服務。'
+      },
+      {
+        kind: 'table',
+        headers: ['', '單核心 Monolithic', '微核心 Microkernel'],
+        rows: [
+          ['核心包含', '全部 OS 服務', '只留最必要，例如 IPC、基本排程、基本記憶體'],
+          ['其他服務放哪', '都在核心內', '移到核心外，當使用者層服務'],
+          ['優點', '執行快、呼叫直接、效率高', '小、模組化、穩定、易擴充與移植'],
+          ['缺點', '龐大，一處出錯易拖垮全系統，難維護', '服務間靠訊息傳遞，overhead 高、較慢'],
+          ['例子', '傳統 UNIX、Linux', 'Mach、QNX、MINIX']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '記憶鉤子：單核心全包、快但脆；微核心精簡、穩但慢。'
+      }
+    ]
+  },
+  {
+    heading: 'Virtual Machine',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'Virtual Machine 是用軟體在一台實體機器上模擬出多台獨立的虛擬電腦，每台都以為自己獨佔硬體；Hypervisor 負責分配實體資源。'
+      },
+      {
+        kind: 'table',
+        headers: ['Virtual Machine', '內容'],
+        rows: [
+          ['優點', '隔離性高、資源彈性分配、一機可跑多種 OS、方便測試/開發/部署'],
+          ['缺點', '多一層虛擬化造成效能損耗、資源開銷大、實作較複雜'],
+          ['例子', 'VMware、VirtualBox、雲端虛擬主機']
+        ]
+      }
+    ]
+  }
+] as const;
+
+const processLessonSections = [
+  {
+    heading: 'Process 與記憶體組成',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'Process 是正在執行中的程式，是 OS 分配資源與排程的基本單位。它除了程式碼與資料，也會記錄 Program Counter 與暫存器內容。'
+      },
+      {
+        kind: 'table',
+        headers: ['部分', '裝什麼'],
+        rows: [
+          ['Text（程式碼段）', '程式的指令'],
+          ['Data（資料段）', '全域變數'],
+          ['Heap（堆積）', '執行時動態配置的記憶體，例如 malloc / new'],
+          ['Stack（堆疊）', '函式呼叫的區域變數、參數、返回位址']
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'Program vs Process',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'Program 程式', 'Process 行程'],
+        rows: [
+          ['狀態', '靜態，躺在硬碟的檔案', '動態，載入記憶體、執行中'],
+          ['主/被動', '被動 passive', '主動 active'],
+          ['有無資源/狀態', '沒有', '有自己的 PC、暫存器、記憶體、狀態']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '同一個 program 可以同時跑成多個 process，例如開兩個記事本就是兩個 process。'
+      }
+    ]
+  },
+  {
+    heading: 'Process State（狀態轉換）',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['狀態', '意思'],
+        rows: [
+          ['New 新建', 'process 剛被建立'],
+          ['Ready 就緒', '萬事俱備，只欠 CPU，在 ready queue 排隊'],
+          ['Running 執行', '正在 CPU 上跑'],
+          ['Waiting / Blocked 等待', '在等 I/O 或事件，暫時不能跑'],
+          ['Terminated 終止', '執行完畢']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          'New → Ready：被 OS 接納。',
+          'Ready → Running：被排程器選中 dispatch。',
+          'Running → Ready：時間片用完，或被更高優先權搶佔。',
+          'Running → Waiting：去等 I/O 或事件。',
+          'Waiting → Ready：I/O 完成、事件發生。',
+          'Running → Terminated：跑完。',
+          '常考陷阱：沒有 Waiting → Running 直接轉換，等待結束只能先回 Ready。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'PCB、排程器與 Context Switch',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'Process Control Block（PCB）是 OS 為每一個 process 維護的資料結構，記錄 PID、狀態、PC、暫存器、排程資訊、記憶體資訊、開啟檔案與已用 CPU 時間。'
+      },
+      {
+        kind: 'table',
+        headers: ['排程器', '做什麼', '控制的轉換', '執行頻率'],
+        rows: [
+          ['長程 Long-term', '決定哪些工作從硬碟載入記憶體成為 process', 'New → Ready', '最低'],
+          ['短程 Short-term', '決定 ready queue 裡哪個 process 上 CPU', 'Ready → Running', '最高'],
+          ['中程 Medium-term', '記憶體太擠時 swapping，把 process 換出/換回', '記憶體 ↔ 硬碟', '中間']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: 'Context Switch 是 CPU 從一個 process 換到另一個時，先把目前狀態存進 PCB，再載入下一個 process 的 PCB。它本身是純 overhead，切換越頻繁浪費越多。'
+      }
+    ]
+  },
+  {
+    heading: 'Preemptive、Starvation 與 Convoy Effect',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'Non-Preemptive 不可搶佔', 'Preemptive 可搶佔'],
+        rows: [
+          ['規則', '拿到 CPU 後，跑到自己主動放棄才換手', 'OS 可強制收回 CPU'],
+          ['優點', '簡單、context switch 少', '回應快、公平'],
+          ['缺點', '長工作會卡住後面所有人', 'context switch 多，要處理同步']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          'Starvation：某 process 一直輪不到 CPU 或資源，常見於優先權排程；解法是 Aging，等越久優先權越高。',
+          'Convoy Effect：FCFS 下長工作排前面，後面短工作全被卡住；可用 SJF 或 preemptive 改善。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const cpuSchedulingLessonSections = [
+  {
+    heading: '公式與演算法',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '週轉時間 TAT（Turnaround Time）＝ 完成時間 − 抵達時間。',
+          '等待時間 WT（Waiting Time）＝ TAT − 執行時間（Burst）。',
+          '平均 ＝ 全部加總 ÷ 行程數。',
+          '算題流程：照規則畫甘特圖 → 算每個行程完成時間 → 算 TAT、WT → 求平均等待與平均週轉。'
+        ]
+      },
+      {
+        kind: 'table',
+        headers: ['演算法', '搶佔?', '選誰上 CPU', '重點 / 問題'],
+        rows: [
+          ['FCFS', '否', '先到先做', '簡單；長工作卡住短工作，可能有 convoy effect'],
+          ['SJF', '否', 'Burst 最短', '非搶佔中平均等待最短；需預知 Burst、長工作可能 starvation'],
+          ['SRTF', '是', '剩餘時間最短', '整體平均等待最短；切換多、可能 starvation'],
+          ['Priority', '皆有', '優先權最高', '低優先權可能 starvation，可用 aging'],
+          ['RR', '是', '排隊輪流，每人一個 quantum', '公平、回應快；q 太小 overhead 大，q 太大退化成 FCFS']
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'FCFS / SJF / SRTF 共用題',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['行程', '抵達', 'Burst'],
+        rows: [
+          ['P1', '0', '7'],
+          ['P2', '2', '4'],
+          ['P3', '4', '1'],
+          ['P4', '5', '4']
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: 'FCFS',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: '甘特圖：P1(0-7) → P2(7-11) → P3(11-12) → P4(12-16)'
+          },
+          {
+            kind: 'table',
+            headers: ['行程', '完成', 'TAT', 'WT'],
+            rows: [
+              ['P1', '7', '7', '0'],
+              ['P2', '11', '9', '5'],
+              ['P3', '12', '8', '7'],
+              ['P4', '16', '11', '7']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '平均 WT = (0+5+7+7)/4 = 4.75；平均 TAT = (7+9+8+11)/4 = 8.75。'
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: 'SJF（非搶佔）',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: '甘特圖：P1(0-7) → P3(7-8) → P2(8-12) → P4(12-16)。t=7 時 P3 burst 最短；P2/P4 平手時取抵達早者。'
+          },
+          {
+            kind: 'table',
+            headers: ['行程', '完成', 'TAT', 'WT'],
+            rows: [
+              ['P1', '7', '7', '0'],
+              ['P3', '8', '4', '3'],
+              ['P2', '12', '10', '6'],
+              ['P4', '16', '11', '7']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '平均 WT = (0+3+6+7)/4 = 4.0；平均 TAT = (7+4+10+11)/4 = 8.0。'
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: 'SRTF（搶佔）',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: '甘特圖：P1(0-2) → P2(2-4) → P3(4-5) → P2(5-7) → P4(7-11) → P1(11-16)。每當有人抵達或做完，就重挑剩餘時間最短者。'
+          },
+          {
+            kind: 'table',
+            headers: ['行程', '完成', 'TAT', 'WT'],
+            rows: [
+              ['P1', '16', '16', '9'],
+              ['P2', '7', '5', '1'],
+              ['P3', '5', '1', '0'],
+              ['P4', '11', '6', '2']
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '平均 WT = (9+1+0+2)/4 = 3.0；平均 TAT = (16+5+1+6)/4 = 7.0。'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'Round Robin 範例',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '時間量子 q = 2，所有行程都在 t=0 抵達，排隊順序 P1 → P2 → P3。'
+      },
+      {
+        kind: 'table',
+        headers: ['行程', 'Burst'],
+        rows: [
+          ['P1', '5'],
+          ['P2', '3'],
+          ['P3', '1']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '甘特圖：P1(0-2) → P2(2-4) → P3(4-5) → P1(5-7) → P2(7-8) → P1(8-9)。'
+      },
+      {
+        kind: 'table',
+        headers: ['行程', '完成', 'TAT（抵達=0）', 'WT = TAT-Burst'],
+        rows: [
+          ['P1', '9', '9', '4'],
+          ['P2', '8', '8', '5'],
+          ['P3', '5', '5', '4']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '平均 WT = (4+5+4)/3 ≈ 4.33；平均 TAT = (9+8+5)/3 ≈ 7.33。'
+      }
+    ]
+  },
+  {
+    heading: '考前口訣',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'TAT = 完成 − 抵達；WT = TAT − Burst。',
+          '搶佔型：SRTF、RR；Priority 也可有搶佔版。',
+          '非搶佔：FCFS、SJF。',
+          'RR 的 q 太小切太兇，q 太大像 FCFS。',
+          'Priority 要先看題目定義，常見是數字小代表優先權高。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const deadlockLessonSections = [
+  {
+    heading: '死結與四個必要條件',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '死結（Deadlock）是一組 process 互相等待對方手上的資源，結果全部卡住，誰也動不了。四個必要條件必須同時成立才可能死結；打破任一個就不會死結。'
+      },
+      {
+        kind: 'table',
+        headers: ['條件', '意思'],
+        rows: [
+          ['互斥 Mutual Exclusion', '資源一次只能給一個 process 用，不能共享'],
+          ['持有並等待 Hold and Wait', '手上握著資源，同時又在等別的資源'],
+          ['不可搶奪 No Preemption', '資源不能被強搶，只能持有者自己放掉'],
+          ['循環等待 Circular Wait', '形成等待環：P1 等 P2，P2 等 P3，最後繞回 P1']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三種處理策略與安全狀態',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['策略', '時機', '做法', '代表 / 缺點'],
+        rows: [
+          ['預防 Prevention', '事前', '直接破壞四條件之一，讓死結不可能發生', '限制多、利用率低'],
+          ['避免 Avoidance', '事中', '每次配置前判斷配下去是否安全', '代表是銀行家演算法；需事先知道最大需求'],
+          ['偵測與復原 Detection & Recovery', '事後', '允許死結發生，定期找環，發現後再復原', '殺 process、搶資源、rollback']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          '破互斥：資源盡量設計成可共享。',
+          '破持有並等待：一次拿齊全部，或拿新資源前先放掉舊的。',
+          '破不可搶奪：拿不到就連手上的一起放掉。',
+          '破循環等待：資源編號，規定只能依遞增順序申請。',
+          '安全狀態：存在一個安全序列，能讓所有 process 依序拿到資源、跑完並釋放。安全一定不死結；不安全是可能死結。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: "銀行家演算法（Banker's Algorithm）",
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '銀行家演算法屬於避免策略。每次有人要資源，先檢查借出去後是否仍能讓所有人順利完成；能才配，確保系統停在安全狀態。'
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          'Allocation：目前已配給每個 process 的資源。',
+          'Max：每個 process 最多會用到的資源。',
+          'Need = Max − Allocation：還差多少才能完成。',
+          'Available：系統目前剩多少可配。',
+          '安全演算法：Work = Available；反覆找 Need ≤ Work 的 process，假設它跑完並釋放 Allocation；全部 Finish 就安全。'
+        ]
+      },
+      {
+        kind: 'table',
+        headers: ['行程', 'Allocation (A B C)', 'Max (A B C)', 'Need (A B C)'],
+        rows: [
+          ['P0', '0 1 0', '7 5 3', '7 4 3'],
+          ['P1', '2 0 0', '3 2 2', '1 2 2'],
+          ['P2', '3 0 2', '9 0 2', '6 0 0'],
+          ['P3', '2 1 1', '2 2 2', '0 1 1'],
+          ['P4', '0 0 2', '4 3 3', '4 3 1']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '總資源 A=10、B=5、C=7，已配出 (7,2,5)，所以 Available = (3,3,2)。'
+      },
+      {
+        kind: 'table',
+        headers: ['順序', '挑誰', 'Need ≤ Work?', '跑完後 Work = Work + Allocation'],
+        rows: [
+          ['1', 'P1', '(1,2,2) ≤ (3,3,2)', '(5,3,2)'],
+          ['2', 'P3', '(0,1,1) ≤ (5,3,2)', '(7,4,3)'],
+          ['3', 'P0', '(7,4,3) ≤ (7,4,3)', '(7,5,3)'],
+          ['4', 'P2', '(6,0,0) ≤ (7,5,3)', '(10,5,5)'],
+          ['5', 'P4', '(4,3,1) ≤ (10,5,5)', '(10,5,7)']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '結論：全部跑完，系統安全。安全序列 P1 → P3 → P0 → P2 → P4；安全序列可能不只一個，找到任一個合法序列即可。'
+      }
+    ]
+  },
+  {
+    heading: '請求資源判斷',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'Request ≤ Need[i]？否則是錯誤，因為要的比宣告最大需求還多。',
+          'Request ≤ Available？否則資源不夠，必須等待。',
+          '假裝配置：Available -= Request、Allocation[i] += Request、Need[i] -= Request。',
+          '重跑安全演算法；安全才真的配，不安全就撤銷並等待。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const processCommunicationLessonSections = [
+  {
+    heading: '跳過分析',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '來源筆記標註「這章我跳過」，原因是頻率低、難度高、CP 值偏低；經濟部資訊類 OS 的重點通常在排程、記憶體、虛擬記憶體、死結與磁碟。'
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          '頻率低：IPC/同步在經濟部出得比研究所少，不是穩定高頻。',
+          '難度高：號誌、臨界區、哲學家用餐等同步題需要較多思考。',
+          '部分重疊：死結、並行/平行等基礎已在其他章碰過。',
+          '時間取捨：時間有限時，先把高頻計算題練熟較划算。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '只抓概念層級',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['IPC 模型', '重點'],
+        rows: [
+          ['Shared Memory 共享記憶體', '開一塊共用記憶體互相讀寫，快，但要自己處理同步'],
+          ['Message Passing 訊息傳遞', '透過 OS 送收訊息，慢一點，但同步由 OS 代管、較安全']
+        ]
+      },
+      {
+        kind: 'table',
+        headers: ['名詞', '意思'],
+        rows: [
+          ['Race condition', '多個 process 同時動共享資料，結果取決於誰先誰後，可能出錯'],
+          ['Critical Section', '存取共享資料的那段程式碼，一次只能一個 process 進入'],
+          ['Semaphore', '一個整數加 wait/signal 操作，用來控制進臨界區；分 binary 與 counting'],
+          ['Mutex', '互斥鎖，近似 binary semaphore，把臨界區鎖起來']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '經典同步問題只要認得名字：Producer-Consumer、Readers-Writers、Dining Philosophers；除非考古題有出，再回來補解法。'
+      }
+    ]
+  }
+] as const;
+
+const memoryManagementLessonSections = [
+  {
+    heading: '四種配置法：First / Next / Best / Worst Fit',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['配置法', '挑哪個洞'],
+        rows: [
+          ['First Fit 最先適配', '從頭找，第一個夠大的洞'],
+          ['Next Fit 循環適配', '同 First，但從上次停的位置接著找'],
+          ['Best Fit 最佳適配', '夠大之中最小的洞，要找遍全部'],
+          ['Worst Fit 最差適配', '最大的洞，想讓剩下的洞還夠大可用']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '例：空洞依位址順序為 100K、500K、200K、300K、600K。需求 212K 時，夠大的是 500、300、600；First/Next 選 500K，Best 選 300K，Worst 選 600K。'
+      },
+      {
+        kind: 'paragraph',
+        text: '若需求改成 426K，夠大的洞是 500、600；First Fit 與 Best Fit 都選 500K，Worst Fit 選 600K。'
+      }
+    ]
+  },
+  {
+    heading: 'Fragmentation（碎裂）',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'External 外部碎裂', 'Internal 內部碎裂'],
+        rows: [
+          ['問題', '空洞總量夠但散落、不連續，湊不出一塊連續空間', '配給的空間比實際需要大，多出來用不到'],
+          ['發生在', '連續配置', '固定大小分配，例如分頁頁框'],
+          ['例子', '三個 100K 散洞，來一個 250K 連續需求就配不了', '頁 4KB，process 需 9KB，配 3 頁後浪費 3KB'],
+          ['解法', 'Compaction 合併空洞，或用 paging 免連續', '把頁/塊切小一點，但會增加管理成本']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '一句話分辨：External 是空間夠但散；Internal 是給太多、內部用不滿。Best Fit 容易留下超小碎洞，Worst Fit 剩的洞較大。'
+      }
+    ]
+  },
+  {
+    heading: 'Paging vs Segmentation',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'Paging 分頁', 'Segmentation 分段'],
+        rows: [
+          ['怎麼切', '固定大小的 page/frame', '大小不一，依程式邏輯切成 code、data、stack 等'],
+          ['對應表', 'Page Table（頁號 → 頁框號）', 'Segment Table（base + limit）'],
+          ['邏輯位址', '(頁號, 頁內偏移)', '(段號, 段內偏移)'],
+          ['碎裂', '無外部碎裂，但有內部碎裂', '有外部碎裂，但無內部碎裂'],
+          ['優點', '不需連續、好管理', '符合邏輯，方便以段為單位共享與保護']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '一句話分辨：Paging 固定大小、不管意義；Segmentation 大小不一、依邏輯切。'
+      }
+    ]
+  },
+  {
+    heading: 'TLB（Translation Lookaside Buffer）',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'TLB 是 Translation Lookaside Buffer（轉譯後備緩衝區），不是 Transaction。分頁下若每次都先查記憶體裡的 page table 再拿資料，等於兩次記憶體存取，會變慢。'
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          'TLB 是 CPU 內的超快小快取，存最近用過的「頁號 → 頁框號」。',
+          'TLB hit：直接拿到頁框號，省掉查記憶體 page table。',
+          'TLB miss：TLB 沒有，才去記憶體查 page table，並把對應放進 TLB。',
+          '作用：利用 locality，減少查表的記憶體存取，加速位址轉換。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const virtualMemoryLessonSections = [
+  {
+    heading: 'Virtual Memory / Demand Paging / Page Fault',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'Virtual Memory：讓 process 可以比實體記憶體還大；只把當下用到的部分放 RAM，其餘留在硬碟 swap。',
+          'Demand Paging：真正用到某一頁時才載入，靠 page table 的 valid/invalid bit 標示頁在不在記憶體。',
+          'Page Fault：要存取的頁不在記憶體時觸發；OS 從硬碟載入，必要時用 page replacement 換出一頁。',
+          '影響 page fault 率的因素：frame 數量、page replacement 演算法、程式 locality。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: 'EMAT（Effective Memory Access Time）',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '公式：EMAT = (1 − p) × ma + p × fault 時間。p 是 page fault 機率，ma 是記憶體存取時間。'
+      },
+      {
+        kind: 'paragraph',
+        text: '範例：ma = 200 ns，fault 時間 = 8 ms = 8,000,000 ns，p = 0.001。EMAT = 0.999×200 + 0.001×8,000,000 = 199.8 + 8,000 = 8,199.8 ns。'
+      },
+      {
+        kind: 'paragraph',
+        text: '反推題：若 EMAT ≤ 220 ns，則 220 ≥ 200 + 7,999,800p，所以 p ≤ 20 ÷ 7,999,800 ≈ 2.5×10^-6。page fault 很貴，低機率也會讓效能大幅下降。'
+      }
+    ]
+  },
+  {
+    heading: 'Page Replacement',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['演算法', '換出誰', '特點'],
+        rows: [
+          ['FIFO', '最早載入的頁', "簡單；會有 Belady's Anomaly"],
+          ['Optimal（OPT）', '未來最久才會用到的頁', 'fault 最少，但需預知未來，無法實作，只當標竿'],
+          ['LRU', '最久沒被用到的頁', '近似 Optimal、效果好；無 Belady 異常']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '例：參考字串 A B C A B D A B E，3 個 frame。FIFO = 7 次 fault；OPT = 5 次 fault；LRU = 5 次 fault。'
+      },
+      {
+        kind: 'paragraph',
+        text: "Belady's Anomaly：FIFO 可能 frame 變多但 fault 反而增加。經典字串 1 2 3 4 1 2 5 1 2 3 4 5，用 FIFO 時 3 個 frame 是 9 次 fault，4 個 frame 是 10 次 fault。"
+      }
+    ]
+  },
+  {
+    heading: 'Thrashing（輾轉現象）',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'Thrashing 是系統花在換頁 swap in/out 的時間比真正執行還多，CPU 一直處理 page fault，實際工作做很少，效能崩潰。'
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          '發生原因：multiprogramming 太高，每個 process 分到的 frame 太少，page fault 暴增。',
+          '惡性循環：CPU 利用率下降，OS 誤以為要再多塞 process，導致每人 frame 更少、fault 更多。',
+          'Working Set Model：追蹤每個 process 最近用到的頁集合，確保有足夠 frame。',
+          'Page Fault Frequency（PFF）：監控 fault 率，太高就多給 frame 或降低 multiprogramming，太低可收回 frame。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const diskManagementLessonSections = [
+  {
+    heading: '磁碟結構與存取時間',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '結構名詞：Track 是磁軌，Sector 是磁區，Cylinder 是同半徑磁軌集合，Head 是磁頭。'
+      },
+      {
+        kind: 'table',
+        headers: ['項目', '意思'],
+        rows: [
+          ['Seek Time 尋道時間', '磁頭移到目標磁軌的時間，通常最大、最關鍵'],
+          ['Rotational Latency 旋轉延遲', '碟片轉到目標磁區到磁頭下的時間'],
+          ['Transfer Time 傳輸時間', '實際讀寫資料的時間']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '存取時間 = Seek Time + Rotational Latency + Transfer Time。平均旋轉延遲 = 1/2 × (60 ÷ RPM)。例如 7200 RPM：一圈 60/7200 = 8.33 ms，平均半圈約 4.17 ms。'
+      }
+    ]
+  },
+  {
+    heading: 'Disk Scheduling',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '目標是減少磁頭移動總距離（seek time）。共用設定：磁碟 0-199；請求佇列 98, 183, 37, 122, 14, 124, 65, 67；磁頭從 53 出發；方向往大的朝 199。'
+      },
+      {
+        kind: 'table',
+        headers: ['演算法', '服務路徑', '總移動距離'],
+        rows: [
+          ['FCFS', '53→98→183→37→122→14→124→65→67', '640'],
+          ['SSTF', '53→65→67→37→14→98→122→124→183', '236'],
+          ['SCAN', '53→199→14', '331'],
+          ['C-SCAN', '53→199→0→37', '382'],
+          ['LOOK', '53→183→14', '299'],
+          ['C-LOOK', '53→183→14→37', '322']
+        ]
+      },
+      {
+        kind: 'table',
+        headers: ['演算法', '規則', '問題'],
+        rows: [
+          ['FCFS', '照順序', '移動通常最多'],
+          ['SSTF', '最近的先', '遠的可能 starvation'],
+          ['SCAN', '走到底再回頭，像電梯', '答案看起始方向'],
+          ['C-SCAN', '走到底跳回起點，單向服務', '等待時間更均勻'],
+          ['LOOK / C-LOOK', '同 SCAN/C-SCAN，但只走到最後一個請求，不到底', '比 SCAN 家族更省移動']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '檔案配置法',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['配置法', '怎麼存', '隨機存取', '外部碎裂', '易成長?', '備註'],
+        rows: [
+          ['Continuous', '佔用連續區塊', '快', '有', '難', '存取快、簡單'],
+          ['Linked', '每塊用指標指向下一塊', '慢', '無', '易', '指標佔空間；一塊壞後面可能失聯'],
+          ['Indexed', '每檔一個索引區塊記所有區塊位址', '快', '無', '易', '索引區塊佔空間，小檔可能浪費'],
+          ['FAT', '把指標集中到一張表', '改善', '無', '易', 'linked 的改良，FAT16/32 基礎']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '一句話：連續快但難成長且有外部碎裂；鏈結易成長但隨機存取慢；索引與 FAT 較能兼顧隨機存取又無外部碎裂。'
+      }
+    ]
+  },
+  {
+    heading: 'RAID 比較',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'RAID（容錯式磁碟陣列）把多顆硬碟組成陣列，提升效能（平行）和/或可靠性（冗餘）。'
+      },
+      {
+        kind: 'table',
+        headers: ['RAID', '技術', '容錯', '容量利用', '特點'],
+        rows: [
+          ['0', 'Striping 分條', '無，一顆壞全毀', '100%', '最快、最不安全'],
+          ['1', 'Mirroring 鏡像', '可靠，有完整複本', '50%', '可靠但成本高'],
+          ['5', '分條 + 分散式 parity', '容忍 1 顆壞', '(n-1)/n', '效能、容量、可靠平衡；至少 3 顆'],
+          ['6', '分條 + 雙 parity', '容忍 2 顆壞', '(n-2)/n', '更可靠；至少 4 顆'],
+          ['10（1+0）', '鏡像 + 分條', '可靠', '50%', '又快又可靠、最貴']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '最常考 0/1/5：RAID 0 拚速度沒保護，RAID 1 鏡像最可靠，RAID 5 是分散 parity、容忍一顆壞的平衡方案。'
+      }
+    ]
+  }
+] as const;
+
 const markdownBackedComputerPrinciplesContentById = {
   'cp-performance-formulas': {
     summary: '整理 CPU Time、Clock Rate、CPI、MIPS、Execution Time、ISA 與內頻外頻倍頻等效能名詞與常見公式。',
@@ -4937,6 +6024,76 @@ const markdownBackedComputerPrinciplesContentById = {
     terms: combinationalSequentialCircuitsTerms,
     lead: [],
     sections: combinationalSequentialCircuitsLessonSections
+  },
+  'cp-os-basics': {
+    summary: '整理 OS 分類、Concurrency vs Parallelism，以及 Offline、Spooling、Buffering、Cache 的差異。',
+    sourceFiles: operatingSystemBasicsSourceFiles,
+    terms: operatingSystemBasicsTerms,
+    lead: [],
+    sections: operatingSystemBasicsLessonSections
+  },
+  'cp-io-and-interrupts': {
+    summary: '整理 Polling、Interrupt、DMA 的 I/O 處理差異，中斷類型，以及 I/O、Memory、CPU 三種硬體保護。',
+    sourceFiles: ioAndInterruptsSourceFiles,
+    terms: ioAndInterruptsTerms,
+    lead: [],
+    sections: ioAndInterruptsLessonSections
+  },
+  'cp-os-structure': {
+    summary: '整理 Command 與 System Call、Monolithic Kernel 與 Microkernel，以及 Virtual Machine 與 Hypervisor 的核心差異。',
+    sourceFiles: operatingSystemStructureSourceFiles,
+    terms: operatingSystemStructureTerms,
+    lead: [],
+    sections: operatingSystemStructureLessonSections
+  },
+  'cp-process': {
+    summary: '整理 Process 與 Program、Process State、PCB、三種排程器、Context Switch、搶佔與飢餓/護航效應。',
+    sourceFiles: processSourceFiles,
+    terms: processTerms,
+    lead: [],
+    sections: processLessonSections
+  },
+  'cp-cpu-scheduling': {
+    summary: '整理 CPU 排程公式、FCFS/SJF/SRTF/Priority/RR 規則，以及甘特圖、平均等待與平均週轉時間計算。',
+    sourceFiles: cpuSchedulingSourceFiles,
+    terms: cpuSchedulingTerms,
+    lead: [],
+    sections: cpuSchedulingLessonSections
+  },
+  'cp-deadlock': {
+    summary: '整理 Deadlock 四個必要條件、預防/避免/偵測復原三策略、安全狀態與銀行家演算法流程。',
+    sourceFiles: deadlockSourceFiles,
+    terms: deadlockTerms,
+    lead: [],
+    sections: deadlockLessonSections
+  },
+  'cp-process-communication': {
+    summary: '保留來源的 Process Communication 跳過分析，並整理 IPC 概念層級可撿分的 Shared Memory、Message Passing、Race Condition、Semaphore 等名詞。',
+    sourceFiles: processCommunicationSourceFiles,
+    terms: processCommunicationTerms,
+    lead: [],
+    sections: processCommunicationLessonSections
+  },
+  'cp-memory-management': {
+    summary: '整理 First/Next/Best/Worst Fit、Fragmentation、Paging vs Segmentation，以及 TLB 的位址轉換用途。',
+    sourceFiles: memoryManagementSourceFiles,
+    terms: memoryManagementTerms,
+    lead: [],
+    sections: memoryManagementLessonSections
+  },
+  'cp-virtual-memory': {
+    summary: '整理 Virtual Memory、Demand Paging、Page Fault、EMAT、Page Replacement、Belady 異常與 Thrashing。',
+    sourceFiles: virtualMemorySourceFiles,
+    terms: virtualMemoryTerms,
+    lead: [],
+    sections: virtualMemoryLessonSections
+  },
+  'cp-disk-management': {
+    summary: '整理磁碟結構與存取時間、Disk Scheduling 移動距離、檔案配置法，以及 RAID 0/1/5/6/10 比較。',
+    sourceFiles: diskManagementSourceFiles,
+    terms: diskManagementTerms,
+    lead: [],
+    sections: diskManagementLessonSections
   }
 } as const;
 

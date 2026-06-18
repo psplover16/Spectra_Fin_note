@@ -15,7 +15,7 @@ const professionalSubjectKeys = [
 ] as const;
 
 const expectedCounts = {
-  computerPrinciples: 33,
+  computerPrinciples: 34,
   networking: 11,
   database: 11,
   informationManagement: 7,
@@ -103,6 +103,57 @@ const digitalLogicExpectedTitlesByTopicId = {
   'cp-universal-gates': '萬用閘(Universal Gates)',
   'cp-combinational-sequential-circuits': '組合與循序電路(Combinational and Sequential Circuits)'
 } as const satisfies Record<(typeof digitalLogicTopicIds)[number], string>;
+const operatingSystemTopicIds = [
+  'cp-os-basics',
+  'cp-io-and-interrupts',
+  'cp-os-structure',
+  'cp-process',
+  'cp-cpu-scheduling',
+  'cp-deadlock',
+  'cp-process-communication',
+  'cp-memory-management',
+  'cp-virtual-memory',
+  'cp-disk-management'
+] as const;
+const operatingSystemSourcesByTopicId = {
+  'cp-os-basics': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/3-1. OS 基礎概念.md'],
+  'cp-io-and-interrupts': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/3-2. IO 中斷方式 與 硬體保護.md'],
+  'cp-os-structure': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/3-4_OS結構.md'],
+  'cp-process': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-5上_Process基礎.md'],
+  'cp-cpu-scheduling': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-5下_CPU排程演算法.md'],
+  'cp-deadlock': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-6_Deadlock.md'],
+  'cp-process-communication': [
+    '_private/計算機概論.txt',
+    '_private/MD/計概/3c作業系統/作業系統_3-7_ProcessCommunication_跳過分析.md'
+  ],
+  'cp-memory-management': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-8_記憶體管理.md'],
+  'cp-virtual-memory': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-9_虛擬記憶體.md'],
+  'cp-disk-management': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-10_磁碟管理.md']
+} as const satisfies Record<(typeof operatingSystemTopicIds)[number], readonly string[]>;
+const operatingSystemExpectedTitlesByTopicId = {
+  'cp-os-basics': '作業系統 1：OS 基礎概念(Operating System Basics)',
+  'cp-io-and-interrupts': '作業系統 2：I/O 中斷方式 與 硬體保護(I/O and Interrupts)',
+  'cp-os-structure': '作業系統 3-4：OS 的結構(Operating System Structure)',
+  'cp-process': '作業系統 3-5（上）：Process 基礎(Process)',
+  'cp-cpu-scheduling': '作業系統 3-5（下）：CPU 排程演算法(CPU Scheduling)',
+  'cp-deadlock': '作業系統 3-6：Deadlock（死結）(Deadlock)',
+  'cp-process-communication': '作業系統 3-7：Process Communication(Process Communication)',
+  'cp-memory-management': '作業系統 3-8：Memory Management（記憶體管理）(Memory Management)',
+  'cp-virtual-memory': '作業系統 3-9：Virtual Memory（虛擬記憶體）(Virtual Memory)',
+  'cp-disk-management': '作業系統 3-10：Disk Management（磁碟管理）(Disk Management)'
+} as const satisfies Record<(typeof operatingSystemTopicIds)[number], string>;
+const operatingSystemRepresentativeKeywordsByTopicId = {
+  'cp-os-basics': ['OS 分類比較表'],
+  'cp-io-and-interrupts': ['Polling', 'DMA'],
+  'cp-os-structure': ['Command', 'System Call'],
+  'cp-process': ['Process State'],
+  'cp-cpu-scheduling': ['甘特圖', '平均等待'],
+  'cp-deadlock': ['銀行家演算法'],
+  'cp-process-communication': ['這章我跳過'],
+  'cp-memory-management': ['TLB', 'Fragmentation'],
+  'cp-virtual-memory': ['EMAT', 'Page Replacement'],
+  'cp-disk-management': ['Disk Scheduling', 'RAID']
+} as const satisfies Record<(typeof operatingSystemTopicIds)[number], readonly string[]>;
 const markdownBackedComputerPrinciplesTopicCases = [
   {
     id: 'cp-performance-formulas',
@@ -195,6 +246,7 @@ const filledTopicIds = new Set([
   floatingPointConversionTopicId,
   codesAndCheckCodesTopicId,
   ...digitalLogicTopicIds,
+  ...operatingSystemTopicIds,
   ...markdownBackedComputerPrinciplesTopicIds,
   ...firstBatchAlgorithmTopicIds
 ]);
@@ -1367,6 +1419,61 @@ describe('professional topic skeleton data', () => {
     ]);
   });
 
+  it('fills 3c operating-system topics with source traceability and source-preserving lesson articles', () => {
+    const operatingSystemTopics = operatingSystemTopicIds.map((topicId) =>
+      professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId)
+    );
+
+    for (const topic of operatingSystemTopics) {
+      if (!topic) {
+        throw new Error('3c operating-system topic should exist');
+      }
+
+      const topicId = topic.id as (typeof operatingSystemTopicIds)[number];
+
+      expect(topic.title).toBe(operatingSystemExpectedTitlesByTopicId[topicId]);
+      expect(topic.sourceFiles).toEqual(expect.arrayContaining([...operatingSystemSourcesByTopicId[topicId]]));
+      expect(topic.summary, `${topic.id} should have a summary`).not.toBe('');
+      expect(topic.terms.length, `${topic.id} should have terms`).toBeGreaterThan(0);
+      expect(topic.blocks).toHaveLength(1);
+
+      const lessonArticle = topic.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topic.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining([...operatingSystemSourcesByTopicId[topicId]]));
+      expect(lessonArticle.lead).toEqual([]);
+      expect(lessonArticle.sections.length, `${topic.id} should have lesson sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topic.id} should not have empty sections`).toBe(
+        true
+      );
+      expect(lessonArticle.sections.every((section) => section.sourceLabel === undefined), `${topic.id} should omit sourceLabel`).toBe(
+        true
+      );
+
+      const serializedTopic = JSON.stringify(topic);
+
+      for (const keyword of operatingSystemRepresentativeKeywordsByTopicId[topicId]) {
+        expect(serializedTopic, `${topic.id} should contain ${keyword}`).toContain(keyword);
+      }
+    }
+
+    const hardwareProtectionTopic = professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === 'cp-hardware-protection');
+    const hardwareProtectionLessonArticle = hardwareProtectionTopic?.blocks[0];
+
+    expect(hardwareProtectionTopic?.summary).toBe('');
+    expect(hardwareProtectionTopic?.terms).toEqual([]);
+    expect(hardwareProtectionLessonArticle?.kind).toBe('lessonArticle');
+    if (hardwareProtectionLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cp-hardware-protection should stay as an empty lessonArticle skeleton');
+    }
+    expect(hardwareProtectionLessonArticle.lead).toEqual([]);
+    expect(hardwareProtectionLessonArticle.sections).toEqual([]);
+  });
+
   it('normalizes imported Computer Principles Markdown instructions and obvious input errors', () => {
     const importedTopics = [
       hazardTopicId,
@@ -1375,7 +1482,8 @@ describe('professional topic skeleton data', () => {
       complementConversionTopicId,
       floatingPointConversionTopicId,
       codesAndCheckCodesTopicId,
-      ...digitalLogicTopicIds
+      ...digitalLogicTopicIds,
+      ...operatingSystemTopicIds
     ].map((topicId) => professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId));
     const serializedTopics = JSON.stringify(importedTopics);
 

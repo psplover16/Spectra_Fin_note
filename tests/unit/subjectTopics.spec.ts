@@ -52,7 +52,17 @@ describe('subject topic route data helpers', () => {
       'SOP 與 POS(SOP and POS)',
       '卡諾圖化簡(Karnaugh Map Simplification)',
       '萬用閘(Universal Gates)',
-      '組合與循序電路(Combinational and Sequential Circuits)'
+      '組合與循序電路(Combinational and Sequential Circuits)',
+      '作業系統 1：OS 基礎概念(Operating System Basics)',
+      '作業系統 2：I/O 中斷方式 與 硬體保護(I/O and Interrupts)',
+      '作業系統 3-4：OS 的結構(Operating System Structure)',
+      '作業系統 3-5（上）：Process 基礎(Process)',
+      '作業系統 3-5（下）：CPU 排程演算法(CPU Scheduling)',
+      '作業系統 3-6：Deadlock（死結）(Deadlock)',
+      '作業系統 3-7：Process Communication(Process Communication)',
+      '作業系統 3-8：Memory Management（記憶體管理）(Memory Management)',
+      '作業系統 3-9：Virtual Memory（虛擬記憶體）(Virtual Memory)',
+      '作業系統 3-10：Disk Management（磁碟管理）(Disk Management)'
     ]);
     expect(computerPrinciplesIds.slice(computerPrinciplesIds.indexOf('cp-pipeline'), computerPrinciplesIds.indexOf('cp-bus') + 1)).toEqual([
       'cp-pipeline',
@@ -80,6 +90,21 @@ describe('subject topic route data helpers', () => {
       'cp-universal-gates',
       'cp-combinational-sequential-circuits'
     ]);
+    const operatingSystemStartIndex = digitalLogicStartIndex + 5;
+
+    expect(computerPrinciplesIds.slice(operatingSystemStartIndex, operatingSystemStartIndex + 10)).toEqual([
+      'cp-os-basics',
+      'cp-io-and-interrupts',
+      'cp-os-structure',
+      'cp-process',
+      'cp-cpu-scheduling',
+      'cp-deadlock',
+      'cp-process-communication',
+      'cp-memory-management',
+      'cp-virtual-memory',
+      'cp-disk-management'
+    ]);
+    expect(computerPrinciplesIds).not.toContain('cp-hardware-protection');
 
     expect(algorithmTitles).toEqual([
       '氣泡排序法(Bubble Sort)',
