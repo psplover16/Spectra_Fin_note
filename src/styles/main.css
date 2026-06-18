@@ -259,6 +259,11 @@
     @apply bg-sand/60 font-semibold text-ink;
   }
 
+  .subject-topic-table-column-toggle {
+    @apply block w-full rounded bg-transparent px-1 py-0.5 text-left font-semibold text-ink underline decoration-clay/40 underline-offset-2 transition-colors hover:bg-white/70 focus:bg-white/70;
+    border: 0;
+  }
+
   .subject-topic-table-cell-default-text {
     @apply text-ink;
   }

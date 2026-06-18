@@ -79,6 +79,30 @@ const baseConversionSources = ['_private/計算機概論.txt', '_private/MD/計�
 const complementConversionSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十五、補數轉換_新手國考教材.md'];
 const floatingPointConversionSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十六、浮點數轉換_新手國考教材.md'];
 const codesAndCheckCodesSources = ['_private/計算機概論.txt', '_private/MD/計概/3a基本計概/十七、數碼、文字碼與檢查碼_新手國考教材.md'];
+const digitalLogicTopicIds = [
+  'cp-digital-logic-basics',
+  'cp-sop-pos',
+  'cp-karnaugh-map',
+  'cp-universal-gates',
+  'cp-combinational-sequential-circuits'
+] as const;
+const digitalLogicSourcesByTopicId = {
+  'cp-digital-logic-basics': ['_private/計算機概論.txt', '_private/MD/計概/3b數位邏輯/一、基本邏輯_新手國考教材.md'],
+  'cp-sop-pos': ['_private/計算機概論.txt', '_private/MD/計概/3b數位邏輯/二、SOP 與 POS_新手國考教材.md'],
+  'cp-karnaugh-map': ['_private/計算機概論.txt', '_private/MD/計概/3b數位邏輯/三、卡諾圖化簡_新手國考教材.md'],
+  'cp-universal-gates': ['_private/計算機概論.txt', '_private/MD/計概/3b數位邏輯/四、萬用閘_新手國考教材.md'],
+  'cp-combinational-sequential-circuits': [
+    '_private/計算機概論.txt',
+    '_private/MD/計概/3b數位邏輯/五、組合與循序電路_新手國考教材.md'
+  ]
+} as const satisfies Record<(typeof digitalLogicTopicIds)[number], readonly string[]>;
+const digitalLogicExpectedTitlesByTopicId = {
+  'cp-digital-logic-basics': '基本邏輯(Digital Logic Basics)',
+  'cp-sop-pos': 'SOP 與 POS(SOP and POS)',
+  'cp-karnaugh-map': '卡諾圖化簡(Karnaugh Map Simplification)',
+  'cp-universal-gates': '萬用閘(Universal Gates)',
+  'cp-combinational-sequential-circuits': '組合與循序電路(Combinational and Sequential Circuits)'
+} as const satisfies Record<(typeof digitalLogicTopicIds)[number], string>;
 const markdownBackedComputerPrinciplesTopicCases = [
   {
     id: 'cp-performance-formulas',
@@ -170,6 +194,7 @@ const filledTopicIds = new Set([
   complementConversionTopicId,
   floatingPointConversionTopicId,
   codesAndCheckCodesTopicId,
+  ...digitalLogicTopicIds,
   ...markdownBackedComputerPrinciplesTopicIds,
   ...firstBatchAlgorithmTopicIds
 ]);
@@ -1258,6 +1283,90 @@ describe('professional topic skeleton data', () => {
     expect(JSON.stringify(hammingBlocks)).toContain('轉成十進位，就是錯誤位置');
   });
 
+  it('fills 3b digital logic topics with source traceability, confirmed corrections, and reveal metadata', () => {
+    const digitalLogicTopics = digitalLogicTopicIds.map((topicId) =>
+      professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId)
+    );
+    const rawInstructionPhrases = ['用table做', '內部值都是空的', '點選標題，才會讓值跑出來'];
+
+    for (const topic of digitalLogicTopics) {
+      if (!topic) {
+        throw new Error('3b digital logic topic should exist');
+      }
+
+      const topicId = topic.id as (typeof digitalLogicTopicIds)[number];
+
+      expect(topic.title).toBe(digitalLogicExpectedTitlesByTopicId[topicId]);
+      expect(topic.sourceFiles).toEqual(expect.arrayContaining([...digitalLogicSourcesByTopicId[topicId]]));
+      expect(topic.summary, `${topic.id} should have a summary`).not.toBe('');
+      expect(topic.terms.length, `${topic.id} should have terms`).toBeGreaterThan(0);
+      expect(topic.blocks).toHaveLength(1);
+
+      const lessonArticle = topic.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topic.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining([...digitalLogicSourcesByTopicId[topicId]]));
+      expect(lessonArticle.lead).toEqual([]);
+      expect(lessonArticle.sections.length, `${topic.id} should have lesson sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topic.id} should not have empty sections`).toBe(
+        true
+      );
+      expect(lessonArticle.sections.every((section) => section.sourceLabel === undefined), `${topic.id} should omit sourceLabel`).toBe(
+        true
+      );
+    }
+
+    const serializedDigitalLogicTopics = JSON.stringify(digitalLogicTopics);
+
+    for (const rawInstructionPhrase of rawInstructionPhrases) {
+      expect(serializedDigitalLogicTopics).not.toContain(rawInstructionPhrase);
+    }
+    expect(serializedDigitalLogicTopics).toContain("B'");
+    expect(serializedDigitalLogicTopics).toContain('德摩根定律');
+    expect(JSON.stringify(digitalLogicTopics[1])).toContain('標準 SOP');
+    expect(JSON.stringify(digitalLogicTopics[1])).toContain('標準 POS');
+    expect(JSON.stringify(digitalLogicTopics[2])).toContain('欄');
+    expect(JSON.stringify(digitalLogicTopics[3])).toContain('5 個 NOR');
+
+    const circuitsTopicText = JSON.stringify(digitalLogicTopics[4]);
+
+    expect(circuitsTopicText).toContain('組合電路');
+    expect(circuitsTopicText).toContain('循序電路');
+    expect(circuitsTopicText).not.toContain('Sum = A XOR B');
+    expect(circuitsTopicText).not.toContain('Cout =');
+    expect(circuitsTopicText).not.toContain('Y0 =');
+    expect(circuitsTopicText).not.toContain('D0 =');
+    expect(circuitsTopicText).not.toContain('S1 S0');
+
+    const basicsLessonArticle = digitalLogicTopics[0]?.blocks[0];
+
+    expect(basicsLessonArticle?.kind).toBe('lessonArticle');
+    if (basicsLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cp-digital-logic-basics should render as lessonArticle');
+    }
+
+    const truthTableBlock = basicsLessonArticle.sections
+      .find((section) => section.heading === '兩輸入真值表(Two-Input Truth Table)')
+      ?.blocks.find((block) => block.kind === 'table');
+
+    expect(truthTableBlock).toMatchObject({
+      kind: 'table',
+      headers: ['A', 'B', 'AND', 'OR', 'NAND', 'NOR', 'XOR', 'XNOR']
+    });
+    expect((truthTableBlock as { revealableColumnIndexes?: readonly number[] } | undefined)?.revealableColumnIndexes).toEqual([
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]);
+  });
+
   it('normalizes imported Computer Principles Markdown instructions and obvious input errors', () => {
     const importedTopics = [
       hazardTopicId,
@@ -1265,12 +1374,15 @@ describe('professional topic skeleton data', () => {
       baseConversionTopicId,
       complementConversionTopicId,
       floatingPointConversionTopicId,
-      codesAndCheckCodesTopicId
+      codesAndCheckCodesTopicId,
+      ...digitalLogicTopicIds
     ].map((topicId) => professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId));
     const serializedTopics = JSON.stringify(importedTopics);
 
     expect(serializedTopics).not.toContain('用table');
     expect(serializedTopics).not.toContain('用table做');
+    expect(serializedTopics).not.toContain('內部值都是空的');
+    expect(serializedTopics).not.toContain('點選標題，才會讓值跑出來');
     expect(serializedTopics).not.toContain('ul/li做');
     expect(serializedTopics).not.toContain('用UL/LI表示');
     expect(serializedTopics).not.toContain('此處用 UL/LI表示');

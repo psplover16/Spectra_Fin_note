@@ -47,7 +47,12 @@ describe('subject topic route data helpers', () => {
       '進制轉換(Base Conversion)',
       '補數轉換(Complement Representation)',
       '浮點數轉換(Floating-Point Conversion)',
-      '數碼、文字碼與檢查碼(Codes and Check Codes)'
+      '數碼、文字碼與檢查碼(Codes and Check Codes)',
+      '基本邏輯(Digital Logic Basics)',
+      'SOP 與 POS(SOP and POS)',
+      '卡諾圖化簡(Karnaugh Map Simplification)',
+      '萬用閘(Universal Gates)',
+      '組合與循序電路(Combinational and Sequential Circuits)'
     ]);
     expect(computerPrinciplesIds.slice(computerPrinciplesIds.indexOf('cp-pipeline'), computerPrinciplesIds.indexOf('cp-bus') + 1)).toEqual([
       'cp-pipeline',
@@ -66,6 +71,15 @@ describe('subject topic route data helpers', () => {
         computerPrinciplesIds.indexOf('cp-codes-and-check-codes') + 1
       )
     ).toEqual(['cp-complement-conversion', 'cp-floating-point-conversion', 'cp-codes-and-check-codes']);
+    const digitalLogicStartIndex = computerPrinciplesIds.indexOf('cp-codes-and-check-codes') + 1;
+
+    expect(computerPrinciplesIds.slice(digitalLogicStartIndex, digitalLogicStartIndex + 5)).toEqual([
+      'cp-digital-logic-basics',
+      'cp-sop-pos',
+      'cp-karnaugh-map',
+      'cp-universal-gates',
+      'cp-combinational-sequential-circuits'
+    ]);
 
     expect(algorithmTitles).toEqual([
       '氣泡排序法(Bubble Sort)',

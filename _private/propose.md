@@ -1,36 +1,36 @@
-# Computer Principles 十六/十七章內容匯入討論稿
+# Computer Principles 3b 數位邏輯內容匯入討論稿
 
 ## 來源
 
 - 討論輸入：`_private/discuss.txt`
-- 內容來源：
-  - `_private/MD/計概/3a基本計概/十六、浮點數轉換_新手國考教材.md`
-  - `_private/MD/計概/3a基本計概/十七、數碼、文字碼與檢查碼_新手國考教材.md`
+- 內容來源資料夾：`_private/MD/計概/3b數位邏輯/`
 - 目標 route：`/computer-principles`
+- 目前讀到的 Markdown 檔：
+
+| Markdown | 建議 topic id | 建議 route/topic 標題 |
+| --- | --- | --- |
+| `一、基本邏輯_新手國考教材.md` | `cp-digital-logic-basics` | `基本邏輯(Digital Logic Basics)` |
+| `二、SOP 與 POS_新手國考教材.md` | `cp-sop-pos` | `SOP 與 POS(SOP and POS)` |
+| `三、卡諾圖化簡_新手國考教材.md` | `cp-karnaugh-map` | `卡諾圖化簡(Karnaugh Map Simplification)` |
+| `四、萬用閘_新手國考教材.md` | `cp-universal-gates` | `萬用閘(Universal Gates)` |
+| `五、組合與循序電路_新手國考教材.md` | `cp-combinational-sequential-circuits` | `組合與循序電路(Combinational and Sequential Circuits)` |
 
 ## 目標理解
 
 目前理解是：
 
 ```text
-本次不是再整理 Markdown 原檔。
-本次要把十六章與十七章的既有教材內容，整理進本專案的 /computer-principles route。
+本次不是重新改寫 Markdown 原檔。
+本次要把 3b 數位邏輯資料夾內的 Markdown 內容，引入 /computer-principles route。
 ```
 
-對應 topic：
-
-| Markdown | 對應 topic id | 建議 route 標題 |
-| --- | --- | --- |
-| 十六、浮點數轉換 | `cp-floating-point-conversion` | `浮點數轉換(Floating-Point Conversion)` |
-| 十七、數碼、文字碼與檢查碼 | `cp-codes-and-check-codes` | `數碼、文字碼與檢查碼(Codes and Check Codes)` |
-
-「不改變現有資料」先解讀為：
+「別隨意新增、刪除、修改資料」先解讀為：
 
 ```text
-不主動改寫教材核心觀念。
-可以把 Markdown 裡的編排指示轉成 app 支援的 lessonArticle block。
-可以清掉不應顯示給學習者的指令文字，例如「用table」。
-發現明顯錯誤或可能誤導新手的地方，先列在本檔，等你確認後再進入 propose/apply。
+1. 不改原始 Markdown 檔。
+2. 匯入 app 時盡量照 Markdown 原本編排轉成 lessonArticle blocks。
+3. Markdown 內的「用table做」「點選標題才顯示」等文字視為製作指令，不直接顯示給學習者。
+4. 發現明顯錯字、術語不一致、可能造成選擇題誤判的地方，先列在本檔，等你確認後再進入 propose/apply。
 ```
 
 ## 討論模式
@@ -41,325 +41,342 @@
 
 相關檔案：
 
-- `src/modules/subjectTopics/data/professionalTopics.ts`
-- `src/modules/subjectTopics/data/subjectTopics.ts`
-- `src/modules/subjectTopics/types/subjectTopic.ts`
-- `src/modules/subjectTopics/components/SubjectTopicPage.vue`
-- `tests/unit/professionalTopics.spec.ts`
-- `tests/unit/subjectTopics.spec.ts`
+| 檔案 | 觀察 |
+| --- | --- |
+| `src/modules/subjectTopics/data/professionalTopics.ts` | 已有 3b 五個 skeleton topic，但目前沒有填 lesson sections。 |
+| `src/modules/subjectTopics/data/subjectTopics.ts` | 空 `lessonArticle.sections` 會被視為沒有 route-visible content。 |
+| `src/modules/subjectTopics/types/subjectTopic.ts` | `LessonArticleSection` 已支援 `collapsible` 與 `defaultExpanded`。 |
+| `src/modules/subjectTopics/components/SubjectTopicPage.vue` | 已支援 lesson section 收闔；table 目前支援樣式 metadata，但未看到「點選表頭揭露欄位值」能力。 |
+| `src/modules/computerPrinciples/views/ComputerPrinciplesView.vue` | `/computer-principles` 直接使用 `getSubjectTopics('computerPrinciples')`。 |
 
-這次主要是靜態教材內容匯入，不需要新增 IPC、storage、新 route 或新的資料轉接層。現有 `lessonArticle` 已支援 paragraph、orderedList、table 與表格樣式 metadata。
-
-但 Q6 已新增一個小型 UI 需求：十七章的 `考前總複習` 要能在 topic 內部預設關閉，點選後展開。現有 app 只有整張 topic card 可以收闔，沒有單一 lesson section 的收闔能力，因此正式 change 需要新增 section-level collapsible metadata 與 renderer 支援。
+介面深度檢查：目前先跳過。這次不需要新增 IPC、storage、新 route 或新模組；若最後確認要做「真值表點選欄位才顯示答案」，那會是既有 `lessonArticle table` 的 UI 行為擴充，不是新的跨層架構。
 
 ## My assumptions
 
-### 1. 兩個 topic 都填入既有 skeleton
+### 1. 五份 Markdown 對應五個既有 skeleton topic
 
-**Approach**：在 `professionalTopics.ts` 補上 `cp-floating-point-conversion` 與 `cp-codes-and-check-codes` 的 sourceFiles、terms、lesson sections，讓既有 skeleton 變成 route 可見內容。
-
-**Evidence**：
-
-- `professionalTopics.ts` 已有 `cp-floating-point-conversion` 與 `cp-codes-and-check-codes` skeleton。
-- `subjectTopics.ts` 的 `getSubjectTopics()` 會過濾空 lessonArticle；補 sections 後才會出現在 `/computer-principles`。
-
-**If wrong**：若你其實想新增不同 topic id，既有 skeleton 會繼續是空內容，route 與測試都要重新定義。
-
-### 2. 優先使用既有 block，但新增 section-level 收闔
-
-**Approach**：內容本身仍使用 `paragraph`、`orderedList`、`table` 呈現。多步驟內容用 orderedList；單一說明用 paragraph；矩陣、欄位、比較、公式表用 table。若要滿足 Q6，則在 `LessonArticleSection` 層級新增可選 metadata，例如 `collapsible` 與 `defaultExpanded`，讓 `考前總複習` 預設關閉、點選後展開。
+**Approach**：沿用現有 `cp-digital-logic-basics`、`cp-sop-pos`、`cp-karnaugh-map`、`cp-universal-gates`、`cp-combinational-sequential-circuits`，在 `professionalTopics.ts` 補上 sourceFiles、terms、summary、lessonArticle sections。
 
 **Evidence**：
 
-- `SubjectTopicPage.vue` 已渲染 lessonArticle 的 paragraph、orderedList、table。
-- 先前 `cp-base-conversion`、`cp-complement-conversion` 已採用同樣方式放長講義內容。
+- `professionalTopics.ts` 已有上述五個 topic skeleton。
+- `subjectTopics.ts` 會過濾空內容；填入 sections 後才會出現在 `/computer-principles`。
+- `_private/discuss.txt` 指定資料是 route `computer-principles` 所需內容。
 
-**If wrong**：若最後不需要 section-level 收闔，則可省掉 UI 型別與 renderer 修改；若需要更複雜的巢狀互動，scope 會比目前預估更大。
+**If wrong**：若你想把五份 Markdown 合成一個大 topic，而不是五個 topic，現有 skeleton 會繼續空著，route 順序與測試也要重設。
 
-### 3. sourceFiles 要補上對應 Markdown
+### 2. route/topic 標題採「中文(英文)」，內部 section 依 Markdown 編排
 
-**Approach**：兩個正式 topic 的 `sourceFiles` 應同時包含 `_private/計算機概論.txt` 與對應 Markdown 檔。
-
-**Evidence**：
-
-- 前面已匯入的 `cp-hazard`、`cp-usb-speed`、`cp-base-conversion`、`cp-complement-conversion` 都保留 `_private/計算機概論.txt` + Markdown source。
-- 這次 discuss.txt 明確指定兩份 Markdown 是 route 內容來源。
-
-**If wrong**：stale audit 或內容追蹤會看不出教材來自哪份 Markdown。
-
-### 4. route topic 標題採「中文(英文)」，內部標題不強迫全部雙語
-
-**Approach**：route 上看到的 topic card 標題採中文在前、英文在括號內，例如 `浮點數轉換(Floating-Point Conversion)`。內部 lesson section 不強迫全部雙語；若標題本身就是常考英文名詞，才採中文(英文)，例如 `正規化(Normalization)`、`漢明碼(Hamming Code)`。
+**Approach**：topic 大標題用各 Markdown 主題轉成中文(英文)；內部 lesson section 盡量沿用 Markdown 的章節，例如 `常見邏輯閘`、`兩輸入真值表`、`題目 1：真值表 → 寫 SOP 和 POS`。
 
 **Evidence**：
 
-- `_private/discuss.txt` 指定「section標題 是 中文(英文)的格式」。
-- 現有正式 topic 多數使用 `中文(English)` route title。
+- `_private/discuss.txt` 寫「section標題 是 中文(英文)的格式，標題採用各md的 主題」。
+- 現有 topic title 多用 `中文(English)`。
 
-**If wrong**：若你其實要求每個內部 section 也都雙語，apply 時需要把所有 section heading 補成中文(英文)。
+**If wrong**：若你要求「每個內部小段標題」也都必須中文(英文)，實作時要把所有 lesson section heading 改成雙語，不只是 route/topic title。
 
-### 5. 一份 Markdown 一條內容整理線
+### 3. Markdown 內的製作指令要轉成 UI metadata，不直接顯示
 
-**Approach**：正式 apply 時可把兩份 Markdown 分成兩條獨立整理線：十六章負責 `cp-floating-point-conversion`，十七章負責 `cp-codes-and-check-codes`，主流程只負責整合、測試與 route 順序。
+**Approach**：`用table做` 轉成 table block；`德摩根那一行用紅色文字標註` 轉成 table cell/row style；真值表「點選標題才顯示值」若確認要做，則新增 table column reveal 行為或用現有收闔能力替代。
 
 **Evidence**：
 
-- `_private/discuss.txt` 指定「一個md檔用一個副代理處理。主代理負責流程的推進」。
-- 兩個 topic 內容彼此獨立，沒有共同資料結構變更需求。
+- `一、基本邏輯_新手國考教材.md` 有 `用table做`、`點選標題，才會讓值跑出來` 等指令。
+- `SubjectTopicPage.vue` 已支援 lesson section 收闔，但目前沒有 per-column reveal table。
+- `LessonArticleContentBlock` table 已支援 `rowStyles`、`columnStyles`、`cellStyles`。
 
-**If wrong**：若一定要同一人一次性整理，仍可完成，但比較不符合你希望避免汙染主流程的方式。
+**If wrong**：若這些文字其實要原樣顯示，app 內容會看起來像開發備註；若 reveal table 是硬需求，實作範圍會比單純內容匯入多一個 UI 行為。
+
+### 4. 這次不應額外擴寫第五章
+
+**Approach**：`五、組合與循序電路` 目前內容很短，建議只照原文整理成精簡 section，不主動補半加器、全加器、編碼器、解碼器等長內容，除非你確認要補。
+
+**Evidence**：
+
+- 該 Markdown 目前只有「組合電路 vs 循序電路」的判斷核心與例子。
+- `_private/discuss.txt` 強調「別隨意新增、刪除、修改資料」。
+
+**If wrong**：若考試範圍確實需要更完整的組合/循序元件，照原文匯入會偏薄，後續還要再補內容。
+
+### 5. sourceFiles 要保留原始追蹤
+
+**Approach**：每個 topic 的 `sourceFiles` 保留 `_private/計算機概論.txt`，並新增對應 Markdown 路徑。
+
+**Evidence**：
+
+- 3a 已填內容的 topic 多數使用 `_private/計算機概論.txt` + 對應 Markdown。
+- 3b skeleton 目前只有 `_private/計算機概論.txt`。
+
+**If wrong**：若只記 Markdown，不保留原始總筆記來源，stale audit 或來源追蹤可能與既有慣例不一致。
 
 ## 建議整理範圍
 
-### cp-floating-point-conversion
+### cp-digital-logic-basics
 
-來源：`十六、浮點數轉換_新手國考教材.md`
+來源：`一、基本邏輯_新手國考教材.md`
 
 建議 sections：
 
 | section heading | 內容範圍 | block 型態 |
 | --- | --- | --- |
-| IEEE 754 欄位(IEEE 754 Fields) | 單精度/雙精度欄位、公式、S/E/F 欄位意思 | table + paragraph |
-| IEEE 754 轉換流程(IEEE 754 Encoding Flow) | 判斷正負、轉二進位、正規化、計算 Exponent、填 Fraction、組合欄位 | orderedList |
-| 正規化(Normalization) | `1.xxxxx * 2^n`、大於 1 與小於 1 的例子 | paragraph / orderedList |
-| 十進位小數轉二進位(Decimal Fraction to Binary) | 整數除 2、小數乘 2 取整數、13.625 範例 | orderedList |
-| 10.25 轉 IEEE 754 單精度(10.25 to IEEE 754 Single Precision) | 完整 5 步驟與 `0x41240000` | orderedList |
-| IEEE 754 反推(IEEE 754 Decoding) | 拆 S/E/F、算 `E - bias`、補回隱含 1、得到 -6 | orderedList |
-| 0.1 為什麼不精確(Why 0.1 Is Inexact) | 十進位 0.1 轉二進位循環、欄位有限只能近似 | paragraph |
-| 常見陷阱(Common Pitfalls) | Exponent、Fraction、正規化、小數轉二進位、負數表示 | table |
-| 考前速記(Exam Quick Review) | 單精度/雙精度欄位、轉換流程、反推流程 | orderedList 或 table |
+| 常見邏輯閘(Common Logic Gates) | AND、OR、NOT、NAND、NOR、XOR、XNOR 白話與寫法 | table + paragraph |
+| 兩輸入真值表(Two-Input Truth Table) | A/B 對各邏輯閘輸出 | table，是否互動待確認 |
+| 布林代數常用定律(Boolean Algebra Laws) | 恆等律、零一律、冪等律、互補律、交換律、結合律、分配律、吸收律、德摩根 | table，德摩根 row/cell 強調 |
 
 建議 terms：
 
 | 中文 | English |
 | --- | --- |
-| 浮點數 | Floating Point |
-| IEEE 754 | IEEE 754 |
-| 符號位 | Sign |
-| 指數欄位 | Exponent |
-| 尾數欄位 / 小數欄位 | Fraction |
-| 偏移值 | Bias |
-| 正規化 | Normalization |
-| 隱含位元 | Implicit Bit |
+| 邏輯閘 | Logic Gate |
+| 真值表 | Truth Table |
+| 布林代數 | Boolean Algebra |
+| 反相 | NOT / Inversion |
+| 德摩根定律 | De Morgan's Laws |
+| 互斥或 | XOR |
+| 反互斥或 | XNOR |
 
 發現問題：
 
-1. IEEE 754 公式 `(-1)^S * 1.F * 2^(E - bias)`主要用於本章處理的正規化數；使用者已確認本教材是國考用，不需要在 app 額外補 subnormal、Infinity、NaN。
-2. `Fraction / 尾數欄位` 對新手容易誤會成整個 significand。建議寫成「Fraction 欄位只存正規化後小數點右側；最前面的 1 是隱含位元」。
-3. 十進位小數轉二進位目前寫「乘以 2，取整數，最後順著讀」，建議補清楚：取出的整數是答案下一位，下一輪要把整數部分拿掉，只用剩下的小數繼續乘。
-4. Markdown 中 `完整流程` 前後有大量空白，匯入 app 時應壓縮，不要保留空白段落。
-5. 10.25 範例與反推 -6 範例目前驗算正確，可直接保留。
-6. 0.1 的二進位循環 `0.0001100110011...(2)` 觀念正確，可直接保留。
+1. `用table做`、`此處預設...點選標題...` 是製作指令，不應直接顯示在 app。
+2. `XOR = A有且B沒有 或 B有且A沒有，(A AND -B) OR (B AND -A)` 裡的 `-B` 對新手可能像「負 B」，建議顯示時改成 `B'` 或 `NOT B`。
+3. `XNOR` 的邏輯關係目前寫「輸入不同為 0」，正確但不如「輸入相同為 1」直觀；是否調整待確認。
+4. `德摩根` row 要紅字標註；現有 table style 是否已符合「紅色文字」需要實測。若現有 `emphasisText` 不是紅色，可能要新增樣式或改用現有強調樣式。
+5. 真值表要求點選欄位標題才顯示值，目前 app 沒有 per-column reveal table；這是本次最大的 scope 決策點。
 
-### cp-codes-and-check-codes
+### cp-sop-pos
 
-來源：`十七、數碼、文字碼與檢查碼_新手國考教材.md`
+來源：`二、SOP 與 POS_新手國考教材.md`
 
 建議 sections：
 
 | section heading | 內容範圍 | block 型態 |
 | --- | --- | --- |
-| 定義與總覽(Overview) | 數碼、文字碼、檢查碼定義與常見碼表 | paragraph + table |
-| BCD(Binary-Coded Decimal) | 8421 BCD、有效範圍、259 範例 | orderedList |
-| 格雷碼(Gray Code) | 相鄰只差 1 bit、用途、Binary/Gray 互轉 | orderedList |
-| 文字碼(Character Codes) | ASCII、Extended ASCII、EBCDIC、Unicode、UTF-8 | table + orderedList |
-| 同位元檢查(Parity Check) | 奇同位、偶同位、能偵測但通常不能更正 | table |
-| CRC(Cyclic Redundancy Check) | 生成多項式、模 2 除法、餘數、接收端驗證 | orderedList |
-| 漢明碼(Hamming Code) | 檢查位、`2^r >= m + r + 1`、P1/P2/P4、Syndrome | orderedList / table |
-| 漢明距(Hamming Distance) | 漢明距定義、偵測/更正公式 | table |
-| 考前總複習(Exam Quick Review) | 預設關閉，點開後呈現常見陷阱、國考答題句、考前速記三個小段 | collapsible section + table / orderedList |
+| 用途(30 秒看懂)(Purpose) | 真值表如何翻成算式與電路 | paragraph |
+| 題目 1：真值表 → SOP/POS(Truth Table to SOP/POS) | 兩變數基本款完整流程 | table + orderedList |
+| 題目 2：布林函式 → 真值表(Boolean Function to Truth Table) | 先建真值表再轉 SOP/POS | table + orderedList |
+| 題目 3：三變數 SOP(Three-Variable SOP) | 三變數輸出為 1 的列轉 minterm | table + orderedList |
+| 公式整理(Formula Summary) | SOP/POS 對照表與三個必記 | table + orderedList |
 
 建議 terms：
 
 | 中文 | English |
 | --- | --- |
-| 數碼 | Numeric Code |
-| 文字碼 | Character Code |
-| 檢查碼 | Check Code |
-| BCD | Binary-Coded Decimal |
+| SOP | Sum of Products |
+| POS | Product of Sums |
+| 最小項 | Minterm |
+| 最大項 | Maxterm |
+| 真值表 | Truth Table |
+| 布林函式 | Boolean Function |
+
+發現問題：
+
+1. 內容使用「第 1 列、第 3 列」描述資料列，若搭配 minterm 列號，可能和 `m0, m1...` 混淆。建議 app 顯示時明確寫「第 1 筆資料」或補列號欄。
+2. 「1 多就用 POS、0 多就用 SOP」只適合題目允許自由選較短形式時；若題目明確問「標準 SOP」或「標準 POS」，不能自行改用另一種。建議補一句限制，避免選擇題誤判。
+3. Markdown 使用 `A′` 與 app/其他教材常見的 `A'` 可能不一致。建議統一顯示風格，或至少同 topic 內一致。
+
+### cp-karnaugh-map
+
+來源：`三、卡諾圖化簡_新手國考教材.md`
+
+建議 sections：
+
+| section heading | 內容範圍 | block 型態 |
+| --- | --- | --- |
+| 用途(30 秒看懂)(Purpose) | 為何要化簡、流程總覽 | paragraph + orderedList |
+| 題目 1：2 變數(Two-Variable K-map) | 2 格合併成 `B` | table + orderedList |
+| 題目 2：3 變數(Three-Variable K-map) | 圈大、重疊、`B′ + AC` | table + orderedList |
+| 題目 3：4 變數(Four-Variable K-map) | 四角跨邊環繞、`B′D′` | table + orderedList |
+| Don't care(X) | X 可當 1 或 0，為了圈更大 | table + orderedList |
+| 公式整理(Exam Summary) | 圈選規則與固定/變動變數 | orderedList |
+
+建議 terms：
+
+| 中文 | English |
+| --- | --- |
+| 卡諾圖 | Karnaugh Map / K-map |
 | 格雷碼 | Gray Code |
-| ASCII | ASCII |
-| EBCDIC | EBCDIC |
-| Unicode | Unicode |
-| UTF-8 | UTF-8 |
-| 同位元檢查 | Parity Check |
-| 循環冗餘檢查 | CRC |
-| 漢明碼 | Hamming Code |
-| 漢明距 | Hamming Distance |
-| 症候值 | Syndrome |
+| Don't care | Don't care |
+| 跨邊 | Wrap-around |
+| 重疊圈選 | Overlapping Group |
+| 最簡 SOP | Simplified SOP |
 
 發現問題：
 
-1. Hamming Code 範例中，位置 4 的檢查位前面說應放 `P1, P2, P4...`，但表格內容寫成 `P3`，後面又說重新檢查 `P1、P2、P4`。建議統一為 `P4`。
-2. Hamming Code 的檢查位說明寫 `P3 檢查... 4/5/6/7`，這裡應改為 `P4`，而且不是「最右邊是 1」，而是位置編號二進位中代表 4 的那一位為 1。
-3. `漢明距` 表格 header 殘留 `用table`，不應顯示在 app。
-4. `常見陷阱` heading 殘留 `用table做`，不應顯示在 app。
-5. `常見陷阱`、`國考答題句`、`考前速記` 內容高度重疊。若全部照搬，app 會偏冗；建議整合成一個 `考前總複習(Exam Quick Review)`。
-6. BCD 的 `0000 到 1001` 應描述為「單一 8421 BCD digit 的有效範圍」，避免被誤解成整個 BCD 資料只能到 9。
-7. CRC 的「接收端再除一次，餘數為 0 表示通過」在一般教法中可接受；建議補「國考基本題通常這樣判斷」以避免過度擴張到所有 CRC 實作細節。
-8. Hamming Code 位置編號照本教材保留「左到右、從 1 開始」，不額外補其他教材方向，避免新手混淆。
+1. Markdown 標題是 `卡諾圖化簡 與 萬用閘`，但本檔內容實際只到卡諾圖，且 `四、萬用閘` 已是獨立檔。建議 route/topic 標題仍採 `卡諾圖化簡(Karnaugh Map Simplification)`，避免重複。
+2. 文中多處把 `BC=00`、`BC=01` 說成「兩行」，但在表格裡它們是欄位。建議顯示時改成「兩欄」或「兩個欄位」。
+3. 卡諾圖表格以 Markdown 表格表示可以匯入，但若要清楚呈現圈選，現有 table 只能顯示值與文字說明，不能畫圈。可接受做法是保留表格 + 下方步驟文字。
+4. 使用 `B′`、`D′` 等符號需和 SOP/POS 章一致。
+
+### cp-universal-gates
+
+來源：`四、萬用閘_新手國考教材.md`
+
+建議 sections：
+
+| section heading | 內容範圍 | block 型態 |
+| --- | --- | --- |
+| 概念(Concept) | NAND/NOR 為何是萬用閘、NOT 快速做法 | paragraph + orderedList |
+| NAND 組閘(NAND Implementations) | NOT、AND、OR、XOR 需要幾個 NAND | table |
+| NOR 組閘(NOR Implementations) | NOT、OR、AND 需要幾個 NOR | table |
+| 必記重點(Exam Essentials) | 常考題型與數字速記 | orderedList |
+
+建議 terms：
+
+| 中文 | English |
+| --- | --- |
+| 萬用閘 | Universal Gate |
+| NAND | NAND |
+| NOR | NOR |
+| 德摩根定律 | De Morgan's Laws |
+| 對偶 | Duality |
+
+發現問題：
+
+1. 本檔使用 `迪摩根定律`，基本邏輯章使用 `德摩根`。建議統一為 `德摩根定律(De Morgan's Laws)`，但是否要視為「可修正術語」需要你確認。
+2. `實務上工廠只量產單一種閘最便宜` 這句較口語且可能過度簡化，建議改成「實作時常因製程與設計便利而偏好 NAND/NOR 組合」，或原樣保留待確認。
+3. NOR 表格沒有 XOR 列；若要和 NAND 表一致，可補 `XOR：可由 NOR 組成，常見需 5 個 NOR`，但這屬於新增內容，需你確認。
+
+### cp-combinational-sequential-circuits
+
+來源：`五、組合與循序電路_新手國考教材.md`
+
+建議 sections：
+
+| section heading | 內容範圍 | block 型態 |
+| --- | --- | --- |
+| 兩大類(Two Circuit Types) | 組合電路與循序電路定義、例子、判斷口訣 | table + paragraph |
+
+建議 terms：
+
+| 中文 | English |
+| --- | --- |
+| 組合電路 | Combinational Circuit |
+| 循序電路 | Sequential Circuit |
+| 記憶 | Memory |
+| 狀態 | State |
+| 時脈 | Clock |
+| 正反器 | Flip-Flop |
+| 暫存器 | Register |
+| 計數器 | Counter |
+
+發現問題：
+
+1. 此 Markdown 沒有 `#` 標題，topic title 需由檔名推得。
+2. 內容非常短，只足夠做「分類判斷」卡片；若考試也要半加器、全加器、編碼器、解碼器、多工器、解多工器的公式或選擇線，原文目前沒有提供。
+3. 若嚴格遵守「不要新增資料」，此 topic 會比其他四個短很多；若要讓 route 學習體驗一致，需要你確認可以補基本定義或例題。
 
 ## 建議測試
 
 實作時至少補這些測試：
 
-1. `professionalTopics.spec.ts`
-   - `cp-floating-point-conversion` 與 `cp-codes-and-check-codes` 有非空 `lessonArticle`。
-   - `lead` 預設為空陣列。
-   - `sourceFiles` 包含 `_private/計算機概論.txt` 與對應 Markdown。
-   - route topic 標題符合中文(英文)格式；內部 section heading 依教材主題命名，必要時才中英並列。
-   - 內容包含關鍵字：`IEEE 754`、`bias`、`0x41240000`、`BCD`、`Gray Code`、`Hamming Distance`、`Syndrome`。
-   - 內容不包含 `用table`、`用table做` 等 raw display instruction。
-   - 十七章的 `考前總複習` section 有 collapsible metadata，且預設關閉。
-2. `subjectTopics.spec.ts`
-   - `/computer-principles` route 顯示這兩個 topic。
-   - 順序應在 `cp-complement-conversion` 之後，依 skeleton 既有順序為 `cp-floating-point-conversion`、`cp-codes-and-check-codes`。
-3. `SubjectTopicPage.spec.ts`
-   - lessonArticle section 設定為 collapsible 時，畫面預設只顯示 section 標題，不顯示內文。
-   - 點選後展開，能看到內部的 `常見陷阱`、`國考答題句`、`考前速記`。
-   - 未設定 collapsible 的既有 section 行為不變。
-4. workflow / stale audit 類測試
-   - 將兩個 topic id 視為已填內容。
+1. `tests/unit/professionalTopics.spec.ts`
+   - 五個 3b topic 都有非空 `summary`、`terms`、`lessonArticle.sections`。
+   - 五個 topic 的 `sourceFiles` 包含 `_private/計算機概論.txt` 與各自 Markdown。
+   - 五個 topic 的 route/topic title 符合中文(英文)格式。
+   - 內容不包含 raw 指令：`用table做`、`點選標題`、`內部值都是空的`。
+   - 內容包含關鍵字：`Truth Table`、`SOP`、`POS`、`K-map`、`Don't care`、`NAND`、`NOR`、`Flip-Flop`。
+   - 德摩根 row/cell 有強調 metadata，或至少內容包含 `德摩根定律`。
+2. `tests/unit/subjectTopics.spec.ts`
+   - `/computer-principles` 會顯示這五個 topic，因為 sections 不再為空。
+   - 順序應位於 `cp-codes-and-check-codes` 後、`cp-os-basics` 前，依 skeleton 既有順序為：基本邏輯 → SOP/POS → 卡諾圖 → 萬用閘 → 組合與循序電路。
+3. `tests/unit/SubjectTopicPage.spec.ts`
+   - 若 Q1 確認要做真值表欄位 reveal：預設輸出欄位值隱藏，點選 `AND/OR/NAND...` 表頭後顯示對應欄位。
+   - 若 Q1 不做互動：不需要新增這類 component test。
+4. stale/source audit 類測試
+   - 3b 五個 topic id 視為已填內容。
    - sourceFiles 與 Markdown 來源一致。
 5. typecheck
-   - 新增 section-level collapsible metadata 後，既有 `LessonArticleContentBlock` 型別仍可通過。
+   - 若新增 table reveal metadata，既有 table block 與未互動表格仍可通過。
 
 ## 待你確認
 
-Q1. section heading 是否要「每個內部 section 都中文(英文)」？
+Q1. `一、基本邏輯` 的兩輸入真值表，是否一定要做成「點選欄位標題才顯示該欄輸出值」？
 
-原本問題：我原本把「section 標題中文(英文)」理解成內部每個小段都要雙語，這裡需要改成更白話的規則。
+我的建議：如果這是你想拿來自測的互動效果，就做；如果只是筆記時的想法，先用一般表格顯示，避免這次 scope 變大。
 
-你的回答：甚麼意思??
-
-回覆：我原本問得太模糊。這裡的意思是：
+請回答：要互動
 
 ```text
-route/topic 大標題：浮點數轉換(Floating-Point Conversion)
-內部小段標題：IEEE 754 欄位、正規化、Hamming Code 等
+要互動 / 不要互動，普通表格即可
 ```
 
-新的結論：route/topic 大標題採中文(英文)。內部 section 不強迫每個都中英並列；如果標題本身是常考英文術語，才保留英文，例如 `正規化(Normalization)`、`漢明碼(Hamming Code)`。
+結論：要互動。基本邏輯的兩輸入真值表要預設隱藏 `AND`、`OR`、`NAND`、`NOR`、`XOR`、`XNOR` 欄位值；點選欄位標題後，再顯示該欄的輸出值。這會讓正式 change 需要擴充 lessonArticle table 的互動 metadata 與 `SubjectTopicPage.vue` 渲染行為。
 
+Q2. 「section標題 是 中文(英文)」是指 route/topic 大標題，還是每個內部 lesson section 也都要雙語？
 
-Q2. `cp-floating-point-conversion` 與 `cp-codes-and-check-codes` 是否依 skeleton 既有順序，放在 `補數轉換` 後面？
+我的建議：route/topic 大標題雙語即可；內部 section 依 Markdown 原小標題，必要時才雙語，畫面比較不擠。
 
-我的建議：是。現有 skeleton 順序就是補數轉換 → 浮點數轉換 → 數碼、文字碼與檢查碼。
-
-你的回答：甚麼意思??
-
-回覆：這是在問 `/computer-principles` 頁面上的 topic 卡片順序。現在專案裡已經有空殼順序：
+請回答：route/topic 大標題雙語即可
 
 ```text
-補數轉換
-浮點數轉換
-數碼、文字碼與檢查碼
+只要 topic 大標題雙語 / 內部 section 也都要雙語
 ```
 
-新的結論：照既有順序放，不另外插到別的位置。也就是浮點數轉換在補數轉換後面，數碼、文字碼與檢查碼在浮點數轉換後面。
+結論：只要 route/topic 大標題雙語即可。內部 lesson section 不強制每段都中文(英文)，依 Markdown 原小標題與可讀性處理。
 
+Q3. `五、組合與循序電路` 是否只照目前短文匯入？
 
-Q3. 浮點數章是否補一句「本章先處理國考常見的正規化數，不展開 subnormal / Infinity / NaN」？
+我的建議：先只照目前短文匯入，因為你已明確說不要隨意新增資料；若之後覺得太薄，再開另一輪補內容。
 
-原本建議：我原本建議補一句限制範圍；依你的回答，正式內容不補這句。
-
-你的回答：不用，因為本教材就是國考用的
-
-結論：不用補。正式內容維持國考取向，不額外展開 subnormal、Infinity、NaN。
-
-
-Q4. 十進位小數轉二進位是否補上「取整數後，下一輪去掉整數，只拿小數繼續乘」？
-
-我的建議：要補。這和你前面對進制轉換提出的需求一致。
-
-你的回答：目前我是寫什麼?
-
-回覆：目前十六章 Markdown 寫的是：
+請回答：只照目前短文匯入
 
 ```text
-小數部分：
-乘以 2，取整數，最後順著讀。
+只照短文 / 可以補基本例題與公式
 ```
 
-這句方向是對的，但對新手來說少了一句「下一輪怎麼繼續」。正式匯入 app 時建議補成：
+結論：只照目前短文匯入。`五、組合與循序電路` 不額外補半加器、全加器、編碼器、解碼器、多工器、解多工器等公式或例題。
+
+Q4. 明顯術語與符號是否可在 app 內容中修正，但不改 Markdown 原檔？
+
+包含：
+
+- `-B` 改為 `B'` 或 `NOT B`
+- `迪摩根` 統一為 `德摩根`
+- 卡諾圖的「兩行」改為「兩欄」
+- SOP/POS 補一句「題目明確指定標準 SOP/POS 時不可自行換形式」
+
+我的建議：可以修正，因為這些是避免學習誤解，不是擴寫內容。
+
+請回答：可以修正
 
 ```text
-小數部分乘以 2，取整數部分作為答案下一位；
-下一輪把整數部分拿掉，只用剩下的小數繼續乘。
-例如乘出 1.xxx，就取 1，留下 0.xxx 繼續乘。
+可以修正 / 盡量原樣保留
 ```
 
-結論：要補這個白話步驟。
+結論：可以修正，但只修正會造成誤解的明顯術語與符號，不改 Markdown 原檔。正式匯入 app 時可將 `-B` 改為 `B'` 或 `NOT B`、`迪摩根` 統一為 `德摩根`、卡諾圖「兩行」改為「兩欄」，並在 SOP/POS 補上題目指定標準形式時不可自行改用另一種形式的提醒。
 
+Q5. NOR 表格是否要補 XOR？
 
-Q5. Hamming Code 的 `P3` 是否確認改成 `P4`？
+我的建議：不補。因為原 Markdown 沒寫，且本章已說萬用閘可組出 XOR；考試若未特別問 NOR 做 XOR 的閘數，先不增加記憶負擔。
 
-我的建議：要改。這是明顯內容錯誤，不改會讓 `P1、P2、P4` 與 syndrome 說明互相衝突。
-
-你的回答：正確到底是P3還是P4??
-
-回覆：以你這份教材的寫法，正確是 `P4`。
-
-原因是 Hamming Code 的檢查位通常放在位置：
+請回答：要補，純粹忘記了
 
 ```text
-1, 2, 4, 8, ...
+不補 / 補 NOR XOR 常見 5 個
 ```
 
-所以 Hamming(7,4) 的檢查位是：
-
-```text
-P1、P2、P4
-```
-
-有些人可能口語上說「第 3 個檢查位」，但如果用位置命名，它不是 `P3`，而是放在第 4 位的 `P4`。而且你後面 Syndrome 也寫 `S4 S2 S1`，所以應該統一為 `P4`。
-
-結論：`P3` 改成 `P4`。
-
-
-Q6. 十七章最後三段 `常見陷阱`、`國考答題句`、`考前速記` 是否整合成一個 `考前總複習(Exam Quick Review)`？
-
-我的建議：整合。上面各章節已收錄主要觀念，最後只需要保留去重後的陷阱與速記。
-
-你的回答：整合成一個 考前總複習，內部包著 `常見陷阱`、`國考答題句`、`考前速記` 的模式，預設 考前總複習 是關閉的，點選之後會打開
-
-結論：照你的回答做。
-
-注意：目前 app 只有整張 topic card 可以收闔，lessonArticle 內部的單一 section 還不能預設關閉。要滿足這點，正式 change 需要新增 section-level 收闔能力，讓 `考前總複習` 預設關閉，點開後才顯示內部三段內容。
-
-
-Q7. Hamming Code 的位置編號是否保留「本教材用左到右、從 1 開始」，並補一句「實際題目以題目標示為準」？
-
-我的建議：保留並補註。這能避免不同教材標位方向造成混淆。
-
-你的回答：Hamming Code 的位置編號 不是本來就是 左到右、從 1 開始 ???
-
-回覆：在你這份教材中，位置編號就是「左到右、從 1 開始」，正式內容照這個方式處理。
-
-我前面提「以題目標示為準」是怕有些題目或教材圖示會用不同排列方向，反而講太多了。國考用的新手版可以不用特別岔出去。
-
-結論：保留「左到右、從 1 開始」，不用額外補其他教材方向。
-
+結論：要補。NOR 組閘表格要補上 XOR，寫成可由 NOR 組成，常見做法需要 5 個 NOR。
 
 ## 已確認事項
 
-1. 本次處理既有 topic：`cp-floating-point-conversion` 與 `cp-codes-and-check-codes`。
-2. route/topic 大標題採中文(英文)，內部 section 依教材主題命名，不強迫每個都雙語。
-3. 兩個 topic 依既有 skeleton 順序放在 `cp-complement-conversion` 後面：先 `cp-floating-point-conversion`，再 `cp-codes-and-check-codes`。
-4. 浮點數章不用額外補 subnormal、Infinity、NaN，維持國考教材取向。
-5. 十進位小數轉二進位要補白話步驟：取整數當答案下一位，下一輪去掉整數，只用剩下的小數繼續乘。
-6. Hamming Code 的檢查位統一用 `P1、P2、P4`，`P3` 改成 `P4`。
-7. 十七章最後整合成 `考前總複習(Exam Quick Review)`，內部保留 `常見陷阱`、`國考答題句`、`考前速記` 三段。
-8. `考前總複習` 需要預設關閉，點選後展開；正式 change 需新增 lessonArticle section-level 收闔能力。
-9. Hamming Code 位置編號照本教材採「左到右、從 1 開始」，不補其他方向說法。
-10. 使用者已確認 Q1-Q7 全部按照本檔結論執行，沒有剩餘待確認問題。
+1. 本次處理既有 3b 五個 topic：`cp-digital-logic-basics`、`cp-sop-pos`、`cp-karnaugh-map`、`cp-universal-gates`、`cp-combinational-sequential-circuits`。
+2. 每份 Markdown 對應一個既有 skeleton topic，不合併成單一大 topic。
+3. route/topic 大標題採中文(英文)，內部 lesson section 不強制全部雙語。
+4. Markdown 裡的製作指令不直接顯示給學習者，會轉成 table、style 或互動 metadata。
+5. `一、基本邏輯` 的兩輸入真值表要做互動：預設隱藏輸出欄位值，點選欄位標題後顯示該欄。
+6. `五、組合與循序電路` 只照目前短文匯入，不額外補公式或例題。
+7. app 匯入內容可修正明顯術語與符號，但不修改 Markdown 原檔。
+8. `四、萬用閘` 的 NOR 表格要補 XOR，常見做法記 5 個 NOR。
+9. 每個 topic 的 `sourceFiles` 保留 `_private/計算機概論.txt`，並新增對應 Markdown 路徑。
+10. 需要新增或更新測試，特別是 basic logic 真值表欄位 reveal 互動與五個 3b topic 的 source traceability。
 
 ## 結論
 
-**Decision**：建議建立一個新的 Spectra change，將十六章與十七章整理進 `/computer-principles` 的既有 topic：`cp-floating-point-conversion` 與 `cp-codes-and-check-codes`，並新增 lessonArticle section-level 收闔能力供 `考前總複習` 使用。
+**Decision**：建立新的 Spectra change，將 3b 數位邏輯五份 Markdown 匯入 `/computer-principles` 的五個既有 skeleton topic，並擴充 lessonArticle table 以支援真值表欄位點選揭露。
 
-**Rationale**：這次核心是教材內容匯入，大多可沿用既有 lessonArticle 結構；唯一新增 UI 行為是十七章的 `考前總複習` 要能在 topic 內預設關閉並點選展開。內容校正方面，已確認浮點數維持國考範圍、小數連乘補白話步驟、Hamming Code 統一使用 `P4`。
+**Rationale**：現有架構已經有五個對應 topic 與 lessonArticle 渲染能力，內容匯入可沿用既有 blocks；Q1 已確認真值表需要互動，因此正式 change 需多包含 table reveal metadata、renderer 行為與 component test。其餘內容以 Markdown 原編排為主，只修正明顯術語與符號問題。
 
-**Remaining**：無。Q1-Q7 全部已確認依本檔結論執行。
+**Remaining**：無。Q1-Q5 已確認，可進入 `$spectra-propose`。
 
-**Capture to**：本檔 `_private/propose.md`。下一步可執行 `$spectra-propose`。
+**Capture to**：本檔 `_private/propose.md`。下一步可執行 `$spectra-propose`，建立正式 change artifacts。

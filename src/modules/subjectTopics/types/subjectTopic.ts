@@ -54,6 +54,7 @@ export type LessonArticleContentBlock =
       kind: 'table';
       headers: readonly string[];
       rows: readonly (readonly string[])[];
+      revealableColumnIndexes?: readonly number[];
       rowStyles?: Readonly<Record<number, LessonArticleTableCellStyle>>;
       columnStyles?: Readonly<Record<number, LessonArticleTableCellStyle>>;
       cellStyles?: Readonly<Record<LessonArticleTableCellCoordinate, LessonArticleTableCellStyle>>;

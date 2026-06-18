@@ -263,7 +263,7 @@ const professionalTopicSkeletonConfigs = [
     id: "cp-karnaugh-map",
     subjectKey: "computerPrinciples",
     titleZh: "卡諾圖化簡",
-    titleEn: "Karnaugh Map",
+    titleEn: "Karnaugh Map Simplification",
     sourceFiles: [
       "_private/計算機概論.txt"
     ],
@@ -1552,6 +1552,26 @@ const codesAndCheckCodesSourceFiles = [
   '_private/計算機概論.txt',
   '_private/MD/計概/3a基本計概/十七、數碼、文字碼與檢查碼_新手國考教材.md'
 ] as const;
+const digitalLogicBasicsSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3b數位邏輯/一、基本邏輯_新手國考教材.md'
+] as const;
+const sopPosSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3b數位邏輯/二、SOP 與 POS_新手國考教材.md'
+] as const;
+const karnaughMapSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3b數位邏輯/三、卡諾圖化簡_新手國考教材.md'
+] as const;
+const universalGatesSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3b數位邏輯/四、萬用閘_新手國考教材.md'
+] as const;
+const combinationalSequentialCircuitsSourceFiles = [
+  '_private/計算機概論.txt',
+  '_private/MD/計概/3b數位邏輯/五、組合與循序電路_新手國考教材.md'
+] as const;
 
 const commonUnitsTerms = [
   { zh: '位元', en: 'bit' },
@@ -1784,6 +1804,47 @@ const codesAndCheckCodesTerms = [
   { zh: '漢明碼', en: 'Hamming Code' },
   { zh: '漢明距', en: 'Hamming Distance' },
   { zh: '症候值', en: 'Syndrome' }
+] as const;
+
+const digitalLogicBasicsTerms = [
+  { zh: '邏輯閘', en: 'Logic Gate' },
+  { zh: '真值表', en: 'Truth Table' },
+  { zh: '反相', en: 'NOT' },
+  { zh: '互斥或', en: 'XOR' },
+  { zh: '布林代數', en: 'Boolean Algebra' },
+  { zh: '德摩根定律', en: "De Morgan's Laws" }
+] as const;
+
+const sopPosTerms = [
+  { zh: '乘積和', en: 'SOP' },
+  { zh: '和積', en: 'POS' },
+  { zh: '最小項', en: 'Minterm' },
+  { zh: '最大項', en: 'Maxterm' },
+  { zh: '標準形式', en: 'Canonical Form' }
+] as const;
+
+const karnaughMapTerms = [
+  { zh: '卡諾圖', en: 'Karnaugh Map' },
+  { zh: '格雷碼', en: 'Gray Code' },
+  { zh: '相鄰格', en: 'Adjacent Cell' },
+  { zh: '任意項', en: "Don't Care" },
+  { zh: '最簡 SOP', en: 'Minimal SOP' }
+] as const;
+
+const universalGatesTerms = [
+  { zh: '萬用閘', en: 'Universal Gate' },
+  { zh: '反及閘', en: 'NAND' },
+  { zh: '反或閘', en: 'NOR' },
+  { zh: '德摩根定律', en: "De Morgan's Laws" },
+  { zh: '閘數', en: 'Gate Count' }
+] as const;
+
+const combinationalSequentialCircuitsTerms = [
+  { zh: '組合電路', en: 'Combinational Circuit' },
+  { zh: '循序電路', en: 'Sequential Circuit' },
+  { zh: '記憶', en: 'Memory' },
+  { zh: '狀態', en: 'State' },
+  { zh: '時脈', en: 'Clock' }
 ] as const;
 
 const algorithmExampleSourceFiles = ['_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md'] as const;
@@ -4361,6 +4422,402 @@ const codesAndCheckCodesLessonSections = [
   }
 ] as const;
 
+const digitalLogicBasicsLessonSections = [
+  {
+    heading: '常見邏輯閘(Common Logic Gates)',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['邏輯閘', '白話意思', '邏輯關係', '常見寫法'],
+        rows: [
+          ['AND', '全部都成立', '全為 1 才輸出 1', 'AB、A · B'],
+          ['OR', '至少一個成立', '有一個 1 就輸出 1', 'A + B'],
+          ['NOT', '反相', '0 與 1 對調', "A'、NOT A"],
+          ['NAND', 'AND 後反相', '全為 1 才輸出 0', "(AB)'"],
+          ['NOR', 'OR 後反相', '有一個 1 就輸出 0', "(A+B)'"],
+          ['XOR', '互斥或', '輸入不同輸出 1', 'A ⊕ B'],
+          ['XNOR', '相等判斷', '輸入相同輸出 1', "(A⊕B)'"]
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text:
+          "XOR 可以理解成「A 有且 B 沒有」或「B 有且 A 沒有」：F = AB' + A'B，也就是 (A AND B') OR (A' AND B)。"
+      },
+      {
+        kind: 'paragraph',
+        text: "XNOR 可以理解成「兩個一樣」：F = AB + A'B'。輸入同為 0 或同為 1 時輸出 1。"
+      }
+    ]
+  },
+  {
+    heading: '兩輸入真值表(Two-Input Truth Table)',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['A', 'B', 'AND', 'OR', 'NAND', 'NOR', 'XOR', 'XNOR'],
+        revealableColumnIndexes: [2, 3, 4, 5, 6, 7],
+        rows: [
+          ['0', '0', '0', '0', '1', '1', '0', '1'],
+          ['0', '1', '0', '1', '1', '0', '1', '0'],
+          ['1', '0', '0', '1', '1', '0', '1', '0'],
+          ['1', '1', '1', '1', '0', '0', '0', '1']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '真值表就是把所有輸入組合列出來，再寫出每一列的輸出；若有 n 個輸入，真值表共有 2^n 列。'
+      }
+    ]
+  },
+  {
+    heading: '布林代數常用定律(Boolean Algebra Laws)',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['定律', '公式', '新手記法'],
+        rows: [
+          ['恆等律', 'A + 0 = A；A · 1 = A', '加 0 不變，乘 1 不變'],
+          ['零一律', 'A + 1 = 1；A · 0 = 0', 'OR 遇 1 全變 1，AND 遇 0 全變 0'],
+          ['冪等律', 'A + A = A；A · A = A', '同一條件重複不會變兩倍'],
+          ['互補律', "A + A' = 1；A · A' = 0", '一真一假，OR 必真，AND 必假'],
+          ['交換律', 'A + B = B + A；AB = BA', '順序可交換'],
+          ['結合律', '(A+B)+C = A+(B+C)', '同類運算可重新分組'],
+          ['分配律', 'A(B+C) = AB + AC', 'AND 可分配到括號內'],
+          ['吸收律', 'A + AB = A；A(A+B)=A', '大條件已包含小條件'],
+          ['德摩根定律', "(AB)' = A' + B'；(A+B)' = A'B'", '反相穿過括號，AND/OR 對調']
+        ],
+        rowStyles: {
+          8: { text: 'emphasisText' }
+        }
+      }
+    ]
+  }
+] as const;
+
+const sopPosLessonSections = [
+  {
+    heading: '用途',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          '數位電路常先用真值表描述規格，再把真值表翻成 AND / OR / NOT 算式。SOP 和 POS 就是兩種常見標準寫法：真值表 -> SOP 或 POS -> 算式 -> 電路。'
+      }
+    ]
+  },
+  {
+    heading: '真值表寫標準 SOP 與標準 POS',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['A', 'B', 'F'],
+        rows: [
+          ['0', '0', '1'],
+          ['0', '1', '0'],
+          ['1', '0', '1'],
+          ['1', '1', '1']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          "標準 SOP 看 F = 1 的列，每一列寫成 AND 項；變數為 1 寫原樣，變數為 0 加反相，例如 (A=0,B=0) 寫 A'B'。",
+          "把所有 AND 項用 OR 串起來：F = A'B' + AB' + AB。",
+          "標準 POS 看 F = 0 的列，每一列寫成 OR 項；規則和 SOP 相反，變數為 1 加反相，變數為 0 寫原樣。",
+          "本例只有 (A=0,B=1) 這一列為 0，所以標準 POS：F = (A + B')。"
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text:
+          '注意：若題目明確要求「標準 SOP」或「標準 POS」，就要照指定標準形式作答；即使另一種形式比較短，也不能改答另一種。'
+      }
+    ]
+  },
+  {
+    heading: '函式先建真值表',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: "遇到 F = (A + B)' + A·B 這類函式題，不要直接猜 SOP/POS；先把 A、B 的 4 種輸入代入，得到 F 欄。"
+      },
+      {
+        kind: 'table',
+        headers: ['A', 'B', 'A+B', "(A+B)'", 'A·B', 'F'],
+        rows: [
+          ['0', '0', '0', '1', '0', '1'],
+          ['0', '1', '1', '0', '0', '0'],
+          ['1', '0', '1', '0', '0', '0'],
+          ['1', '1', '1', '0', '1', '1']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          "SOP 看 F = 1 的第 1、4 列：F = A'B' + AB。",
+          "POS 看 F = 0 的第 2、3 列：F = (A + B')(A' + B)。",
+          '函式題的關鍵是先老實建真值表，建完後流程和一般真值表題相同。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三變數 SOP',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['A', 'B', 'C', 'F'],
+        rows: [
+          ['0', '0', '0', '0'],
+          ['0', '0', '1', '1'],
+          ['0', '1', '0', '0'],
+          ['0', '1', '1', '1'],
+          ['1', '0', '0', '1'],
+          ['1', '0', '1', '0'],
+          ['1', '1', '0', '0'],
+          ['1', '1', '1', '0']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          "圈 F = 1 的列：(0,0,1)、(0,1,1)、(1,0,0)。",
+          "每列寫 AND 項：A'B'C、A'BC、AB'C'。",
+          "用 OR 串起來：F = A'B'C + A'BC + AB'C'。"
+        ]
+      }
+    ]
+  },
+  {
+    heading: '考前速記',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['形式', '抓哪些列', '每列寫成', '變數 = 1', '變數 = 0', '項與項之間'],
+        rows: [
+          ['SOP', '輸出 = 1', 'AND 項(minterm)', '原樣 A', "反相 A'", '用 OR (+)'],
+          ['POS', '輸出 = 0', 'OR 項(maxterm)', "反相 A'", '原樣 A', '用 AND (·)']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          'SOP 看 1，POS 看 0。',
+          'SOP 與 POS 抓的列相反，變數是否反相也相反。',
+          '1 多時 POS 常較短，0 多時 SOP 常較短；但題目要求標準 SOP/POS 時，仍以題目指定形式為準。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const karnaughMapLessonSections = [
+  {
+    heading: '用途',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          '卡諾圖(K-map)是用格子與相鄰關係化簡 SOP 的工具。把 1 填進格子，圈相鄰的 1，圈越大能消掉越多變數，最後把每個圈的項用 OR 串起來。'
+      },
+      {
+        kind: 'paragraph',
+        text: '一個圈寫出來的項，只留下圈內值沒有變的變數；固定 1 寫原樣，固定 0 加反相，有變的變數丟掉。'
+      }
+    ]
+  },
+  {
+    heading: '2 變數例題',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['A\\B', '0', '1'],
+        rows: [
+          ['0', '0', '1'],
+          ['1', '0', '1']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: 'B = 1 這一欄上下兩格都是 1，可圈成 2 格；A 有變所以丟掉，B 固定為 1，所以 F = B。'
+      }
+    ]
+  },
+  {
+    heading: '3 變數例題',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '3 變數常把 A 放列，BC 放欄；BC 欄位用格雷碼 00、01、11、10 排列，讓相鄰欄只差一個 bit。'
+      },
+      {
+        kind: 'table',
+        headers: ['A\\BC', '00', '01', '11', '10'],
+        rows: [
+          ['0', '1', '1', '0', '0'],
+          ['1', '1', '1', '1', '0']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          "圈 1：BC=00 與 BC=01 兩欄、兩個 A 列共 4 格；A 有變，C 有變，B 固定為 0，所以這圈 = B'。",
+          '圈 2：A=1, BC=11 的 1 可和左邊 A=1, BC=01 重疊圈 2 格；A 固定 1，C 固定 1，B 有變，所以這圈 = AC。',
+          "最後 F = B' + AC。"
+        ]
+      }
+    ]
+  },
+  {
+    heading: '4 變數跨邊例題',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '4 變數常把 AB 放列、CD 放欄，而且列與欄都用格雷碼。卡諾圖的上下邊相鄰、左右邊也相鄰，所以角落可以跨邊圈。'
+      },
+      {
+        kind: 'table',
+        headers: ['AB\\CD', '00', '01', '11', '10'],
+        rows: [
+          ['00', '1', '0', '0', '1'],
+          ['01', '0', '0', '0', '0'],
+          ['11', '0', '0', '0', '0'],
+          ['10', '1', '0', '0', '1']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: "四個角落跨邊圈成 4 格；A 有變、C 有變，B 固定 0、D 固定 0，所以 F = B'D'。"
+      }
+    ]
+  },
+  {
+    heading: "Don't Care",
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: "Don't care(X) 代表該輸入組合不會發生或結果無所謂；化簡時可當 1 也可當 0，選能讓圈更大的方式。"
+      },
+      {
+        kind: 'table',
+        headers: ['A\\BC', '00', '01', '11', '10'],
+        rows: [
+          ['0', '0', '1', '1', '0'],
+          ['1', '0', '1', 'X', '0']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '把 X 當成 1 後，中間 BC=01 與 BC=11 兩欄可圈成 4 格；A、B 有變，C 固定 1，所以 F = C。'
+      }
+    ]
+  },
+  {
+    heading: '考前速記',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '只圈 1，X 可借來當 1；圈的格數必須是 1、2、4、8、16 等 2 的冪次。',
+          '圈 2^n 格可消掉 n 個變數；圈越大，項越短。',
+          '每個圈只留下值沒變的變數，固定 1 寫原樣，固定 0 加反相。',
+          '可重疊、可跨邊環繞；所有的 1 都要被圈到。',
+          '每個圈寫成一項，再用 OR 串起來，就是最簡 SOP。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const universalGatesLessonSections = [
+  {
+    heading: '概念',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'NAND 和 NOR 叫萬用閘，因為只用其中一種，就能組出 NOT、AND、OR、XOR 等邏輯閘。',
+          'NAND = NOT(AND)，NOR = NOT(OR)。',
+          "背後原理是德摩根定律：NOT(A·B)=A' + B'，NOT(A+B)=A'·B'。",
+          '做 NOT 的萬用招：把同一個輸入接到兩個腳，例如 A NAND A 或 A NOR A。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '用 NAND 組各種閘',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['要做的閘', '用 NAND 的組法', '需幾個 NAND'],
+        rows: [
+          ['NOT', 'A NAND A', '1'],
+          ['AND', '(A NAND B) 再 NAND 自己，也就是再 NOT 一次', '2'],
+          ['OR', '(A NAND A) NAND (B NAND B)，先各自 NOT，再 NAND', '3'],
+          ['XOR', '標準 4 閘 NAND 電路；選擇題多半記閘數', '4']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '用 NOR 組各種閘',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['要做的閘', '用 NOR 的組法', '需幾個 NOR'],
+        rows: [
+          ['NOT', 'A NOR A', '1'],
+          ['OR', '(A NOR B) 再 NOR 自己，也就是再 NOT 一次', '2'],
+          ['AND', '(A NOR A) NOR (B NOR B)', '3'],
+          ['XOR', '常見 NOR-only 實作需 5 個 NOR；選擇題可先記 5 個 NOR', '5']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '考前速記',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'NAND、NOR 都是萬用閘，單一種即可組出所有基本閘。',
+          'NOT：自己 NAND 自己，或自己 NOR 自己。',
+          '用 NAND：NOT 1、AND 2、OR 3、XOR 4。',
+          '用 NOR：NOT 1、OR 2、AND 3、XOR 常見 5 個 NOR。',
+          'NAND 偏自然做出 AND；NOR 偏自然做出 OR。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const combinationalSequentialCircuitsLessonSections = [
+  {
+    heading: '兩大類',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['類型', '輸出看什麼', '有沒有記憶', '常見例子'],
+        rows: [
+          ['組合電路', '只看當下輸入', '沒有記憶', '半加器、全加器、編碼器、解碼器、多工器、解多工器'],
+          ['循序電路', '看當下輸入，也看過去狀態', '有記憶，通常配合 clock', '正反器、暫存器、計數器']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '一句話判斷',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text:
+          '判斷題目時先問：這個電路需不需要記得上一刻？不需要記憶、只由當下輸入決定，就是組合電路；需要記住狀態或配合時脈，就是循序電路。'
+      }
+    ]
+  }
+] as const;
+
 const markdownBackedComputerPrinciplesContentById = {
   'cp-performance-formulas': {
     summary: '整理 CPU Time、Clock Rate、CPI、MIPS、Execution Time、ISA 與內頻外頻倍頻等效能名詞與常見公式。',
@@ -4445,6 +4902,41 @@ const markdownBackedComputerPrinciplesContentById = {
     terms: codesAndCheckCodesTerms,
     lead: [],
     sections: codesAndCheckCodesLessonSections
+  },
+  'cp-digital-logic-basics': {
+    summary: '整理常見邏輯閘、XOR/XNOR 白話判斷、兩輸入真值表，以及布林代數常用定律。',
+    sourceFiles: digitalLogicBasicsSourceFiles,
+    terms: digitalLogicBasicsTerms,
+    lead: [],
+    sections: digitalLogicBasicsLessonSections
+  },
+  'cp-sop-pos': {
+    summary: '整理 SOP 與 POS 的用途、真值表轉標準 SOP/POS 的規則、函式先建真值表，以及三變數例題。',
+    sourceFiles: sopPosSourceFiles,
+    terms: sopPosTerms,
+    lead: [],
+    sections: sopPosLessonSections
+  },
+  'cp-karnaugh-map': {
+    summary: "整理卡諾圖化簡的圈選規則、2/3/4 變數例題、跨邊環繞與 Don't care 用法。",
+    sourceFiles: karnaughMapSourceFiles,
+    terms: karnaughMapTerms,
+    lead: [],
+    sections: karnaughMapLessonSections
+  },
+  'cp-universal-gates': {
+    summary: '整理 NAND 與 NOR 萬用閘概念、德摩根定律、NOT 快速做法，以及 NAND/NOR 實作常見閘數。',
+    sourceFiles: universalGatesSourceFiles,
+    terms: universalGatesTerms,
+    lead: [],
+    sections: universalGatesLessonSections
+  },
+  'cp-combinational-sequential-circuits': {
+    summary: '整理組合電路與循序電路的核心差異：輸出是否依賴過去狀態、是否具有記憶與時脈。',
+    sourceFiles: combinationalSequentialCircuitsSourceFiles,
+    terms: combinationalSequentialCircuitsTerms,
+    lead: [],
+    sections: combinationalSequentialCircuitsLessonSections
   }
 } as const;
 

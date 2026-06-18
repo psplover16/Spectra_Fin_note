@@ -140,6 +140,72 @@ const highlightedTableTopic: SubjectTopic = {
   ]
 };
 
+const revealableTruthTableTopic: SubjectTopic = {
+  id: 'revealable-truth-table-fixture',
+  subjectKey: 'computerPrinciples',
+  title: '真值表揭露測試',
+  summary: '確認 lessonArticle table 可以只揭露設定欄位。',
+  blocks: [
+    {
+      kind: 'lessonArticle',
+      sourceFiles: ['_private/計算機概論.txt'],
+      sourceSection: '真值表揭露測試',
+      lead: [],
+      sections: [
+        {
+          heading: '兩輸入真值表(Two-Input Truth Table)',
+          blocks: [
+            {
+              kind: 'table',
+              headers: ['A', 'B', 'AND', 'OR', 'NAND', 'NOR', 'XOR', 'XNOR'],
+              revealableColumnIndexes: [2, 3, 4, 5, 6, 7],
+              rows: [
+                ['0', '0', '0', '0', '1', '1', '0', '1'],
+                ['0', '1', '0', '1', '1', '0', '1', '0'],
+                ['1', '0', '0', '1', '1', '0', '1', '0'],
+                ['1', '1', '1', '1', '0', '0', '0', '1']
+              ]
+            },
+            {
+              kind: 'table',
+              headers: ['靜態欄位'],
+              rows: [['靜態內容']]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+const invalidRevealableColumnTopic: SubjectTopic = {
+  id: 'invalid-revealable-column-fixture',
+  subjectKey: 'computerPrinciples',
+  title: '無效欄位揭露測試',
+  summary: '確認 invalid reveal index 被忽略。',
+  blocks: [
+    {
+      kind: 'lessonArticle',
+      sourceFiles: ['_private/計算機概論.txt'],
+      sourceSection: '無效欄位揭露測試',
+      lead: [],
+      sections: [
+        {
+          heading: '無效設定',
+          blocks: [
+            {
+              kind: 'table',
+              headers: ['欄位'],
+              revealableColumnIndexes: [-1, 99],
+              rows: [['會保持可見']]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
 const collapsibleLessonSectionTopic = {
   id: 'collapsible-lesson-section-fixture',
   subjectKey: 'computerPrinciples',
@@ -308,9 +374,84 @@ describe('SubjectTopicPage', () => {
     expect(highlightedCells[5]?.classes()).toContain('subject-topic-table-cell-emphasis-background');
     expect(plainCells.every((cell) => cell.classes().every((className) => !className.includes('emphasis')))).toBe(true);
     expect(plainCells[3]?.text()).toContain('第一行\n第二行');
+    expect(tables[1]?.find('thead button.subject-topic-table-column-toggle').exists()).toBe(false);
     expect(unknownTokenCell?.classes().every((className) => !className.includes('dangerRainbow') && !className.includes('neonBackground'))).toBe(
       true
     );
+  });
+
+  it('reveals configured lessonArticle table columns from the header only', async () => {
+    const wrapper = mount(SubjectTopicPage, {
+      props: {
+        title: '計算機原理',
+        subjectKey: 'computerPrinciples',
+        testId: 'subject-view-computer-principles',
+        topics: [revealableTruthTableTopic]
+      }
+    });
+
+    await wrapper.find('[data-testid="topic-title-revealable-truth-table-fixture"]').trigger('click');
+
+    const tables = wrapper.findAll('table.subject-topic-table');
+    const truthTable = tables[0];
+    const staticTable = tables[1];
+    const getColumnText = (columnIndex: number) =>
+      truthTable?.findAll('tbody tr').map((row) => row.findAll('td')[columnIndex]?.text() ?? '') ?? [];
+
+    expect(tables).toHaveLength(2);
+    expect(truthTable?.findAll('thead button.subject-topic-table-column-toggle').map((button) => button.text())).toEqual([
+      'AND',
+      'OR',
+      'NAND',
+      'NOR',
+      'XOR',
+      'XNOR'
+    ]);
+    expect(getColumnText(0)).toEqual(['0', '0', '1', '1']);
+    expect(getColumnText(1)).toEqual(['0', '1', '0', '1']);
+    expect(getColumnText(2)).toEqual(['', '', '', '']);
+    expect(getColumnText(3)).toEqual(['', '', '', '']);
+
+    const andToggle = truthTable?.findAll('thead button.subject-topic-table-column-toggle').find((button) => button.text() === 'AND');
+
+    expect(andToggle?.exists()).toBe(true);
+    if (!andToggle) {
+      throw new Error('AND column toggle should exist');
+    }
+    expect(andToggle.attributes('aria-expanded')).toBe('false');
+
+    await andToggle.trigger('click');
+
+    expect(andToggle.attributes('aria-expanded')).toBe('true');
+    expect(getColumnText(2)).toEqual(['0', '0', '0', '1']);
+    expect(getColumnText(3)).toEqual(['', '', '', '']);
+    expect(getColumnText(6)).toEqual(['', '', '', '']);
+
+    await andToggle.trigger('click');
+
+    expect(andToggle.attributes('aria-expanded')).toBe('false');
+    expect(getColumnText(2)).toEqual(['', '', '', '']);
+    expect(staticTable?.find('thead button.subject-topic-table-column-toggle').exists()).toBe(false);
+    expect(staticTable?.find('tbody').text()).toContain('靜態內容');
+  });
+
+  it('ignores invalid lessonArticle reveal column indexes', async () => {
+    const wrapper = mount(SubjectTopicPage, {
+      props: {
+        title: '計算機原理',
+        subjectKey: 'computerPrinciples',
+        testId: 'subject-view-computer-principles',
+        topics: [invalidRevealableColumnTopic]
+      }
+    });
+
+    await wrapper.find('[data-testid="topic-title-invalid-revealable-column-fixture"]').trigger('click');
+
+    const table = wrapper.find('table.subject-topic-table');
+
+    expect(table.exists()).toBe(true);
+    expect(table.find('thead button.subject-topic-table-column-toggle').exists()).toBe(false);
+    expect(table.find('tbody').text()).toContain('會保持可見');
   });
 
   it('renders configured lessonArticle sections collapsed by default and toggles them independently', async () => {
