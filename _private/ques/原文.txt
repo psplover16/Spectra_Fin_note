@@ -222,6 +222,25 @@ ISO 27001；
 
 
 
+7. 程式
+基本的語法要會寫，大概就是 if-else、switch、迴圈、物件導向、一些常用的字串函式要會。比較常考的語言就是 C、C++、Java、Python等。某些語言獨有的特性要記住，像是 C、C++ 的指標、Java 的 GIGC 和 Python 內建的特殊資料型別（List、Tuple、Dictionary 和 Set）等。以下是我的筆記的知識點：
+
+基礎：Assembler vs Compiler vs Interpreter；
+變數；
+函式；
+call by value vs call by address vs call by name vs call by reference；
+關鍵字 static 的使用方式；
+陣列；
+迴圈；
+if-else；
+switch；
+例外處理
+
+中階：指標；
+字串相關函式；
+OOP（三大特性）；
+recursion
+
 
 
 
@@ -244,30 +263,6 @@ ISO 27001；
 
 
 
-
-
-
-
-
-
-7. 程式
-基本的語法要會寫，大概就是 if-else、switch、迴圈、物件導向、一些常用的字串函式要會。比較常考的語言就是 C、C++、Java、Python等。某些語言獨有的特性要記住，像是 C、C++ 的指標、Java 的 GIGC 和 Python 內建的特殊資料型別（List、Tuple、Dictionary 和 Set）等。以下是我的筆記的知識點：
-
-基礎：Assembler vs Compiler vs Interpreter；
-變數；
-函式；
-call by value vs call by address vs call by name vs call by reference；
-關鍵字 static 的使用方式；
-陣列；
-迴圈；
-if-else；
-switch；
-例外處理
-
-中階：指標；
-字串相關函式；
-OOP（三大特性）；
-recursion
 
 
 
