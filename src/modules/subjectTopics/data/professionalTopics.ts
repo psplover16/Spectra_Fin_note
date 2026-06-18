@@ -428,134 +428,145 @@ const professionalTopicSkeletonConfigs = [
     topicType: "procedure"
   },
   {
-    id: "networking-prep-direction",
+    id: "networking-osi-tcpip",
     subjectKey: "networking",
-    titleZh: "準備方向",
-    titleEn: "Exam Preparation Direction",
+    titleZh: "網路概論 1：OSI 七層 + TCP/IP ★",
+    titleEn: "OSI and TCP/IP",
     sourceFiles: [
-      "_private/網概.txt"
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_1_OSI七層與TCPIP.md"
     ],
-    sourceSection: "一、準備方向",
-    difficulty: "intro",
+    sourceSection: "網路概論 1：OSI 七層 + TCP/IP ★",
+    difficulty: "core",
     topicType: "concept"
   },
   {
-    id: "networking-overview",
+    id: "networking-basics",
     subjectKey: "networking",
-    titleZh: "網路概論",
-    titleEn: "Networking Overview",
+    titleZh: "網路概論 2：基礎概念",
+    titleEn: "Networking Basics",
     sourceFiles: [
-      "_private/網概.txt"
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_2_基礎概念.md"
     ],
-    sourceSection: "二、網路概論",
+    sourceSection: "網路概論 2：基礎概念",
     difficulty: "intro",
     topicType: "concept"
   },
   {
     id: "networking-devices-osi",
     subjectKey: "networking",
-    titleZh: "網路設備與 OSI 層",
+    titleZh: "網路概論 3：網路設備對應層級",
     titleEn: "Network Devices and OSI Layers",
     sourceFiles: [
-      "_private/網概.txt"
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_3_網路設備對應層級.md"
     ],
-    sourceSection: "三、網路設備與 OSI 層",
+    sourceSection: "網路概論 3：網路設備對應層級",
     difficulty: "core",
     topicType: "concept"
   },
   {
-    id: "networking-ports",
+    id: "networking-ip-subnetting",
     subjectKey: "networking",
-    titleZh: "常見 Port Number",
-    titleEn: "Port Number",
+    titleZh: "網路概論 4（上）：IP 基礎 + 子網路計算 ★",
+    titleEn: "IP and Subnetting",
     sourceFiles: [
-      "_private/網概.txt"
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_4上_IP與子網路計算.md"
     ],
-    sourceSection: "四、常見 Port Number",
+    sourceSection: "網路概論 4（上）：IP 基礎 + 子網路計算 ★",
     difficulty: "core",
     topicType: "procedure"
   },
   {
-    id: "networking-osi-tcpip-models",
+    id: "networking-routing-l3-protocols",
     subjectKey: "networking",
-    titleZh: "OSI 7 層與 TCP/IP 5 層",
-    titleEn: "OSI Model and TCP/IP Model",
+    titleZh: "網路概論 4（下）：路由 + L3 協定與工具",
+    titleEn: "Routing and L3 Protocols",
     sourceFiles: [
-      "_private/網概.txt"
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_4下_路由與L3協定.md"
     ],
-    sourceSection: "五、OSI 7 層與 TCP/IP 5 層",
+    sourceSection: "網路概論 4（下）：路由 + L3 協定與工具",
+    difficulty: "core",
+    topicType: "concept"
+  },
+  {
+    id: "networking-transport-layer",
+    subjectKey: "networking",
+    titleZh: "網路概論 5：傳輸層",
+    titleEn: "Transport Layer",
+    sourceFiles: [
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_5_傳輸層.md"
+    ],
+    sourceSection: "網路概論 5：傳輸層",
+    difficulty: "core",
+    topicType: "concept"
+  },
+  {
+    id: "networking-application-ports",
+    subjectKey: "networking",
+    titleZh: "網路概論 6：應用層協定 + Port Number 對照表 ★",
+    titleEn: "Application Layer and Port Numbers",
+    sourceFiles: [
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_6_應用層與Port對照.md"
+    ],
+    sourceSection: "網路概論 6：應用層協定 + Port Number 對照表 ★",
     difficulty: "core",
     topicType: "concept"
   },
   {
     id: "networking-physical-layer",
     subjectKey: "networking",
-    titleZh: "實體層",
+    titleZh: "網路概論 7（上）：實體層 + 標準速度表 ★",
     titleEn: "Physical Layer",
     sourceFiles: [
-      "_private/網概.txt"
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_7上_實體層.md"
     ],
-    sourceSection: "六、實體層",
+    sourceSection: "網路概論 7（上）：實體層 + 標準速度表 ★",
     difficulty: "core",
     topicType: "concept"
   },
   {
     id: "networking-data-link-layer",
     subjectKey: "networking",
-    titleZh: "資料鏈結層",
+    titleZh: "網路概論 7（下）：資料鏈結層",
     titleEn: "Data Link Layer",
     sourceFiles: [
-      "_private/網概.txt"
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_7下_資料鏈結層.md"
     ],
-    sourceSection: "七、資料鏈結層",
+    sourceSection: "網路概論 7（下）：資料鏈結層",
     difficulty: "core",
     topicType: "concept"
   },
   {
-    id: "networking-network-layer",
+    id: "networking-security-crypto",
     subjectKey: "networking",
-    titleZh: "網路層",
-    titleEn: "Network Layer",
+    titleZh: "網路概論 8（上）：資安觀念與加密 ★",
+    titleEn: "Security Concepts and Cryptography",
     sourceFiles: [
-      "_private/網概.txt"
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_8上_資安觀念與加密.md"
     ],
-    sourceSection: "八、網路層",
-    difficulty: "core",
-    topicType: "procedure"
-  },
-  {
-    id: "networking-transport-layer",
-    subjectKey: "networking",
-    titleZh: "傳輸層",
-    titleEn: "Transport Layer",
-    sourceFiles: [
-      "_private/網概.txt"
-    ],
-    sourceSection: "九、傳輸層",
+    sourceSection: "網路概論 8（上）：資安觀念與加密 ★",
     difficulty: "core",
     topicType: "concept"
   },
   {
-    id: "networking-application-layer",
+    id: "networking-defense-attacks",
     subjectKey: "networking",
-    titleZh: "應用層",
-    titleEn: "Application Layer",
+    titleZh: "網路概論 8（下）：防禦設備與攻擊類型 ★",
+    titleEn: "Defense Devices and Attacks",
     sourceFiles: [
-      "_private/網概.txt"
+      "_private/網概.txt",
+      "_private/MD/網概/網路概論_8下_防禦設備與攻擊.md"
     ],
-    sourceSection: "十、應用層",
-    difficulty: "core",
-    topicType: "concept"
-  },
-  {
-    id: "networking-security",
-    subjectKey: "networking",
-    titleZh: "資訊安全",
-    titleEn: "Information Security",
-    sourceFiles: [
-      "_private/網概.txt"
-    ],
-    sourceSection: "十一、資訊安全",
+    sourceSection: "網路概論 8（下）：防禦設備與攻擊類型 ★",
     difficulty: "core",
     topicType: "concept"
   },
@@ -2028,6 +2039,134 @@ const diskManagementTerms = [
   { zh: '電梯演算法', en: 'SCAN' },
   { zh: '檔案配置表', en: 'FAT' },
   { zh: '容錯式磁碟陣列', en: 'RAID' }
+] as const;
+
+const networkingOsiTcpipSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_1_OSI七層與TCPIP.md'] as const;
+const networkingBasicsSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_2_基礎概念.md'] as const;
+const networkingDevicesOsiSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_3_網路設備對應層級.md'] as const;
+const networkingIpSubnettingSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_4上_IP與子網路計算.md'] as const;
+const networkingRoutingL3ProtocolsSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_4下_路由與L3協定.md'] as const;
+const networkingTransportLayerSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_5_傳輸層.md'] as const;
+const networkingApplicationPortsSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_6_應用層與Port對照.md'] as const;
+const networkingPhysicalLayerSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_7上_實體層.md'] as const;
+const networkingDataLinkLayerSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_7下_資料鏈結層.md'] as const;
+const networkingSecurityCryptoSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_8上_資安觀念與加密.md'] as const;
+const networkingDefenseAttacksSourceFiles = ['_private/網概.txt', '_private/MD/網概/網路概論_8下_防禦設備與攻擊.md'] as const;
+
+const networkingOsiTcpipTerms = [
+  { zh: 'OSI 七層', en: 'OSI Seven-Layer Model' },
+  { zh: 'TCP/IP 模型', en: 'TCP/IP Model' },
+  { zh: '協定資料單元', en: 'PDU' },
+  { zh: '資料鏈結層', en: 'Data Link Layer' },
+  { zh: '網路層', en: 'Network Layer' },
+  { zh: '傳輸層', en: 'Transport Layer' }
+] as const;
+
+const networkingBasicsTerms = [
+  { zh: '區域網路', en: 'LAN' },
+  { zh: '都會網路', en: 'MAN' },
+  { zh: '廣域網路', en: 'WAN' },
+  { zh: '主從式架構', en: 'Client-Server' },
+  { zh: '點對點', en: 'P2P' },
+  { zh: '無狀態', en: 'Stateless' },
+  { zh: 'Cookie', en: 'Cookie' },
+  { zh: 'Session', en: 'Session' }
+] as const;
+
+const networkingDevicesOsiTerms = [
+  { zh: '中繼器', en: 'Repeater' },
+  { zh: '集線器', en: 'Hub' },
+  { zh: '橋接器', en: 'Bridge' },
+  { zh: '交換器', en: 'Switch' },
+  { zh: '路由器', en: 'Router' },
+  { zh: '碰撞域', en: 'Collision Domain' },
+  { zh: '廣播域', en: 'Broadcast Domain' },
+  { zh: '虛擬區域網路', en: 'VLAN' }
+] as const;
+
+const networkingIpSubnettingTerms = [
+  { zh: 'IPv4 位址', en: 'IPv4 Address' },
+  { zh: '子網路遮罩', en: 'Subnet Mask' },
+  { zh: 'CIDR', en: 'CIDR' },
+  { zh: '網路位址', en: 'Network Address' },
+  { zh: '廣播位址', en: 'Broadcast Address' },
+  { zh: '可變長度子網路遮罩', en: 'VLSM' }
+] as const;
+
+const networkingRoutingL3ProtocolsTerms = [
+  { zh: '靜態路由', en: 'Static Routing' },
+  { zh: '動態路由', en: 'Dynamic Routing' },
+  { zh: '距離向量', en: 'Distance Vector' },
+  { zh: '鏈結狀態', en: 'Link State' },
+  { zh: '路由資訊協定', en: 'RIP' },
+  { zh: '開放最短路徑優先', en: 'OSPF' },
+  { zh: '邊界閘道協定', en: 'BGP' },
+  { zh: '網路位址轉換', en: 'NAT' }
+] as const;
+
+const networkingTransportLayerTerms = [
+  { zh: '電路交換', en: 'Circuit Switching' },
+  { zh: '封包交換', en: 'Packet Switching' },
+  { zh: '傳輸控制協定', en: 'TCP' },
+  { zh: '使用者資料包協定', en: 'UDP' },
+  { zh: '三方交握', en: 'Three-Way Handshake' },
+  { zh: '流量控制', en: 'Flow Control' },
+  { zh: '壅塞控制', en: 'Congestion Control' }
+] as const;
+
+const networkingApplicationPortsTerms = [
+  { zh: '周知埠', en: 'Well-Known Port' },
+  { zh: '檔案傳輸協定', en: 'FTP' },
+  { zh: '安全殼層', en: 'SSH' },
+  { zh: '簡單郵件傳輸協定', en: 'SMTP' },
+  { zh: '網域名稱系統', en: 'DNS' },
+  { zh: '動態主機設定協定', en: 'DHCP' },
+  { zh: '內容傳遞網路', en: 'CDN' },
+  { zh: '軟體定義網路', en: 'SDN' }
+] as const;
+
+const networkingPhysicalLayerTerms = [
+  { zh: '雙絞線', en: 'Twisted Pair' },
+  { zh: '同軸電纜', en: 'Coaxial Cable' },
+  { zh: '光纖', en: 'Fiber' },
+  { zh: '無線網路', en: 'WiFi' },
+  { zh: '藍牙', en: 'Bluetooth' },
+  { zh: '通用序列匯流排', en: 'USB' },
+  { zh: '物聯網', en: 'IoT' },
+  { zh: '近場通訊', en: 'NFC' }
+] as const;
+
+const networkingDataLinkLayerTerms = [
+  { zh: '訊框化', en: 'Framing' },
+  { zh: '半雙工', en: 'Half-Duplex' },
+  { zh: '全雙工', en: 'Full-Duplex' },
+  { zh: '載波偵聽多重存取', en: 'CSMA' },
+  { zh: '碰撞偵測', en: 'CSMA/CD' },
+  { zh: '碰撞避免', en: 'CSMA/CA' },
+  { zh: '自動重傳請求', en: 'ARQ' },
+  { zh: '點對點協定', en: 'PPP' }
+] as const;
+
+const networkingSecurityCryptoTerms = [
+  { zh: '機密性', en: 'Confidentiality' },
+  { zh: '完整性', en: 'Integrity' },
+  { zh: '可用性', en: 'Availability' },
+  { zh: '對稱式加密', en: 'Symmetric Encryption' },
+  { zh: '非對稱式加密', en: 'Asymmetric Encryption' },
+  { zh: '雜湊', en: 'Hash' },
+  { zh: '數位簽章', en: 'Digital Signature' },
+  { zh: '公開金鑰基礎建設', en: 'PKI' }
+] as const;
+
+const networkingDefenseAttacksTerms = [
+  { zh: '防火牆', en: 'Firewall' },
+  { zh: '次世代防火牆', en: 'NGFW' },
+  { zh: '網頁應用防火牆', en: 'WAF' },
+  { zh: '入侵偵測系統', en: 'IDS' },
+  { zh: '入侵防禦系統', en: 'IPS' },
+  { zh: '非軍事區', en: 'DMZ' },
+  { zh: '虛擬私人網路', en: 'VPN' },
+  { zh: '端點偵測與回應', en: 'EDR' }
 ] as const;
 
 const algorithmExampleSourceFiles = ['_private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md'] as const;
@@ -5905,6 +6044,1312 @@ const diskManagementLessonSections = [
   }
 ] as const;
 
+const networkingOsiTcpipLessonSections = [
+  {
+    heading: '一、為什麼先學 OSI（用途）　【理解】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'OSI 七層是網路概念的地圖：協定、設備與名詞都能用「在哪一層、做什麼」歸位。OSI 由第 7 層應用層往下到第 1 層實體層，越上層越靠近使用者，越下層越靠近硬體。'
+      }
+    ]
+  },
+  {
+    heading: '二、七層總表（核心，務必熟）',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['層', '名稱', '職責（做什麼）【理解】', '傳輸單位 PDU', '常見協定', '常見設備'],
+        rows: [
+          ['7', '應用層 Application', '提供網路服務，如網頁、郵件、檔案、名稱解析', 'Data', 'HTTP、HTTPS、FTP、SMTP、POP3、IMAP、DNS、DHCP、SNMP、Telnet', 'Gateway'],
+          ['6', '表現層 Presentation', '資料格式轉換、加解密、壓縮', 'Data', 'SSL/TLS、JPEG、MPEG、ASCII', '無特定設備'],
+          ['5', '會議層 Session', '建立、管理、結束兩端會議', 'Data', 'NetBIOS、RPC', '無特定設備'],
+          ['4', '傳輸層 Transport', '端到端傳輸、可靠性、流量控制、分段重組，用 port 區分應用', 'Segment / Datagram', 'TCP、UDP', 'Gateway、L4 Switch'],
+          ['3', '網路層 Network', 'IP 邏輯定址、路由選路、封包轉送', 'Packet', 'IP、ICMP、IGMP、IPSec、RIP/OSPF/BGP', 'Router、L3 Switch'],
+          ['2', '資料鏈結層 Data Link', 'MAC 實體定址、同網段訊框傳遞、錯誤偵測', 'Frame', 'Ethernet、PPP、HDLC', 'Switch(L2)、Bridge、NIC'],
+          ['1', '實體層 Physical', '傳輸原始 bit，定義電氣、機械、接頭、纜線與訊號', 'Bit', 'RS-232、纜線標準', 'Hub、Repeater、Cable']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三、PDU（傳輸單位）速記　【硬背】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '由下到上：Bit 位元 → Frame 訊框 → Packet 封包 → Segment（TCP）/ Datagram（UDP）→ Data 資料。'
+      },
+      {
+        kind: 'table',
+        headers: ['層', 'L1', 'L2', 'L3', 'L4', 'L5-7'],
+        rows: [['單位', 'Bit 位元', 'Frame 訊框', 'Packet 封包', 'Segment / Datagram', 'Data 資料']]
+      }
+    ]
+  },
+  {
+    heading: '四、七層記憶口訣',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '由第 1 層往上：Please Do Not Throw Sausage Pizza Away = Physical, Data Link, Network, Transport, Session, Presentation, Application。'
+      }
+    ]
+  },
+  {
+    heading: '五、TCP/IP 模型 vs OSI　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['TCP/IP（5 層）', '對應 OSI'],
+        rows: [
+          ['應用層 Application', 'OSI 第 5、6、7 層合併'],
+          ['傳輸層 Transport', 'OSI 第 4 層'],
+          ['網路層 Network / Internet', 'OSI 第 3 層'],
+          ['資料鏈結層 Data Link', 'OSI 第 2 層'],
+          ['實體層 Physical', 'OSI 第 1 層']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '4 層版本會再把實體層與資料鏈結層合併為網路存取層（Network Access）。'
+      }
+    ]
+  },
+  {
+    heading: '六、重點與易混淆　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'Hub / Repeater = L1；Switch(L2) / Bridge = L2；Router / L3 Switch = L3；Gateway 可到 L7。',
+          '交換 switching 看 MAC 在 L2；路由 routing 看 IP 在 L3；可靠傳輸 TCP 在 L4。',
+          'ARP / RARP 層級有教材差異，常見放 L2 或 L3；ICMP、IGMP 明確屬 L3。',
+          'bit → frame → packet → segment 是常考送分題。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const networkingBasicsLessonSections = [
+  {
+    heading: '一、LAN vs MAN vs WAN（依範圍大小分）　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'LAN 區域網路', 'MAN 都會網路', 'WAN 廣域網路'],
+        rows: [
+          ['範圍', '小：一棟樓、校園、辦公室', '中：一個城市', '大：跨城市、跨國'],
+          ['速度', '最快、延遲低', '中', '相對慢、延遲高'],
+          ['擁有 / 管理', '自己擁有', '城市 / 機構', '多租用電信業者線路'],
+          ['例子', '家裡 / 公司網路', '城市有線電視網', '網際網路、企業跨國連線']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '記憶：範圍 LAN < MAN < WAN；範圍越大，速度通常越慢，也越常需要租線。'
+      }
+    ]
+  },
+  {
+    heading: '二、Client-Server vs P2P　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', '主從式 Client-Server', '點對點 P2P'],
+        rows: [
+          ['架構', '有專門伺服器提供服務，用戶端請求', '每個節點既是 client 又是 server'],
+          ['優點', '集中管理、安全、易維護', '無單點故障、成本低、人越多資源越多'],
+          ['缺點', '伺服器單點故障、成本高、負載大', '難管理、安全性差、資源品質不一'],
+          ['例子', '網站、郵件伺服器', 'BitTorrent、區塊鏈']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三、網路拓樸 Topology（Bus / Ring / Star / Mesh）　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['拓樸', '運作方式', '優點', '缺點'],
+        rows: [
+          ['Bus 匯流排', '全部接在一條主幹線上', '簡單、省纜線、便宜', '主幹斷則全網癱；會碰撞；難除錯'],
+          ['Ring 環狀', '串成環，資料沿環傳，常用 token', '無碰撞、效能穩定', '一處斷可能整環中斷'],
+          ['Star 星狀', '全部連到中央節點 hub / switch', '好管理、單機故障不影響別人', '中央節點單點故障；耗纜線'],
+          ['Mesh 網狀', '裝置間多重互連', '可靠性最高、多路徑容錯', '纜線與成本最高、複雜']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '四、HTTP vs HTTPS　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'HTTP', 'HTTPS'],
+        rows: [
+          ['全名', 'HyperText Transfer Protocol', 'HTTP Secure'],
+          ['加密', '明文', 'HTTP + SSL/TLS 加密'],
+          ['安全性', '低', '高：加密與身分驗證'],
+          ['Port', '80', '443']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '五、Stateless（無狀態）　【理解】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '定義：伺服器不記得前一次請求，每個請求都獨立。HTTP 本身就是 stateless。',
+          '優點：簡單、伺服器不用存狀態、容易擴展，任何伺服器都能處理任何請求。',
+          '缺點：記不住使用者，所以要靠 Cookie / Session 記住登入、購物車等狀態。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '六、Session vs Cookie　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'Cookie', 'Session'],
+        rows: [
+          ['資料存在', '客戶端（瀏覽器）', '伺服器端'],
+          ['怎麼運作', '伺服器發給瀏覽器，之後請求自動帶上', '伺服器給 session ID，真正資料存在伺服器'],
+          ['安全性', '較低，可被竄改或竊取', '較高，資料不在客戶端'],
+          ['成本', '不佔伺服器資源', '佔伺服器資源']
+        ]
+      }
+    ]
+  }
+] as const;
+
+const networkingDevicesOsiLessonSections = [
+  {
+    heading: '一、七個網路設備總表（核心）　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['設備', 'OSI 層', '功能（做什麼）', '重點 / 場景'],
+        rows: [
+          ['Repeater', 'L1 實體', '訊號放大 / 再生，延長傳輸距離', '只處理 bit，不看位址'],
+          ['Hub', 'L1 實體', '多埠中繼器，收到訊號廣播給所有埠', '共享頻寬、會碰撞'],
+          ['Bridge', 'L2 資料鏈結', '依 MAC 連接 / 過濾兩網段', '分割碰撞域；switch 是多埠 bridge'],
+          ['L2 Switch', 'L2 資料鏈結', '依 MAC 只送給目標埠', '每埠獨立碰撞域、現代 LAN 核心'],
+          ['L3 Switch', 'L3 網路', '依 IP 跨 VLAN / 子網路轉送', '企業內跨 VLAN 路由'],
+          ['Router', 'L3 網路', '連接不同網路，依 IP 選路、轉送封包', '連 LAN 到 Internet，可做 NAT'],
+          ['Gateway', '可到 L7 應用', '連接不同協定網路，做協定轉換', '異質網路 / 協定轉換']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '推理法：看 bit → L1；看 MAC → L2；看 IP → L3；轉協定 → Gateway。'
+      }
+    ]
+  },
+  {
+    heading: '二、碰撞域 vs 廣播域（超常考）　【理解】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '碰撞域 Collision Domain 是會互相撞在一起的範圍；廣播域 Broadcast Domain 是一個廣播封包能傳到的範圍。'
+      },
+      {
+        kind: 'table',
+        headers: ['設備', '碰撞域', '廣播域'],
+        rows: [
+          ['Hub / Repeater', '全部同一個，會互撞', '同一個'],
+          ['Switch / Bridge', '每埠切開，各自獨立', '同一個'],
+          ['Router', '切開', '每介面切開']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '一句話：Switch 切碰撞域，Router 切廣播域。VLAN 也能在 switch 上切廣播域。'
+      }
+    ]
+  },
+  {
+    heading: '三、LAN vs VLAN　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'LAN', 'VLAN（虛擬 LAN）'],
+        rows: [
+          ['怎麼分', '實體連在一起就是一個廣播域', '用軟體把交換器埠邏輯切成多個獨立廣播域'],
+          ['佈線', '換網段要實體重新佈線', '不用重新佈線，軟體設定即可'],
+          ['隔離 / 安全', '同網段廣播互通', '不同 VLAN 預設不能互通，要靠 L3 路由'],
+          ['分組依據', '依實體位置', '依邏輯，例如部門']
+        ]
+      }
+    ]
+  }
+] as const;
+
+const networkingIpSubnettingLessonSections = [
+  {
+    heading: '一、IP 基礎　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'IPv4 位址是 32 bits，分成 4 段 octet，每段 8 bits、0-255。位址由網路部分與主機部分組成。'
+      },
+      {
+        kind: 'table',
+        headers: ['類別', '第一段範圍', '預設遮罩', '網路:主機 位元', '用途'],
+        rows: [
+          ['A', '1-126', '/8（255.0.0.0）', '8 : 24', '大型網路'],
+          ['B', '128-191', '/16（255.255.0.0）', '16 : 16', '中型'],
+          ['C', '192-223', '/24（255.255.255.0）', '24 : 8', '小型'],
+          ['D', '224-239', '-', '-', 'Multicast 多播'],
+          ['E', '240-255', '-', '-', '保留 / 實驗']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          '127.x.x.x 是 loopback，本機常見 127.0.0.1。',
+          '私有 IP：10/8、172.16/12、192.168/16，不能在公網路由。',
+          '網路位址 = 主機位元全 0；廣播位址 = 主機位元全 1。',
+          'MAC 位址是 L2 實體位址 48 bits；IP 位址是 L3 邏輯位址 32 bits。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '二、子網路計算　★【練流程】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '主機位元數 h = 32 - n，n 是 CIDR 的 /n。',
+          '一個子網路總位址數 block size = 2^h。',
+          '可用主機數 = 2^h - 2，扣掉網路位址與廣播位址。',
+          '子網路數 = 2^(借的位元數)。',
+          '快速法：在遮罩有變化的 octet，block = 256 - 該 octet 遮罩值；網路位址是 block 的倍數；廣播位址 = 下一個網路位址 - 1。'
+        ]
+      },
+      {
+        kind: 'table',
+        headers: ['CIDR', '遮罩', 'block', '可用主機'],
+        rows: [
+          ['/24', '255.255.255.0', '256', '254'],
+          ['/25', '255.255.255.128', '128', '126'],
+          ['/26', '255.255.255.192', '64', '62'],
+          ['/27', '255.255.255.224', '32', '30'],
+          ['/28', '255.255.255.240', '16', '14'],
+          ['/29', '255.255.255.248', '8', '6'],
+          ['/30', '255.255.255.252', '4', '2']
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: '題目一：每個子網路要容納 >= 50 台主機',
+        blocks: [
+          {
+            kind: 'orderedList',
+            items: [
+              '192.168.10.0/24 要每個子網路至少 50 台：找 h 使 2^h - 2 >= 50，所以 h = 6。',
+              'n = 32 - 6 = /26，遮罩 255.255.255.192。',
+              '從 /24 借 2 位，所以子網路數 = 2^2 = 4；block = 64。'
+            ]
+          },
+          {
+            kind: 'table',
+            headers: ['子網路', '網路位址', '廣播位址', '可用主機'],
+            rows: [
+              ['1', '192.168.10.0', '192.168.10.63', '.1 - .62'],
+              ['2', '192.168.10.64', '192.168.10.127', '.65 - .126'],
+              ['3', '192.168.10.128', '192.168.10.191', '.129 - .190'],
+              ['4', '192.168.10.192', '192.168.10.255', '.193 - .254']
+            ]
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: '題目二：給 IP/CIDR 求網路位址與廣播位址',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: '172.16.20.10/20：遮罩 255.255.240.0，第 3 段 block = 256 - 240 = 16。20 落在 16 那塊，所以網路位址 172.16.16.0、廣播位址 172.16.31.255、主機範圍 172.16.16.1 - 172.16.31.254。'
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: '題目三：VLSM（變動長度子網路遮罩）',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text: 'VLSM 是用不同大小的遮罩切子網路。做法是需求大的先切，用大區塊；需求小的後切，用小區塊。'
+          },
+          {
+            kind: 'table',
+            headers: ['子網路', '需求', '遮罩', '範圍', '可用'],
+            rows: [
+              ['A', '100', '/25', '.0 - .127', '126'],
+              ['B', '50', '/26', '.128 - .191', '62'],
+              ['C', '25', '/27', '.192 - .223', '30']
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三、重點整理（背這張）',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'h = 32 - n；block = 2^h；可用主機 = 2^h - 2；子網路數 = 2^借的位元。',
+          '快速法：變化 octet 的 block = 256 - 遮罩值；網路位址是 block 倍數；廣播 = 下個網路 - 1。',
+          '私有 IP：10/8、172.16/12、192.168/16；127.0.0.1 = loopback。',
+          'VLSM 大的先切，依需求給剛好大小，最省 IP。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const networkingRoutingL3ProtocolsLessonSections = [
+  {
+    heading: '一、靜態路由 vs 動態路由　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', '靜態路由 Static', '動態路由 Dynamic'],
+        rows: [
+          ['怎麼來', '管理員手動設路由表', '路由器間用協定自動交換、更新'],
+          ['優點', '簡單、安全、無額外開銷、可控', '自動適應變化，適合大網路'],
+          ['缺點', '不會自動繞路，大網路難維護', '較複雜，耗 CPU / 頻寬'],
+          ['適合', '小型 / 穩定網路', '大型 / 常變動網路']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '二、路由協定 + Distance Vector vs Link State　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['協定', '演算法類型', '度量 metric', '範圍', '重點'],
+        rows: [
+          ['RIP', 'Distance Vector', '跳數 hop，最多 15，16 = 不可達', '內部 IGP', '簡單、收斂慢、不適合大網'],
+          ['OSPF', 'Link State', '成本 cost，看頻寬', '內部 IGP', 'Dijkstra 算最短路、收斂快'],
+          ['BGP', 'Path Vector', '路徑屬性', '自治系統間 EGP', '網際網路骨幹']
+        ]
+      },
+      {
+        kind: 'table',
+        headers: ['', 'Distance Vector（如 RIP）', 'Link State（如 OSPF）'],
+        rows: [
+          ['知道什麼', '到各目的地的距離 + 下一跳', '整個網路拓樸地圖'],
+          ['怎麼運作', '把路由表定期告訴鄰居', '各自用 Dijkstra 算最短路'],
+          ['比喻', '只看路標跳數問路', '每個人手上都有完整地圖'],
+          ['缺點', '收斂慢、可能 routing loop', '較耗資源']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三、NAT（網路位址轉換）　【理解】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'NAT 把私有 IP 與公有 IP 互轉，讓內部多台私有 IP 裝置共用少數公有 IP 上網。',
+          '好處是節省公有 IP、隱藏內部結構。',
+          '類型：靜態 NAT 一對一、動態 NAT 從池中取、PAT / NAPT 多對一並用 port 區分，家用分享器最常見。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '四、L3 常見協定（ARP 家族 / ICMP / IGMP / IPSec）　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['協定', '做什麼', '記憶'],
+        rows: [
+          ['ARP', '由 IP 查 MAC，知道對方 IP 後找 MAC 才能在區網傳', 'IP → MAC'],
+          ['RARP', '由 MAC 查 IP，早期無磁碟工作站用，後被 DHCP 取代', 'MAC → IP'],
+          ['ICMP', '錯誤訊息與診斷；ping 用它；traceroute 靠 TTL 逾時回應找每一跳', '診斷用'],
+          ['IGMP', '管理 multicast 群組成員', '多播群組'],
+          ['IPSec', '在 IP 層提供加密與驗證，VPN 常用', 'IP 層安全']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: 'ARP Spoofing / ARP 毒化是偽造 ARP 回應，把自己的 MAC 對應到別人的 IP，讓流量被導到攻擊者，形成 MITM。'
+      }
+    ]
+  },
+  {
+    heading: '五、網路指令　【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['指令', '功能'],
+        rows: [
+          ['ping', '測與目標是否連通、測延遲，用 ICMP'],
+          ['traceroute / tracert', '顯示封包到目標經過的每一跳路由器路徑'],
+          ['netstat', '顯示本機連線、埠、路由表狀態'],
+          ['ipconfig / ifconfig', '顯示或設定本機 IP 設定'],
+          ['nslookup', '查 DNS，域名查 IP 或反查']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '六、IPv4 vs IPv6　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'IPv4', 'IPv6'],
+        rows: [
+          ['長度', '32 bits', '128 bits'],
+          ['表示', '點分十進位，例如 192.168.1.1', '冒號十六進位，例如 2001:db8::1'],
+          ['位址數', '約 43 億', '海量'],
+          ['安全', '需外加', '標準支援 IPSec，考題常寫內建 IPSec'],
+          ['NAT', '常需要', '位址夠多，通常不需 NAT'],
+          ['Header', '有 checksum、可變長度、分段欄位', '固定長度並簡化，拿掉 checksum，分段改由端點處理']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '七、重點整理（背這張）',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'RIP = 距離向量 / 跳數 <= 15；OSPF = 鏈結狀態 / Dijkstra；BGP = AS 間 / 網際網路骨幹。',
+          'NAT = 私有 ↔ 公有，PAT 多對一最常見。',
+          'ARP：IP→MAC；RARP：MAC→IP；ICMP：ping / 診斷；IGMP：多播；IPSec：IP 層加密。',
+          'IPv6 = 128 位元、海量位址、header 精簡、支援 IPSec。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const networkingTransportLayerLessonSections = [
+  {
+    heading: '一、Circuit Switching vs Packet Switching　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', '電路交換 Circuit Switching', '封包交換 Packet Switching'],
+        rows: [
+          ['方式', '先建立專屬實體路徑，全程獨佔', '資料切成封包各自獨立傳，目的地重組'],
+          ['優點', '連線穩定、保證頻寬、延遲固定', '線路共享、效率高、可繞路容錯'],
+          ['缺點', '獨佔線路，沒傳也佔著，建立慢', '延遲不固定，可能塞車或亂序，需重組'],
+          ['例子', '傳統電話網路 PSTN', '網際網路 IP']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '一句話：電路交換 = 獨佔專線，穩但浪費；封包交換 = 共享分封，省但延遲不定。'
+      }
+    ]
+  },
+  {
+    heading: '二、TCP + 三方交握 + 四方交握　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'TCP 是連線導向、可靠、有序，具備 ACK、遺失重傳、流量控制與壅塞控制，適合網頁、email、檔案等要求正確的應用。'
+      },
+      {
+        kind: 'subsection',
+        heading: '三方交握（建立連線）',
+        blocks: [
+          {
+            kind: 'orderedList',
+            items: [
+              'Client → Server：SYN，我想連線。',
+              'Server → Client：SYN + ACK，好，我也要連，並確認你。',
+              'Client → Server：ACK，確認後連線建立。'
+            ]
+          }
+        ]
+      },
+      {
+        kind: 'subsection',
+        heading: '四方交握（結束連線）',
+        blocks: [
+          {
+            kind: 'orderedList',
+            items: [
+              'Client → Server：FIN，我要關了。',
+              'Server → Client：ACK，收到。',
+              'Server → Client：FIN，我這邊也關了。',
+              'Client → Server：ACK，收到後連線結束。'
+            ]
+          },
+          {
+            kind: 'paragraph',
+            text: '結束要四次，因為 TCP 是全雙工，兩個方向要各自關閉。'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三、SYN Flood Attack　【理解】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '攻擊者大量送 SYN，常偽造來源 IP，卻不回最後 ACK，讓伺服器留下大量 half-open 半開連線並佔滿資源，造成 DoS。防範包含 SYN cookies、限制半開連線數與防火牆過濾。'
+      }
+    ]
+  },
+  {
+    heading: '四、流量控制 vs 壅塞控制（超常考辨別）　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', '流量控制 Flow Control', '壅塞控制 Congestion Control'],
+        rows: [
+          ['保護誰', '接收方，避免淹沒對方緩衝區', '整個網路，避免塞爆路由器'],
+          ['看誰的狀況', '接收方接收能力', '網路壅塞程度'],
+          ['機制', '滑動視窗，接收方告知 rwnd', '慢啟動、壅塞避免、快速重傳 / 恢復，cwnd']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '五、UDP + TCP vs UDP　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'UDP 是非連線、不可靠、快、開銷小，適合即時且可容忍少量遺失的串流、遊戲、DNS、VoIP。'
+      },
+      {
+        kind: 'table',
+        headers: ['', 'TCP', 'UDP'],
+        rows: [
+          ['連線', '連線導向，先三方交握', '非連線'],
+          ['可靠性', '可靠，確認、重傳、有序', '不可靠'],
+          ['速度', '較慢，開銷大', '快，開銷小'],
+          ['Header', '最小 20 bytes', '8 bytes'],
+          ['流量 / 壅塞控制', '有', '無'],
+          ['適用', '網頁、email、檔案', '串流、遊戲、DNS、VoIP']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '六、重點整理（背這張）',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'TCP：連線導向、可靠、有序；建立 = SYN / SYN-ACK / ACK；結束 = FIN / ACK / FIN / ACK。',
+          'SYN Flood = 灌半開連線的 DoS。',
+          '流量控制保護接收方；壅塞控制保護網路。',
+          'TCP 可靠慢，header 20B；UDP 快不保證，header 8B。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const networkingApplicationPortsLessonSections = [
+  {
+    heading: '一、Port Number 對照表（★ 必背）　【硬背】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: 'Port 範圍：0-1023 是 well-known 周知埠；1024-49151 是註冊埠；49152-65535 是動態 / 臨時埠。'
+      },
+      {
+        kind: 'table',
+        headers: ['協定', 'Port', 'TCP/UDP', '功能'],
+        rows: [
+          ['FTP', '20（資料）、21（控制）', 'TCP', '檔案傳輸'],
+          ['SSH', '22', 'TCP', '安全遠端登入'],
+          ['Telnet', '23', 'TCP', '遠端登入，明文不安全'],
+          ['SMTP', '25', 'TCP', '寄信，送出與伺服器間轉送'],
+          ['DNS', '53', 'TCP + UDP', '域名解析，查詢多用 UDP，區域傳送用 TCP'],
+          ['DHCP', '67（server）、68（client）', 'UDP', '自動分配 IP'],
+          ['TFTP', '69', 'UDP', '簡易檔案傳輸'],
+          ['HTTP', '80', 'TCP', '網頁'],
+          ['POP3', '110', 'TCP', '收信，下載到本機'],
+          ['IMAP', '143', 'TCP', '收信，保留在伺服器、多裝置同步'],
+          ['SNMP', '161（查詢）、162（trap）', 'UDP', '網路管理'],
+          ['HTTPS', '443', 'TCP', '加密網頁，HTTP + TLS'],
+          ['RTSP', '554', 'TCP/UDP', '串流控制']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: 'RTP / RTCP 沒有固定周知埠：RTP 常走動態 UDP 偶數埠，RTCP 走相鄰奇數埠（RTP 埠 + 1）。'
+      }
+    ]
+  },
+  {
+    heading: '二、常見應用層協定（做什麼）　【理解】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'DNS（53）：域名轉 IP。',
+          'DHCP（67/68）：自動分配 IP、遮罩、預設閘道、DNS；流程 DORA = Discover → Offer → Request → ACK。',
+          'FTP（20/21）：檔案傳輸，21 控制、20 資料。',
+          'Email 三劍客：SMTP 寄，POP3 / IMAP 收；POP3 下載刪，IMAP 留伺服器。',
+          'SNMP（161/162）：監控、管理路由器與交換器等網路設備。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三、GET vs POST（HTTP 方法，常考）　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'GET', 'POST'],
+        rows: [
+          ['用途', '取得資料', '提交資料'],
+          ['參數放哪', 'URL，看得到', 'body，不顯示在網址'],
+          ['長度限制', '有 URL 長度限制', '通常無同樣限制'],
+          ['快取 / 書籤', '可', '不適合'],
+          ['安全性', '較低，參數露在網址', '較高，但仍需 HTTPS 才真的加密']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '四、URL（統一資源定位符）　【理解】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '格式：協定://主機名稱:埠/路徑?查詢，例如 https://www.example.com:443/page?id=1，其中 https 是協定、www.example.com 是主機、443 是埠、/page 是路徑、id=1 是查詢。'
+      }
+    ]
+  },
+  {
+    heading: '五、SDN / CDN / 即時串流　【理解】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'SDN：控制平面與資料平面分離，用集中控制器讓網路可程式化、好調整。',
+          'CDN：把內容快取到全球邊緣伺服器，讓使用者就近取得，提升速度並減輕原站負載。',
+          'RTSP（554）是控制播放 / 暫停 / 停止；RTP 傳即時影音資料；RTCP 回報品質。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '六、重點整理（背這張）',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '必背 port：FTP 20/21、SSH 22、Telnet 23、SMTP 25、DNS 53、DHCP 67/68、TFTP 69、HTTP 80、POP3 110、IMAP 143、SNMP 161/162、HTTPS 443、RTSP 554。'
+      }
+    ]
+  }
+] as const;
+
+const networkingPhysicalLayerLessonSections = [
+  {
+    heading: '一、傳輸媒介　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['媒介', '原理', '優點', '缺點'],
+        rows: [
+          ['雙絞線 Twisted Pair', '兩銅線絞繞減干擾，UTP / STP', '便宜、易裝', '距離短、易受干擾'],
+          ['同軸電纜 Coaxial', '中心銅線 + 遮蔽層', '抗干擾較好、頻寬較大', '粗硬'],
+          ['光纖 Fiber', '用光傳輸', '最快、最遠、頻寬最大、不受電磁干擾、安全', '貴、施工難、易折']
+        ]
+      },
+      {
+        kind: 'table',
+        headers: ['無線媒介', '特性'],
+        rows: [
+          ['紅外線 Infrared', '短距離、需視線、不能穿牆'],
+          ['雷射 Laser', '高頻寬、需視線、受天氣影響'],
+          ['無線電波 Radio', '可穿透、全向、距離遠，例如 WiFi、廣播'],
+          ['微波 Microwave', '高頻、需視線、受天氣影響']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '二、WiFi（802.11）標準速度表　【硬背】★',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['標準', '別名', '頻段', '最高速度'],
+        rows: [
+          ['802.11b', '-', '2.4 GHz', '11 Mbps'],
+          ['802.11a', '-', '5 GHz', '54 Mbps'],
+          ['802.11g', '-', '2.4 GHz', '54 Mbps'],
+          ['802.11n', 'Wi-Fi 4', '2.4 / 5 GHz', '600 Mbps'],
+          ['802.11ac', 'Wi-Fi 5', '5 GHz', '約 6.9 Gbps'],
+          ['802.11ax', 'Wi-Fi 6 / 6E', '2.4 / 5 / 6 GHz', '約 9.6 Gbps'],
+          ['802.11be', 'Wi-Fi 7', '2.4 / 5 / 6 GHz', '約 46 Gbps']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: 'MIMO 是用多根天線同時收發多個資料流，提升速度與可靠度，802.11n 起採用。'
+      }
+    ]
+  },
+  {
+    heading: '三、藍牙 Bluetooth 世代速度　【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['版本', '最高速度', '重點'],
+        rows: [
+          ['1.x', '約 1 Mbps', '範圍約 10m'],
+          ['2.0 + EDR', '約 3 Mbps', 'EDR 增速'],
+          ['3.0 + HS', '約 24 Mbps', '借 WiFi（802.11）來傳'],
+          ['4.0', '約 1 Mbps', '引入 BLE 低功耗'],
+          ['5.0', '約 2 Mbps（BLE）', '範圍約 4 倍、廣播強化']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '四、USB 速度　【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['版本', '最高速度'],
+        rows: [
+          ['USB 1.0 / 1.1', '12 Mbps'],
+          ['USB 2.0', '480 Mbps'],
+          ['USB 3.0（= 3.1 Gen1）', '5 Gbps'],
+          ['USB 3.1（Gen2）', '10 Gbps'],
+          ['USB 3.2（Gen2x2）', '20 Gbps'],
+          ['USB4', '40 Gbps；USB4 Version 2.0 可到 80 Gbps']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '五、行動網路 1G～5G　【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['世代', '技術', '速度', '特色'],
+        rows: [
+          ['1G', '類比 AMPS', '約 2.4 Kbps', '類比語音'],
+          ['2G', '數位 GSM', '約 64 Kbps', '數位語音 + SMS'],
+          ['3G', 'UMTS / CDMA2000', '144 Kbps - 2 Mbps', '行動上網'],
+          ['4G', 'LTE', '100 Mbps - 1 Gbps', '高速、全 IP、影音串流'],
+          ['5G', 'NR', '1 - 20 Gbps', '超高速、低延遲、海量 IoT']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: 'Ethernet：10BASE-T 10 Mbps → Fast Ethernet 100 Mbps → Gigabit 1 Gbps → 10 Gigabit 10 Gbps。'
+      }
+    ]
+  },
+  {
+    heading: '六、IoT / 雲端 / Big Data　【理解】（概念）＋【硬背】（分類名）',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'IoT 三層：感知層 Perception、網路層 Network、應用層 Application。',
+          '雲端服務模式：IaaS 租硬體 / VM，PaaS 租開發平台，SaaS 租現成軟體；從 IaaS 到 SaaS，使用者要管的越來越少。',
+          '雲端部署模式：公有雲、私有雲、社群雲、混合雲。',
+          'Big Data 5V：Volume、Velocity、Variety、Veracity、Value。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '七、RFID / NFC　【理解】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'RFID 用無線電波，讀取器讀 tag 資料，免接觸 / 免視線；組成為標籤、讀取器、天線。',
+          'RFID 分被動式（無電池、靠讀取器供電）與主動式（有電池）。',
+          'NFC 是 RFID 的一種，超短距離約 4cm、13.56 MHz、可雙向，多用於手機感應支付。',
+          'NFC vs RFID：NFC 距離更短且可雙向；RFID 距離較長，多為單向。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '八、重點整理（背這張）',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '光纖最快最遠最安全；WiFi 記 b 11M、a/g 54M、n 600M、ac 約 6.9G、ax 約 9.6G；USB 記 1.1 12M、2.0 480M、3.0 5G、3.1 10G、3.2 20G、USB4 40G，並注意 USB4 Version 2.0 可到 80G。'
+      }
+    ]
+  }
+] as const;
+
+const networkingDataLinkLayerLessonSections = [
+  {
+    heading: '一、訊框化 Framing　【理解】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '資料鏈結層把上層位元流包成 frame：前面加 header（來源 / 目的 MAC），後面加 trailer（FCS / CRC）。目的在於定界，讓接收端知道訊框從哪開始、哪結束，並能偵測錯誤。'
+      }
+    ]
+  },
+  {
+    heading: '二、單工 / 半雙工 / 全雙工　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['模式', '方向', '例子'],
+        rows: [
+          ['單工 Simplex', '只能單向', '廣播、鍵盤 → 電腦'],
+          ['半雙工 Half-duplex', '雙向但不能同時，輪流', '對講機'],
+          ['全雙工 Full-duplex', '雙向可同時', '電話、現代乙太網路 switch']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三、多重存取：競爭 vs 無競爭 + CSMA　【理解】★',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', '競爭式 Contention', '無競爭式 Contention-free'],
+        rows: [
+          ['怎麼傳', '大家搶著傳，可能碰撞', '有秩序輪流，不碰撞'],
+          ['例子', 'CSMA/CD、CSMA/CA、ALOHA', 'Token Passing、Polling、TDMA'],
+          ['優缺', '低負載效率高；高負載碰撞多', '無碰撞、高負載穩；低負載有等待開銷']
+        ]
+      },
+      {
+        kind: 'table',
+        headers: ['', '全名', '用在', '做法'],
+        rows: [
+          ['CSMA', '載波偵聽多重存取', '-', '先聽，沒人用才傳，但仍可能同時傳而碰撞'],
+          ['CSMA/CD', 'Collision Detection 碰撞偵測', '有線乙太網路', '邊傳邊測，撞到就停，等隨機時間重傳'],
+          ['CSMA/CA', 'Collision Avoidance 碰撞避免', '無線 WiFi（802.11）', '傳前等待，RTS / CTS 預約，事先避免碰撞']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '超常考：CD 用於有線，因為偵測得到碰撞；CA 用於無線，因為難偵測，所以改成避免。'
+      }
+    ]
+  },
+  {
+    heading: '四、543 Rule（5-4-3 規則）　【硬背】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '早期 10 Mbps 乙太網路的一個碰撞域最多 5 個網段、4 個中繼器（hub），其中只有 3 個網段可接裝置；目的在限制延遲，確保 CSMA/CD 碰撞偵測能正常運作。'
+      }
+    ]
+  },
+  {
+    heading: '五、ARQ（自動重傳請求）　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['方式', '做法'],
+        rows: [
+          ['Stop-and-Wait 停止等待', '傳一個、等一個 ACK 再傳下一個，簡單但慢'],
+          ['Go-Back-N 回溯 N', '錯了就從出錯那個之後全部重傳'],
+          ['Selective Repeat 選擇性重傳', '只重傳錯的那個，效率高但較複雜']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '六、HDLC vs PPP　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'HDLC', 'PPP'],
+        rows: [
+          ['全名', 'High-level Data Link Control', 'Point-to-Point Protocol'],
+          ['特性', '位元導向、同步', '點對點直連，撥接、DSL'],
+          ['功能', '較簡單', '支援多協定、PAP / CHAP 身分驗證、錯誤偵測'],
+          ['標準', '偏 Cisco 私有', '標準開放，跨廠商']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '七、L2 vs L3 Switch　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'L2 交換器', 'L3 交換器'],
+        rows: [
+          ['依據', 'MAC 位址', 'IP 位址'],
+          ['能做', '同網段 / VLAN 內轉送訊框', 'switch + router，跨 VLAN / 子網路路由'],
+          ['層', 'L2', 'L3']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '八、重點整理（背這張）',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '訊框化 = MAC header + 錯誤碼 trailer，負責定界與偵錯。',
+          '單工單向、半雙工輪流、全雙工同時雙向。',
+          'CSMA/CD 有線偵測；CSMA/CA 無線避免。',
+          '543 Rule：5 段、4 中繼器、3 段有裝置。',
+          'HDLC 簡單偏私有；PPP 功能多、標準開放。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const networkingSecurityCryptoLessonSections = [
+  {
+    heading: '一、資安五大要素　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['要素', '意思', '靠什麼達成'],
+        rows: [
+          ['機密性 Confidentiality', '資料只有授權者能看', '加密、存取控制'],
+          ['完整性 Integrity', '資料沒被竄改、保持正確', '雜湊、數位簽章'],
+          ['可用性 Availability', '授權者需要時能正常使用', '備援、備份；威脅是 DoS / DDoS'],
+          ['不可否認性 Non-repudiation', '做過的事不能事後抵賴', '數位簽章'],
+          ['認證性 Authentication', '確認身分是真的', '密碼、憑證、生物辨識']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: 'CIA 是三大核心：機密、完整、可用；再加不可否認與認證。'
+      }
+    ]
+  },
+  {
+    heading: '二、對稱 vs 非對稱加密　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', '對稱式 Symmetric', '非對稱式 Asymmetric'],
+        rows: [
+          ['金鑰', '同一把金鑰加解密', '一對公鑰與私鑰'],
+          ['速度', '快，適合大量資料', '慢'],
+          ['痛點 / 優勢', '金鑰分配難、金鑰數量多', '解決金鑰分配，能做數位簽章'],
+          ['例子', 'DES、3DES、AES', 'RSA、ECC、Diffie-Hellman']
+        ]
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          '要保密：用接收者公鑰加密，只有接收者私鑰能解。',
+          '要簽章：用發送者私鑰簽，大家用發送者公鑰驗。',
+          '實務常混合：用非對稱傳對稱金鑰，再用對稱加密資料。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三、雜湊 Hash　【理解】',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '雜湊函數把任意長度資料轉成固定長度 digest。特性是單向不可逆、固定長度、改一點點就完全不同（雪崩效應）、抗碰撞。用途是驗證完整性與密碼儲存。MD5、SHA-1 已不安全，常見安全選項是 SHA-256 / SHA-2、SHA-3。'
+      }
+    ]
+  },
+  {
+    heading: '四、數位簽章 Digital Signature　【理解】★',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '數位簽章一次達成完整性、認證、不可否認，但不負責保密。'
+      },
+      {
+        kind: 'orderedList',
+        items: [
+          '發送者把訊息做雜湊得到摘要。',
+          '用發送者私鑰加密摘要，形成數位簽章。',
+          '連同原訊息一起送出。',
+          '接收者用發送者公鑰解簽章得到摘要 A，自己也對訊息做雜湊得到摘要 B。',
+          'A = B 代表沒被竄改，且確實是發送者發出。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '五、PKI / CA / 數位憑證　【理解】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'PKI 是管理數位憑證與公私鑰的架構，用來確認某把公鑰真的屬於某人。',
+          'CA 是受信任第三方，簽發數位憑證，把身分與公鑰綁定並由 CA 簽章背書。',
+          '數位憑證像網路身分證，內含持有者資訊、公鑰、CA 簽章；HTTPS 的 SSL/TLS 憑證靠 PKI。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '六、電子商務安全　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['需求', '在交易裡的意思'],
+        rows: [
+          ['機密性', '交易 / 信用卡資料不被竊'],
+          ['完整性', '交易內容不被竄改'],
+          ['不可否認性', '買賣雙方不能否認交易'],
+          ['可驗證性（認證）', '確認交易雙方身分'],
+          ['存取控制', '只有授權者能存取資源']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '七、重點整理（背這張）',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '五要素：機密、完整、可用（CIA）+ 不可否認、認證。',
+          '對稱同把金鑰、快、分配難；非對稱公私鑰、慢、能簽章。',
+          '加密保密用收件者公鑰；數位簽章用發送者私鑰。',
+          '數位簽章 = 完整性 + 認證 + 不可否認，不保密。',
+          'PKI 由 CA 簽發憑證，綁定身分與公鑰。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const networkingDefenseAttacksLessonSections = [
+  {
+    heading: '一、防火牆 / 次世代防火牆 / WAF　【理解】',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', '看哪層 / 看什麼', '特點'],
+        rows: [
+          ['傳統防火牆 Firewall', 'L3 / L4，IP、port、協定', '依規則過濾進出流量，如封包過濾、狀態檢測'],
+          ['次世代防火牆 NGFW', '可到 L7', '傳統防火牆 + 應用辨識 + 內建 IPS + DPI'],
+          ['WAF', 'L7，專護 web app', '過濾 HTTP/HTTPS，擋 SQL injection、XSS 等網頁攻擊']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '二、IDS vs IPS　【理解】★',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['', 'IDS 入侵偵測系統', 'IPS 入侵防禦系統'],
+        rows: [
+          ['做什麼', '偵測可疑活動並告警', '偵測 + 主動阻擋'],
+          ['主 / 被動', '被動，旁路監看', '主動，串接在線上'],
+          ['比喻', '監視器 / 警報器', '警衛，會把人擋下來']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '記憶鉤子：IDS 只偵測 + 告警，IPS 還會阻擋。'
+      }
+    ]
+  },
+  {
+    heading: '三、Proxy Server / DMZ　【理解】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'Proxy Server 是介於使用者與目標伺服器之間的代理，代為轉發請求；用途包含隱藏內部 IP、快取加速、存取控制 / 過濾、記錄。',
+          'DMZ 是內部網路與外部網際網路之間的隔離緩衝區，放 web、mail、DNS 等對外服務；即使對外伺服器被攻破，也不會直接危及內部網路。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '四、VPN / PPTP　【理解】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'VPN 在公開網路上建立加密 tunnel，讓遠端使用者安全連回內部網路，像在本地一樣。',
+          'PPTP 是早期微軟 VPN 通道協定，設定簡單、快，但加密弱、已不安全，現多改用 L2TP/IPSec、OpenVPN、IPSec。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '五、常見網路攻擊　【理解】★（今年重點）',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['惡意程式', '特性'],
+        rows: [
+          ['病毒 Virus', '附在正常程式 / 檔案上，需執行宿主才散播'],
+          ['蠕蟲 Worm', '能自我複製、不需宿主，透過網路自動散播'],
+          ['木馬 Trojan', '偽裝成正常軟體誘騙安裝，暗中開後門 / 竊資料，不自我複製'],
+          ['勒索軟體 Ransomware', '加密受害者檔案、勒索贖金'],
+          ['間諜軟體 Spyware', '偷偷蒐集使用者資訊']
+        ]
+      },
+      {
+        kind: 'table',
+        headers: ['攻擊手法', '做什麼'],
+        rows: [
+          ['XSS', '把惡意 script 注入網頁，在其他使用者瀏覽器執行，竊 cookie / session'],
+          ['SQL Injection', '在輸入欄塞惡意 SQL，操控資料庫'],
+          ['Phishing', '偽裝可信來源，騙取帳密與個資'],
+          ['DoS / DDoS', '大量流量灌爆目標使其無法服務，DDoS 用大量 botnet 一起灌'],
+          ['MITM', '攔在通訊雙方中間竊聽 / 竄改，例如 ARP spoofing'],
+          ['社交工程', '利用人性弱點騙取資訊，釣魚是其中一種'],
+          ['Zero-day', '利用尚未修補的未知漏洞']
+        ]
+      }
+    ]
+  },
+  {
+    heading: '六、EDR / MDR　【理解】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'EDR 是端點偵測與回應，監控電腦、伺服器、手機等端點活動，偵測威脅並隔離或調查，是工具 / 技術。',
+          'MDR 是託管式偵測與回應，把偵測與回應外包給專業資安服務商 24/7 監控處理，是服務。',
+          '一句話：EDR 是工具，MDR 是服務。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '七、資安標準：NIST / ISO 27001　【理解】＋【硬背】',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          'NIST CSF 原本 5 大核心功能：Identify、Protect、Detect、Respond、Recover（IPDRR）；2.0 版新增 Govern，成為 6 個。',
+          'ISO 27001 是資訊安全管理系統 ISMS 國際標準，提供建立與維運資安制度的框架，可申請驗證認證。',
+          'NIST CSF 是功能導向框架；ISO 27001 是可認證的 ISMS 國際標準。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '八、重點整理（背這張）',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '防火牆看 IP / port；NGFW 加應用 + IPS；WAF 護網站並擋 SQLi / XSS。',
+          'IDS 偵測告警，被動；IPS 偵測 + 阻擋，主動。',
+          'DMZ 放對外伺服器；Proxy 是代理中間人；VPN 是加密通道。',
+          '病毒要宿主、蠕蟲自我複製、木馬偽裝、勒索加密勒贖。',
+          'EDR 工具，MDR 服務；NIST CSF 2.0 = Govern + IPDRR。'
+        ]
+      }
+    ]
+  }
+] as const;
+
+const markdownBackedNetworkingContentById = {
+  'networking-osi-tcpip': {
+    summary: '整理 OSI 七層、各層職責、PDU、TCP/IP 5 層對應，以及設備與協定歸層的常考辨別。',
+    sourceFiles: networkingOsiTcpipSourceFiles,
+    terms: networkingOsiTcpipTerms,
+    lead: [
+      '科目：網路概論｜幾乎每年必考、是全科的地圖。',
+      '每層職責屬【理解】；協定、設備與 PDU 歸層屬【硬背】。'
+    ],
+    sections: networkingOsiTcpipLessonSections
+  },
+  'networking-basics': {
+    summary: '整理 LAN vs MAN vs WAN、Client-Server vs P2P、拓樸、HTTP/HTTPS、stateless、Cookie 與 Session。',
+    sourceFiles: networkingBasicsSourceFiles,
+    terms: networkingBasicsTerms,
+    lead: ['大多屬【理解】：都是有邏輯的對比，懂差異就記得。HTTP/HTTPS port 80/443 屬【硬背】。'],
+    sections: networkingBasicsLessonSections
+  },
+  'networking-devices-osi': {
+    summary: '整理 Hub、Repeater、Bridge、Switch、Router、Gateway 對應 OSI 層級，並比較碰撞域、廣播域與 VLAN。',
+    sourceFiles: networkingDevicesOsiSourceFiles,
+    terms: networkingDevicesOsiTerms,
+    lead: ['設備屬哪一層雖要記，但可從功能推：看 bit 是 L1、看 MAC 是 L2、看 IP 是 L3、轉協定可到 L7。'],
+    sections: networkingDevicesOsiLessonSections
+  },
+  'networking-ip-subnetting': {
+    summary: '整理 IPv4 classful、私有 IP、MAC vs IP、CIDR、可用主機數、magic number、三題子網路與 VLSM 計算流程。',
+    sourceFiles: networkingIpSubnettingSourceFiles,
+    terms: networkingIpSubnettingTerms,
+    lead: ['子網路切割是網路科最常見的大計算題，公式要懂，流程要動手算。'],
+    sections: networkingIpSubnettingLessonSections
+  },
+  'networking-routing-l3-protocols': {
+    summary: '整理靜態/動態路由、RIP/OSPF/BGP、Distance Vector vs Link State、NAT、L3 協定工具與 IPv4/IPv6 差異。',
+    sourceFiles: networkingRoutingL3ProtocolsSourceFiles,
+    terms: networkingRoutingL3ProtocolsTerms,
+    lead: ['路由概念屬【理解】；協定 facts、指令、IPv6 細節屬【硬背】。'],
+    sections: networkingRoutingL3ProtocolsLessonSections
+  },
+  'networking-transport-layer': {
+    summary: '整理電路交換與封包交換、TCP 三方交握/四方交握、SYN Flood、流量控制/壅塞控制，以及 TCP vs UDP。',
+    sourceFiles: networkingTransportLayerSourceFiles,
+    terms: networkingTransportLayerTerms,
+    lead: ['傳輸層大多能靠邏輯理解；握手順序與 header 大小要硬背。'],
+    sections: networkingTransportLayerLessonSections
+  },
+  'networking-application-ports': {
+    summary: '整理常見應用層協定與 Port Number、DNS/DHCP/FTP/Email、GET vs POST、URL、SDN、CDN 與即時串流。',
+    sourceFiles: networkingApplicationPortsSourceFiles,
+    terms: networkingApplicationPortsTerms,
+    lead: ['Port 號與 TCP/UDP 屬【硬背】；協定做什麼屬【理解】。'],
+    sections: networkingApplicationPortsLessonSections
+  },
+  'networking-physical-layer': {
+    summary: '整理有線/無線傳輸媒介、WiFi/藍牙/USB/行動網路速度、IoT、雲端、Big Data、RFID 與 NFC。',
+    sourceFiles: networkingPhysicalLayerSourceFiles,
+    terms: networkingPhysicalLayerTerms,
+    lead: ['媒介特性、IoT、雲端、Big Data 屬【理解】；各種速度與 IEEE 標準屬【硬背】。'],
+    sections: networkingPhysicalLayerLessonSections
+  },
+  'networking-data-link-layer': {
+    summary: '整理 Framing、單工/半雙工/全雙工、多重存取、CSMA/CD、CSMA/CA、543 Rule、ARQ、HDLC、PPP 與 L2/L3 switch。',
+    sourceFiles: networkingDataLinkLayerSourceFiles,
+    terms: networkingDataLinkLayerTerms,
+    lead: ['資料鏈結層多能理解；543 Rule 的數字與 CSMA/CD、CSMA/CA 用在哪裡要硬背。'],
+    sections: networkingDataLinkLayerLessonSections
+  },
+  'networking-security-crypto': {
+    summary: '整理資安五大要素、對稱/非對稱加密、雜湊、數位簽章、PKI/CA/憑證與電子商務安全需求。',
+    sourceFiles: networkingSecurityCryptoSourceFiles,
+    terms: networkingSecurityCryptoTerms,
+    lead: ['資安觀念多能靠原理解；加密演算法名稱與簽章流程要熟。'],
+    sections: networkingSecurityCryptoLessonSections
+  },
+  'networking-defense-attacks': {
+    summary: '整理防火牆/NGFW/WAF、IDS vs IPS、Proxy、DMZ、VPN/PPTP、惡意程式、常見攻擊、EDR/MDR、NIST CSF 與 ISO 27001。',
+    sourceFiles: networkingDefenseAttacksSourceFiles,
+    terms: networkingDefenseAttacksTerms,
+    lead: ['資安攻防屬今年重點：防禦設備功能與攻擊類型多靠理解，NIST / ISO 名稱需硬背。'],
+    sections: networkingDefenseAttacksLessonSections
+  }
+} as const;
+
+type MarkdownBackedNetworkingTopicId = keyof typeof markdownBackedNetworkingContentById;
+
+const isMarkdownBackedNetworkingTopicId = (id: string): id is MarkdownBackedNetworkingTopicId =>
+  id in markdownBackedNetworkingContentById;
+
 const markdownBackedComputerPrinciplesContentById = {
   'cp-performance-formulas': {
     summary: '整理 CPU Time、Clock Rate、CPI、MIPS、Execution Time、ISA 與內頻外頻倍頻等效能名詞與常見公式。',
@@ -6291,6 +7736,37 @@ const createMarkdownBackedComputerPrinciplesTopic = (
   };
 };
 
+const createMarkdownBackedNetworkingTopic = (
+  config: ProfessionalTopicSkeletonConfig & { id: MarkdownBackedNetworkingTopicId }
+): ProfessionalSubjectTopic => {
+  const content = markdownBackedNetworkingContentById[config.id];
+
+  return {
+    id: config.id,
+    subjectKey: config.subjectKey,
+    title: config.titleZh,
+    summary: content.summary,
+    sourceBatch: 'manual-section-fill-networking-20260618',
+    sourceFiles: content.sourceFiles,
+    sourceSummary: config.sourceSection,
+    examOutline: [],
+    memoryPoints: [],
+    understandingNotes: [],
+    difficulty: config.difficulty,
+    topicType: config.topicType,
+    terms: content.terms,
+    blocks: [
+      {
+        kind: 'lessonArticle',
+        sourceFiles: content.sourceFiles,
+        sourceSection: config.sourceSection,
+        lead: content.lead,
+        sections: content.sections
+      }
+    ]
+  };
+};
+
 const createAlgorithmExampleTopic = (
   config: ProfessionalTopicSkeletonConfig & { id: AlgorithmExampleTopicId }
 ): ProfessionalSubjectTopic => {
@@ -6347,6 +7823,9 @@ const createProfessionalTopicSkeleton = (config: ProfessionalTopicSkeletonConfig
   }
   if (config.id === 'cp-bus') {
     return createBusTopic(config);
+  }
+  if (isMarkdownBackedNetworkingTopicId(config.id)) {
+    return createMarkdownBackedNetworkingTopic({ ...config, id: config.id });
   }
   if (isMarkdownBackedComputerPrinciplesTopicId(config.id)) {
     return createMarkdownBackedComputerPrinciplesTopic({ ...config, id: config.id });

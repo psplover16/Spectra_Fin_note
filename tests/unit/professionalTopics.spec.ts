@@ -154,6 +154,76 @@ const operatingSystemRepresentativeKeywordsByTopicId = {
   'cp-virtual-memory': ['EMAT', 'Page Replacement'],
   'cp-disk-management': ['Disk Scheduling', 'RAID']
 } as const satisfies Record<(typeof operatingSystemTopicIds)[number], readonly string[]>;
+const networkingSourceText = '_private/網概.txt';
+const networkingTopicCases = [
+  {
+    id: 'networking-osi-tcpip',
+    mdSource: '_private/MD/網概/網路概論_1_OSI七層與TCPIP.md',
+    sourceSummaryPhrase: 'OSI',
+    keyword: 'OSI 七層'
+  },
+  {
+    id: 'networking-basics',
+    mdSource: '_private/MD/網概/網路概論_2_基礎概念.md',
+    sourceSummaryPhrase: '基礎概念',
+    keyword: 'LAN vs MAN vs WAN'
+  },
+  {
+    id: 'networking-devices-osi',
+    mdSource: '_private/MD/網概/網路概論_3_網路設備對應層級.md',
+    sourceSummaryPhrase: '網路設備',
+    keyword: '碰撞域'
+  },
+  {
+    id: 'networking-ip-subnetting',
+    mdSource: '_private/MD/網概/網路概論_4上_IP與子網路計算.md',
+    sourceSummaryPhrase: 'IP',
+    keyword: 'VLSM'
+  },
+  {
+    id: 'networking-routing-l3-protocols',
+    mdSource: '_private/MD/網概/網路概論_4下_路由與L3協定.md',
+    sourceSummaryPhrase: '路由',
+    keyword: 'RIP'
+  },
+  {
+    id: 'networking-transport-layer',
+    mdSource: '_private/MD/網概/網路概論_5_傳輸層.md',
+    sourceSummaryPhrase: '傳輸層',
+    keyword: '三方交握'
+  },
+  {
+    id: 'networking-application-ports',
+    mdSource: '_private/MD/網概/網路概論_6_應用層與Port對照.md',
+    sourceSummaryPhrase: '應用層',
+    keyword: 'Port Number'
+  },
+  {
+    id: 'networking-physical-layer',
+    mdSource: '_private/MD/網概/網路概論_7上_實體層.md',
+    sourceSummaryPhrase: '實體層',
+    keyword: 'WiFi'
+  },
+  {
+    id: 'networking-data-link-layer',
+    mdSource: '_private/MD/網概/網路概論_7下_資料鏈結層.md',
+    sourceSummaryPhrase: '資料鏈結層',
+    keyword: 'CSMA/CD'
+  },
+  {
+    id: 'networking-security-crypto',
+    mdSource: '_private/MD/網概/網路概論_8上_資安觀念與加密.md',
+    sourceSummaryPhrase: '資安',
+    keyword: '數位簽章'
+  },
+  {
+    id: 'networking-defense-attacks',
+    mdSource: '_private/MD/網概/網路概論_8下_防禦設備與攻擊.md',
+    sourceSummaryPhrase: '防禦',
+    keyword: 'IDS vs IPS'
+  }
+] as const;
+const networkingTopicIds = networkingTopicCases.map((topicCase) => topicCase.id);
 const markdownBackedComputerPrinciplesTopicCases = [
   {
     id: 'cp-performance-formulas',
@@ -248,6 +318,7 @@ const filledTopicIds = new Set([
   ...digitalLogicTopicIds,
   ...operatingSystemTopicIds,
   ...markdownBackedComputerPrinciplesTopicIds,
+  ...networkingTopicIds,
   ...firstBatchAlgorithmTopicIds
 ]);
 
@@ -1472,6 +1543,40 @@ describe('professional topic skeleton data', () => {
     }
     expect(hardwareProtectionLessonArticle.lead).toEqual([]);
     expect(hardwareProtectionLessonArticle.sections).toEqual([]);
+  });
+
+  it('fills networking Markdown topics with source traceability and source-preserving lesson articles', () => {
+    expect(professionalTopicsBySubject.networking.map((topic) => topic.id)).toEqual([...networkingTopicIds]);
+
+    for (const topicCase of networkingTopicCases) {
+      const topic = professionalTopicsBySubject.networking.find((networkingTopic) => networkingTopic.id === topicCase.id);
+      const expectedSources = [networkingSourceText, topicCase.mdSource];
+
+      if (!topic) {
+        throw new Error(`${topicCase.id} should exist`);
+      }
+
+      expect(topic.sourceFiles).toEqual(expect.arrayContaining(expectedSources));
+      expect(topic.sourceSummary, `${topic.id} should point to the chapter topic`).toContain(topicCase.sourceSummaryPhrase);
+      expect(topic.summary, `${topic.id} should have a summary`).not.toBe('');
+      expect(topic.terms.length, `${topic.id} should have terms`).toBeGreaterThan(0);
+      expect(topic.blocks).toHaveLength(1);
+
+      const lessonArticle = topic.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topic.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual(expect.arrayContaining(expectedSources));
+      expect(lessonArticle.sourceSection).toBe(topic.sourceSummary);
+      expect(lessonArticle.sections.length, `${topic.id} should have lesson sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topic.id} should not have empty sections`).toBe(
+        true
+      );
+      expect(JSON.stringify(topic), `${topic.id} should contain ${topicCase.keyword}`).toContain(topicCase.keyword);
+    }
   });
 
   it('normalizes imported Computer Principles Markdown instructions and obvious input errors', () => {

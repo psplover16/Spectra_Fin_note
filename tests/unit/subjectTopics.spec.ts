@@ -2,6 +2,30 @@ import { describe, expect, it } from 'vitest';
 import { getSubjectTopics, hasSubjectTopicContent } from '@/modules/subjectTopics/data/subjectTopics';
 import type { SubjectTopic } from '@/modules/subjectTopics/types/subjectTopic';
 
+const expectedNetworkingRouteTopicIds: readonly string[] = [
+  'networking-osi-tcpip',
+  'networking-basics',
+  'networking-devices-osi',
+  'networking-ip-subnetting',
+  'networking-routing-l3-protocols',
+  'networking-transport-layer',
+  'networking-application-ports',
+  'networking-physical-layer',
+  'networking-data-link-layer',
+  'networking-security-crypto',
+  'networking-defense-attacks'
+];
+
+const oldNetworkingSkeletonTopicIds: readonly string[] = [
+  'networking-prep-direction',
+  'networking-overview',
+  'networking-ports',
+  'networking-osi-tcpip-models',
+  'networking-network-layer',
+  'networking-application-layer',
+  'networking-security'
+];
+
 describe('subject topic route data helpers', () => {
   it('treats an empty lessonArticle skeleton as no route-visible content', () => {
     const topic: SubjectTopic = {
@@ -117,8 +141,32 @@ describe('subject topic route data helpers', () => {
     ]);
   });
 
+  it('exposes imported networking topics in source chapter order', () => {
+    const networkingTopicIds = getSubjectTopics('networking').map((topic) => topic.id);
+
+    expect(networkingTopicIds).toEqual(expectedNetworkingRouteTopicIds);
+    expect(networkingTopicIds.filter((topicId) => oldNetworkingSkeletonTopicIds.includes(topicId))).toEqual([]);
+  });
+
+  it('keeps networking route topics on the existing lessonArticle contract', () => {
+    const networkingTopics = getSubjectTopics('networking');
+
+    for (const topic of networkingTopics) {
+      const lessonArticle = topic.blocks[0];
+
+      expect(lessonArticle?.kind, `${topic.id} should render through lessonArticle`).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topic.id} should keep lessonArticle as the first content block`);
+      }
+
+      expect(lessonArticle.sections.length, `${topic.id} should have lesson sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topic.id} should not have empty sections`).toBe(
+        true
+      );
+    }
+  });
+
   it('does not fall back to placeholder topics when a route has no filled content', () => {
-    expect(getSubjectTopics('networking')).toEqual([]);
     expect(getSubjectTopics('informationManagement')).toEqual([]);
     expect(getSubjectTopics('programming')).toEqual([]);
     expect(getSubjectTopics('database')).toEqual([]);
