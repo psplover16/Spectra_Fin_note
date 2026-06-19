@@ -1,1 +1,0 @@
-import{g as s,_ as o}from"./subjectTopics-BKwchkOm.js";import{d as c,g as n,h as a,o as i}from"./vendor-vue-DdfuOPvT.js";const e="operatingSystems",f=c({__name:"OperatingSystemsView",setup(p){const t=s(e);return(r,m)=>(i(),n(o,{title:"作業系統","subject-key":e,"test-id":"subject-view-operating-systems",topics:a(t)},null,8,["topics"]))}});export{f as default};
