@@ -1,226 +1,230 @@
-# Discuss：Database / Programming Markdown 匯入規劃
+# Discuss：Information Management Markdown 匯入規劃
 
 ## 已讀取內容
 
 - 已讀取 `_private/discuss.txt`。
-- 已讀取 `_private/MD/資料庫/` 內 6 個 Markdown：
-  1. `資料庫_1_基礎概念與架構.md`
-  2. `資料庫_2_鍵與ERD.md`
-  3. `資料庫_3_正規化.md`
-  4. `資料庫_4_SQL分類與CRUD.md`
-  5. `資料庫_5_SQL查詢進階.md`
-  6. `資料庫_6_交易ACID與NoSQL.md`
-- 已讀取 `_private/MD/程式設計/` 內 7 個 Markdown：
-  1. `程式設計_1_語言執行方式與程式基礎.md`
-  2. `程式設計_2_函式與參數傳遞.md`
-  3. `程式設計_3_陣列字串與例外處理.md`
-  4. `程式設計_4_指標.md`
-  5. `程式設計_5_物件導向OOP.md`
-  6. `程式設計_6_遞迴.md`
-  7. `程式設計_7_各語言特性.md`
+- 已讀取 `_private/MD/資訊管理/` 內 7 個 Markdown：
+  1. `資訊管理_1_數位轉型與ESG.md`
+  2. `資訊管理_2a_傳統開發模式.md`
+  3. `資訊管理_2b_敏捷開發.md`
+  4. `資訊管理_3a_資訊倫理.md`
+  5. `資訊管理_3b_數據分類與隱私悖論.md`
+  6. `資訊管理_4a_個人資料保護法.md`
+  7. `資訊管理_4b_GDPR.md`
 - 已 scout 相關 source：
+  - `src/modules/informationManagement/views/InformationManagementView.vue`
+  - `src/modules/networking/views/NetworkingView.vue`
   - `src/modules/subjectTopics/data/professionalTopics.ts`
   - `src/modules/subjectTopics/data/subjectTopics.ts`
-  - `src/modules/networking/views/NetworkingView.vue`
-  - `src/modules/database/views/DatabaseView.vue`
-  - `src/modules/programming/views/ProgrammingView.vue`
-- 補充需求已讀取 `_private/MD/系統分析與設計/` 內 5 個 Markdown：
-  1. `系統分析與設計_1_SDLC與SSDLC.md`
-  2. `系統分析與設計_2_內聚力與耦合力.md`
-  3. `系統分析與設計_3_OO關係與UML.md`
-  4. `系統分析與設計_4_測試.md`
-  5. `系統分析與設計_5_系統導入與PDCA.md`
-- 補充 scout 相關 route/source：
   - `src/app/router.ts`
-  - `src/app/routePreload.ts`
-  - `src/shared/components/RouteTabs.vue`
-  - `src/modules/commonSubjects/components/CommonSubjectSwitcher.vue`
-  - `src/modules/commonSubjects/config/commonSubjectOptions.ts`
-  - `src/modules/subjectTopics/types/subjectTopic.ts`
+- 已參考測試/規格脈絡：
+  - `tests/unit/informationManagementRouteWorkflow.spec.ts`
+  - `tests/unit/networkingRouteWorkflow.spec.ts`
+  - `openspec/specs/professional-topic-content/spec.md`
+  - `openspec/specs/manual-section-content-fill/spec.md`
+- 已線上查核法規時效風險（2026-06-19）：
+  - 個人資料保護委員會籌備處首頁：https://www.pdpc.gov.tw/
+  - 個資會籌備處新聞稿「行政院院會通過組織法草案及個資法部分條文修正草案」：https://www.pdpc.gov.tw/News_Content/20/907/
+  - 個資法 114 年 11 月 11 日修正公布對照表：https://ws.pdpc.gov.tw/FS01/FilePath/3/relfile/30/1015/01f372c7-19cd-4946-8930-5d18629b30df.pdf
+  - GDPR Article 83 罰則摘要：https://gdpr-info.eu/issues/fines-penalties/
 
 ## 討論模式
 
-Found `professionalTopics.ts`, `subjectTopics.ts`, and the three route views, so this is **Assumptions mode**.
+Found `InformationManagementView.vue`, `NetworkingView.vue`, `professionalTopics.ts`, `subjectTopics.ts`, and `router.ts`，所以這次是 **Assumptions mode**。
+
+原因：`information-management` route 已存在，且與 `networking` route 共用 `SubjectTopicPage`；本次主要是把 7 個 Markdown 轉成既有 `lessonArticle` data contract，不需要先發明新 UI 或新 route 架構。
 
 ## 建議結論
 
-**Decision draft**：建議拆成兩個 Spectra changes，先做 `fill-database-content`，完成後再排 `fill-programming-content`。
+**Decision draft**：建立一個 Spectra change，例如 `fill-information-management-md-content`，把 `_private/MD/資訊管理/` 的 7 個 Markdown 依檔名自然順序匯入 `information-management` route，標題採用各 Markdown 的 H1，並把目前既有 `informationManagement` skeleton topics 排在新增 topics 後方。
 
-**Rationale**：database 與 programming 都會新增 markdown-backed topics、排序規則、測試與內容轉換；拆開可以讓每次 apply 的來源檢查、TDD 紅綠燈、驗證失敗歸因更乾淨。若合併成一次做，變更量會很大，也比較難判斷失敗是 database 還是 programming 造成。
+**Rationale**：這與 `networking` 的 route 顯示方式一致，能沿用 `SubjectTopicPage`、`lessonArticle`、`getSubjectTopics()` 與既有 source traceability。真正需要決策的是資料排序、sourceFiles 記法、舊 skeleton 是否保留，以及法規內容在 apply 當天如何做最小幅度查核與修正。
 
 **Capture to**：
-- `openspec/changes/fill-database-content/`
-- 後續再建立 `openspec/changes/fill-programming-content/`
-- 補充新增：後續需建立 `openspec/changes/add-system-design-route-content/`，或在你確認後與 programming 排程整合。
+- `openspec/changes/fill-information-management-md-content/proposal.md`
+- `openspec/changes/fill-information-management-md-content/tasks.md`
+- `openspec/changes/fill-information-management-md-content/specs/professional-topic-content/spec.md`
 
 ## My Assumptions
 
-1. **Database 先匯入 6 個 MD topics，並排在既有 database topics 前面**
-   - Approach：新增 6 個 markdown-backed database topics，標題使用各 MD 的 H1；`professionalTopicsBySubject.database` 前 6 筆為新 topics，既有 11 個 database skeleton/topics 保留在後方。
-   - Evidence：`_private/discuss.txt` 明確要求 database route 先做；`professionalTopics.ts` 目前已有 11 個 `subjectKey: "database"` topics。
-   - If wrong：若你其實要一次合併或替換既有 topics，proposal/tasks 的排序與測試會寫錯。
+1. **新增 7 個 Markdown-backed topics，排序在既有 `informationManagement` topics 前面**
+   - Approach：新增 `informationManagementMarkdownTopics`，順序使用檔名自然順序；`professionalTopicsBySubject.informationManagement` 改成 `[..., ...getProfessionalTopicSkeletons('informationManagement')]` 這類結構，讓舊 skeleton 保留為 suffix。
+   - Evidence：`_private/discuss.txt` 明確寫「內部全部 MD 檔都要引入」、「按照順序」、「目前既有的 section，要在這一次新增的下方」；`professionalTopics.ts` 目前已有 `getProfessionalTopicSkeletons('informationManagement')`。
+   - If wrong：若你其實要取代既有 skeleton，而不是保留在後方，資料長度、測試與使用者可見排序都會不同。
 
-2. **Programming 不是本次 database change 的實作內容，而是 database 完成後的下一個排程**
-   - Approach：本次先 formalize database；在 database change 的 proposal/tasks 中記錄 follow-up：建立 `fill-programming-content`，匯入 7 個 programming MD。
-   - Evidence：`discuss.txt` 寫「上述做完之後，再幫我改成針對以下做排程」。
-   - If wrong：如果你希望同一個 change 同時做 database + programming，就不該拆成兩個 proposal。
+2. **標題直接採用各 Markdown H1**
+   - Approach：topic title 使用：
+     1. `資訊管理 1：數位轉型 + ESG`
+     2. `資訊管理 2a：傳統開發模式（漸增／雛形／螺旋）`
+     3. `資訊管理 2b：敏捷開發 Agile`
+     4. `資訊管理 3a：資訊倫理（PAPA 四大議題）`
+     5. `資訊管理 3b：數據分類 + 隱私悖論`
+     6. `資訊管理 4a：個人資料保護法（個資法）`
+     7. `資訊管理 4b：GDPR（歐盟一般資料保護規則）`
+   - Evidence：`_private/discuss.txt` 寫「標題採用各 md 的主題」；7 個 MD 的 H1 已讀取。
+   - If wrong：若 title 要改成較短的 route card 名稱，會需要另外定義 display title 與 sourceSection 的對應。
 
 3. **內容轉換沿用 networking 的 `lessonArticle` 風格，不新增 UI 架構**
-   - Approach：在 `professionalTopics.ts` 中建立 database/programming markdown-backed content map、terms、sourceFiles、lessonArticle sections，並用 factory 產生正式 topic。
-   - Evidence：networking 已有 `markdownBackedNetworkingContentById` 與 `createMarkdownBackedNetworkingTopic`；DatabaseView/ProgrammingView/NetworkingView 都共用 `SubjectTopicPage`。
-   - If wrong：若需要新元件或新資料模型，proposal 要補 design；目前看起來不需要。
+   - Approach：把 Markdown 的 paragraph、blockquote、list、table、heading 轉成既有 `LessonArticleSection` / `LessonArticleContentBlock`；保留原章節順序與表格結構，只做 renderer 必要正規化。
+   - Evidence：`NetworkingView.vue` 與 `InformationManagementView.vue` 都只把 `subjectKey` 傳給 `SubjectTopicPage`；`professionalTopics.ts` 已有 networking markdown-backed topics 與 `createImportedMarkdownTopic` helper。
+   - If wrong：若你想保留原始 Markdown 渲染而不是轉成 typed blocks，就會變成新的內容渲染介面，scope 會大很多。
 
-4. **MD 編排應盡量保留，只做 renderer 必要正規化與客觀錯誤修正**
-   - Approach：保留原 Markdown 的 heading/table/list/code/paragraph 順序；轉成既有 `lessonArticle` blocks；不自行新增教材段落、不任意刪改資料。
-   - Evidence：`discuss.txt` 多次要求「盡量以 md 檔內的編排」、「僅做錯誤辨別與最小幅度修正」、「別隨意新增、刪除、修改資料」。
-   - If wrong：若你希望我大幅濃縮或重寫成考前版，spec 必須改成「重寫/摘要」而不是「來源保真匯入」。
+4. **每個 topic 的 `sourceFiles` 只記 exact Markdown 路徑**
+   - Approach：新 topics 的 `sourceFiles` 使用 `_private/MD/資訊管理/<檔名>.md`；舊 `_private/資訊管理.txt` skeleton topics 留在後方，不混進新 imported topics 的 sourceFiles。
+   - Evidence：`createImportedMarkdownTopic` 目前就是單一 exact `sourceFile`；你這次指定來源是 `_private/MD/資訊管理/`。
+   - If wrong：若你希望每個新 topic 同時保留 `_private/資訊管理.txt`，測試要改成 `arrayContaining` 兩種來源，且需要說明兩個來源誰是 authoritative source。
 
-5. **既有 topics 保留為 suffix；是否 route-visible 取決於是否已有內容**
-   - Approach：排序上既有 database/programming topics 都放在新 MD topics 後方；但若既有 topic 目前仍是空 lessonArticle skeleton，`getSubjectTopics()` 仍會過濾掉它，不會顯示在 route。
-   - Evidence：`subjectTopics.ts` 只回傳 `hasSubjectTopicContent(topic)` 為 true 的 topics。
-   - If wrong：如果你要求既有 topics 也要顯示在 route，就需要同時補既有 topics 的內容，scope 會變大。
+5. **Markdown 內的編排與內容原則上保留，只做錯誤辨別與最小幅度修正**
+   - Approach：保留「科目」、「學習方式」、「重點整理」、「警告/注意」等原本語氣；只修明顯錯字、法規時效、概念誤導、renderer 不支援的格式。
+   - Evidence：`_private/discuss.txt` 寫「每個內容我已經做過編排、整理」、「盡量以 md 檔內的編排」、「每個 MD 僅做錯誤辨別，與最小幅度的修正」、「別隨意新增、刪除、修改資料」。
+   - If wrong：若你希望轉成更標準化的考前教材格式，proposal/spec 要改成「重整教材」而不是「來源保真匯入」。
 
-6. **系統分析與設計應從 programming 拆成新的 route：系統設計**
-   - Approach：新增 subject key 與 route，例如 `systemDesign` / `/system-design`；新增 `SystemDesignView.vue`；把 `_private/MD/系統分析與設計/` 5 個 MD 匯入此 route，標題使用各 MD 的 H1；tab label 顯示 `系統設計`。
-   - Evidence：你補充要求「另開一個新的按鈕，叫做系統設計」且「內容也要引入至新的系統設計路由內」；目前 `professionalTopics.ts` 把系統分析相關 skeleton 放在 `subjectKey: "programming"`。
-   - If wrong：若系統分析仍要留在 programming，新增 route 會造成內容分類與使用者預期不一致。
-
-7. **英文/國文應只隱藏導覽按鈕，不先刪除 route**
-   - Approach：先從導覽 UI 隱藏 `CommonSubjectSwitcher` 或調整 common subject options，使英文/國文不再出現在主要按鈕；`/english`、`/chinese` route 是否保留 direct URL 需你確認。
-   - Evidence：目前英文/國文不是 `RouteTabs.vue` 的 primary tabs，而是 `CommonSubjectSwitcher` 的下拉選項；`router.ts` 與 `routePreload.ts` 仍有 `/english`、`/chinese` route。
-   - If wrong：如果你要完全移除英文/國文 route，還要改 `subjectKeys`、`professionalTopicsBySubject`、route config、preload、tests 與 localStorage normalization，scope 會比「隱藏按鈕」大。
+6. **既有 information-management workflow 測試需要更新，不能沿用舊 skeleton expectation**
+   - Approach：更新 `tests/unit/informationManagementRouteWorkflow.spec.ts`，讓它驗證 7 個新 MD topics 的順序、sourceFiles、lessonArticle sections 非空；舊 skeleton topics 若保留在 formal data 後方，測試要明確區分 `professionalTopicsBySubject` 與 route-visible `getSubjectTopics()`。
+   - Evidence：目前該測試期待 `professionalTopicsBySubject.informationManagement` 長度等於舊 manifest 7 筆，且每筆 `lessonArticle` 是空 `lead: [], sections: []`；這會與新需求衝突。
+   - If wrong：apply 後測試可能不是因功能錯，而是舊測試仍在保護「空 skeleton」行為。
 
 ## Interface Depth Check
 
-Database / Programming 匯入本身沒有新增 module、IPC command、跨層 flow 或 storage abstraction；只是匯入靜態 route data 並沿用既有 `SubjectTopicPage` / `lessonArticle` contract。
+本次需求 **未觸發新的介面深度檢查**。
 
-補充的 `系統設計` 需求會新增 top-level route，因此需要 interface depth check：
+- 沒有新增 route：`/information-management` 已存在。
+- 沒有新增 IPC command 或跨層 Rust/Tauri/Svelte flow。
+- 沒有新增 storage abstraction。
+- 沒有新增 top-level module；只是替既有 route 補正式 topic data。
 
-1. **Seam location**
-   - Route boundary 應落在 `src/app/router.ts`、`src/app/routePreload.ts`、`src/shared/components/RouteTabs.vue`。
-   - Subject content boundary 應落在 `src/modules/subjectTopics/types/subjectTopic.ts` 與 `src/modules/subjectTopics/data/professionalTopics.ts`。
-   - View 應遵循既有 pattern，新增 `src/modules/systemDesign/views/SystemDesignView.vue`，只負責把 `subjectKey` 與 title 傳給 `SubjectTopicPage`。
-
-2. **Adapter count**
-   - 應只有一層 route view adapter：`SystemDesignView.vue -> SubjectTopicPage`。
-   - 不需要再包一層 system-design-specific component，除非後續此 route 有不同 UI 行為。
-
-3. **Depth**
-   - `SystemDesignView.vue` 本身會很薄，但這是現有各科 route 的一致 pattern。
-   - 真正行為在 shared `SubjectTopicPage` 與 `professionalTopicsBySubject.systemDesign`：顯示新 route、讀取學習進度、展開 lessonArticle sections。
-
-4. **Deletion test**
-   - 若刪除 `systemDesign` subject key / route preload / router entry / tab / view，`系統設計` 無法導航。
-   - 若刪除 `professionalTopicsBySubject.systemDesign`，route 即使存在也沒有內容。
-   - 因此這不是無意義 pass-through；它是既有 route architecture 的必要接點。
-
-## 發現的問題與風險
-
-1. **是否拆成兩個 changes 需要你確認**
-   - 我建議拆成 `fill-database-content` 與 `fill-programming-content`。
-   - 若你想一次做完 13 個 MD，也可以，但測試與 review 會更大包。
-
-2. **`sourceFiles` 是否只放 MD 路徑需要確認**
-   - networking 目前是「原始 txt + MD」一起列。
-   - algorithms data-structure 則是新 MD topics 只列 exact MD 路徑。
-   - 我建議 database/programming 新 topics 以 exact MD 路徑為主，既有 old txt topics 保留在後方 suffix。
-
-3. **programming route 目前混有程式設計與系統分析 topics**
-   - `professionalTopics.ts` 目前 `subjectKey: "programming"` 底下包含 `_private/程式.txt` 與 `_private/系統分析與設計.txt` 的既有 skeleton。
-   - 你補充後，較合理的新假設是：系統分析與設計應移到新的 `系統設計` route，不再作為 programming 的 route-visible 內容。
-
-4. **完整 unit suite 目前可能仍有既有無關失敗**
-   - 上一輪完整 `npm run test:unit` 已知有 networking / computer-principles stale expectations 失敗。
-   - 這次 change 應要求 targeted tests、typecheck、`spectra validate --strict` 通過；若完整 suite 仍因既有問題失敗，apply summary 要列出，不應偷修無關內容。
-
-5. **工作區已有 unrelated `_private/MD` 變更**
-   - 目前工作區已有資料庫/程式相關私有 MD rename/delete/new file 變更。
-   - apply 時要避免 revert 使用者既有變更；只應改本 change 需要的 source/test/spec files。
-
-6. **英文/國文按鈕的位置與移除程度需釐清**
-   - 現況不是兩顆獨立按鈕，而是一個 `CommonSubjectSwitcher`，預設顯示英文，可展開國文。
-   - 若只要「隱藏按鈕」，可從 `RouteTabs.vue` 移除/不渲染 `CommonSubjectSwitcher`。
-   - 若要連 `/english`、`/chinese` 路由也移除，會牽涉更多測試與資料型別，且可能影響既有 localStorage progress schema。
+結論：不要新增 pass-through adapter；沿用 `InformationManagementView.vue -> SubjectTopicPage -> professionalTopicsBySubject.informationManagement` 即可。
 
 ## 建議需求草案
 
-### Database
+### Requirement: Information Management route imports Markdown-backed lesson articles
 
-- Import all 6 Markdown files under `_private/MD/資料庫/` in natural filename order.
-- Each imported topic title should match the Markdown H1.
-- Each imported topic should:
-  - have exact source traceability to its Markdown file,
-  - have non-empty summary and terms,
-  - use `lessonArticle` as the first and only learner-facing block unless a strong reason appears,
-  - preserve source heading/table/list/code/paragraph order as much as the renderer allows,
-  - avoid generated placeholder phrases such as `教材本文`, `來源大綱不是成品`, `old fixed template removed`.
-- Existing database topics should remain after the 6 imported topics, preserving their relative order.
+The system SHALL import all Markdown files under `_private/MD/資訊管理/` into the `information-management` route as finalized `lessonArticle` topics.
 
-### Programming Follow-up
+#### Scenario: Markdown topics appear before existing topics
 
-- After database is completed, create/schedule a separate change for `_private/MD/程式設計/`.
-- Import all 7 Markdown files in natural filename order into route `programming`.
-- Follow the same source-preserving, networking-style `lessonArticle` contract.
-- Existing programming topics should remain after the 7 imported topics unless you answer otherwise.
+- **WHEN** `getSubjectTopics('informationManagement')` resolves route-visible topics
+- **THEN** the first seven visible topics appear in this order:
+  1. `資訊管理 1：數位轉型 + ESG`
+  2. `資訊管理 2a：傳統開發模式（漸增／雛形／螺旋）`
+  3. `資訊管理 2b：敏捷開發 Agile`
+  4. `資訊管理 3a：資訊倫理（PAPA 四大議題）`
+  5. `資訊管理 3b：數據分類 + 隱私悖論`
+  6. `資訊管理 4a：個人資料保護法（個資法）`
+  7. `資訊管理 4b：GDPR（歐盟一般資料保護規則）`
+- **AND** existing `informationManagement` topics remain after the imported Markdown topics in formal data.
 
-### System Design Route
+#### Scenario: Each imported topic preserves source traceability
 
-- Add a new route and tab labeled `系統設計`.
-- Suggested route path: `/system-design`.
-- Suggested subject key: `systemDesign`.
-- Import all 5 Markdown files under `_private/MD/系統分析與設計/` in natural filename order.
-- Each imported topic title should match the Markdown H1:
-  1. `系統分析與設計 1：SDLC + SSDLC`
-  2. `系統分析與設計 2：內聚力 Cohesion + 耦合力 Coupling ★`
-  3. `系統分析與設計 3：OO 四種關係 + UML 四種圖`
-  4. `系統分析與設計 4：測試 Testing`
-  5. `系統分析與設計 5：系統導入 + PDCA`
-- Use the same source-preserving `lessonArticle` contract as networking/database/programming.
-- Hide English and Chinese route buttons from visible navigation.
-- Update tests for:
-  - route config/preload includes `/system-design`,
-  - `RouteTabs` shows `系統設計`,
-  - English/Chinese buttons are hidden from navigation,
-  - `getSubjectTopics('systemDesign')` returns the 5 imported topics in source order,
-  - system design topics use `lessonArticle` and exact source traceability.
+- **WHEN** an imported information-management topic is loaded
+- **THEN** it has exactly one Markdown source path under `_private/MD/資訊管理/`
+- **AND** its `sourceSummary` matches the Markdown H1
+- **AND** it has one learner-facing `lessonArticle` block with non-empty sections.
+
+#### Scenario: Markdown structure is preserved with minimal corrections
+
+- **WHEN** Markdown headings, lists, tables, and blockquotes are converted
+- **THEN** the learner-facing article preserves the source order as much as the existing renderer supports
+- **AND** obvious factual/legal staleness is corrected with the smallest text change needed
+- **AND** source-only meta text that is not learner-facing is either omitted or moved into review notes.
+
+##### Example: source order
+
+For `資訊管理_2b_敏捷開發.md`, the formal topic should keep this order:
+`定義 -> 核心價值 -> 優缺點 -> 三個常見框架 -> 重點整理`。
+
+## 發現的問題與風險
+
+1. **現有 `ImportedMarkdownTopicConfig` 尚未支援 `informationManagement`**
+   - 目前 `subjectKey` union 是 `'database' | 'programming' | 'systemDesign'`。
+   - apply 時若沿用 `createImportedMarkdownTopic`，需要把 `informationManagement` 加進 union，或建立更通用的 imported Markdown helper。
+
+2. **既有 `informationManagement` skeleton 與新 MD 內容會重疊**
+   - 舊 topics 包含 `im-02-digital-transformation`、`im-03-system-development-models`、`im-04-esg`、`im-05-info-ethics-regulations` 等，與新 7 個 MD 有概念重疊。
+   - 依你的需求我建議保留舊 skeleton 在後方，但不要補內容；route-visible 內容以新 MD topics 為主。
+   - 若未來舊 skeleton 被補內容，route 可能出現重複主題，屆時再整理或移除。
+
+3. **`informationManagementRouteWorkflow.spec.ts` 目前保護的是舊空 skeleton 行為**
+   - 現在測試期待 formal topics 等於舊 manifest 7 筆，且 `lessonArticle` sections 是空。
+   - 新需求應改成驗證 MD-backed formal topics 非空、sourceFiles 是 exact MD、排序在前，舊 skeleton 在後。
+
+4. **個資法內容有時效風險，apply 當天要再查一次**
+   - `資訊管理_4a_個人資料保護法.md` 寫「2025 年再修正、賦予個資會執法權限、組織法待完成、籌備處階段、施行日期待定」。
+   - 2026-06-19 查核結果：官方網站仍是「個人資料保護委員會籌備處」；114 年 11 月 11 日修正公布的個資法部分條文施行日期仍需依行政院指定。
+   - apply 時應避免把尚待施行或過渡期的職權描述成「已全面上路」。
+
+5. **GDPR 的「歐盟居民」用語可更精準**
+   - MD 同時寫「歐盟居民」與「歐盟境內的人」。
+   - GDPR Article 3 的精準描述較接近「位於歐盟境內的資料主體」；考試教材常寫歐盟居民，但若要最小修正，可把定義句改為「歐盟境內自然人／資料主體」。
+
+6. **第二方數據例子可能需要措辭保守**
+   - `資訊管理_3b_數據分類與隱私悖論.md` 把 `FB／IG 行為數據` 放在第二方數據例子。
+   - 若只是廣告平台提供的受眾投放/分析，不一定等同企業直接取得「別人的第一方數據」；建議改成「合作夥伴分享的會員/客戶行為資料」之類較穩定表述。
+
+7. **「內容經網路查證」這類 meta 句是否要出現在 learner-facing article 需決定**
+   - `資訊管理_1_數位轉型與ESG.md`、`資訊管理_3b_數據分類與隱私悖論.md`、`資訊管理_4a_個人資料保護法.md`、`資訊管理_4b_GDPR.md` 有「內容經查證」類 meta。
+   - 我建議保留內容 caveat（例如「不同來源版本略有不同」），但不要把「內容經網路查證」本身放進 learner-facing lead；查核狀態可放在 manual review 或 proposal summary。
+
+8. **自然排序要明確，不要用純字典序誤排**
+   - 目前檔名含 `2a`、`2b`、`3a`、`3b`、`4a`、`4b`。
+   - Windows `Sort-Object Name` 這次會排對，但 proposal/tasks 應明確要求依檔名前綴自然順序，不依任意 glob 結果。
+
+## 建議實作任務草案
+
+1. 建立 Spectra change：`fill-information-management-md-content`。
+2. 在 proposal/spec/tasks 記錄 7 個 exact Markdown source paths 與 H1 順序。
+3. 在 `professionalTopics.ts` 新增 `informationManagementMarkdownTopics`。
+4. 讓 imported Markdown helper 支援 `informationManagement`。
+5. 依 7 個 MD 轉成 `lessonArticle` sections，保留表格、清單、重點整理順序。
+6. 對上述法規/內容疑點做最小修正，並在 review note 記錄修正原因。
+7. 更新 `informationManagementRouteWorkflow.spec.ts` 與必要的 topic/order/source tests。
+8. 執行 targeted tests、typecheck、`spectra validate --strict`。
+9. apply summary 記錄完整測試結果；若完整 suite 因既有無關問題失敗，列出但不偷修。
+
+## 最終結論
+
+**Decision**：全部採用上述建議，後續以 `fill-information-management-md-content` 建立正式 Spectra change，將 `_private/MD/資訊管理/` 的 7 個 Markdown 依自然順序匯入 `information-management` route。
+
+**Rationale**：需求已足夠明確；沿用 networking 的 `lessonArticle` 與既有 route 架構，可保持實作範圍集中，並讓 source traceability、排序、測試與法規查核都能被明確驗證。
+
+**Capture to**：`openspec/changes/fill-information-management-md-content/`，包含 `proposal.md`、`tasks.md` 與 `specs/professional-topic-content/spec.md`。
 
 ## 待你回答
 
-請直接在下面填：
+請直接在下面填答；若你同意建議，可寫「依你建議」。
 
-1. 是否拆成兩個 changes？
-   - 建議：`fill-database-content` 先做，`fill-programming-content` 後做。
-   - 你的回答：不用拆，但你任務可以做多一點，方便後續追蹤。不過你這次任務要做完喔，任務數量不上限
+1. 新 change 名稱是否採用 `fill-information-management-md-content`？
+   - 建議：採用。
+   - 你的回答：依你建議，採用 `fill-information-management-md-content`。
 
-2. 新 imported topics 的 `sourceFiles` 要怎麼記？
-   - 建議：只放 exact MD 路徑；既有 old txt topics 保留在後方。
-   - 你的回答：依你建議
+2. 新 topics 的 `sourceFiles` 是否只放 exact Markdown 路徑？
+   - 建議：是，只放 `_private/MD/資訊管理/<檔名>.md`；舊 `_private/資訊管理.txt` skeleton 保留在後方。
+   - 你的回答：依你建議，只放 exact Markdown 路徑。
 
-3. 既有 database/programming skeleton topics 是否只需保留在 formal data 後方，不需要補內容？
-   - 建議：是，只保留 suffix；route-visible 內容以本次 MD topics 為主。
-   - 你的回答：依你建議
+3. 既有 information-management skeleton topics 是否保留在 formal data 後方，但本次不補內容？
+   - 建議：是，符合「目前既有的 section 在新增下方」且避免重複改寫。
+   - 你的回答：依你建議，保留在 formal data 後方，本次不補內容。
 
-4. `程式設計_*.md` 是否要排在所有既有 programming topics 前面，包含系統分析 topics 前面？
-   - 原建議：是。
-   - 補充後的新建議：`程式設計_*.md` 排在 programming 前面；系統分析與設計移到新的 `系統設計` route，不再排在 programming 內。
-   - 你的回答：依你建議
+4. `資訊管理_1_數位轉型與ESG.md` 是否作為一個 topic，不拆成「數位轉型」與「ESG」兩個 topic？
+   - 建議：不拆，因為檔案 H1 是單一主題，且你要求標題採用各 MD 主題。
+   - 你的回答：依你建議，不拆，作為一個 topic。
 
-5. MD 內像「你朋友提醒」、「學習方式」這類前導說明是否保留在 `lead`？
-   - 建議：保留，因為 networking 也是這種風格；只移除明顯不是教材內容的 placeholder 或錯誤。
-   - 你的回答：依你建議
+5. Markdown 開頭的「科目／學習方式」是否保留在 `lead`？
+   - 建議：保留，因為它是學習導向內容。
+   - 你的回答：依你建議，保留在 `lead`。
 
-6. `系統設計` route path 與 subject key 是否採用建議名稱？
-   - 建議：route path 用 `/system-design`，subject key 用 `systemDesign`，tab label 用 `系統設計`。
-   - 你的回答：依你建議
+6. 「內容經網路查證」這類 meta 句是否不要放進 learner-facing article？
+   - 建議：不要放；保留具體 caveat，例如「不同來源版本略有不同」。
+   - 你的回答：依你建議，不放進 learner-facing article，只保留具體 caveat。
 
-7. 英文/國文是只隱藏導覽按鈕，還是完全移除 route？
-   - 建議：先只隱藏導覽按鈕，保留 `/english`、`/chinese` direct URL 與 subject keys，避免擴大 localStorage/type/test 影響。
-   - 你的回答：依你建議
+7. 個資法/GDPR 內容是否允許 apply 時做最小幅度法規時效修正？
+   - 建議：允許，但只修明顯過時或法律用語不精準處，不重寫整篇。
+   - 你的回答：依你建議，允許最小幅度法規時效與用語修正。
 
-8. `系統設計` 按鈕位置怎麼放？
-   - 建議：放在主要 tabs 最右側，也就是目前 `CommonSubjectSwitcher` 的位置；英文/國文下拉隱藏後，此位置由 `系統設計` 取代。
-   - 你的回答：依你建議
+8. `資訊管理_3b_數據分類與隱私悖論.md` 的第二方數據例子是否改成更保守的「合作夥伴分享的會員/客戶行為資料」？
+   - 建議：改，避免 FB/IG 例子在資料取得關係上造成誤解。
+   - 你的回答：依你建議，改成更保守的表述。
 
-9. 既有 `programming-system-analysis-*` skeleton topics 要如何處理？
-   - 建議：不要讓它們在 programming route-visible；新的 5 個 MD topics 進 `systemDesign`。既有 skeleton 可暫時保留在 formal data 後方或在 change 中改 subjectKey/移除，需你確認。
-   - 你的回答：依你建議
+9. 測試應以 `getSubjectTopics('informationManagement')` 驗證 route-visible 新 topics，還是以 `professionalTopicsBySubject.informationManagement` 驗證新 topics + 舊 suffix？
+   - 建議：兩者都驗證；前者確認使用者看到的內容，後者確認舊 skeleton 排在後方。
+   - 你的回答：依你建議，兩者都驗證。
