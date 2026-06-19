@@ -7,7 +7,7 @@
 - `src/app/`
   - 應用骨幹，包含 Vue 入口、AppShell、router 與 route preload registry。
   - 只負責整體外殼、route region、PWA 啟動鉤子與主要 route 載入策略。
-  - `router.ts` 註冊主要科目路由；專業科目包含 `/computer-principles`、`/computer-principles-v2`、`/networking`、`/digital-logic`、`/operating-systems`、`/information-management`、`/programming`、`/database`、`/algorithms`、`/system-design`。
+  - `router.ts` 註冊主要科目路由；專業科目包含 `/computer-principles`、`/computer-principles-v2`、`/networking`、`/networking-v2`、`/digital-logic`、`/operating-systems`、`/information-management`、`/programming`、`/database`、`/algorithms`、`/system-design`。
   - `routePreload.ts` 的 route preload registry 必須包含所有 primary route paths，讓 hover、focus、touch 與 idle preload 可載入對應 route component。
 - `src/shared/`
   - 跨模組共用的純 UI 元件與工具。
@@ -16,8 +16,9 @@
 - `src/modules/`
   - 依功能或科目分組的模組。
   - 科目頁放在各自模組，跨科目主題卡與進度儲存放在 `src/modules/subjectTopics/`。
-  - `src/modules/computerFoundationSubjects/` 管理 AppShell header 的計概類群組選項與 switcher；目前包含 `計概`、`計概(v2)`、`網概`、`數位邏輯`、`作業系統`。
+  - `src/modules/computerFoundationSubjects/` 管理 AppShell header 的計概類群組選項與 switcher；目前包含 `計概`、`計概(v2)`、`網概`、`網路概論(v2)`、`數位邏輯`、`作業系統`。
   - `src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue` 擁有 `/computer-principles-v2` route view，使用 `SubjectTopicPage`、`computerPrinciplesV2` subject key 與標題 `計概(v2)`。
+  - `src/modules/networkingV2/views/NetworkingV2View.vue` 擁有 `/networking-v2` route view，使用 `SubjectTopicPage`、`networkingV2` subject key 與標題 `網路概論(v2)`。
   - `src/modules/digitalLogic/views/DigitalLogicView.vue` 擁有數位邏輯 route view，使用 `SubjectTopicPage` 與 `digitalLogic` subject key。
   - `src/modules/operatingSystems/views/OperatingSystemsView.vue` 擁有作業系統 route view，使用 `SubjectTopicPage` 與 `operatingSystems` subject key。
   - `src/modules/database/views/DatabaseView.vue` 擁有資料庫 route view，使用 `SubjectTopicPage` 與 `database` subject key。
@@ -25,11 +26,12 @@
   - `src/modules/systemDesign/views/SystemDesignView.vue` 擁有系統設計 route view，使用 `SubjectTopicPage` 與 `systemDesign` subject key。
   - `src/modules/commonSubjects/` 管理共同科目選項與 `CommonSubjectSwitcher`；共同科目 route 仍由 `src/app/router.ts` 統一註冊。
   - `src/modules/subjectTopics/` 管理：
-    - `types/subjectTopic.ts`：`SubjectKey`、`SubjectTopic`、`SubjectTopicBlock`；`SubjectKey` 包含 `computerPrinciples`、`computerPrinciplesV2`、`networking`、`digitalLogic`、`operatingSystems`、`informationManagement`、`programming`、`database`、`algorithms`、`systemDesign`、`english` 與 `chinese`。
-    - `data/placeholderTopics.ts`：各科 placeholder topics；不得放正式題庫欄位。已經有正式 professional content 的 route 可以保留空 placeholder 陣列，`computerPrinciplesV2` 預設就是空 placeholder namespace。
+    - `types/subjectTopic.ts`：`SubjectKey`、`SubjectTopic`、`SubjectTopicBlock`；`SubjectKey` 包含 `computerPrinciples`、`computerPrinciplesV2`、`networking`、`networkingV2`、`digitalLogic`、`operatingSystems`、`informationManagement`、`programming`、`database`、`algorithms`、`systemDesign`、`english` 與 `chinese`。
+    - `data/placeholderTopics.ts`：各科 placeholder topics；不得放正式題庫欄位。已經有正式 professional content 的 route 可以保留空 placeholder 陣列，`computerPrinciplesV2` 與 `networkingV2` 預設都是空 placeholder namespace。
     - `data/professionalTopics.ts`：正式專業 topic data 的靜態 bundle 入口；目前專業 topic 只保留 route、topic id、title、sourceFiles、sourceSummary 與 source section skeleton。
       - `data/computerPrinciplesV2Topics.ts` 匯出 `computerPrinciplesV2Topics`，承接 `_private/MD/計算機概論/01_架構與計算理論.md` 到 `13_檢查碼-漢明碼與漢明距.md` 的 13 篇靜態 `lessonArticle` topics；`sourceBatch` 固定為 `computer-principles-v2-route`，`00_目錄.md` 只作 title/order manifest，不作 route-visible topic 或 source file。
-      - 專業科目 route（`computerPrinciples`、`computerPrinciplesV2`、`networking`、`digitalLogic`、`operatingSystems`、`database`、`informationManagement`、`programming`、`algorithms`、`systemDesign`）正式顯示內容必須是單一 `lessonArticle` block；舊的 `sourceNote`、`examOutline`、`memoryPoints`、`understanding`、`termList`、`workedExample`、`pitfall`、`complexityTable`、`teachingCode` 不得作為 professional topic 的 top-level displayed blocks。
+      - `data/networkingV2Topics.ts` 匯出 `networkingV2Topics`，承接 `_private/MD/網路概論v2/` 內依檔名排序的 12 篇靜態 `lessonArticle` topics；`sourceBatch` 固定為 `networking-v2-route`，topic title 會清除檔名章節前綴，只保留教材標題。
+      - 專業科目 route（`computerPrinciples`、`computerPrinciplesV2`、`networking`、`networkingV2`、`digitalLogic`、`operatingSystems`、`database`、`informationManagement`、`programming`、`algorithms`、`systemDesign`）正式顯示內容必須是單一 `lessonArticle` block；舊的 `sourceNote`、`examOutline`、`memoryPoints`、`understanding`、`termList`、`workedExample`、`pitfall`、`complexityTable`、`teachingCode` 不得作為 professional topic 的 top-level displayed blocks。
       - 數位邏輯與作業系統 topic id 仍保留原 `cp-*` id，但 ownership 由 `subjectKey` 分別歸屬 `digitalLogic` 與 `operatingSystems`，不得在 `computerPrinciples` 重複顯示。
       - `summary`、`examOutline`、`memoryPoints`、`understandingNotes`、`terms`、`verifiedBy`、`verifiedAt` 與 `verifierSummary` 在 skeleton 狀態不可放入 AI 生成正文或驗證摘要。
       - skeleton 狀態的 `lessonArticle.lead` 與 `lessonArticle.sections` 必須是空陣列；未來由使用者提供 section 標題與內容後，再把整理後內容填入對應 topic 的 `lessonArticle.sections`。
@@ -40,7 +42,7 @@
     - `components/SubjectTopicCard.vue`：書籤、完成 checkbox、標題展開/收合與 detail slot。
     - `components/SubjectTopicPage.vue`：未完成/已完成分區、localStorage 進度讀寫與 topic block 渲染。
     - `storage/subjectTopicProgressStorage.ts`：`spectra:subject-topic-progress:v1` 的版本化 localStorage adapter。
-    - 舊 localStorage progress 缺少 `computerPrinciplesV2`、`database`、`algorithms`、`digitalLogic` 或 `operatingSystems` 時，normalize 會補齊空進度，不會清除既有科目的完成與書籤資料。
+    - 舊 localStorage progress 缺少 `computerPrinciplesV2`、`networkingV2`、`database`、`algorithms`、`digitalLogic` 或 `operatingSystems` 時，normalize 會補齊空進度，不會清除既有科目的完成與書籤資料。
     - legacy `computerPrinciples` progress 若包含已切出的數位邏輯或作業系統 topic id，normalize 會把完成項目與書籤分流到 `digitalLogic` 或 `operatingSystems`，storage key 與 version 仍維持 `spectra:subject-topic-progress:v1` / v1。
 
 ## Content Production Workflow

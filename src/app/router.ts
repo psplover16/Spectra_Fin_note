@@ -21,6 +21,11 @@ export default createRouter({
       meta: { title: '網概' }
     },
     {
+      path: '/networking-v2',
+      component: routeComponentLoaders['/networking-v2'],
+      meta: { title: '網路概論(v2)' }
+    },
+    {
       path: '/digital-logic',
       component: routeComponentLoaders['/digital-logic'],
       meta: { title: '數位邏輯' }

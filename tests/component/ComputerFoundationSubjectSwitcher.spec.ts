@@ -10,6 +10,7 @@ function createTestRouter(initialPath = '/computer-principles') {
       { path: '/computer-principles', component: { template: '<section>計算機原理</section>' } },
       { path: '/computer-principles-v2', component: { template: '<section>計概(v2)</section>' } },
       { path: '/networking', component: { template: '<section>網路概論</section>' } },
+      { path: '/networking-v2', component: { template: '<section>網路概論(v2)</section>' } },
       { path: '/digital-logic', component: { template: '<section>數位邏輯</section>' } },
       { path: '/operating-systems', component: { template: '<section>作業系統</section>' } }
     ]
@@ -42,6 +43,7 @@ describe('ComputerFoundationSubjectSwitcher', () => {
     expect(menu.text()).toContain('計概');
     expect(menu.text()).toContain('計概(v2)');
     expect(menu.text()).toContain('網概');
+    expect(menu.text()).toContain('網路概論(v2)');
     expect(menu.text()).toContain('數位邏輯');
     expect(menu.text()).toContain('作業系統');
   });
@@ -67,6 +69,18 @@ describe('ComputerFoundationSubjectSwitcher', () => {
 
     expect(router.currentRoute.value.path).toBe('/computer-principles-v2');
     expect(wrapper.get('[data-testid="route-tab-computer-foundation"]').text()).toContain('計概(v2)');
+    expect(wrapper.find('[data-testid="computer-foundation-subject-menu"]').exists()).toBe(false);
+  });
+
+  it('navigates to networking v2 and updates the visible label', async () => {
+    const { wrapper, router } = await mountSwitcher();
+
+    await wrapper.get('[data-testid="route-tab-computer-foundation"]').trigger('click');
+    await wrapper.get('[data-testid="computer-foundation-subject-option-networking-v2"]').trigger('click');
+    await flushPromises();
+
+    expect(router.currentRoute.value.path).toBe('/networking-v2');
+    expect(wrapper.get('[data-testid="route-tab-computer-foundation"]').text()).toContain('網路概論(v2)');
     expect(wrapper.find('[data-testid="computer-foundation-subject-menu"]').exists()).toBe(false);
   });
 });

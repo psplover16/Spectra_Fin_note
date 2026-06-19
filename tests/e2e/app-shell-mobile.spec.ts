@@ -26,6 +26,13 @@ test('header and route region fit at 375px', async ({ page }) => {
   await expect(page.getByTestId('subject-view-computer-principles-v2')).toContainText('架構與計算理論');
   await expect(page.getByTestId('subject-view-computer-principles-v2')).toContainText('檢查碼（二）漢明碼與漢明距');
 
+  await page.getByTestId('route-tab-computer-foundation').click();
+  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('網路概論(v2)');
+  await page.getByTestId('computer-foundation-subject-option-networking-v2').click();
+  await expect(page).toHaveURL(/\/networking-v2$/);
+  await expect(page.getByTestId('subject-view-networking-v2')).toContainText('OSI 七層 + TCP/IP');
+  await expect(page.getByTestId('subject-view-networking-v2')).toContainText('防禦設備與攻擊類型');
+
   const hasPageOverflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   expect(hasPageOverflow).toBe(false);
 });

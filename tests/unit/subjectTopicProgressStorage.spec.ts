@@ -99,6 +99,8 @@ describe('subjectTopicProgressStorage', () => {
     expect(state.subjects.operatingSystems.bookmarkedTopicId).toBeNull();
     expect(state.subjects.computerPrinciplesV2.completedTopicIds).toEqual([]);
     expect(state.subjects.computerPrinciplesV2.bookmarkedTopicId).toBeNull();
+    expect(state.subjects.networkingV2.completedTopicIds).toEqual([]);
+    expect(state.subjects.networkingV2.bookmarkedTopicId).toBeNull();
   });
 
   it('moves legacy computer-principles completed topics into split subject entries', () => {
@@ -183,5 +185,21 @@ describe('subjectTopicProgressStorage', () => {
     expect(nextState.subjects.computerPrinciples.bookmarkedTopicId).toBe('cp-common-units');
     expect(nextState.subjects.computerPrinciplesV2.completedTopicIds).toEqual(['cpv2-architecture-computation-theory']);
     expect(nextState.subjects.computerPrinciplesV2.bookmarkedTopicId).toBeNull();
+  });
+
+  it('saves networking v2 progress without migrating networking v1 topic ids', () => {
+    const storage = createMemoryStorage();
+    const initialState = createEmptySubjectTopicProgressState();
+    initialState.subjects.networking.completedTopicIds = ['networking-osi-tcpip'];
+    initialState.subjects.networking.bookmarkedTopicId = 'networking-osi-tcpip';
+    expect(writeSubjectTopicProgress(initialState, storage)).toBe(true);
+
+    const nextState = saveCompletedTopicIds('networkingV2', ['networking-v2-osi-tcpip'], storage, '2026-06-20T00:00:00.000Z');
+
+    expect(nextState.version).toBe(1);
+    expect(nextState.subjects.networking.completedTopicIds).toEqual(['networking-osi-tcpip']);
+    expect(nextState.subjects.networking.bookmarkedTopicId).toBe('networking-osi-tcpip');
+    expect(nextState.subjects.networkingV2.completedTopicIds).toEqual(['networking-v2-osi-tcpip']);
+    expect(nextState.subjects.networkingV2.bookmarkedTopicId).toBeNull();
   });
 });

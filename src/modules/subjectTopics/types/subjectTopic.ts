@@ -2,6 +2,7 @@ export const subjectKeys = [
   'computerPrinciples',
   'computerPrinciplesV2',
   'networking',
+  'networkingV2',
   'digitalLogic',
   'operatingSystems',
   'informationManagement',

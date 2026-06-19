@@ -26,6 +26,14 @@ test('loads a primary route directly', async ({ page }) => {
   await expect(page.getByTestId('subject-view-networking')).toContainText('網路概論');
 });
 
+test('loads networking v2 route directly', async ({ page }) => {
+  await page.goto('/networking-v2');
+
+  await expect(page.getByTestId('subject-view-networking-v2')).toContainText('網路概論(v2)');
+  await expect(page.getByTestId('subject-topic-list-networkingV2')).toContainText('OSI 七層 + TCP/IP');
+  await expect(page.getByTestId('subject-topic-list-networkingV2')).toContainText('防禦設備與攻擊類型');
+});
+
 test('loads computer principles route directly', async ({ page }) => {
   await page.goto('/computer-principles');
 
@@ -106,6 +114,7 @@ test('computer-foundation navigation reaches split routes', async ({ page }) => 
   await expect(menu).toContainText('計概');
   await expect(menu).toContainText('計概(v2)');
   await expect(menu).toContainText('網概');
+  await expect(menu).toContainText('網路概論(v2)');
   await expect(menu).toContainText('數位邏輯');
   await expect(menu).toContainText('作業系統');
   const triggerBox = await page.getByTestId('route-tab-computer-foundation').boundingBox();
@@ -124,6 +133,11 @@ test('computer-foundation navigation reaches split routes', async ({ page }) => 
   await page.getByTestId('computer-foundation-subject-option-computer-principles-v2').click();
   await expect(page).toHaveURL(/\/computer-principles-v2$/);
   await expect(page.getByTestId('subject-view-computer-principles-v2')).toContainText('計概(v2)');
+
+  await openComputerFoundationMenu(page);
+  await page.getByTestId('computer-foundation-subject-option-networking-v2').click();
+  await expect(page).toHaveURL(/\/networking-v2$/);
+  await expect(page.getByTestId('subject-view-networking-v2')).toContainText('網路概論(v2)');
 
   await openComputerFoundationMenu(page);
   await page.getByTestId('computer-foundation-subject-option-operating-systems').click();

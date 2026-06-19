@@ -30,12 +30,14 @@ describe('route preload registry', () => {
 
   it('includes split computer-foundation and expanded professional route preload loaders', () => {
     expect(primaryRoutePaths).toContain('/computer-principles-v2');
+    expect(primaryRoutePaths).toContain('/networking-v2');
     expect(primaryRoutePaths).toContain('/digital-logic');
     expect(primaryRoutePaths).toContain('/operating-systems');
     expect(primaryRoutePaths).toContain('/database');
     expect(primaryRoutePaths).toContain('/algorithms');
     expect(primaryRoutePaths).toContain('/system-design');
     expect(routeComponentLoaders['/computer-principles-v2']).toEqual(expect.any(Function));
+    expect((routeComponentLoaders as Partial<Record<string, unknown>>)['/networking-v2']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/digital-logic']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/operating-systems']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/database']).toEqual(expect.any(Function));

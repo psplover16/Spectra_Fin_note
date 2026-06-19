@@ -75,6 +75,7 @@ while ((1 << parityBits) < dataBits + parityBits + 1) {
       ]
     }
   ],
+  networkingV2: [],
   digitalLogic: [],
   operatingSystems: [],
   informationManagement: [

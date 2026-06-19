@@ -66,13 +66,18 @@ test('production PWA shell loads professional routes offline after an online war
   await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('架構與計算理論');
   await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('檢查碼（二）漢明碼與漢明距');
 
+  await page.goto('/networking-v2');
+  await expect(page.getByTestId('subject-view-networking-v2')).toBeVisible();
+  await expect(page.getByTestId('subject-topic-list-networkingV2')).toContainText('OSI 七層 + TCP/IP');
+  await expect(page.getByTestId('subject-topic-list-networkingV2')).toContainText('防禦設備與攻擊類型');
+
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
 
   await expect(page.getByTestId('route-tabs')).toBeVisible();
-  await expect(page.getByTestId('subject-view-computer-principles-v2')).toBeVisible();
-  await expect(page.getByTestId('topic-title-cpv2-architecture-computation-theory')).toBeVisible();
-  await expect(page.getByTestId('topic-title-cpv2-hamming-code-distance')).toBeVisible();
+  await expect(page.getByTestId('subject-view-networking-v2')).toBeVisible();
+  await expect(page.getByTestId('topic-title-networking-v2-osi-tcpip')).toBeVisible();
+  await expect(page.getByTestId('topic-title-networking-v2-defense-attacks')).toBeVisible();
 
   await context.setOffline(false);
 });

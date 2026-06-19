@@ -1,4 +1,5 @@
 import { computerPrinciplesV2Topics } from '@/modules/subjectTopics/data/computerPrinciplesV2Topics';
+import { networkingV2Topics } from '@/modules/subjectTopics/data/networkingV2Topics';
 import type {
   LessonArticleContentBlock,
   LessonArticleSection,
@@ -10938,6 +10939,7 @@ export const professionalTopicsBySubject = {
   computerPrinciples: getProfessionalTopicSkeletons('computerPrinciples'),
   computerPrinciplesV2: computerPrinciplesV2Topics,
   networking: getProfessionalTopicSkeletons('networking'),
+  networkingV2: networkingV2Topics,
   digitalLogic: getProfessionalTopicSkeletons('digitalLogic'),
   operatingSystems: getProfessionalTopicSkeletons('operatingSystems'),
   informationManagement: [...informationManagementMarkdownTopics, ...getProfessionalTopicSkeletons('informationManagement')],

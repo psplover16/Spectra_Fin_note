@@ -9,6 +9,7 @@ import DigitalLogicView from '@/modules/digitalLogic/views/DigitalLogicView.vue'
 import EnglishView from '@/modules/english/views/EnglishView.vue';
 import InformationManagementView from '@/modules/informationManagement/views/InformationManagementView.vue';
 import NetworkingView from '@/modules/networking/views/NetworkingView.vue';
+import NetworkingV2View from '@/modules/networkingV2/views/NetworkingV2View.vue';
 import OperatingSystemsView from '@/modules/operatingSystems/views/OperatingSystemsView.vue';
 import ProgrammingView from '@/modules/programming/views/ProgrammingView.vue';
 import SystemDesignView from '@/modules/systemDesign/views/SystemDesignView.vue';
@@ -29,6 +30,12 @@ const subjectRouteCases = [
   ],
   [AlgorithmsView, 'subject-view-algorithms', 'subject-topic-list-algorithms', ['二元搜尋法(Binary Search)']],
   [NetworkingView, 'subject-view-networking', 'subject-topic-list-networking', ['OSI 七層 + TCP/IP ★']],
+  [
+    NetworkingV2View,
+    'subject-view-networking-v2',
+    'subject-topic-list-networkingV2',
+    ['OSI 七層 + TCP/IP ★', '防禦設備與攻擊類型 ★']
+  ],
   [DigitalLogicView, 'subject-view-digital-logic', 'subject-topic-list-digitalLogic', ['基本邏輯(Digital Logic Basics)']],
   [OperatingSystemsView, 'subject-view-operating-systems', 'subject-topic-list-operatingSystems', ['OS 基礎概念']],
   [

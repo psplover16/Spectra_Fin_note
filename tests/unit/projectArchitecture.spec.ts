@@ -55,6 +55,21 @@ describe('project architecture document', () => {
     }
   });
 
+  it('documents networking v2 route ownership', () => {
+    const documentText = readFileSync('PROJECT_ARCHITECTURE.md', 'utf8');
+
+    for (const requiredText of [
+      '/networking-v2',
+      'networkingV2',
+      'src/modules/networkingV2/views/NetworkingV2View.vue',
+      '網路概論(v2)',
+      'networkingV2Topics',
+      'networking-v2-route'
+    ]) {
+      expect(documentText).toContain(requiredText);
+    }
+  });
+
   it('documents professional topic content model ownership', () => {
     const documentText = readFileSync('PROJECT_ARCHITECTURE.md', 'utf8');
 
