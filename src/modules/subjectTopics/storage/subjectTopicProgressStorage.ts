@@ -15,6 +15,28 @@ export interface SubjectTopicProgressState {
 
 export type SubjectTopicProgressStorage = Pick<Storage, 'getItem' | 'setItem'>;
 
+const digitalLogicComputerPrinciplesTopicIds = new Set([
+  'cp-digital-logic-basics',
+  'cp-sop-pos',
+  'cp-karnaugh-map',
+  'cp-universal-gates',
+  'cp-combinational-sequential-circuits'
+]);
+
+const operatingSystemsComputerPrinciplesTopicIds = new Set([
+  'cp-os-basics',
+  'cp-io-and-interrupts',
+  'cp-hardware-protection',
+  'cp-os-structure',
+  'cp-process',
+  'cp-cpu-scheduling',
+  'cp-deadlock',
+  'cp-process-communication',
+  'cp-memory-management',
+  'cp-virtual-memory',
+  'cp-disk-management'
+]);
+
 function createEmptySubjectProgress(updatedAt = ''): SubjectProgress {
   return {
     completedTopicIds: [],
@@ -68,6 +90,56 @@ function normalizeSubjectProgress(value: unknown): SubjectProgress {
   };
 }
 
+function moveCompletedTopicIds(
+  sourceProgress: SubjectProgress,
+  targetProgress: SubjectProgress,
+  movedTopicIds: ReadonlySet<string>
+): void {
+  const remainingCompletedTopicIds: string[] = [];
+  const targetCompletedTopicIds = new Set(targetProgress.completedTopicIds);
+
+  for (const topicId of sourceProgress.completedTopicIds) {
+    if (movedTopicIds.has(topicId)) {
+      targetCompletedTopicIds.add(topicId);
+      continue;
+    }
+
+    remainingCompletedTopicIds.push(topicId);
+  }
+
+  sourceProgress.completedTopicIds = Array.from(new Set(remainingCompletedTopicIds));
+  targetProgress.completedTopicIds = Array.from(targetCompletedTopicIds);
+}
+
+function moveBookmarkedTopicId(
+  sourceProgress: SubjectProgress,
+  targetProgress: SubjectProgress,
+  movedTopicIds: ReadonlySet<string>
+): void {
+  const bookmarkedTopicId = sourceProgress.bookmarkedTopicId;
+
+  if (!bookmarkedTopicId || !movedTopicIds.has(bookmarkedTopicId)) {
+    return;
+  }
+
+  if (!targetProgress.bookmarkedTopicId) {
+    targetProgress.bookmarkedTopicId = bookmarkedTopicId;
+  }
+
+  sourceProgress.bookmarkedTopicId = null;
+}
+
+function normalizeSplitComputerPrinciplesProgress(state: SubjectTopicProgressState): void {
+  const computerPrinciplesProgress = state.subjects.computerPrinciples;
+  const digitalLogicProgress = state.subjects.digitalLogic;
+  const operatingSystemsProgress = state.subjects.operatingSystems;
+
+  moveCompletedTopicIds(computerPrinciplesProgress, digitalLogicProgress, digitalLogicComputerPrinciplesTopicIds);
+  moveCompletedTopicIds(computerPrinciplesProgress, operatingSystemsProgress, operatingSystemsComputerPrinciplesTopicIds);
+  moveBookmarkedTopicId(computerPrinciplesProgress, digitalLogicProgress, digitalLogicComputerPrinciplesTopicIds);
+  moveBookmarkedTopicId(computerPrinciplesProgress, operatingSystemsProgress, operatingSystemsComputerPrinciplesTopicIds);
+}
+
 function normalizeProgressState(value: unknown): SubjectTopicProgressState | undefined {
   if (!isRecord(value) || value.version !== 1 || !isRecord(value.subjects)) {
     return undefined;
@@ -78,6 +150,8 @@ function normalizeProgressState(value: unknown): SubjectTopicProgressState | und
   for (const subjectKey of subjectKeys) {
     state.subjects[subjectKey] = normalizeSubjectProgress(value.subjects[subjectKey]);
   }
+
+  normalizeSplitComputerPrinciplesProgress(state);
 
   return state;
 }

@@ -1,3 +1,4 @@
+import { computerPrinciplesV2Topics } from '@/modules/subjectTopics/data/computerPrinciplesV2Topics';
 import type {
   LessonArticleContentBlock,
   LessonArticleSection,
@@ -239,7 +240,7 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-digital-logic-basics",
-    subjectKey: "computerPrinciples",
+    subjectKey: "digitalLogic",
     titleZh: "基本邏輯",
     titleEn: "Digital Logic Basics",
     sourceFiles: [
@@ -251,7 +252,7 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-sop-pos",
-    subjectKey: "computerPrinciples",
+    subjectKey: "digitalLogic",
     titleZh: "SOP 與 POS",
     titleEn: "SOP and POS",
     sourceFiles: [
@@ -263,7 +264,7 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-karnaugh-map",
-    subjectKey: "computerPrinciples",
+    subjectKey: "digitalLogic",
     titleZh: "卡諾圖化簡",
     titleEn: "Karnaugh Map Simplification",
     sourceFiles: [
@@ -275,7 +276,7 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-universal-gates",
-    subjectKey: "computerPrinciples",
+    subjectKey: "digitalLogic",
     titleZh: "萬用閘",
     titleEn: "Universal Gates",
     sourceFiles: [
@@ -287,7 +288,7 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-combinational-sequential-circuits",
-    subjectKey: "computerPrinciples",
+    subjectKey: "digitalLogic",
     titleZh: "組合與循序電路",
     titleEn: "Combinational and Sequential Circuits",
     sourceFiles: [
@@ -299,8 +300,8 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-os-basics",
-    subjectKey: "computerPrinciples",
-    titleZh: "作業系統 1：OS 基礎概念",
+    subjectKey: "operatingSystems",
+    titleZh: "OS 基礎概念",
     titleEn: "Operating System Basics",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -311,8 +312,8 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-io-and-interrupts",
-    subjectKey: "computerPrinciples",
-    titleZh: "作業系統 2：I/O 中斷方式 與 硬體保護",
+    subjectKey: "operatingSystems",
+    titleZh: "I/O 中斷方式 與 硬體保護",
     titleEn: "I/O and Interrupts",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -323,7 +324,7 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-hardware-protection",
-    subjectKey: "computerPrinciples",
+    subjectKey: "operatingSystems",
     titleZh: "硬體保護",
     titleEn: "Hardware Protection",
     sourceFiles: [
@@ -335,8 +336,8 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-os-structure",
-    subjectKey: "computerPrinciples",
-    titleZh: "作業系統 3-4：OS 的結構",
+    subjectKey: "operatingSystems",
+    titleZh: "OS 的結構",
     titleEn: "Operating System Structure",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -347,8 +348,8 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-process",
-    subjectKey: "computerPrinciples",
-    titleZh: "作業系統 3-5（上）：Process 基礎",
+    subjectKey: "operatingSystems",
+    titleZh: "Process 基礎",
     titleEn: "Process",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -359,8 +360,8 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-cpu-scheduling",
-    subjectKey: "computerPrinciples",
-    titleZh: "作業系統 3-5（下）：CPU 排程演算法",
+    subjectKey: "operatingSystems",
+    titleZh: "CPU 排程演算法",
     titleEn: "CPU Scheduling",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -371,8 +372,8 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-deadlock",
-    subjectKey: "computerPrinciples",
-    titleZh: "作業系統 3-6：Deadlock（死結）",
+    subjectKey: "operatingSystems",
+    titleZh: "Deadlock（死結）",
     titleEn: "Deadlock",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -383,8 +384,8 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-process-communication",
-    subjectKey: "computerPrinciples",
-    titleZh: "作業系統 3-7：Process Communication",
+    subjectKey: "operatingSystems",
+    titleZh: "Process Communication",
     titleEn: "Process Communication",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -395,8 +396,8 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-memory-management",
-    subjectKey: "computerPrinciples",
-    titleZh: "作業系統 3-8：Memory Management（記憶體管理）",
+    subjectKey: "operatingSystems",
+    titleZh: "Memory Management（記憶體管理）",
     titleEn: "Memory Management",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -407,8 +408,8 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-virtual-memory",
-    subjectKey: "computerPrinciples",
-    titleZh: "作業系統 3-9：Virtual Memory（虛擬記憶體）",
+    subjectKey: "operatingSystems",
+    titleZh: "Virtual Memory（虛擬記憶體）",
     titleEn: "Virtual Memory",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -419,8 +420,8 @@ const professionalTopicSkeletonConfigs = [
   },
   {
     id: "cp-disk-management",
-    subjectKey: "computerPrinciples",
-    titleZh: "作業系統 3-10：Disk Management（磁碟管理）",
+    subjectKey: "operatingSystems",
+    titleZh: "Disk Management（磁碟管理）",
     titleEn: "Disk Management",
     sourceFiles: [
       "_private/計算機概論.txt"
@@ -432,7 +433,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-osi-tcpip",
     subjectKey: "networking",
-    titleZh: "網路概論 1：OSI 七層 + TCP/IP ★",
+    titleZh: "OSI 七層 + TCP/IP ★",
     titleEn: "OSI and TCP/IP",
     sourceFiles: [
       "_private/網概.txt",
@@ -445,7 +446,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-basics",
     subjectKey: "networking",
-    titleZh: "網路概論 2：基礎概念",
+    titleZh: "基礎概念",
     titleEn: "Networking Basics",
     sourceFiles: [
       "_private/網概.txt",
@@ -458,7 +459,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-devices-osi",
     subjectKey: "networking",
-    titleZh: "網路概論 3：網路設備對應層級",
+    titleZh: "網路設備對應層級",
     titleEn: "Network Devices and OSI Layers",
     sourceFiles: [
       "_private/網概.txt",
@@ -471,7 +472,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-ip-subnetting",
     subjectKey: "networking",
-    titleZh: "網路概論 4（上）：IP 基礎 + 子網路計算 ★",
+    titleZh: "IP 基礎 + 子網路計算 ★",
     titleEn: "IP and Subnetting",
     sourceFiles: [
       "_private/網概.txt",
@@ -484,7 +485,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-routing-l3-protocols",
     subjectKey: "networking",
-    titleZh: "網路概論 4（下）：路由 + L3 協定與工具",
+    titleZh: "路由 + L3 協定與工具",
     titleEn: "Routing and L3 Protocols",
     sourceFiles: [
       "_private/網概.txt",
@@ -497,7 +498,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-transport-layer",
     subjectKey: "networking",
-    titleZh: "網路概論 5：傳輸層",
+    titleZh: "傳輸層",
     titleEn: "Transport Layer",
     sourceFiles: [
       "_private/網概.txt",
@@ -510,7 +511,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-application-ports",
     subjectKey: "networking",
-    titleZh: "網路概論 6：應用層協定 + Port Number 對照表 ★",
+    titleZh: "應用層協定 + Port Number 對照表 ★",
     titleEn: "Application Layer and Port Numbers",
     sourceFiles: [
       "_private/網概.txt",
@@ -523,7 +524,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-physical-layer",
     subjectKey: "networking",
-    titleZh: "網路概論 7（上）：實體層 + 標準速度表 ★",
+    titleZh: "實體層 + 標準速度表 ★",
     titleEn: "Physical Layer",
     sourceFiles: [
       "_private/網概.txt",
@@ -536,7 +537,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-data-link-layer",
     subjectKey: "networking",
-    titleZh: "網路概論 7（下）：資料鏈結層",
+    titleZh: "資料鏈結層",
     titleEn: "Data Link Layer",
     sourceFiles: [
       "_private/網概.txt",
@@ -549,7 +550,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-security-crypto",
     subjectKey: "networking",
-    titleZh: "網路概論 8（上）：資安觀念與加密 ★",
+    titleZh: "資安觀念與加密 ★",
     titleEn: "Security Concepts and Cryptography",
     sourceFiles: [
       "_private/網概.txt",
@@ -562,7 +563,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "networking-defense-attacks",
     subjectKey: "networking",
-    titleZh: "網路概論 8（下）：防禦設備與攻擊類型 ★",
+    titleZh: "防禦設備與攻擊類型 ★",
     titleEn: "Defense Devices and Attacks",
     sourceFiles: [
       "_private/網概.txt",
@@ -1259,7 +1260,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "algorithm-big-o-complexity",
     subjectKey: "algorithms",
-    titleZh: "資料結構與演算法 1：演算法定義 + Big-O 複雜度 ★",
+    titleZh: "演算法定義 + Big-O 複雜度 ★",
     titleEn: "Algorithm and Big-O Complexity",
     sourceFiles: [
       "_private/MD/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md"
@@ -1271,7 +1272,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "algorithm-array-linked-list",
     subjectKey: "algorithms",
-    titleZh: "資料結構與演算法 2：陣列 Array + 鏈結串列 Linked List",
+    titleZh: "陣列 Array + 鏈結串列 Linked List",
     titleEn: "Array and Linked List",
     sourceFiles: [
       "_private/MD/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md"
@@ -1283,7 +1284,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "algorithm-stack-queue",
     subjectKey: "algorithms",
-    titleZh: "資料結構與演算法 3：堆疊 Stack + 佇列 Queue",
+    titleZh: "堆疊 Stack + 佇列 Queue",
     titleEn: "Stack and Queue",
     sourceFiles: [
       "_private/MD/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md"
@@ -1295,7 +1296,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "algorithm-tree-traversal-basics",
     subjectKey: "algorithms",
-    titleZh: "資料結構與演算法 4：樹 Tree（基本）+ 前中後序走訪",
+    titleZh: "樹 Tree（基本）+ 前中後序走訪",
     titleEn: "Tree Basics and Traversal",
     sourceFiles: [
       "_private/MD/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md"
@@ -1307,7 +1308,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "algorithm-advanced-trees",
     subjectKey: "algorithms",
-    titleZh: "資料結構與演算法 5：高等樹 ★（AVL／B-Tree／Heap／紅黑樹）",
+    titleZh: "高等樹 ★（AVL／B-Tree／Heap／紅黑樹）",
     titleEn: "Advanced Trees",
     sourceFiles: [
       "_private/MD/資料結構與演算法/資料結構與演算法_5_高等樹.md"
@@ -1319,7 +1320,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "algorithm-graph-basics-traversal",
     subjectKey: "algorithms",
-    titleZh: "資料結構與演算法 6（上）：圖 Graph 基礎 + DFS／BFS ★",
+    titleZh: "圖 Graph 基礎 + DFS／BFS ★",
     titleEn: "Graph Basics and Traversal",
     sourceFiles: [
       "_private/MD/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md"
@@ -1331,7 +1332,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "algorithm-graph-algorithms",
     subjectKey: "algorithms",
-    titleZh: "資料結構與演算法 6（下）：圖演算法 ★（MST／最短路徑／AOV-AOE）",
+    titleZh: "圖演算法 ★（MST／最短路徑／AOV-AOE）",
     titleEn: "Graph Algorithms",
     sourceFiles: [
       "_private/MD/資料結構與演算法/資料結構與演算法_6下_圖演算法.md"
@@ -1343,7 +1344,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "algorithm-sorting-overview",
     subjectKey: "algorithms",
-    titleZh: "資料結構與演算法 7：排序 Sorting ★",
+    titleZh: "排序 Sorting ★",
     titleEn: "Sorting",
     sourceFiles: [
       "_private/MD/資料結構與演算法/資料結構與演算法_7_排序.md"
@@ -1355,7 +1356,7 @@ const professionalTopicSkeletonConfigs = [
   {
     id: "algorithm-hashing",
     subjectKey: "algorithms",
-    titleZh: "資料結構與演算法 8：雜湊 Hashing",
+    titleZh: "雜湊 Hashing",
     titleEn: "Hashing",
     sourceFiles: [
       "_private/MD/資料結構與演算法/資料結構與演算法_8_雜湊.md"
@@ -9316,7 +9317,7 @@ const informationManagementMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'im-md-digital-transformation-esg',
     subjectKey: 'informationManagement',
-    title: '資訊管理 1：數位轉型 + ESG',
+    title: '數位轉型 + ESG',
     summary: '整理數位轉型的定義、三個核心、成功關鍵，以及 ESG 在資訊管理中的應用方向。',
     sourceFile: '_private/MD/資訊管理/資訊管理_1_數位轉型與ESG.md',
     sourceSection: '資訊管理 1：數位轉型 + ESG',
@@ -9391,7 +9392,7 @@ const informationManagementMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'im-md-traditional-development-models',
     subjectKey: 'informationManagement',
-    title: '資訊管理 2a：傳統開發模式（漸增／雛形／螺旋）',
+    title: '傳統開發模式（漸增／雛形／螺旋）',
     summary: '整理漸增、雛形與螺旋三種傳統開發模式的做法、優缺點與適用情境。',
     sourceFile: '_private/MD/資訊管理/資訊管理_2a_傳統開發模式.md',
     sourceSection: '資訊管理 2a：傳統開發模式（漸增／雛形／螺旋）',
@@ -9467,7 +9468,7 @@ const informationManagementMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'im-md-agile-development',
     subjectKey: 'informationManagement',
-    title: '資訊管理 2b：敏捷開發 Agile',
+    title: '敏捷開發 Agile',
     summary: '整理敏捷開發定義、敏捷宣言四大價值、優缺點，以及 Scrum、Kanban、XP 三個常見框架。',
     sourceFile: '_private/MD/資訊管理/資訊管理_2b_敏捷開發.md',
     sourceSection: '資訊管理 2b：敏捷開發 Agile',
@@ -9558,7 +9559,7 @@ const informationManagementMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'im-md-information-ethics',
     subjectKey: 'informationManagement',
-    title: '資訊管理 3a：資訊倫理（PAPA 四大議題）',
+    title: '資訊倫理（PAPA 四大議題）',
     summary: '整理資訊倫理定義與 PAPA 四大議題：Privacy、Accuracy、Property、Accessibility。',
     sourceFile: '_private/MD/資訊管理/資訊管理_3a_資訊倫理.md',
     sourceSection: '資訊管理 3a：資訊倫理（PAPA 四大議題）',
@@ -9616,7 +9617,7 @@ const informationManagementMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'im-md-data-classification-privacy-paradox',
     subjectKey: 'informationManagement',
-    title: '資訊管理 3b：數據分類 + 隱私悖論',
+    title: '數據分類 + 隱私悖論',
     summary: '整理第一方、第二方、第三方資料的差異，以及隱私悖論在數位服務中的意義。',
     sourceFile: '_private/MD/資訊管理/資訊管理_3b_數據分類與隱私悖論.md',
     sourceSection: '資訊管理 3b：數據分類 + 隱私悖論',
@@ -9681,7 +9682,7 @@ const informationManagementMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'im-md-personal-data-protection-act',
     subjectKey: 'informationManagement',
-    title: '資訊管理 4a：個人資料保護法（個資法）',
+    title: '個人資料保護法（個資法）',
     summary: '整理個資法的目的、個人資料與特種個資、蒐集處理利用原則、當事人權利，以及個資會籌備處與修法施行狀態。',
     sourceFile: '_private/MD/資訊管理/資訊管理_4a_個人資料保護法.md',
     sourceSection: '資訊管理 4a：個人資料保護法（個資法）',
@@ -9766,7 +9767,7 @@ const informationManagementMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'im-md-gdpr',
     subjectKey: 'informationManagement',
-    title: '資訊管理 4b：GDPR（歐盟一般資料保護規則）',
+    title: 'GDPR（歐盟一般資料保護規則）',
     summary: '整理 GDPR 定義、適用範圍、個資處理原則、資料主體權利，以及 2,000 萬歐元或全球年營業額 4% 的高額罰則。',
     sourceFile: '_private/MD/資訊管理/資訊管理_4b_GDPR.md',
     sourceSection: '資訊管理 4b：GDPR（歐盟一般資料保護規則）',
@@ -9850,7 +9851,7 @@ const databaseMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'database-md-foundations-architecture',
     subjectKey: 'database',
-    title: '資料庫 1：基礎概念 + ANSI/SPARC 架構',
+    title: '基礎概念 + ANSI/SPARC 架構',
     summary: '整理 ANSI/SPARC 三層架構、資料獨立性、資料庫優缺點與四種資料庫模型。',
     sourceFile: '_private/MD/資料庫/資料庫_1_基礎概念與架構.md',
     sourceSection: '資料庫 1：基礎概念 + ANSI/SPARC 架構',
@@ -9908,7 +9909,7 @@ const databaseMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'database-md-keys-erd',
     subjectKey: 'database',
-    title: '資料庫 2：Key（鍵）+ ERD（實體關係圖）',
+    title: 'Key（鍵）+ ERD（實體關係圖）',
     summary: '整理關聯式資料庫各種鍵、ERD 三元素與基數，並強調多對多要拆中介表。',
     sourceFile: '_private/MD/資料庫/資料庫_2_鍵與ERD.md',
     sourceSection: '資料庫 2：Key（鍵）+ ERD（實體關係圖）',
@@ -9968,7 +9969,7 @@ const databaseMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'database-md-normalization',
     subjectKey: 'database',
-    title: '資料庫 3：正規化 Normalization ★',
+    title: '正規化 Normalization ★',
     summary: '用學生選課表說明 1NF、2NF、3NF、BCNF 與 4NF，並整理正規化要消除的異常。',
     sourceFile: '_private/MD/資料庫/資料庫_3_正規化.md',
     sourceSection: '資料庫 3：正規化 Normalization ★',
@@ -10026,7 +10027,7 @@ const databaseMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'database-md-sql-crud',
     subjectKey: 'database',
-    title: '資料庫 4：SQL 分類 + CRUD 基礎語法 ★',
+    title: 'SQL 分類 + CRUD 基礎語法 ★',
     summary: '整理 SQL DDL/DML/DCL 分類、DELETE/TRUNCATE/DROP 差異與 CRUD 基礎語法。',
     sourceFile: '_private/MD/資料庫/資料庫_4_SQL分類與CRUD.md',
     sourceSection: '資料庫 4：SQL 分類 + CRUD 基礎語法 ★',
@@ -10081,7 +10082,7 @@ const databaseMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'database-md-sql-advanced-query',
     subjectKey: 'database',
-    title: '資料庫 5：SQL 查詢進階 ★',
+    title: 'SQL 查詢進階 ★',
     summary: '整理 WHERE 運算子、ORDER BY、聚合函數、GROUP BY/HAVING、JOIN 與 SQL 邏輯執行順序。',
     sourceFile: '_private/MD/資料庫/資料庫_5_SQL查詢進階.md',
     sourceSection: '資料庫 5：SQL 查詢進階 ★',
@@ -10154,7 +10155,7 @@ const databaseMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'database-md-transactions-nosql',
     subjectKey: 'database',
-    title: '資料庫 6：交易 ACID + NoSQL',
+    title: '交易 ACID + NoSQL',
     summary: '整理交易、COMMIT/ROLLBACK、ACID 四特性、並行讀取問題與 NoSQL/BASE 概念。',
     sourceFile: '_private/MD/資料庫/資料庫_6_交易ACID與NoSQL.md',
     sourceSection: '資料庫 6：交易 ACID + NoSQL',
@@ -10211,7 +10212,7 @@ const programmingMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'programming-md-language-execution-basics',
     subjectKey: 'programming',
-    title: '程式設計 1：語言執行方式 + 程式基礎',
+    title: '語言執行方式 + 程式基礎',
     summary: '整理 Assembler、Compiler、Interpreter、Java bytecode/JVM、型別系統與流程控制易考陷阱。',
     sourceFile: '_private/MD/程式設計/程式設計_1_語言執行方式與程式基礎.md',
     sourceSection: '程式設計 1：語言執行方式 + 程式基礎',
@@ -10257,7 +10258,7 @@ const programmingMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'programming-md-functions-parameter-passing',
     subjectKey: 'programming',
-    title: '程式設計 2：函式 + 參數傳遞 ★',
+    title: '函式 + 參數傳遞 ★',
     summary: '整理函式、參數與引數、傳值/傳址/傳參考/傳名、swap 範例與 static 關鍵字。',
     sourceFile: '_private/MD/程式設計/程式設計_2_函式與參數傳遞.md',
     sourceSection: '程式設計 2：函式 + 參數傳遞 ★',
@@ -10303,7 +10304,7 @@ const programmingMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'programming-md-arrays-strings-exceptions',
     subjectKey: 'programming',
-    title: '程式設計 3：陣列 + 字串函式 + 例外處理',
+    title: '陣列 + 字串函式 + 例外處理',
     summary: '整理陣列宣告、索引、多維陣列、字串函式跨語言對照與 try/catch/finally 例外處理。',
     sourceFile: '_private/MD/程式設計/程式設計_3_陣列字串與例外處理.md',
     sourceSection: '程式設計 3：陣列 + 字串函式 + 例外處理',
@@ -10357,7 +10358,7 @@ const programmingMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'programming-md-pointers',
     subjectKey: 'programming',
-    title: '程式設計 4：指標 Pointer ★（C／C++）',
+    title: '指標 Pointer ★（C／C++）',
     summary: '用房間號碼比喻說明指標、取址、解參考、指標與陣列、用途與常見陷阱。',
     sourceFile: '_private/MD/程式設計/程式設計_4_指標.md',
     sourceSection: '程式設計 4：指標 Pointer ★（C／C++）',
@@ -10417,7 +10418,7 @@ const programmingMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'programming-md-oop',
     subjectKey: 'programming',
-    title: '程式設計 5：物件導向 OOP 三大特性 ★',
+    title: '物件導向 OOP 三大特性 ★',
     summary: '整理類別與物件、封裝、繼承、多型，以及抽象類別與介面的差異。',
     sourceFile: '_private/MD/程式設計/程式設計_5_物件導向OOP.md',
     sourceSection: '程式設計 5：物件導向 OOP 三大特性 ★',
@@ -10474,7 +10475,7 @@ const programmingMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'programming-md-recursion',
     subjectKey: 'programming',
-    title: '程式設計 6：遞迴 Recursion ★',
+    title: '遞迴 Recursion ★',
     summary: '整理遞迴定義、終止條件與遞迴呼叫、階乘、Fibonacci、遞迴與迴圈比較，以及 call stack。',
     sourceFile: '_private/MD/程式設計/程式設計_6_遞迴.md',
     sourceSection: '程式設計 6：遞迴 Recursion ★',
@@ -10529,7 +10530,7 @@ const programmingMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'programming-md-language-features',
     subjectKey: 'programming',
-    title: '程式設計 7：各語言特性（Java GC／Python 容器）',
+    title: '各語言特性（Java GC／Python 容器）',
     summary: '整理 Java GC、C/C++ 手動記憶體、Python List/Tuple/Dict/Set，以及 C/C++、Java、Python 代表特性。',
     sourceFile: '_private/MD/程式設計/程式設計_7_各語言特性.md',
     sourceSection: '程式設計 7：各語言特性（Java GC／Python 容器）',
@@ -10580,7 +10581,7 @@ const systemDesignMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'system-design-sdlc-ssdlc',
     subjectKey: 'systemDesign',
-    title: '系統分析與設計 1：SDLC + SSDLC',
+    title: 'SDLC + SSDLC',
     summary: '整理 SDLC 七階段、常見開發模型與 SSDLC 在每個階段內建資安的觀念。',
     sourceFile: '_private/MD/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md',
     sourceSection: '系統分析與設計 1：SDLC + SSDLC',
@@ -10641,7 +10642,7 @@ const systemDesignMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'system-design-cohesion-coupling',
     subjectKey: 'systemDesign',
-    title: '系統分析與設計 2：內聚力 Cohesion + 耦合力 Coupling ★',
+    title: '內聚力 Cohesion + 耦合力 Coupling ★',
     summary: '整理高內聚低耦合原則、7 種內聚與 5 種耦合的好壞排序。',
     sourceFile: '_private/MD/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md',
     sourceSection: '系統分析與設計 2：內聚力 Cohesion + 耦合力 Coupling ★',
@@ -10699,7 +10700,7 @@ const systemDesignMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'system-design-oo-uml',
     subjectKey: 'systemDesign',
-    title: '系統分析與設計 3：OO 四種關係 + UML 四種圖',
+    title: 'OO 四種關係 + UML 四種圖',
     summary: '整理物件導向四種關係弱到強、聚合與組合差異，以及 UML 類別圖、使用個案圖、活動圖、循序圖。',
     sourceFile: '_private/MD/系統分析與設計/系統分析與設計_3_OO關係與UML.md',
     sourceSection: '系統分析與設計 3：OO 四種關係 + UML 四種圖',
@@ -10754,7 +10755,7 @@ const systemDesignMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'system-design-testing',
     subjectKey: 'systemDesign',
-    title: '系統分析與設計 4：測試 Testing',
+    title: '測試 Testing',
     summary: '整理測試目的、測試層級、白箱黑箱、迴歸/復原/安全/效能，以及 Alpha/Beta。',
     sourceFile: '_private/MD/系統分析與設計/系統分析與設計_4_測試.md',
     sourceSection: '系統分析與設計 4：測試 Testing',
@@ -10813,7 +10814,7 @@ const systemDesignMarkdownTopics = [
   createImportedMarkdownTopic({
     id: 'system-design-conversion-pdca',
     subjectKey: 'systemDesign',
-    title: '系統分析與設計 5：系統導入 + PDCA',
+    title: '系統導入 + PDCA',
     summary: '整理直接、平行、領航、階段四種系統導入方式，以及 PDCA 持續改善循環。',
     sourceFile: '_private/MD/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md',
     sourceSection: '系統分析與設計 5：系統導入 + PDCA',
@@ -10935,7 +10936,10 @@ const getProfessionalTopicSkeletons = (subjectKey: SubjectKey): readonly Profess
 
 export const professionalTopicsBySubject = {
   computerPrinciples: getProfessionalTopicSkeletons('computerPrinciples'),
+  computerPrinciplesV2: computerPrinciplesV2Topics,
   networking: getProfessionalTopicSkeletons('networking'),
+  digitalLogic: getProfessionalTopicSkeletons('digitalLogic'),
+  operatingSystems: getProfessionalTopicSkeletons('operatingSystems'),
   informationManagement: [...informationManagementMarkdownTopics, ...getProfessionalTopicSkeletons('informationManagement')],
   programming: [...programmingMarkdownTopics, ...getProfessionalTopicSkeletons('programming')],
   database: [...databaseMarkdownTopics, ...getProfessionalTopicSkeletons('database')],

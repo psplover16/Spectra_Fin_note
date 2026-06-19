@@ -3418,3 +3418,546 @@ tests:
   - tests/unit/staleProfessionalContentAudit.spec.ts
   - tests/unit/subjectTopics.spec.ts
 -->
+
+---
+### Requirement: Lesson article sections can be collapsed when configured
+
+LessonArticle sections SHALL support optional controlled collapse metadata. A section configured as collapsible with default-expanded false SHALL render its heading as an interactive control, hide its section body by default, and reveal the body when the user activates that control. Sections without collapse metadata SHALL render expanded exactly as they did before this change.
+
+#### Scenario: Collapsible lesson section starts closed
+
+- **WHEN** a lessonArticle section has collapse metadata with collapsible true and defaultExpanded false
+- **THEN** the section heading is visible as an interactive control
+- **AND** the section body content is not visible by default
+- **AND** surrounding non-collapsible lessonArticle sections remain visible
+- **AND** the collapsible section has a dedicated class for top separation from the preceding section
+
+#### Scenario: Collapsible lesson section opens and closes
+
+- **WHEN** the user activates a closed collapsible lessonArticle section heading
+- **THEN** the section body content becomes visible
+- **WHEN** the user activates the same heading again
+- **THEN** the section body content becomes hidden again
+
+#### Scenario: Non-collapsible lesson sections preserve existing rendering
+
+- **WHEN** a lessonArticle section does not include collapse metadata
+- **THEN** the section heading and all section body blocks render without requiring an extra click
+- **AND** existing paragraph, orderedList, and table rendering remains unchanged
+
+<!-- @trace
+source: fill-floating-point-and-codes-content
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/演算法/BubbleSort.java
+  - _private/MD/done/計概/3c作業系統/作業系統_3-5下_CPU排程演算法.md
+  - _private/MD/系統分析與設計/五、UML.md
+  - _private/MD/計概/3a基本計概/done/五、匯流排（Bus）_新手國考教材.md
+  - _private/MD/資料結構與演算法/十、高等樹.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - _private/MD/計概/3c作業系統/七、Process Communication_新手國考教材.md
+  - _private/MD/計概/3a基本計概/done/二、圖靈機與圖靈測試.md
+  - _private/MD/資訊管理/一、準備方向.md
+  - _private/MD/計概/3a基本計概/done/六、效能名詞與公式_新手國考教材.md
+  - _private/MD/計概/3b數位邏輯/五、組合與循序電路_新手國考教材.md
+  - _private/MD/計概/3c作業系統/四、OS 結構_新手國考教材.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-10_磁碟管理.md
+  - _private/TMP/information-management-md-content-review.md
+  - _private/MD/done/計概/3a基本計概/done/八、Memory 階層圖_新手國考教材.md
+  - _private/MD/網概/九、傳輸層.md
+  - _private/MD/資訊管理/四、ESG.md
+  - _private/MD/done/網概/網路概論_7下_資料鏈結層.md
+  - _private/MD/資料庫/六、正規化.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/計概/3a基本計概/done/十六、浮點數轉換_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/計概/3b數位邏輯/四、萬用閘_新手國考教材.md
+  - _private/MD/資料結構與演算法/七、Tree.md
+  - _private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/done/計概/3a基本計概/done/六、效能名詞與公式_新手國考教材.md
+  - _private/MD/資料結構與演算法/四、陣列（Array）.md
+  - _private/MD/done/計概/3a基本計概/done/四、Pipeline（管線化）_新手國考教材.md
+  - _private/MD/done/計概/3c作業系統/3-2. IO 中斷方式 與 硬體保護.md
+  - _private/MD/done/計概/3b數位邏輯/四、萬用閘_新手國考教材.md
+  - _private/MD/計概/3a基本計概/done/九、Memory 分類圖_新手國考教材.md
+  - _private/MD/網概/二、網路概論.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - _private/MD/done/程式設計/程式設計_6_遞迴.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - _private/MD/done/網概/網路概論_7上_實體層.md
+  - _private/MD/計概/3c作業系統/八、Memory Management_新手國考教材.md
+  - _private/MD/資料庫/三、資料庫基礎.md
+  - _private/MD/done/計概/3b數位邏輯/三、卡諾圖化簡_新手國考教材.md
+  - _private/MD/計概/3b數位邏輯/二、SOP 與 POS_新手國考教材.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計概/3a基本計概/done/十、Register（暫存器）_新手國考教材.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md
+  - _private/MD/done/網概/網路概論_2_基礎概念.md
+  - _private/MD/資料庫/七、SQL 分類與 CRUD.md
+  - _private/MD/計概/3c作業系統/九、Virtual Memory_新手國考教材.md
+  - _private/MD/done/計概/3b數位邏輯/五、組合與循序電路_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/五、匯流排（Bus）_新手國考教材.md
+  - _private/MD/程式/四、Python 特殊資料型別.md
+  - _private/MD/資訊管理/資訊管理_3b_數據分類與隱私悖論.md
+  - _private/MD/done/計概/3a基本計概/done/三、機器指令與指令週期_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/一、馮紐曼架構.md
+  - _private/MD/資料庫/一、準備方向.md
+  - src/shared/components/RouteTabs.vue
+  - _private/MD/系統分析與設計/二、系統分析與設計概論.md
+  - _private/MD/done/計概/3a基本計概/done/十、Register（暫存器）_新手國考教材.md
+  - _private/MD/網概/十一、資訊安全.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md
+  - _private/MD/計概/3a基本計概/done/一、馮紐曼架構.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - _private/MD/done/計概/3a基本計概/done/十五、補數轉換_新手國考教材.md
+  - _private/MD/網概/五、OSI 7 層與 TCPIP 5 層.md
+  - _private/MD/資料結構與演算法/十一、雜湊法（Hashing）.md
+  - _private/MD/程式/二、基礎.md
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _private/MD/計概/3a基本計概/done/四、Pipeline（管線化）_新手國考教材.md
+  - _private/MD/done/網概/網路概論_4上_IP與子網路計算.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-7_ProcessCommunication_跳過分析.md
+  - _private/MD/done/計概/3c作業系統/3-4_OS結構.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/done/計概/3c作業系統/3-1. OS 基礎概念.md
+  - _private/MD/計概/3b數位邏輯/一、基本邏輯_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md
+  - _private/MD/網概/三、網路設備與 OSI 層.md
+  - _private/MD/計概/3a基本計概/done/八、Memory 階層圖_新手國考教材.md
+  - _private/MD/資訊管理/資訊管理_1_數位轉型與ESG.md
+  - _private/MD/程式/三、中階.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_3_OO關係與UML.md
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/done/程式設計/程式設計_3_陣列字串與例外處理.md
+  - _private/MD/done/程式設計/程式設計_7_各語言特性.md
+  - _private/MD/資訊管理/二、數位轉型.md
+  - _private/MD/done/計概/3a基本計概/done/十七、數碼、文字碼與檢查碼_新手國考教材.md
+  - _private/MD/計概/3a基本計概/done/十七、數碼、文字碼與檢查碼_新手國考教材.md
+  - _private/MD/done/計概/3b數位邏輯/一、基本邏輯_新手國考教材.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-8_記憶體管理.md
+  - _private/MD/資料結構與演算法/一、準備方向.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_8_雜湊.md
+  - src/shared/components/RouteSubMenu.vue
+  - _private/MD/演算法/GeneralBucketSort.java
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/done/網概/網路概論_3_網路設備對應層級.md
+  - _private/MD/done/程式設計/程式設計_1_語言執行方式與程式基礎.md
+  - _private/MD/done/計概/3a基本計概/done/二、圖靈機與圖靈測試.md
+  - _private/MD/計概/3b數位邏輯/三、卡諾圖化簡_新手國考教材.md
+  - _private/MD/資料庫/八、ACID 與交易.md
+  - _private/MD/done/計概/3a基本計概/done/七、RISC 與 CISC_新手國考教材.md
+  - _private/ques/原文.txt
+  - _private/propose.md
+  - _private/MD/資訊管理/資訊管理_4b_GDPR.md
+  - _private/MD/done/演算法/BubbleSort.java
+  - _private/MD/done/資料庫/資料庫_4_SQL分類與CRUD.md
+  - _private/MD/done/網概/網路概論_6_應用層與Port對照.md
+  - _private/ques/計算機概論.txt
+  - PROJECT_ARCHITECTURE.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - _private/MD/計概/3a基本計概/done/三、機器指令與指令週期_新手國考教材.md
+  - _private/MD/資料庫/十、資料庫補充考點.md
+  - _private/MD/done/網概/網路概論_5_傳輸層.md
+  - _private/MD/done/資料庫/資料庫_1_基礎概念與架構.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - _private/MD/計概/3c作業系統/五、Process_新手國考教材.md
+  - _private/MD/系統分析與設計/六、專案管理.md
+  - _private/MD/系統分析與設計/三、結構化分析與設計.md
+  - _private/MD/done/計概/3a基本計概/done/九、Memory 分類圖_新手國考教材.md
+  - _private/MD/done/網概/網路概論_8下_防禦設備與攻擊.md
+  - _private/MD/資訊管理/資訊管理_3a_資訊倫理.md
+  - src/modules/subjectTopics/components/SubjectTopicPage.vue
+  - _private/MD/系統分析與設計/四、物件導向.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - _private/MD/計概/3a基本計概/done/十二、Hazard_新手國考教材.md
+  - _private/MD/done/網概/網路概論_8上_資安觀念與加密.md
+  - _private/MD/資料庫/九、NoSQL.md
+  - _private/MD/資訊管理/六、資訊管理補充考點.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - _private/MD/資料結構與演算法/二、演算法.md
+  - _private/MD/計概/3c作業系統/六、Deadlock_新手國考教材.md
+  - _private/MD/網概/六、實體層.md
+  - _private/MD/done/資料庫/資料庫_3_正規化.md
+  - _private/MD/網概/四、常見 Port Number.md
+  - _private/MD/資料結構與演算法/九、排序.md
+  - _private/MD/done/計概/3a基本計概/done/十三、USB 速度_新手國考教材.md
+  - _private/MD/資訊管理/三、資訊系統開發流程與模式.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-5上_Process基礎.md
+  - _private/MD/資訊管理/資訊管理_2a_傳統開發模式.md
+  - _private/MD/系統分析與設計/一、準備方向.md
+  - _private/MD/計概/3a基本計概/done/十四、進制轉換_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/十二、Hazard_新手國考教材.md
+  - _private/MD/計概/3c作業系統/一、基本常識_新手國考教材.md
+  - src/modules/systemDesign/views/SystemDesignView.vue
+  - _private/MD/計概/3a基本計概/done/十一、Cache_新手國考教材.md
+  - _private/MD/done/程式設計/程式設計_5_物件導向OOP.md
+  - src/styles/main.css
+  - _private/MD/done/網概/網路概論_1_OSI七層與TCPIP.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md
+  - _private/MD/計概/3a基本計概/done/十三、USB 速度_新手國考教材.md
+  - _private/MD/計概/3c作業系統/三、硬體保護_新手國考教材.md
+  - _private/MD/done/演算法/GeneralBucketSort.java
+  - _private/MD/done/系統分析與設計/系統分析與設計_4_測試.md
+  - _private/MD/計概/3a基本計概/done/七、RISC 與 CISC_新手國考教材.md
+  - _private/MD/計算機概論/00_目錄.md
+  - _private/MD/程式/五、C C++ Java 補充重點.md
+  - _private/MD/資訊管理/五、資訊系統倫理與新興法規.md
+  - _private/MD/網概/十、應用層.md
+  - _private/MD/done/資料庫/資料庫_6_交易ACID與NoSQL.md
+  - _private/MD/資料庫/四、Key.md
+  - _private/MD/計概/3a基本計概/done/十五、補數轉換_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/十四、進制轉換_新手國考教材.md
+  - _private/MD/網概/一、準備方向.md
+  - src/app/router.ts
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_7_排序.md
+  - _private/MD/done/資料庫/資料庫_5_SQL查詢進階.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_5_高等樹.md
+  - _private/MD/資料庫/二、ANSISPARC 架構.md
+  - _private/MD/計概/3c作業系統/二、IO與中斷_新手國考教材.md
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - _private/MD/資料結構與演算法/六、Stack 與 Queue.md
+  - _private/MD/done/程式設計/程式設計_2_函式與參數傳遞.md
+  - _private/MD/資料結構與演算法/八、圖（Graph）.md
+  - _private/MD/資訊管理/資訊管理_4a_個人資料保護法.md
+  - _private/筆記.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-9_虛擬記憶體.md
+  - _private/MD/資料結構與演算法/五、Linked List.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - _private/MD/done/程式設計/程式設計_4_指標.md
+  - _private/MD/網概/八、網路層.md
+  - _private/MD/網概/七、資料鏈結層.md
+  - _private/MD/程式/一、準備方向.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-6_Deadlock.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/done/資料庫/資料庫_2_鍵與ERD.md
+  - _private/MD/done/計概/3a基本計概/done/十一、Cache_新手國考教材.md
+  - _private/MD/done/計概/3b數位邏輯/二、SOP 與 POS_新手國考教材.md
+  - src/app/routePreload.ts
+  - _private/MD/done/網概/網路概論_4下_路由與L3協定.md
+  - _private/MD/資訊管理/資訊管理_2b_敏捷開發.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - _private/MD/資料庫/五、ERD.md
+  - _private/discuss.txt
+  - _private/MD/done/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/計概/3c作業系統/十、Disk Management_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6下_圖演算法.md
+  - _private/MD/done/計概/3a基本計概/done/十六、浮點數轉換_新手國考教材.md
+tests:
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/programmingRouteWorkflow.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/unit/databaseRouteWorkflow.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/SubjectTopicPage.spec.ts
+-->
+
+---
+### Requirement: Lesson article tables reveal configured columns
+
+The subject topic page SHALL support lessonArticle table blocks with configured revealable columns. A revealable column's header SHALL remain visible, its body cell values SHALL be hidden by default, and activating the header control SHALL toggle the visibility of that column's body cell values independently from other revealable columns. Tables without revealable columns MUST render with the existing static table behavior.
+
+#### Scenario: Configured reveal columns start hidden
+
+- **WHEN** a lessonArticle table is configured with revealable columns for `AND`, `OR`, `NAND`, `NOR`, `XOR`, and `XNOR`
+- **THEN** the table renders its `A` and `B` input values visibly
+- **AND** the body cell values under `AND`, `OR`, `NAND`, `NOR`, `XOR`, and `XNOR` are not visible
+- **AND** each revealable column header is rendered as an activatable control with an accessible expanded state
+
+##### Example: hidden two-input truth table
+
+| Header | Initial body cell visibility |
+| ----- | ----- |
+| `A` | visible |
+| `B` | visible |
+| `AND` | hidden |
+| `OR` | hidden |
+| `NAND` | hidden |
+| `NOR` | hidden |
+| `XOR` | hidden |
+| `XNOR` | hidden |
+
+#### Scenario: Header activation reveals only one column
+
+- **WHEN** the user activates the `AND` header in a revealable truth table
+- **THEN** the body cell values under `AND` become visible
+- **AND** the body cell values under `OR`, `NAND`, `NOR`, `XOR`, and `XNOR` remain hidden
+
+#### Scenario: Header activation toggles an already revealed column
+
+- **WHEN** the user activates a revealable column header whose body cell values are visible
+- **THEN** that column's body cell values become hidden again
+- **AND** the visibility state of other revealable columns is unchanged
+
+#### Scenario: Static tables remain unchanged
+
+- **WHEN** a lessonArticle table has no revealable column configuration
+- **THEN** all table headers and body cell values render with the existing static table behavior
+- **AND** no table header is converted into a reveal toggle control
+
+#### Scenario: Invalid reveal configuration is ignored safely
+
+- **WHEN** a lessonArticle table includes a revealable column index that is outside the table's header range
+- **THEN** the out-of-range configuration is ignored
+- **AND** the table still renders without throwing an error
+
+<!-- @trace
+source: fill-digital-logic-content
+updated: 2026-06-19
+code:
+  - _private/MD/done/網概/網路概論_8下_防禦設備與攻擊.md
+  - _private/MD/程式/一、準備方向.md
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/資料結構與演算法/一、準備方向.md
+  - _private/MD/done/網概/網路概論_7下_資料鏈結層.md
+  - _private/MD/done/計概/3a基本計概/done/十七、數碼、文字碼與檢查碼_新手國考教材.md
+  - _private/MD/網概/四、常見 Port Number.md
+  - _private/MD/資料庫/三、資料庫基礎.md
+  - _private/MD/資料庫/二、ANSISPARC 架構.md
+  - _private/MD/系統分析與設計/四、物件導向.md
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - _private/MD/資料庫/一、準備方向.md
+  - _private/MD/資訊管理/資訊管理_3b_數據分類與隱私悖論.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md
+  - _private/MD/done/計概/3b數位邏輯/三、卡諾圖化簡_新手國考教材.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/TMP/information-management-md-content-review.md
+  - _private/MD/計概/3c作業系統/一、基本常識_新手國考教材.md
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - _private/MD/計概/3b數位邏輯/四、萬用閘_新手國考教材.md
+  - _private/MD/done/資料庫/資料庫_4_SQL分類與CRUD.md
+  - src/modules/systemDesign/views/SystemDesignView.vue
+  - _private/MD/計概/3a基本計概/done/七、RISC 與 CISC_新手國考教材.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
+  - _private/MD/計概/3b數位邏輯/二、SOP 與 POS_新手國考教材.md
+  - _private/MD/資料庫/四、Key.md
+  - _private/MD/done/程式設計/程式設計_1_語言執行方式與程式基礎.md
+  - _private/MD/計概/3a基本計概/done/二、圖靈機與圖靈測試.md
+  - _private/MD/網概/八、網路層.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_4_測試.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md
+  - _private/MD/計概/3a基本計概/done/十六、浮點數轉換_新手國考教材.md
+  - _private/MD/程式/三、中階.md
+  - _private/MD/done/計概/3b數位邏輯/一、基本邏輯_新手國考教材.md
+  - _private/MD/程式/二、基礎.md
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - _private/MD/資料庫/五、ERD.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - _private/MD/計概/3b數位邏輯/五、組合與循序電路_新手國考教材.md
+  - _private/MD/done/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/計概/3a基本計概/done/九、Memory 分類圖_新手國考教材.md
+  - _private/MD/計概/3c作業系統/九、Virtual Memory_新手國考教材.md
+  - _private/MD/網概/七、資料鏈結層.md
+  - _private/MD/資訊管理/四、ESG.md
+  - _private/MD/資料結構與演算法/八、圖（Graph）.md
+  - _private/MD/資訊管理/資訊管理_3a_資訊倫理.md
+  - _private/MD/done/計概/3a基本計概/done/十六、浮點數轉換_新手國考教材.md
+  - _private/MD/系統分析與設計/一、準備方向.md
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/done/程式設計/程式設計_3_陣列字串與例外處理.md
+  - _private/MD/計概/3a基本計概/done/五、匯流排（Bus）_新手國考教材.md
+  - _private/MD/計概/3a基本計概/done/六、效能名詞與公式_新手國考教材.md
+  - _private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/資料庫/八、ACID 與交易.md
+  - _private/ques/原文.txt
+  - _private/MD/done/網概/網路概論_4下_路由與L3協定.md
+  - _private/MD/done/計概/3a基本計概/done/十四、進制轉換_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/二、圖靈機與圖靈測試.md
+  - src/app/router.ts
+  - src/shared/components/RouteSubMenu.vue
+  - _private/MD/done/計概/3c作業系統/3-2. IO 中斷方式 與 硬體保護.md
+  - _private/MD/done/資料庫/資料庫_3_正規化.md
+  - _private/MD/計概/3a基本計概/done/十五、補數轉換_新手國考教材.md
+  - _private/MD/計概/3a基本計概/done/十四、進制轉換_新手國考教材.md
+  - _private/MD/網概/九、傳輸層.md
+  - _private/MD/計概/3a基本計概/done/十七、數碼、文字碼與檢查碼_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/八、Memory 階層圖_新手國考教材.md
+  - _private/MD/資料庫/六、正規化.md
+  - _private/MD/done/程式設計/程式設計_7_各語言特性.md
+  - _private/MD/程式/五、C C++ Java 補充重點.md
+  - _private/MD/done/計概/3a基本計概/done/四、Pipeline（管線化）_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md
+  - _private/MD/done/網概/網路概論_6_應用層與Port對照.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_3_OO關係與UML.md
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/MD/系統分析與設計/三、結構化分析與設計.md
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - _private/MD/資料結構與演算法/十一、雜湊法（Hashing）.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - _private/MD/計概/3a基本計概/done/十三、USB 速度_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_8_雜湊.md
+  - _private/MD/系統分析與設計/二、系統分析與設計概論.md
+  - _private/MD/資訊管理/六、資訊管理補充考點.md
+  - _private/MD/資訊管理/資訊管理_4b_GDPR.md
+  - _private/MD/網概/十、應用層.md
+  - _private/MD/done/資料庫/資料庫_1_基礎概念與架構.md
+  - _private/MD/done/網概/網路概論_7上_實體層.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_5_高等樹.md
+  - _private/MD/done/網概/網路概論_4上_IP與子網路計算.md
+  - _private/MD/計概/3a基本計概/done/十一、Cache_新手國考教材.md
+  - _private/MD/計概/3c作業系統/三、硬體保護_新手國考教材.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-10_磁碟管理.md
+  - _private/MD/演算法/GeneralBucketSort.java
+  - _private/MD/計概/3c作業系統/八、Memory Management_新手國考教材.md
+  - _private/MD/網概/三、網路設備與 OSI 層.md
+  - src/modules/subjectTopics/components/SubjectTopicPage.vue
+  - _private/MD/計概/3a基本計概/done/一、馮紐曼架構.md
+  - _private/MD/資訊管理/資訊管理_1_數位轉型與ESG.md
+  - _private/MD/資料庫/七、SQL 分類與 CRUD.md
+  - _private/MD/資訊管理/資訊管理_2b_敏捷開發.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-6_Deadlock.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-9_虛擬記憶體.md
+  - _private/MD/網概/二、網路概論.md
+  - _private/MD/計概/3b數位邏輯/一、基本邏輯_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md
+  - _private/MD/計概/3a基本計概/done/三、機器指令與指令週期_新手國考教材.md
+  - _private/MD/計概/3c作業系統/十、Disk Management_新手國考教材.md
+  - _private/propose.md
+  - PROJECT_ARCHITECTURE.md
+  - _private/MD/資訊管理/三、資訊系統開發流程與模式.md
+  - _private/MD/done/程式設計/程式設計_4_指標.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/done/資料庫/資料庫_2_鍵與ERD.md
+  - _private/筆記.md
+  - _private/MD/計概/3a基本計概/done/十二、Hazard_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/十一、Cache_新手國考教材.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - _private/MD/資料結構與演算法/十、高等樹.md
+  - _private/MD/done/計概/3a基本計概/done/六、效能名詞與公式_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/十三、USB 速度_新手國考教材.md
+  - _private/MD/資訊管理/五、資訊系統倫理與新興法規.md
+  - _private/MD/計概/3a基本計概/done/八、Memory 階層圖_新手國考教材.md
+  - _private/MD/資訊管理/資訊管理_4a_個人資料保護法.md
+  - _private/MD/系統分析與設計/五、UML.md
+  - _private/discuss.txt
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/資料結構與演算法/五、Linked List.md
+  - _private/MD/資訊管理/一、準備方向.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-5上_Process基礎.md
+  - _private/MD/程式/四、Python 特殊資料型別.md
+  - _private/MD/計概/3c作業系統/二、IO與中斷_新手國考教材.md
+  - _private/MD/資料結構與演算法/六、Stack 與 Queue.md
+  - _private/MD/計概/3a基本計概/done/十、Register（暫存器）_新手國考教材.md
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md
+  - _private/MD/網概/一、準備方向.md
+  - _private/MD/計概/3c作業系統/六、Deadlock_新手國考教材.md
+  - _private/MD/done/網概/網路概論_5_傳輸層.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/done/程式設計/程式設計_2_函式與參數傳遞.md
+  - _private/MD/資料結構與演算法/七、Tree.md
+  - _private/MD/資料結構與演算法/二、演算法.md
+  - _private/MD/資訊管理/資訊管理_2a_傳統開發模式.md
+  - _private/MD/done/網概/網路概論_3_網路設備對應層級.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-8_記憶體管理.md
+  - _private/MD/計概/3a基本計概/done/四、Pipeline（管線化）_新手國考教材.md
+  - _private/ques/計算機概論.txt
+  - src/app/routePreload.ts
+  - src/styles/main.css
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/done/計概/3b數位邏輯/四、萬用閘_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md
+  - _private/MD/done/網概/網路概論_2_基礎概念.md
+  - _private/MD/計概/3c作業系統/四、OS 結構_新手國考教材.md
+  - _private/MD/資料結構與演算法/四、陣列（Array）.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_7_排序.md
+  - _private/MD/計概/3c作業系統/七、Process Communication_新手國考教材.md
+  - _private/MD/演算法/BubbleSort.java
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - _private/MD/done/計概/3a基本計概/done/一、馮紐曼架構.md
+  - _private/MD/計算機概論/00_目錄.md
+  - _private/MD/資料結構與演算法/九、排序.md
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/done/資料庫/資料庫_6_交易ACID與NoSQL.md
+  - _private/MD/網概/五、OSI 7 層與 TCPIP 5 層.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - _private/MD/done/計概/3a基本計概/done/十二、Hazard_新手國考教材.md
+  - _private/MD/done/程式設計/程式設計_6_遞迴.md
+  - _private/MD/系統分析與設計/六、專案管理.md
+  - _private/MD/網概/十一、資訊安全.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-5下_CPU排程演算法.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-7_ProcessCommunication_跳過分析.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _private/MD/done/網概/網路概論_1_OSI七層與TCPIP.md
+  - _private/MD/done/計概/3a基本計概/done/七、RISC 與 CISC_新手國考教材.md
+  - _private/MD/done/計概/3b數位邏輯/二、SOP 與 POS_新手國考教材.md
+  - _private/MD/done/計概/3c作業系統/3-1. OS 基礎概念.md
+  - _private/MD/done/資料庫/資料庫_5_SQL查詢進階.md
+  - _private/MD/資訊管理/二、數位轉型.md
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - src/shared/components/RouteTabs.vue
+  - _private/MD/done/計概/3b數位邏輯/五、組合與循序電路_新手國考教材.md
+  - _private/MD/done/網概/網路概論_8上_資安觀念與加密.md
+  - _private/MD/done/演算法/BubbleSort.java
+  - _private/MD/done/計概/3a基本計概/done/十、Register（暫存器）_新手國考教材.md
+  - _private/MD/done/演算法/GeneralBucketSort.java
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - _private/MD/計概/3c作業系統/五、Process_新手國考教材.md
+  - _private/MD/資料庫/九、NoSQL.md
+  - _private/MD/資料庫/十、資料庫補充考點.md
+  - _private/MD/計概/3b數位邏輯/三、卡諾圖化簡_新手國考教材.md
+  - _private/MD/done/程式設計/程式設計_5_物件導向OOP.md
+  - _private/MD/done/計概/3a基本計概/done/十五、補數轉換_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/五、匯流排（Bus）_新手國考教材.md
+  - _private/MD/網概/六、實體層.md
+  - _private/MD/done/計概/3a基本計概/done/三、機器指令與指令週期_新手國考教材.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - _private/MD/done/計概/3c作業系統/3-4_OS結構.md
+  - _private/MD/done/計概/3a基本計概/done/九、Memory 分類圖_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6下_圖演算法.md
+tests:
+  - tests/unit/programmingRouteWorkflow.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/unit/databaseRouteWorkflow.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/SubjectTopicPage.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+-->

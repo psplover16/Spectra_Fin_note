@@ -61,12 +61,18 @@ test('production PWA shell loads professional routes offline after an online war
   await expect(page.getByTestId('route-tabs')).toBeVisible();
   await expect(page.getByTestId('subject-view-algorithms')).toBeVisible();
 
+  await page.goto('/computer-principles-v2');
+  await expect(page.getByTestId('subject-view-computer-principles-v2')).toBeVisible();
+  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('架構與計算理論');
+  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('檢查碼（二）漢明碼與漢明距');
+
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
 
   await expect(page.getByTestId('route-tabs')).toBeVisible();
-  await expect(page.getByTestId('subject-view-algorithms')).toBeVisible();
-  await expect(page.getByTestId('topic-title-binary-search')).toBeVisible();
+  await expect(page.getByTestId('subject-view-computer-principles-v2')).toBeVisible();
+  await expect(page.getByTestId('topic-title-cpv2-architecture-computation-theory')).toBeVisible();
+  await expect(page.getByTestId('topic-title-cpv2-hamming-code-distance')).toBeVisible();
 
   await context.setOffline(false);
 });

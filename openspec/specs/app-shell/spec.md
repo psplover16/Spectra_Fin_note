@@ -8,673 +8,109 @@ TBD - created by archiving change 'establish-subject-learning-app-shell'. Update
 
 ### Requirement: App shell exposes primary subject routes
 
-The application SHALL provide primary routes for computer principles, networking, information management, programming, English, and Chinese. The route paths SHALL be `/computer-principles`, `/networking`, `/information-management`, `/programming`, `/english`, and `/chinese`. The header SHALL show the Chinese labels `計概`, `網概`, `資管`, `程式`, and the current common subject label.
+The application SHALL provide primary routes for computer principles, networking, digital logic, operating systems, information management, programming, database, algorithms, system design, English, and Chinese. The route paths SHALL be `/computer-principles`, `/networking`, `/digital-logic`, `/operating-systems`, `/information-management`, `/programming`, `/database`, `/algorithms`, `/system-design`, `/english`, and `/chinese`. The header SHALL show a computer-foundation subject control labeled with the active grouped subject or `計概類`, and this control SHALL expose `計概`, `網概`, `數位邏輯`, and `作業系統` as menu options. The header SHALL also show the professional subject controls `資管`, `程式`, `資料庫`, `演算法`, and `系統設計`. The AppShell header SHALL NOT render the common subject switcher unless a separate change explicitly enables it.
 
 #### Scenario: Root route opens the first professional subject
 
 - **WHEN** the user opens the root route `/`
 - **THEN** the application navigates to `/computer-principles`
-- **AND** the header marks `計概` as the active subject control
+- **AND** the header marks the computer-foundation subject control as active
+- **AND** the computer-foundation subject control displays `計概`
 
-#### Scenario: Header navigates to professional subjects
+#### Scenario: Header navigates to computer-foundation grouped subjects
 
-- **WHEN** the user activates `網概`
-- **THEN** the application navigates to `/networking`
-- **AND** the main route region displays the networking subject page
+- **WHEN** the user opens the computer-foundation subject menu
+- **THEN** the menu lists `計概`, `網概`, `數位邏輯`, and `作業系統`
+- **WHEN** the user activates `數位邏輯`
+- **THEN** the application navigates to `/digital-logic`
+- **AND** the main route region displays the digital logic subject page
+
+#### Scenario: Header navigates to non-group professional subjects
+
+- **WHEN** the user activates `資料庫`
+- **THEN** the application navigates to `/database`
+- **AND** the main route region displays the database subject page
+
+#### Scenario: AppShell keeps common subjects hidden
+
+- **WHEN** the AppShell header renders
+- **THEN** the header does not render a `英文` route tab
+- **AND** the header does not render a `國文` route tab
+- **AND** the header does not render the common subject switcher control
 
 ##### Example: primary route mapping
 
-| Header label | Route path | Subject |
-| ----- | ----- | ----- |
-| `計概` | `/computer-principles` | Computer principles |
-| `網概` | `/networking` | Networking |
-| `資管` | `/information-management` | Information management |
-| `程式` | `/programming` | Programming |
+| Header control | Menu label | Route path | Subject |
+| ----- | ----- | ----- | ----- |
+| `計概類` group | `計概` | `/computer-principles` | Computer principles |
+| `計概類` group | `網概` | `/networking` | Networking |
+| `計概類` group | `數位邏輯` | `/digital-logic` | Digital logic |
+| `計概類` group | `作業系統` | `/operating-systems` | Operating systems |
+| `資管` | n/a | `/information-management` | Information management |
+| `程式` | n/a | `/programming` | Programming |
+| `資料庫` | n/a | `/database` | Database |
+| `演算法` | n/a | `/algorithms` | Algorithms |
+| `系統設計` | n/a | `/system-design` | System design |
 
 
 <!-- @trace
-source: establish-subject-learning-app-shell
-updated: 2026-06-13
+source: split-computer-principles-routes
+updated: 2026-06-19
 code:
-  - _private/TMP/algorithms/bubble-sort.draft.md
-  - _private/TMP/programming/programming-python-collection-comparison.verified.md
-  - _private/TMP/computer-principles/cp-memory-hierarchy.prompt.md
-  - _private/TMP/programming/programming-system-analysis-project-tools-risk.draft.md
-  - _private/TMP/algorithms/heap-sort.draft.md
-  - _private/TMP/networking/application-layer.draft.md
-  - _private/TMP/networking/devices-osi.draft.md
-  - _private/TMP/database/database-keys.prompt.md
-  - _TMP/manifests/algorithms-manifest.md
-  - _private/TMP/computer-principles/source-inventory.md
-  - _private/TMP/networking/prep-direction.verified.md
-  - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
-  - _private/TMP/algorithms/algorithms-study-strategy.verified.md
-  - _private/TMP/database/database-erd.verified.md
-  - _private/TMP/programming/programming-basic-constructs.draft.md
-  - _private/TMP/programming/programming-oop-three-pillars.prompt.md
-  - _private/筆記.md
-  - _privarw/時間複雜度.md
-  - _private/TMP/programming/programming-system-analysis-sdlc.verified.md
-  - _private/TMP/algorithms/time-complexity-big-o.verified.md
-  - src/modules/programming/views/ProgrammingView.vue
-  - _private/TMP/database/database-overview.verified.md
-  - _private/TMP/database/database-ansi-sparc.verified.md
-  - _private/系統分析與設計.txt
-  - _private/TMP/computer-principles/cp-os-basics.draft.md
-  - _private/TMP/computer-principles/cp-io-and-interrupts.draft.md
-  - _private/TMP/programming/programming-basic-constructs.verified.md
-  - _private/TMP/computer-principles/cp-von-neumann-architecture.draft.md
-  - _private/TMP/programming/programming-string-functions.prompt.md
-  - _private/TMP/programming/programming-system-analysis-cohesion.draft.md
-  - _private/TMP/computer-principles/cp-karnaugh-map.prompt.md
-  - _private/TMP/programming/programming-system-analysis-root.prompt.md
-  - _private/TMP/algorithms/stack-and-queue.draft.md
-  - _private/TMP/computer-principles/cp-codes-and-check-codes.verified.md
-  - _private/TMP/algorithms/time-complexity-big-o.prompt.md
-  - _private/TMP/computer-principles/cp-turing-machine-and-test.verified.md
-  - _private/TMP/algorithms/stack-and-queue.prompt.md
-  - _private/TMP/database/database-nosql.prompt.md
-  - _private/TMP/information-management/im-04-esg.draft.md
-  - _TMP/manifests/information-management-manifest.md
-  - _private/TMP/programming/programming-system-analysis-project-tools-risk.prompt.md
-  - _TMP/20260613-054000-computer-principles-cp-codes-and-check-codes.md
-  - _private/TMP/programming/programming-system-analysis-coupling.prompt.md
-  - _private/TMP/computer-principles/cp-hazard.verified.md
-  - _TMP/20260613-054000-computer-principles-cp-karnaugh-map.md
-  - vite.config.ts
-  - _private/TMP/programming/programming-system-analysis-structured-tools.verified.md
-  - _private/TMP/computer-principles/cp-floating-point-conversion.prompt.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-von-neumann-architecture.md
-  - _private/TMP/programming/programming-system-analysis-generalization-realization.verified.md
-  - _private/TMP/computer-principles/cp-hardware-protection.draft.md
-  - _private/TMP/computer-principles/cp-universal-gates.draft.md
-  - _private/TMP/information-management/management-term-flow-review.md
-  - _private/TMP/networking/generate-route-workflow.mjs
-  - _TMP/reviews/information-management-content-review.md
-  - _private/TMP/programming/programming-translator-comparison.prompt.md
-  - src/app/AppShell.vue
-  - src/app/router.ts
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-floating-point-conversion.md
-  - _private/ques2.txt
-  - _private/TMP/computer-principles/cp-hardware-protection.verified.md
-  - _TMP/20260613-041020-information-management-im-02-digital-transformation.md
-  - _private/TMP/networking/security.verified.md
-  - _private/資訊管理.txt
-  - _TMP/templates/sorting-complexity-baseline.md
-  - _TMP/templates/待生成主題清單_template.md
-  - _private/TMP/programming/programming-c-cpp-java-key-points.verified.md
-  - _private/TMP/programming/programming-c-cpp-java-supplement.draft.md
-  - _private/TMP/programming/programming-parameter-passing.draft.md
-  - _private/TMP/computer-principles/cp-memory-management.draft.md
-  - _private/TMP/programming/programming-pointers.prompt.md
-  - _private/TMP/algorithms/fibonacci-sequence.draft.md
-  - _TMP/20260613-054000-computer-principles-cp-risc-cisc.md
-  - _private/TMP/computer-principles/cp-combinational-sequential-circuits.prompt.md
-  - _private/TMP/programming/programming-system-analysis-original-reminders.prompt.md
-  - _private/TMP/algorithms/待生成主題清單_20260613-123000.md
-  - _private/TMP/computer-principles/cp-universal-gates.prompt.md
-  - _private/TMP/information-management/im-02-digital-transformation.prompt.md
-  - _private/TMP/programming/programming-system-analysis-generalization-realization.prompt.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-process.md
-  - _TMP/20260613-054000-computer-principles-cp-pipeline.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-memory-management.md
-  - _private/TMP/programming/programming-python-special-types.prompt.md
-  - _private/TMP/computer-principles/cp-karnaugh-map.verified.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-risc-cisc.md
-  - src/modules/networking/views/NetworkingView.vue
-  - _private/TMP/networking/port-protocol-fact-review.md
-  - _TMP/20260613-054000-computer-principles-cp-usb-speed.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-disk-management.md
-  - _private/TMP/networking/transport-layer.verified.md
-  - _private/TMP/computer-principles/cp-sop-pos.verified.md
-  - _private/TMP/programming/programming-system-analysis-uml.verified.md
-  - _private/TMP/information-management/im-03-system-development-models.prompt.md
-  - _private/TMP/algorithms/quick-sort.draft.md
-  - _private/TMP/information-management/im-01-preparation-direction.draft.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-digital-logic-basics.md
-  - _private/TMP/computer-principles/cp-disk-management.prompt.md
-  - _TMP/20260613-041010-database-database-normalization.md
-  - _TMP/prompts/content-generator.md
-  - _TMP/manifests/programming-manifest.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-performance-formulas.md
-  - _private/TMP/networking/data-link-layer.draft.md
-  - _private/TMP/database/database-normalization.draft.md
-  - _private/TMP/information-management/im-05-info-ethics-regulations.prompt.md
-  - _private/TMP/networking/data-link-layer.verified.md
-  - _private/TMP/networking/osi-tcpip-models.draft.md
-  - _private/TMP/programming/programming-static.draft.md
-  - _private/TMP/programming/programming-system-analysis-structured-tools.prompt.md
-  - _private/TMP/algorithms/tree-and-binary-tree.verified.md
-  - _private/TMP/programming/programming-system-analysis-uml.draft.md
-  - _private/TMP/programming/programming-root.prompt.md
-  - _private/TMP/computer-principles/cp-machine-instruction-cycle.prompt.md
-  - _private/TMP/algorithms/fibonacci-sequence.verified.md
-  - _private/TMP/computer-principles/cp-disk-management.verified.md
-  - src/modules/algorithms/views/AlgorithmsView.vue
-  - _private/TMP/database/database-nosql.verified.md
-  - _private/TMP/algorithms/advanced-balanced-trees.prompt.md
-  - _private/TMP/algorithms/quick-sort.prompt.md
-  - tsconfig.node.json
-  - _private/TMP/algorithms/heap-sort.verified.md
-  - _private/TMP/information-management/manual-review.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-sop-pos.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-hazard.md
-  - _TMP/manifests/database-manifest.md
-  - _private/TMP/computer-principles/cp-bus.draft.md
-  - _private/TMP/networking/overview.draft.md
-  - _private/TMP/programming/programming-translator-comparison.draft.md
-  - _private/TMP/information-management/im-01-preparation-direction.verified.md
-  - _private/TMP/algorithms/binary-search.prompt.md
-  - _private/TMP/programming/programming-system-analysis-uml-core-diagrams.draft.md
-  - _private/TMP/computer-principles/待生成主題清單_20260613-105500.md
-  - _private/TMP/programming/programming-system-analysis-project-management.verified.md
-  - _private/TMP/algorithms/heap-sort.prompt.md
-  - _TMP/20260613-054000-computer-principles-cp-performance-formulas.md
-  - _private/TMP/computer-principles/cp-cache.prompt.md
-  - .github/workflows/ci.yml
-  - scripts/publishPages.mjs
-  - _TMP/20260613-041410-algorithms-bubble-sort.md
-  - _private/TMP/networking/ports.verified.md
-  - _private/TMP/database/database-keys.verified.md
-  - _private/TMP/programming/programming-static.prompt.md
-  - _TMP/20260613-054000-computer-principles-cp-deadlock.md
-  - _TMP/templates/verifier-checklist.md
-  - _private/TMP/programming/programming-system-analysis-oop.prompt.md
-  - _private/TMP/computer-principles/cp-memory-hierarchy.draft.md
-  - _private/TMP/programming/programming-system-analysis-coupling.verified.md
-  - _private/TMP/information-management/generate-route-workflow.mjs
-  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
-  - _private/TMP/programming/programming-system-analysis-overview.prompt.md
-  - _TMP/20260613-054000-computer-principles-cp-combinational-sequential-circuits.md
-  - src/modules/commonSubjects/config/commonSubjectOptions.ts
-  - _private/TMP/programming/programming-system-analysis-uml-extra-diagrams.verified.md
-  - _private/TMP/programming/programming-python-collection-comparison.prompt.md
-  - _TMP/20260613-054000-computer-principles-cp-os-basics.md
-  - _private/TMP/programming/programming-system-analysis-ssdlc.draft.md
-  - _private/TMP/algorithms/selection-sort.verified.md
-  - _private/TMP/computer-principles/cp-usb-speed.verified.md
-  - _private/TMP/database/import-readiness.md
-  - _private/TMP/information-management/import-readiness.md
-  - _private/TMP/programming/programming-system-analysis-uml-core-diagrams.prompt.md
-  - _private/TMP/programming/programming-static.verified.md
-  - _private/TMP/algorithms/binary-search.verified.md
-  - _private/TMP/programming/programming-system-analysis-overview.verified.md
-  - src/modules/computerPrinciples/views/ComputerPrinciplesView.vue
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-complement-conversion.md
-  - _private/TMP/programming/programming-basics.draft.md
-  - _private/TMP/programming/programming-c-cpp-java-key-points.prompt.md
-  - _private/TMP/computer-principles/cp-codes-and-check-codes.draft.md
-  - _private/TMP/algorithms/manual-review.md
-  - _private/TMP/programming/programming-pointers.verified.md
-  - _private/TMP/algorithms/linked-list-basics.verified.md
-  - _private/TMP/computer-principles/cp-virtual-memory.draft.md
-  - tsconfig.json
-  - _private/TMP/networking/ports.prompt.md
-  - _TMP/20260613-041417-algorithms-fibonacci-sequence.md
-  - _private/TMP/algorithms/graph-traversal-and-paths.verified.md
-  - _TMP/task-breakdowns/information-management-subagent-tasks.md
-  - _private/TMP/programming/programming-system-analysis-original-reminders.draft.md
-  - _private/TMP/programming/programming-system-analysis-preparation-direction.draft.md
-  - _private/TMP/computer-principles/cp-process-communication.verified.md
-  - _private/TMP/database/database-nosql.draft.md
-  - _private/TMP/database/database-acid-transactions.draft.md
-  - _private/TMP/information-management/待生成主題清單_20260613-105500.md
-  - _TMP/20260613-054000-computer-principles-cp-process.md
-  - _private/TMP/programming/programming-preparation-direction.verified.md
-  - _private/TMP/programming/programming-system-analysis-pdca.draft.md
-  - _TMP/task-breakdowns/programming-subagent-tasks.md
-  - src/app/routePreload.ts
-  - _TMP/reviews/networking-content-review.md
-  - _private/TMP/computer-principles/cp-registers.verified.md
-  - _private/TMP/computer-principles/generate-route-workflow.mjs
-  - _private/TMP/programming/programming-system-analysis-cohesion.verified.md
-  - _private/TMP/computer-principles/cp-usb-speed.prompt.md
-  - _private/TMP/programming/programming-system-analysis-oop.verified.md
-  - _private/TMP/database/database-normalization.prompt.md
-  - _private/TMP/computer-principles/cp-usb-speed.draft.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-karnaugh-map.md
-  - _private/TMP/algorithms/bubble-sort.prompt.md
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - _private/MD/計算機概論/08_進制轉換.md
   - src/modules/subjectTopics/data/professionalTopics.ts
-  - _private/TMP/algorithms/fibonacci-sequence.prompt.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-memory-classification.md
-  - _private/TMP/computer-principles/cp-digital-logic-basics.draft.md
-  - _private/TMP/computer-principles/cp-floating-point-conversion.verified.md
-  - _TMP/templates/import-record.md
-  - _private/TMP/database/database-foundations.prompt.md
-  - _private/TMP/programming/programming-intermediate.draft.md
-  - _private/propose.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-codes-and-check-codes.md
-  - _private/資料庫.txt
-  - _private/TMP/algorithms/hashing-and-collision-handling.draft.md
-  - _private/TMP/computer-principles/cp-bus.prompt.md
-  - _private/TMP/algorithms/merge-sort.verified.md
-  - _private/TMP/information-management/im-02-digital-transformation.draft.md
-  - _TMP/source-logs/information-management-reading-log.md
-  - _private/TMP/computer-principles/待生成主題清單_20260613-110000.md
-  - _private/TMP/programming/programming-intermediate.prompt.md
-  - _TMP/reports/code-comment-audit-20260613-041900.md
-  - _private/TMP/algorithms/advanced-balanced-trees.verified.md
-  - _private/TMP/programming/programming-java-system-analysis-review.md
-  - _private/TMP/README.md
-  - _private/TMP/computer-principles/cp-base-conversion.verified.md
-  - _TMP/20260613-054000-computer-principles-cp-disk-management.md
-  - _private/TMP/programming/programming-root.draft.md
-  - _private/TMP/computer-principles/cp-von-neumann-architecture.verified.md
-  - _private/TMP/programming/programming-system-analysis-preparation-direction.prompt.md
-  - _private/TMP/programming/programming-system-analysis-sdlc.prompt.md
-  - _private/TMP/computer-principles/cp-codes-and-check-codes.prompt.md
-  - _private/TMP/computer-principles/cp-sop-pos.prompt.md
-  - _private/TMP/programming/programming-system-analysis-testing-types.draft.md
-  - _private/TMP/computer-principles/cp-von-neumann-architecture.sample.md
-  - _private/TMP/algorithms/insertion-sort.prompt.md
-  - _private/TMP/computer-principles/cp-risc-cisc.prompt.md
-  - _private/TMP/information-management/待生成主題清單_20260613-114500.md
-  - _private/TMP/programming/programming-c-cpp-java-key-points.draft.md
-  - _private/TMP/computer-principles/cp-hardware-protection.prompt.md
-  - _private/TMP/computer-principles/import-readiness.md
-  - _private/TMP/programming/programming-system-analysis-conversion-methods.prompt.md
-  - _private/TMP/programming/programming-system-analysis-oop.draft.md
-  - _private/TMP/source-label-route-coverage.md
-  - _TMP/20260613-054000-computer-principles-cp-hazard.md
-  - _TMP/templates/algorithm-verifier-checklist.md
-  - _private/TMP/programming/programming-system-analysis-conversion-methods.draft.md
-  - _private/TMP/programming/programming-system-analysis-oop-relationships.prompt.md
-  - _private/程式.txt
-  - _private/TMP/algorithms/advanced-balanced-trees.draft.md
-  - _private/TMP/information-management/im-06-im-supplemental-points.verified.md
-  - _private/TMP/computer-principles/cp-base-conversion.prompt.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-turing-machine-and-test.md
-  - _private/TMP/algorithms/hashing-and-collision-handling.prompt.md
-  - _private/TMP/programming/programming-intermediate.verified.md
-  - _private/TMP/algorithms/greatest-common-divisor.prompt.md
-  - _TMP/20260613-054000-computer-principles-cp-base-conversion.md
-  - _private/TMP/database/source-inventory.md
-  - _private/TMP/programming/programming-c-cpp-java-supplement.prompt.md
-  - _TMP/source-logs/programming-reading-log.md
-  - _private/TMP/programming/programming-pointers.draft.md
-  - _private/TMP/programming/programming-system-analysis-structured-analysis-design.draft.md
-  - _private/TMP/computer-principles/cp-registers.draft.md
-  - _TMP/templates/draft-frontmatter.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-universal-gates.md
-  - _private/TMP/information-management/im-04-esg.prompt.md
-  - _private/TMP/programming/programming-python-special-types.verified.md
-  - _private/TMP/algorithms/insertion-sort.verified.md
-  - vitest.config.ts
-  - _private/TMP/algorithms/binary-search.draft.md
-  - _private/TMP/programming/generate-route-workflow.mjs
-  - _TMP/20260613-054000-computer-principles-cp-process-communication.md
-  - _private/TMP/programming/programming-oop-three-pillars.draft.md
-  - src/modules/subjectTopics/components/SubjectTopicPage.vue
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-registers.md
-  - _TMP/task-breakdowns/computer-principles-subagent-tasks.md
-  - _private/TMP/computer-principles/cp-io-and-interrupts.prompt.md
-  - _private/TMP/programming/待生成主題清單_20260613-105500.md
-  - _private/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
-  - _private/TMP/database/database-acid-transactions.verified.md
-  - _private/TMP/algorithms/algorithm-definition-and-properties.draft.md
-  - _private/TMP/programming/programming-oop-extensions.verified.md
-  - _private/TMP/computer-principles/cp-process.verified.md
-  - _TMP/manifests/networking-manifest.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-deadlock.md
-  - _private/TMP/networking/physical-layer.prompt.md
-  - _private/TMP/computer-principles/cp-memory-classification.prompt.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-os-structure.md
-  - _private/TMP/computer-principles/cp-combinational-sequential-circuits.verified.md
-  - _private/TMP/computer-principles/cp-complement-conversion.prompt.md
-  - _private/TMP/programming/programming-system-analysis-original-reminders.verified.md
-  - _private/TMP/programming/programming-system-analysis-structured-analysis-design.verified.md
-  - _private/TMP/programming/programming-system-analysis-testing-types.verified.md
-  - _private/TMP/computer-principles/cp-turing-machine-and-test.draft.md
-  - _TMP/task-breakdowns/database-subagent-tasks.md
-  - _private/TMP/database/database-prep-direction.prompt.md
-  - _private/TMP/networking/network-layer.draft.md
-  - _private/TMP/subagent-isolation-final-report.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-pipeline.md
-  - _TMP/20260613-035400-computer-principles-von-neumann-architecture.md
-  - _private/TMP/computer-principles/cp-machine-instruction-cycle.verified.md
-  - _private/TMP/algorithms/merge-sort.draft.md
-  - _private/TMP/database/待生成主題清單_20260613-113000.md
-  - .github/workflows/cd.yml
-  - _private/TMP/computer-principles/cp-performance-formulas.verified.md
-  - _private/TMP/database/database-foundations.draft.md
-  - _private/TMP/programming/programming-recursion.prompt.md
-  - _private/TMP/networking/待生成主題清單_20260613-111500.md
-  - _private/TMP/programming/programming-system-analysis-project-management.prompt.md
-  - _private/TMP/programming/programming-system-analysis-preparation-direction.verified.md
-  - _TMP/待生成主題清單_20260613-040441.md
-  - _private/TMP/computer-principles/cp-hazard.prompt.md
-  - _TMP/reviews/programming-content-review.md
-  - _private/TMP/networking/physical-layer.verified.md
-  - src/modules/subjectTopics/types/subjectTopic.ts
-  - _private/TMP/computer-principles/source-label-definitions.md
-  - _private/TMP/computer-principles/cp-disk-management.draft.md
-  - _TMP/20260613-054000-computer-principles-cp-cache.md
-  - _private/MD/馮紐曼架構.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-usb-speed.md
-  - _private/TMP/networking/security.prompt.md
-  - _private/TMP/networking/待生成主題清單_20260613-105500.md
-  - _private/TMP/computer-principles/cp-cache.verified.md
-  - _private/TMP/computer-principles/cp-pipeline.prompt.md
-  - _private/TMP/algorithms/algorithms-study-strategy.prompt.md
-  - _TMP/20260613-054000-computer-principles-cp-os-structure.md
-  - _private/TMP/algorithms/bubble-sort.verified.md
-  - _private/TMP/algorithms/selection-sort.draft.md
-  - _private/TMP/computer-principles/cp-sop-pos.draft.md
-  - tailwind.config.ts
-  - _TMP/20260613-054000-computer-principles-cp-machine-instruction-cycle.md
-  - _private/TMP/algorithms/array-addressing.verified.md
-  - _private/TMP/algorithms/shell-sort.draft.md
-  - _private/TMP/programming/programming-python-special-types.draft.md
-  - _private/TMP/computer-principles/cp-virtual-memory.prompt.md
-  - _TMP/manifests/common-algorithms-inventory.md
-  - src/modules/informationManagement/views/InformationManagementView.vue
-  - _private/TMP/programming/programming-basics.verified.md
-  - _private/TMP/programming/programming-recursion.verified.md
-  - _private/TMP/algorithms/generate-route-workflow.mjs
-  - _private/TMP/database/database-sql-crud.draft.md
-  - _TMP/20260613-041412-algorithms-insertion-sort.md
-  - _private/TMP/computer-principles/cp-complement-conversion.verified.md
-  - _private/TMP/information-management/im-00-overview.verified.md
-  - _private/TMP/algorithms/selection-sort.prompt.md
-  - _private/TMP/computer-principles/cp-floating-point-conversion.draft.md
-  - _TMP/20260613-041000-networking-ports.md
-  - _private/TMP/computer-principles/cp-hazard.draft.md
-  - _TMP/20260613-054000-computer-principles-cp-sop-pos.md
-  - package.json
-  - _TMP/manifests/computer-principles-manifest.md
-  - _private/TMP/information-management/im-05-info-ethics-regulations.verified.md
-  - _private/TMP/networking/physical-layer.draft.md
-  - _TMP/20260613-041416-algorithms-shell-sort.md
-  - _private/TMP/computer-principles/cp-risc-cisc.draft.md
-  - _private/TMP/programming/import-readiness.md
-  - src/modules/english/views/EnglishView.vue
-  - _private/TMP/algorithms/sorting-algorithms-baseline.verified.md
-  - _private/TMP/computer-principles/cp-deadlock.verified.md
-  - _TMP/README.md
-  - _private/TMP/algorithms/insertion-sort.draft.md
-  - _private/TMP/programming/manual-review.md
-  - _private/TMP/networking/manual-review.md
-  - src/app/main.ts
-  - _private/TMP/programming/programming-system-analysis-oop-relationships.draft.md
-  - _private/TMP/algorithms/graph-traversal-and-paths.draft.md
-  - _private/TMP/algorithms/hashing-and-collision-handling.verified.md
-  - _TMP/20260613-041419-algorithms-binary-search.md
-  - _TMP/20260613-054000-computer-principles-cp-memory-hierarchy.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-combinational-sequential-circuits.md
-  - _private/TMP/computer-principles/cp-complement-conversion.draft.md
-  - _private/TMP/computer-principles/cp-memory-management.prompt.md
-  - _private/TMP/programming/programming-system-analysis-pdca.prompt.md
-  - _private/TMP/computer-principles/cp-os-structure.draft.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-base-conversion.md
-  - src/shared/components/TeachingCodeBlock.vue
-  - _TMP/20260613-054000-computer-principles-cp-turing-machine-and-test.md
-  - _private/TMP/computer-principles/cp-memory-classification.verified.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-process-communication.md
-  - _private/TMP/networking/transport-layer.draft.md
-  - _private/TMP/algorithms/merge-sort.prompt.md
-  - _TMP/20260613-041418-algorithms-greatest-common-divisor.md
-  - _private/TMP/programming/programming-preparation-direction.prompt.md
-  - _private/TMP/programming/programming-system-analysis-cohesion.prompt.md
-  - _private/TMP/computer-principles/cp-registers.prompt.md
-  - _private/TMP/information-management/source-inventory.md
-  - _TMP/20260613-054000-computer-principles-cp-io-and-interrupts.md
-  - _private/程式語言_all.pdf
-  - _private/計算機概論.txt
-  - _TMP/20260613-041413-algorithms-merge-sort.md
-  - _TMP/20260613-054000-computer-principles-cp-virtual-memory.md
-  - _private/TMP/database/database-supplemental-topics.prompt.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-cache.md
-  - _private/TMP/networking/osi-tcpip-models.verified.md
-  - _private/TMP/computer-principles/cp-turing-machine-and-test.prompt.md
-  - _private/TMP/computer-principles/cp-risc-cisc.verified.md
-  - _private/TMP/computer-principles/cp-cache.draft.md
-  - src/shared/components/RouteTabs.vue
-  - _TMP/source-logs/networking-reading-log.md
-  - _private/TMP/computer-principles/cp-von-neumann-architecture.prompt.md
-  - _private/TMP/information-management/im-03-system-development-models.verified.md
-  - _private/TMP/programming/programming-parameter-passing.prompt.md
-  - _private/TMP/programming/programming-system-analysis-uml-extra-diagrams.prompt.md
-  - _private/TMP/computer-principles/cp-deadlock.draft.md
-  - _private/TMP/programming/programming-system-analysis-conversion-methods.verified.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-machine-instruction-cycle.md
-  - _private/TMP/algorithms/algorithms-study-strategy.draft.md
-  - _private/TMP/programming/programming-string-functions.verified.md
-  - _private/TMP/networking/data-link-layer.prompt.md
-  - _private/TMP/programming/programming-system-analysis-coupling.draft.md
-  - _private/TMP/computer-principles/cp-pipeline.draft.md
-  - _private/TMP/networking/osi-tcpip-models.prompt.md
-  - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
-  - _private/TMP/networking/source-inventory.md
-  - _TMP/prompts/content-verifier.md
-  - _private/TMP/algorithms/shell-sort.prompt.md
-  - _TMP/20260613-041411-algorithms-selection-sort.md
-  - _private/TMP/algorithms/greatest-common-divisor.verified.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-os-basics.md
-  - _TMP/task-breakdowns/networking-subagent-tasks.md
-  - src/modules/chinese/views/ChineseView.vue
-  - _private/TMP/algorithms/linked-list-basics.draft.md
-  - _private/TMP/computer-principles/cp-io-and-interrupts.verified.md
-  - _TMP/reviews/database-content-review.md
-  - src/modules/database/views/DatabaseView.vue
-  - _private/TMP/database/database-sql-crud.prompt.md
-  - _private/TMP/database/manual-review.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - src/app/router.ts
   - src/modules/subjectTopics/data/placeholderTopics.ts
-  - _private/TMP/computer-principles/cp-os-basics.prompt.md
-  - _private/TMP/computer-principles/cp-base-conversion.draft.md
-  - src/modules/subjectTopics/data/subjectTopics.ts
-  - _private/TMP/information-management/im-06-im-supplemental-points.prompt.md
-  - _private/TMP/algorithms/source-inventory.md
-  - _private/TMP/programming/programming-c-cpp-java-supplement.verified.md
-  - _private/TMP/programming/programming-preparation-direction.draft.md
-  - _private/TMP/programming/programming-python-collection-comparison.draft.md
-  - _private/TMP/algorithms/time-complexity-big-o.draft.md
-  - _private/TMP/computer-principles/cp-memory-management.verified.md
-  - _private/TMP/computer-principles/cp-performance-formulas.draft.md
-  - _private/網概.txt
-  - _private/TMP/networking/import-readiness.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-io-and-interrupts.md
-  - _TMP/reviews/algorithms-content-review.md
-  - _private/TMP/programming/programming-system-analysis-uml-core-diagrams.verified.md
-  - _private/TMP/programming/待生成主題清單_20260613-120000.md
-  - _private/TMP/source-label-scan-report.md
-  - _private/TMP/computer-principles/cp-combinational-sequential-circuits.draft.md
-  - _private/TMP/programming/programming-system-analysis-generalization-realization.draft.md
-  - _TMP/20260613-041415-algorithms-heap-sort.md
-  - _TMP/prompts/integration-checker.md
-  - _private/TMP/programming/programming-system-analysis-oop-relationships.verified.md
-  - _TMP/manifests/programming-system-analysis-manifest.md
-  - _private/TMP/computer-principles/cp-performance-formulas.prompt.md
-  - playwright.config.ts
-  - _private/TMP/computer-principles/cp-bus.verified.md
-  - _private/TMP/programming/programming-system-analysis-structured-tools.draft.md
-  - _private/TMP/programming/source-inventory.md
-  - _private/資料結構與演算法.txt
-  - _private/TMP/information-management/im-00-overview.prompt.md
-  - _private/TMP/source-label-expansion-validation.md
-  - _private/TMP/programming/programming-system-analysis-project-tools-risk.verified.md
-  - _private/TMP/computer-principles/cp-universal-gates.verified.md
-  - _private/TMP/algorithms/linked-list-basics.prompt.md
-  - _private/TMP/information-management/im-02-digital-transformation.verified.md
-  - _private/TMP/algorithms/tree-and-binary-tree.draft.md
-  - _private/TMP/networking/overview.prompt.md
-  - _TMP/20260613-054000-computer-principles-cp-complement-conversion.md
-  - _TMP/scripts/remediate-computer-principles.mjs
-  - _TMP/20260613-054000-computer-principles-cp-floating-point-conversion.md
-  - _private/TMP/programming/programming-recursion.draft.md
-  - _private/TMP/programming/programming-system-analysis-structured-analysis-design.prompt.md
-  - _private/TMP/programming/programming-system-analysis-ssdlc.prompt.md
-  - _private/TMP/computer-principles/cp-os-structure.prompt.md
-  - _TMP/task-breakdowns/algorithms-subagent-tasks.md
-  - _TMP/reports/content-production-chain-review-20260613-041900.md
-  - _TMP/20260613-054000-computer-principles-cp-von-neumann-architecture.md
-  - _private/TMP/computer-principles/cp-memory-hierarchy.verified.md
-  - postcss.config.js
-  - _private/TMP/computer-principles/cp-digital-logic-basics.verified.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - src/shared/components/RouteTabs.vue
+  - src/app/routePreload.ts
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
   - src/shared/components/RouteSubMenu.vue
-  - _private/TMP/algorithms/algorithm-definition-and-properties.prompt.md
-  - _private/TMP/computer-principles/cp-os-basics.verified.md
-  - _private/TMP/programming/programming-system-analysis-ssdlc.verified.md
-  - _TMP/20260613-041414-algorithms-quick-sort.md
-  - _private/TMP/information-management/im-03-system-development-models.draft.md
-  - _private/TMP/database/database-foundations.verified.md
-  - _private/TMP/networking/devices-osi.prompt.md
-  - tests/unit/publishPages.spec.mjs
-  - _private/TMP/programming/programming-string-functions.draft.md
-  - _private/TMP/programming/programming-original-reminders.draft.md
-  - src/env.d.ts
-  - _private/TMP/algorithms/algorithm-java-complexity-review.md
-  - _private/TMP/database/database-erd.prompt.md
-  - _private/TMP/database/待生成主題清單_20260613-105500.md
-  - _private/TMP/computer-principles/cp-pipeline.verified.md
-  - _TMP/templates/algorithm-topic-template.md
-  - _private/TMP/programming/programming-system-analysis-pdca.verified.md
-  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
-  - _private/TMP/computer-principles/cp-machine-instruction-cycle.draft.md
-  - _TMP/20260613-054000-computer-principles-cp-registers.md
-  - _private/TMP/algorithms/array-addressing.draft.md
-  - _private/TMP/programming/programming-system-analysis-root.draft.md
-  - _private/TMP/algorithms/stack-and-queue.verified.md
-  - _TMP/20260613-054000-computer-principles-cp-bus.md
-  - _private/TMP/programming/programming-original-reminders.prompt.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-hardware-protection.md
-  - _private/TMP/programming/programming-translator-comparison.verified.md
-  - _private/TMP/networking/ports.draft.md
-  - _private/TMP/database/database-supplemental-topics.verified.md
-  - _private/TMP/programming/programming-system-analysis-sdlc.draft.md
-  - _private/TMP/algorithms/tree-and-binary-tree.prompt.md
-  - _private/TMP/computer-principles/cp-karnaugh-map.draft.md
-  - _private/TMP/database/database-ansi-sparc.prompt.md
-  - _TMP/source-logs/database-reading-log.md
-  - _private/TMP/programming/programming-oop-three-pillars.verified.md
-  - src/modules/subjectTopics/components/SubjectTopicCard.vue
-  - _private/TMP/database/database-overview.draft.md
-  - _private/TMP/programming/programming-system-analysis-project-management.draft.md
-  - _private/TMP/programming/programming-system-analysis-root.verified.md
-  - _private/TMP/programming/programming-system-analysis-uml.prompt.md
-  - _private/TMP/stale-professional-content-audit.md
-  - _private/TMP/computer-principles/cp-memory-classification.draft.md
-  - _TMP/reports/term-audit-20260613-041900.md
-  - _private/TMP/algorithms/algorithm-definition-and-properties.verified.md
-  - _private/TMP/networking/network-layer.prompt.md
-  - _private/TMP/programming/programming-original-reminders.verified.md
-  - _TMP/20260613-041040-programming-system-analysis-sdlc.md
-  - _private/TMP/source-label-definitions.md
-  - _TMP/20260613-054000-computer-principles-cp-digital-logic-basics.md
-  - _private/TMP/computer-principles/cp-virtual-memory.verified.md
-  - _private/TMP/algorithms/sorting-algorithms-baseline.draft.md
-  - _TMP/20260613-054000-computer-principles-cp-memory-management.md
-  - _private/TMP/networking/transport-layer.prompt.md
-  - _private/TMP/programming/programming-basic-constructs.prompt.md
-  - _private/TMP/networking/prep-direction.draft.md
-  - tsconfig.app.json
-  - _private/TMP/database/database-prep-direction.verified.md
-  - _TMP/20260613-054000-computer-principles-cp-universal-gates.md
-  - _private/TMP/database/database-normalization.verified.md
-  - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-memory-hierarchy.md
-  - _private/TMP/computer-principles/cp-process-communication.prompt.md
-  - _private/TMP/computer-principles/cp-process-communication.draft.md
-  - _private/discuss.txt
-  - _private/TMP/database/database-erd.draft.md
-  - _private/TMP/information-management/im-06-im-supplemental-points.draft.md
-  - _private/TMP/computer-principles/cp-os-structure.verified.md
-  - _private/TMP/database/database-supplemental-topics.draft.md
-  - _private/TMP/networking/application-layer.verified.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-bus.md
-  - _TMP/source-logs/programming-system-analysis-reading-log.md
-  - _private/TMP/database/database-prep-direction.draft.md
-  - _private/TMP/database/database-overview.prompt.md
-  - _private/TMP/computer-principles/cp-deadlock.prompt.md
-  - _private/TMP/information-management/im-00-overview.draft.md
-  - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-virtual-memory.md
-  - _private/TMP/networking/application-layer.prompt.md
-  - _private/TMP/programming/programming-oop-extensions.prompt.md
-  - _TMP/reviews/import-summary.md
   - src/styles/main.css
-  - _private/TMP/database/database-sql-crud.verified.md
-  - _private/TMP/database/generate-route-workflow.mjs
-  - _private/TMP/information-management/im-04-esg.verified.md
-  - _TMP/source-logs/common-algorithms-reading-log.md
-  - _private/TMP/database/database-keys.draft.md
-  - _private/TMP/algorithms/shell-sort.verified.md
-  - _private/TMP/networking/prep-direction.prompt.md
-  - _private/TMP/algorithms/array-addressing.prompt.md
-  - _private/TMP/algorithms/sorting-algorithms-baseline.prompt.md
-  - _private/TMP/algorithms/待生成主題清單_20260613-105500.md
-  - _private/TMP/algorithms/import-readiness.md
-  - _private/TMP/computer-principles/cp-process.prompt.md
-  - _private/TMP/database/database-acid-transactions.prompt.md
-  - _private/TMP/database/database-ansi-sparc.draft.md
-  - _private/TMP/programming/programming-root.verified.md
-  - _TMP/20260613-041030-programming-recursion.md
-  - index.html
-  - _private/TMP/programming/programming-oop-extensions.draft.md
-  - _private/TMP/computer-principles/cp-process.draft.md
-  - _TMP/reviews/computer-principles-content-review.md
-  - _private/TMP/networking/devices-osi.verified.md
-  - _private/TMP/information-management/im-01-preparation-direction.prompt.md
-  - _private/TMP/programming/programming-parameter-passing.verified.md
-  - _TMP/source-logs/computer-principles-reading-log.md
-  - _private/TMP/database/database-concept-review.md
-  - _TMP/templates/main-agent-import-checklist.md
-  - _private/TMP/networking/security.draft.md
+  - _private/MD/計算機概論/00_目錄.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
   - PROJECT_ARCHITECTURE.md
-  - _private/TMP/computer-principles/manual-review.md
-  - tests/setup.ts
-  - _private/TMP/programming/programming-basics.prompt.md
-  - _private/TMP/programming/programming-system-analysis-overview.draft.md
-  - _private/TMP/programming/programming-system-analysis-testing-types.prompt.md
-  - _private/TMP/algorithms/quick-sort.verified.md
-  - _private/TMP/computer-principles/cp-digital-logic-basics.prompt.md
-  - _private/TMP/networking/network-layer.verified.md
-  - _TMP/source-logs/algorithms-reading-log.md
-  - _private/TMP/networking/overview.verified.md
-  - _private/TMP/programming/programming-system-analysis-uml-extra-diagrams.draft.md
-  - eslint.config.js
-  - _TMP/20260613-054000-computer-principles-cp-hardware-protection.md
-  - _private/TMP/algorithms/greatest-common-divisor.draft.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - _private/MD/計算機概論/09_補數轉換.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/discuss.txt
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
 tests:
-  - tests/unit/sourceLabelDefinitions.spec.ts
-  - tests/unit/subagentIsolationReports.spec.ts
-  - tests/e2e/topic-bookmark-flow.spec.ts
-  - tests/unit/staleProfessionalContentAudit.spec.ts
-  - tests/unit/githubWorkflowCi.spec.ts
-  - tests/component/SubjectTopicBookmark.spec.ts
-  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
   - tests/unit/algorithmsRouteWorkflow.spec.ts
-  - tests/unit/sourceLabelExpansionAcrossRoutes.spec.ts
-  - tests/component/SubjectTopicCompletion.spec.ts
-  - tests/e2e/mobile-code-layout.spec.ts
-  - tests/unit/tmpWorkflowArtifacts.spec.ts
-  - tests/e2e/professional-routes-interaction.spec.ts
-  - tests/component/SubjectRoutesSmoke.spec.ts
-  - tests/unit/tmpDraftQuality.spec.ts
-  - tests/unit/sourceManifests.spec.ts
-  - tests/e2e/topic-completion-flow.spec.ts
-  - tests/e2e/topic-progress-storage.spec.ts
-  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
-  - tests/unit/routeConfig.spec.ts
-  - tests/unit/informationManagementRouteWorkflow.spec.ts
-  - tests/e2e/app-shell-mobile.spec.ts
-  - tests/component/TeachingCodeBlock.spec.ts
-  - tests/unit/githubWorkflowCd.spec.ts
-  - tests/unit/placeholderTopics.spec.ts
   - tests/e2e/app-shell.smoke.spec.ts
-  - tests/e2e/common-subject-switcher.spec.ts
-  - tests/component/SubjectTopicProfessionalBlocks.spec.ts
-  - tests/unit/projectArchitecture.spec.ts
-  - tests/component/AppShellSmoke.spec.ts
-  - tests/unit/networkingRouteWorkflow.spec.ts
-  - tests/unit/contentProductionReports.spec.ts
   - tests/e2e/pwa-offline-shell.spec.ts
-  - tests/unit/professionalTopics.spec.ts
   - tests/unit/routePreload.spec.ts
-  - tests/unit/databaseRouteWorkflow.spec.ts
-  - tests/component/SubjectTopicCard.spec.ts
-  - tests/component/CommonSubjectSwitcher.spec.ts
-  - tests/unit/programmingRouteWorkflow.spec.ts
-  - tests/unit/toolchainSmoke.spec.ts
-  - tests/unit/repositoryHygiene.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
 -->
 
 ---
@@ -3316,4 +2752,90 @@ tests:
   - tests/unit/programmingRouteWorkflow.spec.ts
   - tests/unit/toolchainSmoke.spec.ts
   - tests/unit/repositoryHygiene.spec.ts
+-->
+
+---
+### Requirement: Computer foundation menu exposes Computer Principles v2
+
+The app shell SHALL expose `計概(v2)` inside the computer foundation route menu. Selecting the option SHALL navigate to `/computer-principles-v2` without changing the root redirect behavior.
+
+#### Scenario: Computer foundation menu lists v2 option
+
+- **WHEN** the user opens the computer foundation menu from the app header
+- **THEN** the menu contains `計概`
+- **AND** the menu contains `網概`
+- **AND** the menu contains `數位邏輯`
+- **AND** the menu contains `作業系統`
+- **AND** the menu contains `計概(v2)`
+
+#### Scenario: Header option navigates to v2 route
+
+- **WHEN** the user selects `計概(v2)` from the computer foundation menu
+- **THEN** the app navigates to `/computer-principles-v2`
+- **AND** the main route region displays the `計概(v2)` subject page
+
+#### Scenario: Root route remains unchanged
+
+- **WHEN** the user opens `/`
+- **THEN** the app redirects to `/computer-principles`
+- **AND** the app does not redirect to `/computer-principles-v2`
+
+<!-- @trace
+source: computer-principles-v2-route
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - src/app/router.ts
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - src/shared/components/RouteTabs.vue
+  - _private/MD/計算機概論/00_目錄.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - src/styles/main.css
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - _private/discuss.txt
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - src/shared/components/RouteSubMenu.vue
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - src/app/routePreload.ts
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+tests:
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
 -->

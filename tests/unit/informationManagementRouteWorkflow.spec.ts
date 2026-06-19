@@ -29,37 +29,44 @@ const routeTrackingPath = `${routeRoot}/待生成主題清單_20260613-114500.md
 const expectedMarkdownTopics = [
   {
     id: 'im-md-digital-transformation-esg',
-    title: '資訊管理 1：數位轉型 + ESG',
+    title: '數位轉型 + ESG',
+    sourceSummary: '資訊管理 1：數位轉型 + ESG',
     sourceFile: '_private/MD/資訊管理/資訊管理_1_數位轉型與ESG.md'
   },
   {
     id: 'im-md-traditional-development-models',
-    title: '資訊管理 2a：傳統開發模式（漸增／雛形／螺旋）',
+    title: '傳統開發模式（漸增／雛形／螺旋）',
+    sourceSummary: '資訊管理 2a：傳統開發模式（漸增／雛形／螺旋）',
     sourceFile: '_private/MD/資訊管理/資訊管理_2a_傳統開發模式.md'
   },
   {
     id: 'im-md-agile-development',
-    title: '資訊管理 2b：敏捷開發 Agile',
+    title: '敏捷開發 Agile',
+    sourceSummary: '資訊管理 2b：敏捷開發 Agile',
     sourceFile: '_private/MD/資訊管理/資訊管理_2b_敏捷開發.md'
   },
   {
     id: 'im-md-information-ethics',
-    title: '資訊管理 3a：資訊倫理（PAPA 四大議題）',
+    title: '資訊倫理（PAPA 四大議題）',
+    sourceSummary: '資訊管理 3a：資訊倫理（PAPA 四大議題）',
     sourceFile: '_private/MD/資訊管理/資訊管理_3a_資訊倫理.md'
   },
   {
     id: 'im-md-data-classification-privacy-paradox',
-    title: '資訊管理 3b：數據分類 + 隱私悖論',
+    title: '數據分類 + 隱私悖論',
+    sourceSummary: '資訊管理 3b：數據分類 + 隱私悖論',
     sourceFile: '_private/MD/資訊管理/資訊管理_3b_數據分類與隱私悖論.md'
   },
   {
     id: 'im-md-personal-data-protection-act',
-    title: '資訊管理 4a：個人資料保護法（個資法）',
+    title: '個人資料保護法（個資法）',
+    sourceSummary: '資訊管理 4a：個人資料保護法（個資法）',
     sourceFile: '_private/MD/資訊管理/資訊管理_4a_個人資料保護法.md'
   },
   {
     id: 'im-md-gdpr',
-    title: '資訊管理 4b：GDPR（歐盟一般資料保護規則）',
+    title: 'GDPR（歐盟一般資料保護規則）',
+    sourceSummary: '資訊管理 4b：GDPR（歐盟一般資料保護規則）',
     sourceFile: '_private/MD/資訊管理/資訊管理_4b_GDPR.md'
   }
 ] as const;
@@ -220,7 +227,7 @@ describe('information-management route-scoped content workflow', () => {
           id: expectedTopic.id,
           title: expectedTopic.title,
           sourceFiles: [expectedTopic.sourceFile],
-          sourceSummary: expectedTopic.title
+          sourceSummary: expectedTopic.sourceSummary
         })
       );
 
@@ -229,7 +236,7 @@ describe('information-management route-scoped content workflow', () => {
       expect(lessonArticle).toEqual(
         expect.objectContaining({
           sourceFiles: [expectedTopic.sourceFile],
-          sourceSection: expectedTopic.title
+          sourceSection: expectedTopic.sourceSummary
         })
       );
       expect(lessonArticle.sections.length).toBeGreaterThan(0);

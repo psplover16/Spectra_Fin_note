@@ -21,6 +21,24 @@ const routeRoot = '_private/TMP/computer-principles';
 const routeTrackingPath = `${routeRoot}/待生成主題清單_20260613-110000.md`;
 const expectedComputerPrinciplesTopicCount = 33;
 const commonUnitsTopicId = 'cp-common-units';
+const movedComputerPrinciplesTopicIds = new Set([
+  'cp-digital-logic-basics',
+  'cp-sop-pos',
+  'cp-karnaugh-map',
+  'cp-universal-gates',
+  'cp-combinational-sequential-circuits',
+  'cp-os-basics',
+  'cp-io-and-interrupts',
+  'cp-hardware-protection',
+  'cp-os-structure',
+  'cp-process',
+  'cp-cpu-scheduling',
+  'cp-deadlock',
+  'cp-process-communication',
+  'cp-memory-management',
+  'cp-virtual-memory',
+  'cp-disk-management'
+]);
 const filledComputerPrinciplesTopicIds = new Set([
   commonUnitsTopicId,
   'cp-von-neumann-architecture',
@@ -173,11 +191,12 @@ describe('computer-principles route-scoped content workflow', () => {
 
   it('keeps formal computer-principles app data aligned with the route workflow', () => {
     const manifestRows = readComputerPrinciplesManifestRows();
+    const remainingComputerPrinciplesRows = manifestRows.filter((row) => !movedComputerPrinciplesTopicIds.has(row.id));
     const formalTopics = professionalTopicsBySubject.computerPrinciples;
 
-    expect(formalTopics).toHaveLength(manifestRows.length);
+    expect(formalTopics).toHaveLength(remainingComputerPrinciplesRows.length);
 
-    for (const row of manifestRows) {
+    for (const row of remainingComputerPrinciplesRows) {
       const topic = formalTopics.find((formalTopic) => formalTopic.id === row.id);
       const lessonArticle = topic?.blocks[0];
       const expectedSourceFiles = [
@@ -198,6 +217,10 @@ describe('computer-principles route-scoped content workflow', () => {
       expect(topic?.blocks.some((block) => block.kind === 'examOutline')).toBe(false);
       expect(topic?.blocks.some((block) => block.kind === 'memoryPoints')).toBe(false);
       expect(topic?.blocks.some((block) => block.kind === 'understanding')).toBe(false);
+    }
+
+    for (const topicId of movedComputerPrinciplesTopicIds) {
+      expect(formalTopics.some((topic) => topic.id === topicId)).toBe(false);
     }
   });
 });

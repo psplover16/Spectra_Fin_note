@@ -2,7 +2,10 @@ import type { Component } from 'vue';
 
 export type PrimaryRoutePath =
   | '/computer-principles'
+  | '/computer-principles-v2'
   | '/networking'
+  | '/digital-logic'
+  | '/operating-systems'
   | '/information-management'
   | '/programming'
   | '/database'
@@ -17,7 +20,10 @@ export type RoutePreloadLoader = () => Promise<unknown>;
 
 export const primaryRoutePaths = [
   '/computer-principles',
+  '/computer-principles-v2',
   '/networking',
+  '/digital-logic',
+  '/operating-systems',
   '/information-management',
   '/programming',
   '/database',
@@ -29,7 +35,10 @@ export const primaryRoutePaths = [
 
 export const routeComponentLoaders: Record<PrimaryRoutePath, RouteComponentLoader> = {
   '/computer-principles': () => import('@/modules/computerPrinciples/views/ComputerPrinciplesView.vue'),
+  '/computer-principles-v2': () => import('@/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue'),
   '/networking': () => import('@/modules/networking/views/NetworkingView.vue'),
+  '/digital-logic': () => import('@/modules/digitalLogic/views/DigitalLogicView.vue'),
+  '/operating-systems': () => import('@/modules/operatingSystems/views/OperatingSystemsView.vue'),
   '/information-management': () => import('@/modules/informationManagement/views/InformationManagementView.vue'),
   '/programming': () => import('@/modules/programming/views/ProgrammingView.vue'),
   '/database': () => import('@/modules/database/views/DatabaseView.vue'),

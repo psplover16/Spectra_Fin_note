@@ -28,10 +28,16 @@ describe('route preload registry', () => {
     expect(registry.isLoaded('/unknown')).toBe(false);
   });
 
-  it('includes database, algorithms, and system design in primary route preload loaders', () => {
+  it('includes split computer-foundation and expanded professional route preload loaders', () => {
+    expect(primaryRoutePaths).toContain('/computer-principles-v2');
+    expect(primaryRoutePaths).toContain('/digital-logic');
+    expect(primaryRoutePaths).toContain('/operating-systems');
     expect(primaryRoutePaths).toContain('/database');
     expect(primaryRoutePaths).toContain('/algorithms');
     expect(primaryRoutePaths).toContain('/system-design');
+    expect(routeComponentLoaders['/computer-principles-v2']).toEqual(expect.any(Function));
+    expect(routeComponentLoaders['/digital-logic']).toEqual(expect.any(Function));
+    expect(routeComponentLoaders['/operating-systems']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/database']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/algorithms']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/system-design']).toEqual(expect.any(Function));

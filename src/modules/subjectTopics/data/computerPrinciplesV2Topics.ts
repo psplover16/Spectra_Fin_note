@@ -1,0 +1,3390 @@
+import type { ProfessionalSubjectTopic } from '@/modules/subjectTopics/types/subjectTopic';
+
+// Static lessonArticle data generated from _private/MD/計算機概論 source Markdown.
+export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
+  {
+    "id": "cpv2-architecture-computation-theory",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "架構與計算理論",
+    "summary": "整理馮紐曼架構、圖靈機與圖靈測試。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/01_架構與計算理論.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 架構與計算理論",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "concept",
+    "terms": [
+      {
+        "zh": "馮紐曼架構",
+        "en": "Von Neumann Architecture"
+      },
+      {
+        "zh": "圖靈機",
+        "en": "Turing Machine"
+      },
+      {
+        "zh": "圖靈測試",
+        "en": "Turing Test"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/01_架構與計算理論.md"
+        ],
+        "sourceSection": "基本計概(v2) / 架構與計算理論",
+        "lead": [
+          "馮紐曼架構、圖靈機與圖靈測試。"
+        ],
+        "sections": [
+          {
+            "heading": "1. 馮紐曼架構 / 定義",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "馮紐曼架構是一種電腦設計方式。核心：程式和資料都放在同一個記憶體中，通常也共用同一組匯流排，CPU 依照順序一個一個讀取指令並執行。"
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "計算機系統基本組成：輸入單元、輸出單元、運算器（ALU）、控制器（CU）、記憶體。",
+                  "匯流排：電腦內部傳輸資料的通道（可想成馬路）。CPU、記憶體、輸入輸出設備之間靠匯流排傳送資料。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "1. 馮紐曼架構 / 特色",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "程式內儲概念（Stored-Program Concept）：程式與資料皆存放於記憶體中，CPU 可從記憶體依序讀取指令並執行。",
+                  "循序執行：CPU 依「取指令 → 解碼 → 執行」的步驟循序處理記憶體中的指令；除非遇到跳躍指令或中斷事件，才會改變原本的執行順序。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "1. 馮紐曼架構 / 與哈佛架構的差異",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "",
+                  "馮紐曼架構",
+                  "哈佛架構"
+                ],
+                "rows": [
+                  [
+                    "記憶體",
+                    "程式與資料共用記憶體與匯流排",
+                    "程式記憶體與資料記憶體分離"
+                  ],
+                  [
+                    "取指令／取資料",
+                    "可能互相競爭傳輸通道 → 瓶頸",
+                    "可同時取指令與取資料"
+                  ],
+                  [
+                    "設計",
+                    "簡單",
+                    "較複雜"
+                  ],
+                  [
+                    "效能",
+                    "較易受瓶頸限制",
+                    "較佳"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "1. 馮紐曼架構 / 馮紐曼瓶頸（Von Neumann Bottleneck）",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "定義：CPU 與記憶體之間的資料傳輸速度有限，當 CPU 需頻繁讀取指令與資料時，會因等待記憶體傳輸而降低整體效能。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "改善方法（共同目標：減少 CPU 等待記憶體的時間、提高資料供應速度）："
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "快取 Cache：速度快、容量小的記憶體，放在 CPU 附近或內部，存放最近常用或可能再用的資料。",
+                  "預取（Prefetch）：預先猜測 CPU 接下來可能需要的指令／資料，先拿到較快的位置。",
+                  "增加匯流排寬度：提高一次可傳送多少位元資料。",
+                  "記憶體頻寬：提升單位時間內記憶體可傳輸的資料量。",
+                  "管線化（Pipeline）：把一個工作切成多階段，讓不同指令重疊執行。",
+                  "平行處理：同時處理多個工作。",
+                  "記憶體階層：把不同速度、容量、成本的記憶體安排成層級（暫存器 → 快取 → 主記憶體 RAM → SSD／硬碟）。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "2. 圖靈機與圖靈測試 / 一、圖靈機",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "圖靈機是什麼\n圖靈機是一種抽象的計算模型，不是實體電腦。用來描述「計算」最核心的過程，並研究哪些問題可以被明確的計算程序解決。它不討論硬體細節（CPU、記憶體、OS），只保留計算最基本的元素："
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "資料如何被儲存。",
+                  "資料如何被讀取。",
+                  "每一步如何根據規則改變資料。",
+                  "什麼情況下計算會結束。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "因此圖靈機是一種理論上的簡化模型，用來回答：電腦到底能不能解決某個問題？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "圖靈機的主要組成（三部分）"
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "無限長紙帶：儲存輸入、輸出與計算過程中的中間結果。",
+                  "讀寫頭：讀取目前格子的符號，也可寫入符號，並向左或向右移動。",
+                  "有限控制器：根據目前狀態與讀到的符號，決定下一步要做什麼。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "圖靈機如何運作（每一步）"
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "讀取目前格子的符號。",
+                  "根據目前狀態與讀到的符號查詢規則。",
+                  "在目前格子寫入新符號，或保留原符號。",
+                  "讀寫頭向左或向右移動。",
+                  "進入下一個狀態。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "→ 不斷重複「讀取、判斷、寫入、移動、換狀態」，直到符合停止條件。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "可計算是什麼\n指某問題可被一套明確的計算程序解決。以圖靈機角度：若存在一套規則，能讓圖靈機在有限步驟內完成計算並得到答案，這問題通常就可稱為可計算。重點："
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "問題：具明確輸入與輸出的任務。",
+                  "明確程序：可一步步執行的規則。",
+                  "有限步驟：計算過程會在某個時間點結束，不會永遠執行。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "→ 可計算關心的不是「算得快不快」，而是理論上是否存在明確方法、能在有限步驟內算出答案。"
+              }
+            ]
+          },
+          {
+            "heading": "2. 圖靈機與圖靈測試 / 二、圖靈測試",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "圖靈測試是用來判斷機器是否展現出類似人類智慧的測試。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "基本想法：若一位審問者只透過文字對話與兩個對象互動（一個是人、一個是機器），而審問者無法可靠分辨哪一個是機器，就可認為該機器通過圖靈測試。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "→ 它重視機器在對話中的外在表現，而非內部是否真的像人類思考。比較像檢驗「機器能不能表現得像人類」，而不是證明「機器是否真正具有意識」。"
+              }
+            ]
+          },
+          {
+            "heading": "2. 圖靈機與圖靈測試 / 三、圖靈機 vs 圖靈測試",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "項目",
+                  "圖靈機",
+                  "圖靈測試"
+                ],
+                "rows": [
+                  [
+                    "核心問題",
+                    "什麼問題可以被計算？",
+                    "機器能否表現得像人類？"
+                  ],
+                  [
+                    "關注重點",
+                    "計算程序與可計算性",
+                    "對話表現與智慧判斷"
+                  ],
+                  [
+                    "性質",
+                    "理論計算模型",
+                    "人工智慧測試方法"
+                  ],
+                  [
+                    "常見用途",
+                    "研究演算法、計算能力與計算極限",
+                    "討論機器智慧與人機互動"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "總結：圖靈機關心「計算是否可能」，圖靈測試關心「機器是否能展現類似人類的智慧表現」。"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-machine-instruction-cycle",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "機器指令與指令週期",
+    "summary": "整理Opcode/Operand、Fetch-Decode-Execute、PC/IR。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/02_機器指令與指令週期.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 機器指令與指令週期",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "concept",
+    "terms": [
+      {
+        "zh": "機器指令",
+        "en": "Machine Instruction"
+      },
+      {
+        "zh": "操作碼",
+        "en": "Opcode"
+      },
+      {
+        "zh": "運算元",
+        "en": "Operand"
+      },
+      {
+        "zh": "程式計數器",
+        "en": "Program Counter, PC"
+      },
+      {
+        "zh": "指令暫存器",
+        "en": "Instruction Register, IR"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/02_機器指令與指令週期.md"
+        ],
+        "sourceSection": "基本計概(v2) / 機器指令與指令週期",
+        "lead": [
+          "指令與 CPU 運作。"
+        ],
+        "sections": [
+          {
+            "heading": "3. 機器指令與指令週期",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "機器指令是「工作單」，指令週期是「處理工作單的步驟」。"
+              }
+            ]
+          },
+          {
+            "heading": "3. 機器指令與指令週期 / 考前小抄",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "機器指令：CPU 直接看得懂的二進位命令。",
+                  "Opcode：做什麼。",
+                  "Operand：對誰做，或表示資料／位置資訊。",
+                  "位址欄位：指令中用來指出資料位置的欄位。",
+                  "Effective Address：真正要存取資料的位址。",
+                  "PC：下一個指令位址。",
+                  "IR：目前取出的指令。",
+                  "Fetch：取指令。",
+                  "Operand Fetch：取資料。",
+                  "Execute：真的做動作。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "3. 機器指令與指令週期 / 機器指令範例",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "ADD R1, R2"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "部分",
+                  "意義"
+                ],
+                "rows": [
+                  [
+                    "ADD",
+                    "Opcode，表示加法"
+                  ],
+                  [
+                    "R1、R2",
+                    "Operand，要被操作的暫存器"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "LOAD R1, 1000"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "部分",
+                  "意義"
+                ],
+                "rows": [
+                  [
+                    "LOAD",
+                    "Opcode，表示載入"
+                  ],
+                  [
+                    "R1",
+                    "Operand，目的暫存器"
+                  ],
+                  [
+                    "1000",
+                    "位址欄位／位址資訊，資料位置可能和 1000 有關"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "3. 機器指令與指令週期 / 指令週期流程",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "機器指令透過指令週期執行所希望的動作："
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "Fetch 取指令：先把工作單拿來。",
+                  "Decode 解碼：看懂工作單要做什麼。",
+                  "Operand Fetch / Address Calculation 取運算元或算位址：準備要用的資料，或算出資料真正在哪。",
+                  "Execute 執行：真的做加法、比較、跳躍、I/O 等動作。",
+                  "Write Back / Store 寫回：把結果放回暫存器或記憶體。"
+                ]
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "階段",
+                  "英文",
+                  "核心問題",
+                  "常考關鍵字"
+                ],
+                "rows": [
+                  [
+                    "1. 取指令",
+                    "Fetch",
+                    "取得接下來要執行的那條機器指令所在位置",
+                    "PC、Memory、IR"
+                  ],
+                  [
+                    "2. 解碼",
+                    "Decode",
+                    "這條指令要做什麼？",
+                    "Opcode、Control Unit、Addressing Mode"
+                  ],
+                  [
+                    "3. 取運算元／算位址",
+                    "Operand Fetch / Address Calculation",
+                    "資料在哪裡？要拿什麼資料？",
+                    "Operand、Effective Address"
+                  ],
+                  [
+                    "4. 執行",
+                    "Execute",
+                    "實際做什麼動作？",
+                    "ALU、Branch、I/O"
+                  ],
+                  [
+                    "5. 寫回",
+                    "Write Back / Store",
+                    "結果放去哪裡？",
+                    "Register、Memory、Interrupt"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "關鍵字："
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "I/O：Input／Output，輸入與輸出（讀檔、寫檔、鍵盤、螢幕）。",
+                  "ALU：算術邏輯單元，負責計算與邏輯判斷（加減乘除、AND、OR、比較）。",
+                  "Branch：分支，改變程式接下來執行哪一條指令（if 判斷、跳到另一位址）。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "3. 機器指令與指令週期 / 易混淆比較",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "Fetch vs Operand Fetch"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "比較點",
+                  "Fetch",
+                  "Operand Fetch"
+                ],
+                "rows": [
+                  [
+                    "取什麼",
+                    "指令本身",
+                    "指令要用的資料"
+                  ],
+                  [
+                    "依據",
+                    "PC 指出的指令位址",
+                    "Operand、位址欄位、定址模式"
+                  ],
+                  [
+                    "常見錯誤",
+                    "以為 Fetch 是取資料",
+                    "以為 Operand Fetch 是取下一條指令"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "PC vs IR"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "項目",
+                  "PC",
+                  "IR"
+                ],
+                "rows": [
+                  [
+                    "中文",
+                    "程式計數器",
+                    "指令暫存器"
+                  ],
+                  [
+                    "存放內容",
+                    "下一個要取出的指令位址",
+                    "目前已取出的指令"
+                  ],
+                  [
+                    "白話",
+                    "下一步去哪拿指令",
+                    "剛拿到的指令先放這"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "Decode vs Execute"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "比較點",
+                  "Decode",
+                  "Execute"
+                ],
+                "rows": [
+                  [
+                    "重點",
+                    "看懂指令",
+                    "做出動作"
+                  ],
+                  [
+                    "內容",
+                    "判斷 Opcode、格式、定址模式",
+                    "運算、比較、跳躍、I/O"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "3. 機器指令與指令週期 / 國考怎麼判斷",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "「CPU 可直接執行、二進位形式」→ 機器指令。",
+                  "「指出要執行的操作」→ Opcode。",
+                  "「被操作的資料、暫存器或位置」→ Operand。",
+                  "「真正要存取的記憶體位置」→ Effective Address。",
+                  "「下一個指令位址」→ PC。",
+                  "「目前取出的指令」→ IR。",
+                  "「取指令」→ Fetch。",
+                  "「實際運算或跳躍」→ Execute。"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-pipeline-hazard",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "Pipeline 與 Hazard",
+    "summary": "整理管線化、加速比、三種 Hazard、RAW/WAR/WAW。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/03_Pipeline與Hazard.md"
+    ],
+    "sourceSummary": "基本計概(v2) / Pipeline 與 Hazard",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "procedure",
+    "terms": [
+      {
+        "zh": "管線化",
+        "en": "Pipelining"
+      },
+      {
+        "zh": "危障",
+        "en": "Hazard"
+      },
+      {
+        "zh": "停滯",
+        "en": "Stall"
+      },
+      {
+        "zh": "資料危障",
+        "en": "Data Hazard"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/03_Pipeline與Hazard.md"
+        ],
+        "sourceSection": "基本計概(v2) / Pipeline 與 Hazard",
+        "lead": [
+          "指令與 CPU 運作。"
+        ],
+        "sections": [
+          {
+            "heading": "4. Pipeline（管線化） / 定義",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "將指令執行拆成多個階段，使不同指令可在不同階段同時進行，提高吞吐量。",
+                  "同一個時間點，每一個管線階段只能處理一個指令。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "4. Pipeline（管線化） / 常見 5 階段 Pipeline",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "縮寫",
+                  "英文",
+                  "中文",
+                  "白話作用"
+                ],
+                "rows": [
+                  [
+                    "IF",
+                    "Instruction Fetch",
+                    "抓指令",
+                    "把下一個要執行的指令抓進來"
+                  ],
+                  [
+                    "ID",
+                    "Instruction Decode",
+                    "解碼／讀暫存器",
+                    "看懂指令要做什麼，並讀出需要的暫存器資料"
+                  ],
+                  [
+                    "EX",
+                    "Execute",
+                    "執行運算",
+                    "做運算、比較，或計算記憶體位址"
+                  ],
+                  [
+                    "MEM",
+                    "Memory Access",
+                    "存取記憶體",
+                    "讀取或寫入資料記憶體"
+                  ],
+                  [
+                    "WB",
+                    "Write Back",
+                    "寫回結果",
+                    "把運算結果寫回暫存器"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "可理解成：把單一指令的指令週期拆成 5 格，讓不同指令同時卡在不同格子裡執行。"
+              }
+            ]
+          },
+          {
+            "heading": "4. Pipeline（管線化） / 常見公式",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "假設有 n 個指令、k 個管線階段、每階段時間為 t："
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "非管線時間 ≈ n * k * t",
+                  "管線時間 ≈ (k + n - 1) * t",
+                  "Speedup ≈ (n * k) / (k + n - 1)"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "若各階段時間不同，管線時脈通常由最慢階段決定（最慢那格還沒做完，整條管線就不能前進）。"
+              }
+            ]
+          },
+          {
+            "heading": "4. Pipeline（管線化） / 手把手例題　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "題：5 階段 pipeline，執行 100 個指令，每階段 1 ns。求非管線時間、管線時間、加速比。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "非管線：n × k × t       = 100 × 5 × 1     = 500 ns\n管線：  (k + n − 1) × t  = (5 + 100 − 1)×1 = 104 ns\n加速比：500 / 104 ≈ 4.81 倍（接近階段數 k = 5）"
+              }
+            ]
+          },
+          {
+            "heading": "4. Pipeline（管線化） / 最大加速比（理想最多快幾倍）",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "理想：Speedup = (n * k) / (k + n - 1)。當指令數 n 很大、階段數 k 相對固定時，k 個階段的最大加速比約接近 k。實際因 Hazard、Stall、階段時間不平均，通常小於理想值。"
+              }
+            ]
+          },
+          {
+            "heading": "4. Pipeline（管線化） / 管線限制",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "Pipeline 提高吞吐量（單位時間完成多少指令），不一定降低單一指令延遲（單一指令從開始到完成多久）。",
+                  "Hazard 會造成 Stall，影響實際效能。",
+                  "Hazard（危障）：管線遇到阻礙，不能照原本節奏前進。",
+                  "Stall（停滯）：因為 Hazard 而插入的等待時間。"
+                ]
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "類型",
+                  "白話意思",
+                  "例子"
+                ],
+                "rows": [
+                  [
+                    "Structural Hazard（結構危障）",
+                    "搶硬體資源",
+                    "兩個階段同時要用同一個記憶體"
+                  ],
+                  [
+                    "Data Hazard（資料危障）",
+                    "等前一個結果",
+                    "I2 要用 I1 還沒算完的結果"
+                  ],
+                  [
+                    "Control Hazard（控制危障）",
+                    "等分支方向",
+                    "branch 還不知道要不要跳"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "5. Hazard（管線危障） / 定義",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "Hazard（危障／冒險）：Pipeline 中，讓指令不能照預定時脈繼續前進的情況。本身不一定算錯，而是「如果不處理，可能會錯或必須等待」。",
+                  "Stall（停滯／暫停）：CPU 讓某些管線階段先等一下，不讓指令繼續前進。",
+                  "Bubble（泡泡／空泡）：因 stall 插入的空白週期，不做有用工作，只是用來把指令錯開。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "Hazard 是原因；Stall 是處理方式之一；Bubble 是 stall 造成的空白時間。"
+              }
+            ]
+          },
+          {
+            "heading": "5. Hazard（管線危障） / 三種 Hazard",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "類型",
+                  "白話意思",
+                  "看到什麼關鍵字",
+                  "常見處理"
+                ],
+                "rows": [
+                  [
+                    "Structural Hazard",
+                    "搶硬體",
+                    "同一記憶體、同一功能單元、資源不足",
+                    "增加硬體、分離 instruction/data cache、排程調整"
+                  ],
+                  [
+                    "Data Hazard",
+                    "等資料",
+                    "前一指令結果、暫存器讀寫、資料相依",
+                    "Forwarding、stall、compiler scheduling、register renaming"
+                  ],
+                  [
+                    "Control Hazard",
+                    "不知道下一步去哪",
+                    "branch、jump、PC、分支預測",
+                    "Branch prediction、flush、delayed branch"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "5. Hazard（管線危障） / 名詞解釋",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "Instruction Cache（指令快取）：放程式指令的快取。",
+                  "Data Cache（資料快取）：放資料的快取。",
+                  "Forwarding（資料前推／旁路傳送）：結果剛算出來，不等 WB 寫回，就先直接給下一個指令用（不一定能解決所有情況）。",
+                  "Stall（停滯／停等）：forwarding 還來不及時，讓後面指令先等（會浪費週期，效能下降）。",
+                  "Compiler scheduling（編譯器排程）：編譯器調整指令順序，讓相依指令錯開。",
+                  "Register renaming（暫存器重新命名）：用不同實體暫存器避免假相依。",
+                  "branch（分支指令）：根據條件決定要不要跳到別的地方。",
+                  "jump（跳躍指令）：直接跳到指定位置繼續執行。",
+                  "PC（Program Counter，程式計數器）：記錄「下一條要抓的指令位址」。",
+                  "branch prediction（分支預測）：CPU 先猜 branch 會不會跳。",
+                  "Flush（清除管線／沖刷）：把錯誤路徑的指令清掉。",
+                  "Delayed branch（延遲分支）：把分支後面的空檔拿來安排可執行的指令。",
+                  "Speculative execution（推測執行）：CPU 先推測執行，猜對就保留，猜錯就丟掉。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "5. Hazard（管線危障） / Data Hazard 的三種：RAW、WAR、WAW",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "類型",
+                  "全名",
+                  "白話意思"
+                ],
+                "rows": [
+                  [
+                    "RAW",
+                    "Read After Write",
+                    "後面要讀，前面還沒寫好"
+                  ],
+                  [
+                    "WAR",
+                    "Write After Read",
+                    "後面太早寫，害前面讀不到舊值"
+                  ],
+                  [
+                    "WAW",
+                    "Write After Write",
+                    "兩個都要寫，寫入順序錯會出事"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "加強練習　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "練習：4 階段 pipeline、50 指令、每階段 2 ns。管線時間與加速比？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：管線 = (4+50−1) × 2 = 106 ns；非管線 = 50×4×2 = 400 ns；加速比 = 400/106 ≈ 3.77 倍"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-performance-risc-cisc",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "效能與 RISC／CISC",
+    "summary": "整理CPI/MIPS 公式與計算、RISC vs CISC。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/04_效能與RISC-CISC.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 效能與 RISC／CISC",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "procedure",
+    "terms": [
+      {
+        "zh": "每指令週期數",
+        "en": "Cycles Per Instruction, CPI"
+      },
+      {
+        "zh": "每秒百萬指令數",
+        "en": "Million Instructions Per Second, MIPS"
+      },
+      {
+        "zh": "精簡指令集電腦",
+        "en": "Reduced Instruction Set Computer, RISC"
+      },
+      {
+        "zh": "複雜指令集電腦",
+        "en": "Complex Instruction Set Computer, CISC"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/04_效能與RISC-CISC.md"
+        ],
+        "sourceSection": "基本計概(v2) / 效能與 RISC／CISC",
+        "lead": [
+          "指令與 CPU 運作。"
+        ],
+        "sections": [
+          {
+            "heading": "7. 效能名詞與公式",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "一句話：CPU 執行時間 = 指令數 × 每個指令平均幾拍 × 每一拍多久"
+              }
+            ]
+          },
+          {
+            "heading": "7. 效能名詞與公式 / 名詞",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "名詞",
+                  "中文",
+                  "白話意思"
+                ],
+                "rows": [
+                  [
+                    "Clock",
+                    "時脈",
+                    "CPU 的節拍訊號"
+                  ],
+                  [
+                    "Clock Cycle Time",
+                    "時脈週期時間",
+                    "一拍要花多久"
+                  ],
+                  [
+                    "Clock Rate",
+                    "時脈頻率",
+                    "一秒有幾拍"
+                  ],
+                  [
+                    "Instruction Count",
+                    "指令數",
+                    "程式實際執行幾個機器指令"
+                  ],
+                  [
+                    "CPI（Cycles Per Instruction）",
+                    "每指令平均週期數",
+                    "平均一個指令要幾拍"
+                  ],
+                  [
+                    "CPU Time",
+                    "CPU 執行時間",
+                    "CPU 真正花多久執行程式"
+                  ],
+                  [
+                    "MIPS（Million Instructions Per Second）",
+                    "每秒百萬指令數",
+                    "每秒執行幾百萬個指令"
+                  ],
+                  [
+                    "Execution Time",
+                    "執行時間（秒）",
+                    "執行時間"
+                  ],
+                  [
+                    "ISA（Instruction Set Architecture）",
+                    "指令集架構",
+                    "CPU 看得懂的機器指令規格"
+                  ],
+                  [
+                    "內頻",
+                    "CPU 核心頻率",
+                    "CPU 核心本身跑多快"
+                  ],
+                  [
+                    "外頻",
+                    "對外／基準頻率",
+                    "CPU 對外溝通或基準頻率"
+                  ],
+                  [
+                    "倍頻",
+                    "把外頻放大的倍數",
+                    "把外頻放大的倍數"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "7. 效能名詞與公式 / 公式",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "CPU Time = Instruction Count × CPI × Clock Cycle Time",
+                  "CPU Time = Instruction Count × CPI / Clock Rate",
+                  "MIPS = Instruction Count / (Execution Time × 10^6)",
+                  "MIPS = Clock Rate / (CPI × 10^6)",
+                  "內頻 = 外頻 × 倍頻"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "7. 效能名詞與公式 / 手把手例題　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "題：程式有 5×10⁸ 個指令，CPI = 2，時脈 2 GHz。求 (1) CPU 執行時間 (2) MIPS。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "(1) CPU Time = IC × CPI / Clock Rate\n            = (5×10⁸ × 2) / (2×10⁹)\n            = 10⁹ / (2×10⁹) = 0.5 秒\n\n(2) MIPS = Clock Rate / (CPI × 10⁶)\n        = (2×10⁹) / (2 × 10⁶) = 1000 MIPS\n   驗算：MIPS = IC / (執行時間 × 10⁶)\n            = 5×10⁸ / (0.5 × 10⁶) = 1000 ✓"
+              }
+            ]
+          },
+          {
+            "heading": "7. 效能名詞與公式 / 易混淆",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "Clock Rate 越高不一定越快，還要看 CPI、指令數、記憶體存取與架構。CPU Time 越小越快。",
+                  "MIPS 不適合跨不同 ISA 直接比較，因為不同架構完成同一工作所需指令數不同。",
+                  "CPI 越高不是越好；CPI 越高代表平均每個指令要更多週期。",
+                  "Instruction Count 不是程式碼行數，而是實際執行的機器指令數。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "8. RISC 與 CISC",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "ISA（指令集架構）：CPU 對程式設計者或編譯器公開的「指令規則」。"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "項目",
+                  "RISC",
+                  "CISC"
+                ],
+                "rows": [
+                  [
+                    "全名",
+                    "Reduced Instruction Set Computer",
+                    "Complex Instruction Set Computer"
+                  ],
+                  [
+                    "指令數",
+                    "少而精簡",
+                    "多而複雜"
+                  ],
+                  [
+                    "定址模式",
+                    "較少",
+                    "較多"
+                  ],
+                  [
+                    "指令長度",
+                    "多為固定長度",
+                    "常為可變長度"
+                  ],
+                  [
+                    "執行週期",
+                    "多數指令接近固定、較短",
+                    "指令可能需多個週期"
+                  ],
+                  [
+                    "暫存器數量",
+                    "通常較多",
+                    "通常較少"
+                  ],
+                  [
+                    "記憶體存取",
+                    "Load/Store 架構較常見",
+                    "指令可直接操作記憶體較常見"
+                  ],
+                  [
+                    "編譯器需求",
+                    "較需要強力 compiler 做最佳化",
+                    "硬體指令較複雜，compiler 壓力相對不同"
+                  ],
+                  [
+                    "翻譯出的指令數",
+                    "同一高階語言動作可能較多",
+                    "同一動作可能較少"
+                  ],
+                  [
+                    "Pipeline",
+                    "較適合",
+                    "較不易，但現代 CISC 會轉成微指令改善"
+                  ],
+                  [
+                    "代表架構",
+                    "ARM、MIPS、RISC-V、SPARC",
+                    "x86、VAX"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "名詞解釋"
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "RISC：精簡指令集電腦。",
+                  "CISC：複雜指令集電腦，單一指令可能完成較多工作。",
+                  "定址模式：CPU 指令「找到資料位置」的方法。",
+                  "指令長度：一個機器指令占用的位元／位元組數，會影響解碼難易度。",
+                  "執行週期：CPU 執行一個指令大約需要多少時脈週期。",
+                  "暫存器：CPU 內部速度非常快的小型儲存空間（像 CPU 手邊的工作桌，記憶體則像較遠的書櫃）。",
+                  "Load/Store 架構：RISC 常見設計，要求「先把資料搬到暫存器，再做運算，最後存回記憶體」；CISC 則較常允許指令直接操作記憶體。",
+                  "Pipeline（管線化）：像生產線，一個指令解碼時，另一個在取指令，第三個在執行，提高吞吐量。",
+                  "微指令：CPU 內部更細小的操作步驟。現代 CISC 外觀是複雜指令，但內部可能先拆成多個較簡單的微指令再執行——因此不能用「RISC 一定快、CISC 一定慢」這種簡化判斷。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "8. RISC 與 CISC / 考前速記",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "RISC＝「少、短、固、多暫存、Load/Store、好 pipeline」"
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "少：指令數較少。短：多數指令較短、較接近固定週期。固：指令長度多為固定。多暫存：通常較多暫存器。Load/Store：運算多在暫存器中做。好 pipeline：指令規則，較適合 pipeline。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "CISC＝「多、雜、變、可碰記憶體、硬體較複雜」"
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "多：指令數較多。雜：定址模式多、功能複雜。變：指令長度常為可變。可碰記憶體：某些指令可直接操作記憶體。硬體較複雜：但現代 CISC 可用微指令改善。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "一定要記得：RISC 不等於一定比較快，CISC 不等於一定比較慢。效能取決於 ISA、微架構、編譯器、快取與工作負載。"
+              }
+            ]
+          },
+          {
+            "heading": "加強練習　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "練習 1：2 GHz、CPI 1.5、程式 10⁹ 指令，CPU Time？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：IC × CPI / Rate = 10⁹ × 1.5 / (2×10⁹) = 0.75 秒"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 2：某程式 MIPS = 500、指令數 2×10⁸，執行時間？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：T = IC / (MIPS × 10⁶) = 2×10⁸ / (500×10⁶) = 0.4 秒"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-bus-usb",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "匯流排與 USB",
+    "summary": "整理位址/資料/控制匯流排、2ⁿ 定址、USB 速度。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/05_匯流排與USB.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 匯流排與 USB",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "procedure",
+    "terms": [
+      {
+        "zh": "位址匯流排",
+        "en": "Address Bus"
+      },
+      {
+        "zh": "資料匯流排",
+        "en": "Data Bus"
+      },
+      {
+        "zh": "控制匯流排",
+        "en": "Control Bus"
+      },
+      {
+        "zh": "通用序列匯流排",
+        "en": "Universal Serial Bus, USB"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/05_匯流排與USB.md"
+        ],
+        "sourceSection": "基本計概(v2) / 匯流排與 USB",
+        "lead": [
+          "資料傳輸與介面。"
+        ],
+        "sections": [
+          {
+            "heading": "6. 匯流排（Bus） / 三種匯流排",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "位址匯流排（Address Bus）：找位置。傳送記憶體或 I/O 位址。",
+                  "資料匯流排（Data Bus）：送內容。傳送資料。",
+                  "控制匯流排（Control Bus）：管動作。傳送讀寫、中斷、時脈、確認等控制訊號。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "6. 匯流排（Bus） / 基本計算",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "n bits 位址匯流排可產生 2^n 個位址。",
+                  "若每個位址代表 1 byte，則可定址空間為 2^n bytes。",
+                  "n bits 資料匯流排一次可傳送 n bits 的資料。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "最大陷阱：可定址空間看「位址匯流排」，不是資料匯流排。"
+              }
+            ]
+          },
+          {
+            "heading": "6. 匯流排（Bus） / 手把手例題　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "題：某 CPU 位址匯流排 20 bits、資料匯流排 8 bits。可定址空間多大？一次能傳多少資料？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "可定址空間 = 2^20 = 1,048,576 個位址 = 1 MB（每位址 1 byte）\n一次可傳   = 8 bits = 1 byte"
+              },
+              {
+                "kind": "paragraph",
+                "text": "再練一題：位址匯流排 16 bits → 2^16 = 65,536 = 64 KB。"
+              }
+            ]
+          },
+          {
+            "heading": "6. 匯流排（Bus） / 傳輸方向",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "位址匯流排：通常 CPU → 記憶體或 I/O，單向為主。",
+                  "資料匯流排：雙向。",
+                  "控制匯流排：依訊號而定，常見為雙向或多方向。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "6. 匯流排（Bus） / 讀與寫",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "讀取（CPU 給位址 + 說要讀 → 記憶體回資料）"
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "位址匯流排：CPU 送出位址。",
+                  "控制匯流排：CPU 送出「讀取」訊號。",
+                  "資料匯流排：記憶體把資料放上來，CPU 接收。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "寫入（CPU 給位址 + 給資料 + 說要寫 → 記憶體覆蓋成新資料）"
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "位址匯流排：要寫到這個位置。",
+                  "資料匯流排：要寫入的內容。",
+                  "控制匯流排：送出寫入訊號。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "6. 匯流排（Bus） / 補充",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "暫存器 register：在 CPU 內部，通常不當作外部匯流排連接的記憶體來考。",
+                  "快取 cache：常在 CPU 和主記憶體之間，實作上可能有內部匯流排或專用通道，但基本計概題通常不把它當 Bus 題的「記憶體」主角。",
+                  "RAM：國考講 CPU 透過位址匯流排讀寫記憶體時，通常就是指 RAM。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "13. USB 速度 / USB 常見速度表（必背）",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "版本或名稱",
+                  "常見名稱",
+                  "理論速度"
+                ],
+                "rows": [
+                  [
+                    "USB 1.0 / 1.1",
+                    "Low Speed",
+                    "1.5 Mbps"
+                  ],
+                  [
+                    "USB 1.0 / 1.1",
+                    "Full Speed",
+                    "12 Mbps"
+                  ],
+                  [
+                    "USB 2.0",
+                    "High Speed",
+                    "480 Mbps ★"
+                  ],
+                  [
+                    "USB 3.0 / 3.1 Gen 1 / 3.2 Gen 1x1",
+                    "SuperSpeed",
+                    "5 Gbps ★"
+                  ],
+                  [
+                    "USB 3.1 Gen 2 / 3.2 Gen 2x1",
+                    "SuperSpeed+",
+                    "10 Gbps ★"
+                  ],
+                  [
+                    "USB 3.2 Gen 2x2",
+                    "SuperSpeed USB 20Gbps",
+                    "20 Gbps ★"
+                  ],
+                  [
+                    "USB4 Gen 2x2",
+                    "USB4 20Gbps",
+                    "20 Gbps"
+                  ],
+                  [
+                    "USB4 Gen 3x2",
+                    "USB4 40Gbps",
+                    "40 Gbps ★"
+                  ],
+                  [
+                    "USB4 Version 2.0 / USB 80Gbps",
+                    "USB4 80Gbps",
+                    "80 Gbps ★"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "優先背：USB 2.0 = 480 Mbps、USB 3.0 = 5 Gbps、USB 3.1 Gen 2 = 10 Gbps、USB 3.2 Gen 2x2 = 20 Gbps、USB4 常見 40 Gbps、USB4 Version 2.0 = 80 Gbps。"
+              }
+            ]
+          },
+          {
+            "heading": "13. USB 速度 / Mbps 與 MB/s 不一樣",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "USB 規格常寫 Mbps / Gbps，小寫 b 是 bit（位元）。",
+                  "1 Byte = 8 bits。",
+                  "MB/s ≈ Mbps ÷ 8；GB/s ≈ Gbps ÷ 8。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "13. USB 速度 / 備註",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "實際速度會受線材、控制器、協定開銷與裝置限制影響。",
+                  "Type-C 是接頭形狀，不保證一定是高速 USB。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "加強練習　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "練習 1：要對 4 GB 記憶體（byte 定址），需幾條位址線？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：4 GB = 2³² bytes → 32 條"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 2：24 條位址線可定址多少？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：2²⁴ = 16 MB"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-memory-hierarchy-classification",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "記憶體（一）階層與分類",
+    "summary": "整理階層、Locality、RAM/ROM、SRAM/DRAM。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/06_記憶體-階層與分類.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 記憶體（一）階層與分類",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "concept",
+    "terms": [
+      {
+        "zh": "記憶體階層",
+        "en": "Memory Hierarchy"
+      },
+      {
+        "zh": "區域性",
+        "en": "Locality"
+      },
+      {
+        "zh": "隨機存取記憶體",
+        "en": "Random Access Memory, RAM"
+      },
+      {
+        "zh": "唯讀記憶體",
+        "en": "Read Only Memory, ROM"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/06_記憶體-階層與分類.md"
+        ],
+        "sourceSection": "基本計概(v2) / 記憶體（一）階層與分類",
+        "lead": [
+          "記憶體。"
+        ],
+        "sections": [
+          {
+            "heading": "9. Memory 階層圖",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "越靠近 CPU，速度越快、容量越小、成本越高；越遠離 CPU，速度越慢、容量越大、成本越低。"
+              }
+            ]
+          },
+          {
+            "heading": "9. Memory 階層圖 / 階層順序（必背）",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "層級",
+                  "名稱",
+                  "速度",
+                  "容量",
+                  "內容例"
+                ],
+                "rows": [
+                  [
+                    "1",
+                    "Register 暫存器",
+                    "最快",
+                    "最小",
+                    "CPU 正在計算的數字"
+                  ],
+                  [
+                    "2",
+                    "Cache 快取記憶體",
+                    "很快",
+                    "很小",
+                    "最近常用的資料或指令"
+                  ],
+                  [
+                    "3",
+                    "Main Memory 主記憶體 / RAM",
+                    "中等",
+                    "較大",
+                    "正在執行的程式和資料"
+                  ],
+                  [
+                    "4",
+                    "SSD / HDD 輔助儲存體",
+                    "慢",
+                    "很大",
+                    "作業系統、遊戲、影片、文件"
+                  ],
+                  [
+                    "5",
+                    "外部儲存 / 雲端 / 磁帶",
+                    "最慢",
+                    "最大",
+                    "備份資料、歷史資料、雲端檔案"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "由快到慢："
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "暫存器 Register",
+                  "L1 Cache → L2 Cache → L3 Cache",
+                  "主記憶體 Main Memory / RAM",
+                  "SSD / HDD",
+                  "外部儲存 External Storage"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "9. Memory 階層圖 / Locality（區域性）",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "Cache 把近期可能會再用到的資料放近一點，讓 CPU 下次拿得更快。Cache 之所以有效，是因為程式常有「區域性」——常用剛用過的資料，或用附近的資料。"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "類型",
+                  "中文",
+                  "白話判斷",
+                  "例子"
+                ],
+                "rows": [
+                  [
+                    "Temporal Locality",
+                    "時間區域性",
+                    "同一個資料很快又用一次",
+                    "迴圈一直用 sum"
+                  ],
+                  [
+                    "Spatial Locality",
+                    "空間區域性",
+                    "用到某位置後，附近位置也會用",
+                    "依序讀 a[0], a[1], a[2]"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "10. Memory 分類圖",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "Memory 記憶體\n├─ 依角色分類\n│  ├─ Register 暫存器：CPU 內部，最快、最小\n│  ├─ Cache 快取：CPU 和 RAM 之間，高速暫存\n│  ├─ Main Memory 主記憶體：程式執行時的工作區，通常是 RAM\n│  └─ Secondary Storage 輔助記憶體：長期保存資料，例如 SSD / HDD / USB\n└─ 依斷電後資料是否保留分類\n   ├─ Volatile 揮發性：斷電後資料通常消失\n   └─ Non-volatile 非揮發性：斷電後資料通常保留"
+              }
+            ]
+          },
+          {
+            "heading": "10. Memory 分類圖 / RAM vs ROM",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "項目",
+                  "RAM",
+                  "ROM"
+                ],
+                "rows": [
+                  [
+                    "全名",
+                    "Random Access Memory",
+                    "Read Only Memory"
+                  ],
+                  [
+                    "中文",
+                    "隨機存取記憶體",
+                    "唯讀記憶體"
+                  ],
+                  [
+                    "主要用途",
+                    "存放執行中的程式與資料",
+                    "存放韌體、開機程式"
+                  ],
+                  [
+                    "斷電後",
+                    "通常消失",
+                    "通常保留"
+                  ],
+                  [
+                    "讀寫特性",
+                    "可快速讀寫",
+                    "以讀取為主，部分類型可改寫"
+                  ],
+                  [
+                    "常見例子",
+                    "DRAM、SRAM",
+                    "PROM、EPROM、EEPROM、Flash ROM"
+                  ]
+                ]
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "RAM：執行中、可快讀寫、斷電多消失。",
+                  "ROM：放韌體、放開機程式、斷電多保留。",
+                  "ROM 不代表永遠不能改；現代很多 ROM 類型可用特定方式改寫，例如 EEPROM、Flash。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "10. Memory 分類圖 / SRAM vs DRAM",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "項目",
+                  "SRAM",
+                  "DRAM"
+                ],
+                "rows": [
+                  [
+                    "全名",
+                    "Static RAM",
+                    "Dynamic RAM"
+                  ],
+                  [
+                    "中文",
+                    "靜態隨機存取記憶體",
+                    "動態隨機存取記憶體"
+                  ],
+                  [
+                    "儲存方式",
+                    "flip-flop",
+                    "電容"
+                  ],
+                  [
+                    "是否需要 refresh",
+                    "不需要",
+                    "需要"
+                  ],
+                  [
+                    "速度",
+                    "較快",
+                    "較慢"
+                  ],
+                  [
+                    "成本",
+                    "較高",
+                    "較低"
+                  ],
+                  [
+                    "容量",
+                    "較小",
+                    "較大"
+                  ],
+                  [
+                    "常見用途",
+                    "Cache",
+                    "Main Memory / RAM"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "flip-flop ＝ 正反器 ＝ 可以記住 1 個 bit 的小電路。"
+              }
+            ]
+          },
+          {
+            "heading": "10. Memory 分類圖 / ROM 類型",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "類型",
+                  "重點",
+                  "擦除或改寫方式",
+                  "國考關鍵字"
+                ],
+                "rows": [
+                  [
+                    "PROM",
+                    "通常只能燒錄一次",
+                    "一次性燒錄",
+                    "Program once"
+                  ],
+                  [
+                    "EPROM",
+                    "可擦除後再燒錄",
+                    "紫外線擦除，通常整片擦除",
+                    "紫外線"
+                  ],
+                  [
+                    "EEPROM",
+                    "可擦除與改寫",
+                    "電氣擦除，可局部改寫",
+                    "電氣、局部改寫"
+                  ],
+                  [
+                    "Flash",
+                    "EEPROM 的延伸",
+                    "電氣擦除，常以 block 為單位",
+                    "SSD、USB、記憶卡"
+                  ]
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-registers-cache",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "記憶體（二）暫存器與 Cache",
+    "summary": "整理各暫存器、Cache、AMAT。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/07_記憶體-暫存器與Cache.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 記憶體（二）暫存器與 Cache",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "procedure",
+    "terms": [
+      {
+        "zh": "暫存器",
+        "en": "Register"
+      },
+      {
+        "zh": "快取記憶體",
+        "en": "Cache Memory"
+      },
+      {
+        "zh": "平均記憶體存取時間",
+        "en": "Average Memory Access Time, AMAT"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/07_記憶體-暫存器與Cache.md"
+        ],
+        "sourceSection": "基本計概(v2) / 記憶體（二）暫存器與 Cache",
+        "lead": [
+          "記憶體。"
+        ],
+        "sections": [
+          {
+            "heading": "11. Register（暫存器） / 名詞解釋",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "暫存器（Register）：CPU 內部非常小、非常快的儲存空間。用來暫時保存 CPU 正在處理、即將使用，或需要立即判斷的資訊。",
+                  "Program Counter（PC，程式計數器）：存放「下一個要執行指令的記憶體位址」。取出指令後 PC 通常更新到下一個指令位置；遇跳躍或中斷可能被改成新目標位址。",
+                  "Instruction Register（IR，指令暫存器）：存放「目前正在解碼或執行的指令」。CPU 取出指令後放入 IR，控制單元才能分析這指令要做什麼。",
+                  "Base Register（基底暫存器）：存放「程式可用記憶體區段起始位址」。支援記憶體保護與重定位。白話：「這個程式的合法活動範圍，從這個地址開始。」",
+                  "Limit Register（界限暫存器）：存放「程式可用區段大小或界限」。常與 Base Register 搭配，檢查存取是否超出允許範圍。白話：「這個程式最多只能用到這麼大的範圍。」",
+                  "Flag Register / Status Register（旗標／狀態暫存器）：記錄 CPU 運算結果狀態，例如結果是否為零、是否進位、是否溢位、正負號，以及是否允許中斷。",
+                  "MAR（Memory Address Register，記憶體位址暫存器）：存放「要存取的記憶體位址」。",
+                  "MDR / MBR（Memory Data / Buffer Register，記憶體資料／緩衝暫存器）：存放「從記憶體讀出，或準備寫入記憶體的資料」。（MAR 管地址，MDR/MBR 管資料，常一起出現。）"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "11. Register（暫存器） / 常見考法",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "暫存器名稱與功能配對：PC → 下一個要執行指令的位址；IR → 目前正在解碼或執行的指令；MAR → 記憶體位址；MDR/MBR → 記憶體資料。",
+                  "取指令流程：PC 給下一個指令位址、MAR 放要存取的位址、MDR/MBR 放讀回資料、IR 放目前指令。",
+                  "記憶體保護：出現 base、limit、relocation、protection、越界檢查 → 想到 Base Register（管起始位址）與 Limit Register（管大小／界限）。",
+                  "旗標意義：Zero、Carry、Overflow、Sign、Interrupt Enable → 選 Flag Register / Status Register。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "12. Cache（快取記憶體） / Cache 類別",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "L1：最靠近 CPU，最快、容量最小。",
+                  "L2：速度與容量居中。",
+                  "L3：通常多核心共享，容量較大但較慢。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "12. Cache（快取記憶體） / Hit Ratio 相關",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "Hit（命中）：要找的資料剛好在 Cache 裡，可直接讀取，速度快。",
+                  "Miss（未命中）：資料不在 cache，需到下一層記憶體取。",
+                  "Hit Ratio（命中率） ＝ Hit 次數 / 總存取次數。",
+                  "Miss Rate（未命中率） ＝ 1 − Hit Ratio。",
+                  "Hit Time（命中時間）：資料在 Cache 中命中時，取得資料所需時間（很短，但不是零）。",
+                  "Miss Penalty（未命中懲罰）：發生 Miss 後，必須到下一層記憶體取資料所多花的時間。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "12. Cache（快取記憶體） / AMAT",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "AMAT（Average Memory Access Time，平均記憶體存取時間）：估算一次記憶體存取平均要花多久。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "AMAT = Hit Time + Miss Rate × Miss Penalty"
+              },
+              {
+                "kind": "paragraph",
+                "text": "例：Hit Time = 2 ns，Miss Rate = 8%，Miss Penalty = 50 ns，求 AMAT。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "AMAT = 2 + 0.08 × 50\n     = 2 + 4\n     = 6 ns"
+              }
+            ]
+          },
+          {
+            "heading": "12. Cache（快取記憶體） / 寫入策略",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "Write Through（寫透式）：寫入 Cache 時，同步把資料寫回主記憶體。優：一致性較好；缺：每次寫入都要同步更新主記憶體，較慢。",
+                  "Write Back（寫回式）：先寫在 Cache，等該區塊被替換出去時，才寫回主記憶體。優：減少對主記憶體的寫入次數，效能較好；缺：控制較複雜，需額外機制記錄資料是否已被修改。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "12. Cache（快取記憶體） / 常見搭配",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "Write Allocate（寫入配置）：發生 write miss 時，先把目標區塊載入 Cache，再寫入。適合後續可能還會繼續使用同一區塊。",
+                  "No Write Allocate（非寫入配置）：發生 write miss 時，不載入區塊，直接寫到下一層記憶體。適合不希望一次寫入就占用 Cache 空間。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "加強練習　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "練習 1：Hit Ratio 95%、Hit Time 1 ns、Miss Penalty 100 ns，AMAT？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：1 + 0.05 × 100 = 6 ns"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 2：AMAT 2 ns、Hit Time 1 ns、Miss Penalty 50 ns，Miss Rate？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：2 = 1 + MR×50 → MR = 2%"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-base-conversion",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "進制轉換",
+    "summary": "整理二/八/十/十六進制互轉（8 題＋練習，本篇最長）。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/08_進制轉換.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 進制轉換",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "procedure",
+    "terms": [
+      {
+        "zh": "進制轉換",
+        "en": "Base Conversion"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/08_進制轉換.md"
+        ],
+        "sourceSection": "基本計概(v2) / 進制轉換",
+        "lead": [
+          "數值與編碼（計算題）。本篇最長，但都是同類轉換，熟方法後讀很快。"
+        ],
+        "sections": [
+          {
+            "heading": "14. 進制轉換",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "十進制逢 10 進 1、二進制逢 2 進 1、八進制逢 8 進 1、十六進制逢 16 進 1。"
+              }
+            ]
+          },
+          {
+            "heading": "14. 進制轉換 / 十六進制字母",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "十六進制",
+                  "十進制"
+                ],
+                "rows": [
+                  [
+                    "A",
+                    "10"
+                  ],
+                  [
+                    "B",
+                    "11"
+                  ],
+                  [
+                    "C",
+                    "12"
+                  ],
+                  [
+                    "D",
+                    "13"
+                  ],
+                  [
+                    "E",
+                    "14"
+                  ],
+                  [
+                    "F",
+                    "15"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "14. 進制轉換 / 轉換方法總表",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "題型",
+                  "方法",
+                  "讀取方向"
+                ],
+                "rows": [
+                  [
+                    "十進制整數轉 n 進制",
+                    "連除 n，直到商為 0，記餘數",
+                    "餘數由下往上讀"
+                  ],
+                  [
+                    "十進制小數轉 n 進制",
+                    "連乘 n，直到小數變 0，取整數",
+                    "整數部分由上往下讀"
+                  ],
+                  [
+                    "n 進制轉十進制",
+                    "位值展開",
+                    "每位乘上基底次方後加總"
+                  ],
+                  [
+                    "二進制轉八進制",
+                    "每 3 bits 一組\n整數：從小數點往左分組\n小數：從小數點往右分組",
+                    "不足補 0"
+                  ],
+                  [
+                    "二進制轉十六進制",
+                    "每 4 bits 一組\n整數：從小數點往左分組\n小數：從小數點往右分組",
+                    "不足補 0"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "表示法：(1011)₂ 右下角的 ₂ 表示二進制。"
+              }
+            ]
+          },
+          {
+            "heading": "14. 進制轉換 / 範例（含完整過程）",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "1. (450.153)₁₀ → 二進制"
+              },
+              {
+                "kind": "paragraph",
+                "text": "整數 450（連除 2，餘數由下往上讀）："
+              },
+              {
+                "kind": "paragraph",
+                "text": "450 ÷2 = 225 … 0\n225 ÷2 = 112 … 1\n112 ÷2 =  56 … 0\n 56 ÷2 =  28 … 0\n 28 ÷2 =  14 … 0\n 14 ÷2 =   7 … 0\n  7 ÷2 =   3 … 1\n  3 ÷2 =   1 … 1\n  1 ÷2 =   0 … 1\n→ 由下往上：111000010\n驗算：256+128+64+2 = 450 ✓"
+              },
+              {
+                "kind": "paragraph",
+                "text": "小數 0.153（連乘 2，取整數，由上往下讀）："
+              },
+              {
+                "kind": "paragraph",
+                "text": "0.153 ×2 = 0.306 → 0\n0.306 ×2 = 0.612 → 0\n0.612 ×2 = 1.224 → 1（留 0.224）\n0.224 ×2 = 0.448 → 0\n0.448 ×2 = 0.896 → 0\n0.896 ×2 = 1.792 → 1（留 0.792）\n0.792 ×2 = 1.584 → 1（留 0.584）\n0.584 ×2 = 1.168 → 1（留 0.168）…（不會終止）\n→ 由上往下：0.00100111…"
+              },
+              {
+                "kind": "paragraph",
+                "text": "答案：(450.153)₁₀ ≈ (111000010.00100111…)₂（小數為循環、不終止，取近似）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "2. (450.153)₁₀ → 十六進制"
+              },
+              {
+                "kind": "paragraph",
+                "text": "整數 450（連除 16）："
+              },
+              {
+                "kind": "paragraph",
+                "text": "450 ÷16 = 28 … 2\n 28 ÷16 =  1 … 12 (C)\n  1 ÷16 =  0 … 1\n→ 由下往上：1 C 2 = 1C2\n驗算：1×256 + 12×16 + 2 = 450 ✓"
+              },
+              {
+                "kind": "paragraph",
+                "text": "小數 0.153（連乘 16）："
+              },
+              {
+                "kind": "paragraph",
+                "text": "0.153 ×16 = 2.448 → 2（留 0.448）\n0.448 ×16 = 7.168 → 7（留 0.168）\n0.168 ×16 = 2.688 → 2（留 0.688）\n0.688 ×16 =11.008 → B（留 0.008）…（不會終止）\n→ 0.272B…"
+              },
+              {
+                "kind": "paragraph",
+                "text": "答案：(450.153)₁₀ ≈ (1C2.272B…)₁₆（小數取近似）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "也可由第 1 題的二進位 111000010.00100111 直接 4 位一組驗證：整數 1 1100 0010 = 1C2、小數 0010 0111 = 27…，一致。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "3. (11010101.1011)₂ → 八進制（每 3 bits 一組）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "整數 11010101，從小數點往左每 3 bits："
+              },
+              {
+                "kind": "paragraph",
+                "text": "011 010 101  →  3 2 5\n（最左不足補 0：11 → 011）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "小數 1011，從小數點往右每 3 bits："
+              },
+              {
+                "kind": "paragraph",
+                "text": "101 100  →  5 4\n（最右不足補 0：1 → 100）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "答案：(11010101.1011)₂ = (325.54)₈"
+              },
+              {
+                "kind": "paragraph",
+                "text": "驗算：整數 213 = 325₈ ✓；小數 0.6875 = .54₈ ✓"
+              },
+              {
+                "kind": "paragraph",
+                "text": "4. (1011110010.101)₂ → 十六進制"
+              },
+              {
+                "kind": "paragraph",
+                "text": "原題小數寫成 .151，含非法數字 5（二進位只有 0、1），研判為 .101 之誤，已直接更正。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "整數 1011110010，每 4 bits 一組（從小數點往左）："
+              },
+              {
+                "kind": "paragraph",
+                "text": "0010 1111 0010  →  2 F 2\n（最左不足補 0：10 → 0010）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "小數 .101，每 4 bits 一組（從小數點往右，補 0）："
+              },
+              {
+                "kind": "paragraph",
+                "text": "1010  →  A\n（不足補 0：101 → 1010）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "答案：(1011110010.101)₂ = (2F2.A)₁₆"
+              },
+              {
+                "kind": "paragraph",
+                "text": "驗算：整數 754 = 2F2 ✓；小數 .101₂ = 0.625 = .A₁₆（A/16 = 10/16 = 0.625）✓"
+              },
+              {
+                "kind": "paragraph",
+                "text": "5. (653.5)₈ → 二進制（每個八進位數字 → 3 bits）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "6 = 110\n5 = 101\n3 = 011      → 整數 110101011\n.5 = 101     → 小數 .101"
+              },
+              {
+                "kind": "paragraph",
+                "text": "答案：(653.5)₈ = (110101011.101)₂"
+              },
+              {
+                "kind": "paragraph",
+                "text": "驗算：653₈ = 427 = 110101011₂ ✓；.5₈ = 0.625 = .101₂ ✓"
+              },
+              {
+                "kind": "paragraph",
+                "text": "6. (653.5)₈ → 十六進制（先轉二進位，再 4 bits 一組）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "由第 5 題：110101011.101₂"
+              },
+              {
+                "kind": "paragraph",
+                "text": "整數：0001 1010 1011 → 1 A B = 1AB\n（從小數點往左每 4 bits，最左補 0）\n小數：1010 → A\n（從小數點往右每 4 bits，補 0：101 → 1010）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "答案：(653.5)₈ = (1AB.A)₁₆"
+              },
+              {
+                "kind": "paragraph",
+                "text": "驗算：427 = 1AB₁₆ ✓；.5₈ = 0.625 = .A₁₆ ✓"
+              },
+              {
+                "kind": "paragraph",
+                "text": "7. (2F2.C)₁₆ → 二進制（每個十六進位數字 → 4 bits）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "2 = 0010\nF = 1111\n2 = 0010     → 整數 (0010 1111 0010) = 1011110010\n.C = 1100    → 小數 .1100 = .11"
+              },
+              {
+                "kind": "paragraph",
+                "text": "答案：(2F2.C)₁₆ = (1011110010.11)₂"
+              },
+              {
+                "kind": "paragraph",
+                "text": "驗算：2F2₁₆ = 754 = 1011110010₂ ✓；.C₁₆ = 0.75 = .11₂ ✓"
+              },
+              {
+                "kind": "paragraph",
+                "text": "8. (2F2.C)₁₆ → 八進制（先轉二進位，再 3 bits 一組）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "由第 7 題：1011110010.1100₂"
+              },
+              {
+                "kind": "paragraph",
+                "text": "整數：001 011 110 010 → 1 3 6 2 = 1362\n（從小數點往左每 3 bits，最左補 0）\n小數：110 → 6\n（從小數點往右每 3 bits，補 0：110 → 110）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "答案：(2F2.C)₁₆ = (1362.6)₈"
+              },
+              {
+                "kind": "paragraph",
+                "text": "驗算：754 = 1362₈ ✓；.C₁₆ = 0.75 = .6₈ ✓"
+              }
+            ]
+          },
+          {
+            "heading": "加強練習　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "練習 1：(1101.011)₂ → 十進制"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：整數 1101 = 8+4+1 = 13；小數 .011 = 1/4 + 1/8 = 0.375 → 13.375"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 2：(172)₁₀ → 二進制、十六進制"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：172 = 10101100₂（128+32+8+4）；每 4 bits 一組 1010 1100 = AC₁₆"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 3：(3A.8)₁₆ → 二進制、八進制"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：3=0011、A=1010、.8=1000 → 二進制 111010.1₂；每 3 bits 一組 111 010 . 100 = 72.4₈"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-complement-conversion",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "補數轉換",
+    "summary": "整理符號大小、1 補數、2 補數。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/09_補數轉換.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 補數轉換",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "procedure",
+    "terms": [
+      {
+        "zh": "符號大小",
+        "en": "Sign-Magnitude"
+      },
+      {
+        "zh": "1 補數",
+        "en": "One's Complement"
+      },
+      {
+        "zh": "2 補數",
+        "en": "Two's Complement"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/09_補數轉換.md"
+        ],
+        "sourceSection": "基本計概(v2) / 補數轉換",
+        "lead": [
+          "數值與編碼（計算題）。"
+        ],
+        "sections": [
+          {
+            "heading": "15. 補數轉換",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "補數是電腦用固定 bits 表示正負整數的方法。"
+              }
+            ]
+          },
+          {
+            "heading": "15. 補數轉換 / 三種表示法",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "表示法",
+                  "正數",
+                  "負數怎麼做",
+                  "是否有 +0 / −0",
+                  "n bits 範圍"
+                ],
+                "rows": [
+                  [
+                    "符號大小（Sign-Magnitude）",
+                    "最高位 0，其餘放大小",
+                    "最高位 1，其餘放大小",
+                    "有",
+                    "−(2^(n−1)−1) 到 +(2^(n−1)−1)"
+                  ],
+                  [
+                    "1 補數（1's complement）",
+                    "和一般二進位相同",
+                    "正數全部反相",
+                    "有",
+                    "−(2^(n−1)−1) 到 +(2^(n−1)−1)"
+                  ],
+                  [
+                    "2 補數（2's complement）",
+                    "和一般二進位相同",
+                    "正數反相後加 1",
+                    "無",
+                    "−2^(n−1) 到 +(2^(n−1)−1)"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "15. 補數轉換 / 手把手例題　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "題 1：用 8 bits 表示 −13（三種表示法）。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "|−13| = 13 = 00001101\n符號大小：最高位設 1     → 10001101\n1 補數：  00001101 全反  → 11110010\n2 補數：  1 補數 + 1      → 11110011"
+              },
+              {
+                "kind": "paragraph",
+                "text": "題 2（用 2 補數做減法）：算 7 − 5（8 bits）。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "7 = 00000111\n−5 的 2 補數：5 = 00000101 → 反 11111010 → +1 = 11111011\n  00000111\n+ 11111011\n= 1 00000010 → 丟掉最左進位 → 00000010 = 2 ✓"
+              }
+            ]
+          },
+          {
+            "heading": "15. 補數轉換 / 備註",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "現代電腦整數多使用 2 補數，因為加減法可直接用二進位加法處理。",
+                  "2 補數若超出指定的 bits，最左邊超出的進位丟掉。",
+                  "r 的補數（基數補數，如 10 補數）：N 的 r 補數為 r^n − N（n 為位數）。例：三位數中，345 的 10 補數 = 1000 − 345 = 655。",
+                  "r−1 的補數（減一補數，如 9 補數）：N 的 r−1 補數為 (r^n − 1) − N。例：345 的 9 補數 = 999 − 345 = 654。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "加強練習　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "練習 1：8-bit 2 補數能表示的範圍？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：−2⁷ ~ +2⁷−1 = −128 ~ +127"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 2：8-bit 2 補數的 11111111 代表多少？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：反相 +1 → 00000001 = 1，最高位是 1（負）→ −1"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 3：用 8-bit 2 補數算 (−6) + (−3)"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：−6 = 11111010、−3 = 11111101；相加 = 1 11110111 → 丟進位 → 11110111 = −9 ✓"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-floating-point-conversion",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "浮點數轉換",
+    "summary": "整理IEEE 754 單/雙精度、編碼與反推。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/10_浮點數轉換.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 浮點數轉換",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "procedure",
+    "terms": [
+      {
+        "zh": "浮點數",
+        "en": "Floating Point"
+      },
+      {
+        "zh": "IEEE 754",
+        "en": "IEEE 754"
+      },
+      {
+        "zh": "偏移量",
+        "en": "Bias"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/10_浮點數轉換.md"
+        ],
+        "sourceSection": "基本計概(v2) / 浮點數轉換",
+        "lead": [
+          "數值與編碼（計算題）。"
+        ],
+        "sections": [
+          {
+            "heading": "16. 浮點數轉換",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "浮點數是電腦用來表示小數或很大、很小數字的方法。"
+              }
+            ]
+          },
+          {
+            "heading": "16. 浮點數轉換 / IEEE 754 欄位",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "類型",
+                  "總位元",
+                  "Sign",
+                  "Exponent",
+                  "Fraction",
+                  "bias"
+                ],
+                "rows": [
+                  [
+                    "單精度",
+                    "32 bits",
+                    "1 bit",
+                    "8 bits",
+                    "23 bits",
+                    "127"
+                  ],
+                  [
+                    "雙精度",
+                    "64 bits",
+                    "1 bit",
+                    "11 bits",
+                    "52 bits",
+                    "1023"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "公式："
+              },
+              {
+                "kind": "paragraph",
+                "text": "(-1)^S × 1.F × 2^(E − bias)"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "欄位",
+                  "中文",
+                  "白話"
+                ],
+                "rows": [
+                  [
+                    "S",
+                    "符號位",
+                    "0 正、1 負"
+                  ],
+                  [
+                    "E",
+                    "指數欄位",
+                    "存的是「實際指數 + bias」"
+                  ],
+                  [
+                    "F",
+                    "Fraction / 尾數欄位",
+                    "只存小數點右邊，不存最前面的 1"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "16. 浮點數轉換 / 完整流程（發送端：算出要傳什麼）",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "判斷正負數：正數 S = 0；負數 S = 1。",
+                  "計算數值的二進位。",
+                  "正規化成 1.xxxxx × 2^n。",
+                  "算 E = n + bias。",
+                  "把 (n + bias)₁₀ 轉成二進位（記為 Y）。",
+                  "把 1.xxxxx 去掉最高位的 1（記為 Z）。",
+                  "把 S、Y、Z 組合，注意 Fraction 的 bits 數。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "16. 浮點數轉換 / 正規化",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "把二進位數寫成 1.xxxxx × 2^n："
+              },
+              {
+                "kind": "paragraph",
+                "text": "1101.101(2) = 1.101101(2) × 2^3   （小數點往左移 3 位 → 指數 +3）\n0.0101(2)   = 1.01(2)    × 2^-2   （小數點往右移 2 位 → 指數 −2）"
+              }
+            ]
+          },
+          {
+            "heading": "16. 浮點數轉換 / 十進位小數轉二進位",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "整數部分：除以 2，記餘數，最後倒著讀。",
+                  "小數部分：乘以 2，取整數，最後順著讀。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "例：13.625(10)"
+              },
+              {
+                "kind": "paragraph",
+                "text": "13    = 1101\n0.625 = 0.101\n→ 13.625(10) = 1101.101(2) = 1.101101(2) × 2^3"
+              }
+            ]
+          },
+          {
+            "heading": "16. 浮點數轉換 / 範例：10.25(10) 轉 IEEE 754 單精度",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "符號：10.25 是正數 → S = 0。",
+                  "轉二進位：10 = 1010、0.25 = 0.01 → 10.25 = 1010.01(2)。",
+                  "正規化：1010.01 = 1.01001 × 2^3 → n = 3。",
+                  "Exponent：E = n + bias = 3 + 127 = 130 = 10000010(2)。",
+                  "Fraction：1.01001 取小數點右邊 01001，補滿 23 bits → 01001000000000000000000。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "答案："
+              },
+              {
+                "kind": "paragraph",
+                "text": "0 10000010 01001000000000000000000   →   0x41240000"
+              }
+            ]
+          },
+          {
+            "heading": "16. 浮點數轉換 / 範例：IEEE 754 反推",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "1 10000001 10000000000000000000000"
+              },
+              {
+                "kind": "paragraph",
+                "text": "拆欄位："
+              },
+              {
+                "kind": "paragraph",
+                "text": "S = 1\nE = 10000001(2) = 129\nF = 1000000000000000000000\nn = E − bias = 129 − 127 = 2\n1.F = 1.1(2) = 1.5(10)\n→ (-1)^1 × 1.5 × 2^2 = −1 × 1.5 × 4 = −6"
+              },
+              {
+                "kind": "paragraph",
+                "text": "答案：−6"
+              }
+            ]
+          },
+          {
+            "heading": "16. 浮點數轉換 / 為什麼 0.1 可能不精確？",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "0.1(10) = 0.0001100110011…(2)   （循環小數）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "電腦欄位有限，不能存無限位，只能存近似值 → 不是所有十進位小數都能被二進位浮點數精確表示。"
+              }
+            ]
+          },
+          {
+            "heading": "16. 浮點數轉換 / 易錯陷阱",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "容易錯的地方",
+                  "正確觀念"
+                ],
+                "rows": [
+                  [
+                    "Exponent 直接存實際指數 n",
+                    "錯，存的是 n + bias"
+                  ],
+                  [
+                    "Fraction 把最前面的 1 也存進去",
+                    "錯，正規化的最前面 1 是隱含位元"
+                  ],
+                  [
+                    "小於 1 的數正規化後指數寫正數",
+                    "通常錯，小數點往右移時指數是負數"
+                  ],
+                  [
+                    "十進位小數轉二進位用除以 2",
+                    "錯，小數部分用乘以 2"
+                  ],
+                  [
+                    "負浮點數用二補數表示",
+                    "錯，IEEE 754 用 Sign bit 表示正負"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "16. 浮點數轉換 / 國考答題句",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "IEEE 754 正規化數的公式為 (-1)^S × 1.F × 2^(E − bias)。",
+                  "單精度共 32 bits：Sign 1、Exponent 8、Fraction 23，bias = 127。",
+                  "雙精度共 64 bits：Sign 1、Exponent 11、Fraction 52，bias = 1023。",
+                  "Exponent 欄位存的是「實際指數 + bias」，不是直接存實際指數。",
+                  "Fraction 只存正規化後小數點右側的位元，最前面的 1 為隱含位元。",
+                  "十進位小數轉二進位小數時，使用乘以 2 取整數的方法。",
+                  "有些十進位小數轉成二進位會循環，因此浮點數可能只能近似表示。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "16. 浮點數轉換 / 考前速記",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "單精度：1 / 8 / 23，bias = 127\n雙精度：1 / 11 / 52，bias = 1023\n\n轉換流程：\n1. 看正負號，決定 S。\n2. 把絕對值轉成二進位。\n3. 正規化成 1.F × 2^n。\n4. 算 E = n + bias。\n5. Fraction 填 F，不填隱含的 1。\n6. 合併 S、Exponent、Fraction。\n\n反推流程：\n1. 拆 S、E、F。\n2. 算 n = E − bias。\n3. Fraction 前面補回隱含的 1。\n4. 套 (-1)^S × 1.F × 2^n。"
+              }
+            ]
+          },
+          {
+            "heading": "加強練習　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "練習 1：−0.75 → IEEE 754 單精度"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：S=1；0.75 = 0.11₂ = 1.1 × 2⁻¹ → n = −1，E = −1+127 = 126 = 01111110，F = 1000…\n→ 1 01111110 10000000000000000000000 = 0xBF400000"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 2：反推 0 10000000 10000000000000000000000（單精度）"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：E = 128 → n = 1；1.F = 1.1 = 1.5 → +1.5 × 2¹ = 3"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-codes-and-character-sets",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "數碼與文字碼",
+    "summary": "整理BCD、Gray、ASCII/Unicode/UTF-8。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/11_數碼與文字碼.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 數碼與文字碼",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "concept",
+    "terms": [
+      {
+        "zh": "二進碼十進數",
+        "en": "Binary-Coded Decimal, BCD"
+      },
+      {
+        "zh": "格雷碼",
+        "en": "Gray Code"
+      },
+      {
+        "zh": "ASCII",
+        "en": "ASCII"
+      },
+      {
+        "zh": "Unicode",
+        "en": "Unicode"
+      },
+      {
+        "zh": "UTF-8",
+        "en": "UTF-8"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/11_數碼與文字碼.md"
+        ],
+        "sourceSection": "基本計概(v2) / 數碼與文字碼",
+        "lead": [
+          "數值與編碼。BCD、Gray Code、ASCII／Unicode／UTF-8。"
+        ],
+        "sections": [
+          {
+            "heading": "定義",
+            "blocks": [
+              {
+                "kind": "bulletList",
+                "items": [
+                  "數碼：用 bits 表示數字，例如 BCD、Gray Code。",
+                  "文字碼：用編號表示文字，例如 ASCII、EBCDIC、Unicode、UTF-8。",
+                  "檢查碼：額外加檢查資訊，用來偵測或更正錯誤，例如 Parity、CRC、Hamming Code。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "先背一句：數碼管數字，文字碼管文字，檢查碼管有沒有錯。"
+              }
+            ]
+          },
+          {
+            "heading": "常見碼表（總覽）",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "類別",
+                  "名稱",
+                  "國考關鍵字"
+                ],
+                "rows": [
+                  [
+                    "數碼",
+                    "BCD",
+                    "一個十進位數字用 4 bits"
+                  ],
+                  [
+                    "數碼",
+                    "Gray Code",
+                    "相鄰碼只差 1 bit"
+                  ],
+                  [
+                    "文字碼",
+                    "ASCII",
+                    "標準 7 bits，128 種"
+                  ],
+                  [
+                    "文字碼",
+                    "EBCDIC",
+                    "IBM、大型主機"
+                  ],
+                  [
+                    "文字碼",
+                    "Unicode",
+                    "統一多語言文字的碼位"
+                  ],
+                  [
+                    "文字碼",
+                    "UTF-8",
+                    "Unicode 的可變長度編碼，1 到 4 bytes"
+                  ],
+                  [
+                    "檢查碼",
+                    "Parity Check",
+                    "奇同位、偶同位，偵測奇數個 bit 錯"
+                  ],
+                  [
+                    "檢查碼",
+                    "CRC",
+                    "產生多項式、模 2 除法、餘數"
+                  ],
+                  [
+                    "檢查碼",
+                    "Hamming Code",
+                    "檢查位、syndrome、更正 1 bit 錯"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "BCD",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "BCD（Binary-Coded Decimal）：用二進位編每一個十進位數字。",
+                  "最常見是 8421 BCD：4 個 bit 權重 = 8、4、2、1。",
+                  "BCD 有效範圍：0000 到 1001。",
+                  "針對每一個十進位數字分別拆分、組合。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "例：(259)₁₀ 轉 8421 BCD"
+              },
+              {
+                "kind": "paragraph",
+                "text": "2 = 0010\n5 = 0101\n9 = 1001\n→ 259 的 8421 BCD = 0010 0101 1001"
+              }
+            ]
+          },
+          {
+            "heading": "Gray Code",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "特色：相鄰兩個碼只差 1 個 bit。用途：位置偵測、旋轉編碼器、減少狀態切換時讀錯的機率。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "Binary 轉 Gray\n規則：① 最高位不變；② 其餘 Gray 位元 = 左邊 binary XOR 目前 binary（XOR 表示相異才為 true）。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "Binary：1 0 1 1\nGray：  1 (1⊕0) (0⊕1) (1⊕1) = 1 1 1 0\n→ Binary 1011 = Gray 1110"
+              },
+              {
+                "kind": "paragraph",
+                "text": "Gray 轉 Binary\n規則：① 最高位不變；② 其餘 Binary 位元 = 前一個已求出的 Binary XOR 目前 Gray。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "Gray：  1 1 1 0\nBinary：1\n下一位：1⊕1 = 0\n下一位：0⊕1 = 1\n下一位：1⊕0 = 1\n→ Gray 1110 = Binary 1011"
+              }
+            ]
+          },
+          {
+            "heading": "文字碼",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "名稱",
+                  "重點",
+                  "新手提醒"
+                ],
+                "rows": [
+                  [
+                    "ASCII",
+                    "標準 7 bits，可表示 128 種編號",
+                    "英文、數字、控制字元常見"
+                  ],
+                  [
+                    "Extended ASCII",
+                    "常見 8 bits，可有 256 種編號",
+                    "128 到 255 不一定全球一致"
+                  ],
+                  [
+                    "EBCDIC",
+                    "8 bits，IBM 系統常見字元碼",
+                    "看到 IBM／大型主機想到它"
+                  ],
+                  [
+                    "Unicode",
+                    "統一多語言字元的碼位系統",
+                    "是字元集／碼位，不是單一儲存格式"
+                  ],
+                  [
+                    "UTF-8",
+                    "Unicode 的常見可變長度編碼",
+                    "英文常 1 byte，其他文字可能 2 到 4 bytes"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "備註："
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "Unicode 是「字元編號」。",
+                  "UTF-8 是「把 Unicode 編號存成 bytes 的方式」。",
+                  "UTF-8 相容 ASCII；ASCII 裡的 0~127，在 UTF-8 裡仍用 1 byte 表示，且編碼值相同。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "加強練習　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "練習 1：(47)₁₀ → 8421 BCD"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：4 = 0100、7 = 0111 → 0100 0111"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 2：Binary 1101 → Gray"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：1、1⊕1=0、1⊕0=1、0⊕1=1 → 1011"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 3：Gray 1011 → Binary"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：1、1⊕0=1、1⊕1=0、0⊕1=1 → 1101"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-parity-crc",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "檢查碼（一）Parity 與 CRC",
+    "summary": "整理同位檢查、CRC 模 2 除法。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/12_檢查碼-Parity與CRC.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 檢查碼（一）Parity 與 CRC",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "procedure",
+    "terms": [
+      {
+        "zh": "同位元檢查",
+        "en": "Parity Check"
+      },
+      {
+        "zh": "循環冗餘檢查",
+        "en": "Cyclic Redundancy Check, CRC"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/12_檢查碼-Parity與CRC.md"
+        ],
+        "sourceSection": "基本計概(v2) / 檢查碼（一）Parity 與 CRC",
+        "lead": [
+          "數值與編碼（計算題）。"
+        ],
+        "sections": [
+          {
+            "heading": "Parity Check（同位元檢查）",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "加一個檢查位元，讓 1 的總數符合規則；檢查位元位置由發送方與接收方協調好即可。"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "類型",
+                  "規則"
+                ],
+                "rows": [
+                  [
+                    "偶同位（Even Parity）",
+                    "加上檢查位後，1 的總數為偶數"
+                  ],
+                  [
+                    "奇同位（Odd Parity）",
+                    "加上檢查位後，1 的總數為奇數"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "奇同位、偶同位，也可譯成奇校驗、偶校驗。"
+              }
+            ]
+          },
+          {
+            "heading": "CRC",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "CRC（Cyclic Redundancy Check，循環冗餘檢查） 常用在網路傳輸與儲存裝置，主要用來偵測錯誤，不是用來更正。",
+                  "傳送資料前，先依資料算出一串「檢查位元」附加在資料後面一起傳送；接收端再重算一次，看結果是否正確。",
+                  "算法：",
+                  "看生成多項式長度（ex. 1011）。",
+                  "CRC 位數 = 生成多項式長度 − 1。",
+                  "原資料後面補相同數量的 0。",
+                  "用生成多項式做模 2 除法（不進位、不借位，減法等於 XOR）。",
+                  "最後餘數就是 CRC。",
+                  "原資料 + CRC = 實際傳送資料。",
+                  "接收端再除一次，餘數為 0 表示通過。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "手把手例題　【練流程】\n題：資料 1101011011，生成多項式 10011（5 bits → CRC 4 bits）。求 CRC 與傳送資料。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "資料後補 4 個 0 → D = 11010110110000，除數 G = 10011\n（每次把 G 對齊「目前最左的 1」做 XOR）\n\n11010110110000\n10011\n──────────────\n01001110110000     11010 ⊕ 10011 = 01001\n 10011\n──────────────\n00000010110000     10011 ⊕ 10011 = 00000\n      10011\n──────────────\n00000000101000     10110 ⊕ 10011 = 00101\n        10011\n──────────────\n00000000001110     10100 ⊕ 10011 = 00111\n                   （剩 1110 不足 5 位 → 停）\n\n餘數 = CRC = 1110\n傳送資料 = 1101011011 + 1110 = 11010110111110\n接收端：11010110111110 ÷ 10011 → 餘數 0 → 無錯"
+              }
+            ]
+          },
+          {
+            "heading": "加強練習　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "練習：資料 1010，生成多項式 1011（CRC 3 bits）。求 CRC 與傳送資料。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：補 3 個 0 → 1010000，÷ 1011：\n```text\n1010000\n1011\n────\n0001000 1010 ⊕ 1011 = 0001\n1011\n────\n0000011 1000 ⊕ 1011 = 0011 → 餘 011\n```\nCRC = 011，傳送 = 1010 011 = 1010011（接收端再除餘 0）"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cpv2-hamming-code-distance",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "檢查碼（二）漢明碼與漢明距",
+    "summary": "整理Hamming 編碼/解碼、漢明距。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md"
+    ],
+    "sourceSummary": "基本計概(v2) / 檢查碼（二）漢明碼與漢明距",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "procedure",
+    "terms": [
+      {
+        "zh": "漢明碼",
+        "en": "Hamming Code"
+      },
+      {
+        "zh": "症候值",
+        "en": "Syndrome"
+      },
+      {
+        "zh": "漢明距",
+        "en": "Hamming Distance"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md"
+        ],
+        "sourceSection": "基本計概(v2) / 檢查碼（二）漢明碼與漢明距",
+        "lead": [
+          "數值與編碼（計算題）。文末的「常見陷阱／國考答題句／考前速記」是整個數碼+檢查碼大區的總整理。"
+        ],
+        "sections": [
+          {
+            "heading": "Hamming Code（漢明碼）",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "用多個「校驗位（檢查位）」來定位錯誤。",
+                  "校驗位 = 額外加的檢查位元；要先決定是奇校驗還是偶校驗。",
+                  "編碼步驟（發送端）："
+                ]
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "3-1. 算需要幾個校驗位 r：2^r ≥ m + r + 1（m = 資料位數）。",
+                  "3-2. 排位置（編號從左到右、從 1 開始）：第 1, 2, 4, 8…（2 的次方）位放校驗位 P1, P2, P4…；其餘位置依序填原始資料。",
+                  "Hamming(7,4)：7 個總位元、4 個資料位元、3 個檢查位元。例：原始 1011"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "位置:      1   2   3   4   5   6   7\n       位置2進制: 001 010 011 100 101 110 111\n       內容:      P1  P2  1   P4  0   1   1\n       （資料 1-0-1-1 填進位置 3,5,6,7）"
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "3-3. 算每個校驗位：",
+                  "P1 檢查「位置編號二進位最右邊（個位）是 1」的位置 → 1/3/5/7。",
+                  "P2 檢查「位置編號二進位最中間是 1」的位置 → 2/3/6/7。",
+                  "P4 檢查「位置編號二進位最左邊是 1」的位置 → 4/5/6/7。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "【修正】原筆記此行寫「最右邊是 1」，與其後的範例位置 4/5/6/7 矛盾（4/5/6/7 對應的是最左邊那一位 = 1）。P4 應為最左邊，已更正。"
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "3-4. 驗證：把漢明碼重新檢查 P1、P2、P4 負責的範圍是否符合校驗。當資料位元出錯時，可透過校驗位找出錯誤位置，把那一個 bit 反轉回來，即可恢復原資料。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "Syndrome（症候值／校驗子）："
+              },
+              {
+                "kind": "paragraph",
+                "text": "收到漢明碼 → 重新檢查 P1、P2、P4 的範圍\n→ 檢查通過記 0，失敗記 1 → 得到 S1、S2、S4\n→ 組成 S4 S2 S1 → 轉成十進位，就是錯誤位置"
+              }
+            ]
+          },
+          {
+            "heading": "手把手例題（Hamming(7,4)，偶校驗）　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "編碼：把資料 1011 編成漢明碼。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "位置：  1   2   3   4   5   6   7\n內容：  P1  P2  1   P4  0   1   1     （資料 1,0,1,1 填入位置 3,5,6,7）\nP1(1,3,5,7)：1 ⊕ 0 ⊕ 1 = 0 → P1 = 0\nP2(2,3,6,7)：1 ⊕ 1 ⊕ 1 = 1 → P2 = 1\nP4(4,5,6,7)：0 ⊕ 1 ⊕ 1 = 0 → P4 = 0\n→ 漢明碼 = 0110011"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解碼除錯：收到 0110111（第 5 位被改了）。"
+              },
+              {
+                "kind": "paragraph",
+                "text": "S1(1,3,5,7)：0 ⊕ 1 ⊕ 1 ⊕ 1 = 1\nS2(2,3,6,7)：1 ⊕ 1 ⊕ 1 ⊕ 1 = 0\nS4(4,5,6,7)：0 ⊕ 1 ⊕ 1 ⊕ 1 = 1\nSyndrome = S4 S2 S1 = 101 = 5 → 第 5 位錯\n把第 5 位反轉回來 → 0110011（還原成功）"
+              }
+            ]
+          },
+          {
+            "heading": "漢明距（必背）",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "漢明距（Hamming Distance）：兩個碼字不同 bit 的數量（兩組資料中不一樣的位置有幾個）。"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "需求",
+                  "最小漢明距"
+                ],
+                "rows": [
+                  [
+                    "偵測 d 個錯誤",
+                    "Dmin ≥ d + 1"
+                  ],
+                  [
+                    "更正 t 個錯誤",
+                    "Dmin ≥ 2t + 1"
+                  ],
+                  [
+                    "已知 Dmin，最多偵測",
+                    "Dmin − 1"
+                  ],
+                  [
+                    "已知 Dmin，最多更正",
+                    "floor((Dmin − 1) / 2)"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "手把手例題：碼字 10110 與 11100 的漢明距？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "10110\n11100\n位置 2、4 不同 → 漢明距 = 2"
+              },
+              {
+                "kind": "paragraph",
+                "text": "應用：若某碼集 Dmin = 3 → 可偵測 3 − 1 = 2 個錯、更正 floor((3−1)/2) = 1 個錯。"
+              }
+            ]
+          },
+          {
+            "heading": "常見陷阱",
+            "blocks": [
+              {
+                "kind": "table",
+                "headers": [
+                  "容易錯的地方",
+                  "正確觀念"
+                ],
+                "rows": [
+                  [
+                    "BCD 是把整個十進位數轉二進位",
+                    "錯，BCD 是每個十進位數字分開編"
+                  ],
+                  [
+                    "1010 是有效 BCD",
+                    "錯，單一 BCD 只允許 0000 到 1001"
+                  ],
+                  [
+                    "Binary 轉 Gray 和 Gray 轉 Binary 用同一規則",
+                    "錯，兩個方向規則不同"
+                  ],
+                  [
+                    "Unicode 和 UTF-8 是同一件事",
+                    "錯，Unicode 是碼位，UTF-8 是編碼方式"
+                  ],
+                  [
+                    "Parity 可以更正錯誤",
+                    "通常錯，Parity 多半只能偵測"
+                  ],
+                  [
+                    "CRC 是錯誤更正碼",
+                    "國考通常視為錯誤偵測碼"
+                  ],
+                  [
+                    "偵測 d 個錯誤需要 2d + 1",
+                    "錯，那是更正常見公式的型態"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "國考答題句",
+            "blocks": [
+              {
+                "kind": "orderedList",
+                "items": [
+                  "BCD 是用 4 bits 表示一個十進位數字；8421 BCD 的權重為 8、4、2、1。",
+                  "Gray Code 的特色是相鄰碼只差 1 bit，可減少狀態轉換時的讀取錯誤。",
+                  "二進位轉 Gray 時最高位不變，其餘位元為相鄰二進位位元 XOR。",
+                  "Gray 轉二進位時最高位不變，其餘位元為前一個二進位位元 XOR 目前 Gray 位元。",
+                  "標準 ASCII 為 7 bits，可表示 128 種編號；延伸 ASCII 常為 8 bits。",
+                  "EBCDIC 是 IBM 系統常見的字元編碼。",
+                  "Unicode 用於統一表示多語言字元；UTF-8 是 Unicode 的常見可變長度編碼方式。",
+                  "同位元檢查可偵測奇數個 bit 錯誤，但通常不能定位或更正錯誤。",
+                  "CRC 透過產生多項式做模 2 除法取得餘數，常用於錯誤偵測。",
+                  "漢明碼的檢查位通常放在 1、2、4、8 等 2 的冪次位置。",
+                  "偵測 d 個錯誤需要最小漢明距至少 d + 1；更正 t 個錯誤需要最小漢明距至少 2t + 1。"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "考前速記",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "BCD：一個十進位數字用 4 bits。\nGray：相鄰只差 1 bit。\nASCII：標準 7 bits。\nEBCDIC：IBM、大型主機。\nUnicode：統一多語言碼位。\nUTF-8：Unicode 的可變長度編碼。\nParity：奇偶檢查，能偵測奇數個 bit 錯。\nCRC：模 2 除法，餘數當檢查碼。\nHamming：檢查位在 1、2、4、8。\n漢明距：偵測 d 要 d+1，更正 t 要 2t+1。"
+              }
+            ]
+          },
+          {
+            "heading": "加強練習　【練流程】",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "練習 1（編碼）：資料 1100"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：位置 3,5,6,7 = 1,1,0,0\nP1(1,3,5,7) = 1⊕1⊕0 = 0；P2(2,3,6,7) = 1⊕0⊕0 = 1；P4(4,5,6,7) = 1⊕0⊕0 = 1\n→ 漢明碼 = 0111100"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 2（解碼）：收到 0010011，找錯誤位置"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：S1(1,3,5,7) = 0⊕1⊕0⊕1 = 0；S2(2,3,6,7) = 0⊕1⊕1⊕1 = 1；S4(4,5,6,7) = 0⊕0⊕1⊕1 = 0\nSyndrome = S4S2S1 = 010 = 第 2 位錯 → 反轉回 0110011"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 3：碼集 {000, 011, 101, 110} 的 Dmin？能偵測／更正幾個錯？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：兩兩距離都是 2 → Dmin = 2；可偵測 2−1 = 1 個、更正 floor((2−1)/2) = 0 個"
+              },
+              {
+                "kind": "paragraph",
+                "text": "練習 4：1011001 與 1110100 的漢明距？"
+              },
+              {
+                "kind": "paragraph",
+                "text": "解：位置 2、4、5、7 不同 → 4"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+];

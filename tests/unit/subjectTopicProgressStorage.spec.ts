@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   createEmptySubjectTopicProgressState,
   readSubjectTopicProgress,
+  saveBookmarkedTopicId,
   saveCompletedTopicIds,
   subjectTopicProgressStorageKey,
   writeSubjectTopicProgress
@@ -65,7 +66,7 @@ describe('subjectTopicProgressStorage', () => {
     expect(storage.removeItem).not.toHaveBeenCalled();
   });
 
-  it('normalizes old progress state by adding empty database and algorithms entries', () => {
+  it('normalizes old progress state by adding empty split route entries', () => {
     const storage = createMemoryStorage({
       [subjectTopicProgressStorageKey]: JSON.stringify({
         version: 1,
@@ -92,5 +93,95 @@ describe('subjectTopicProgressStorage', () => {
     expect(state.subjects.database.bookmarkedTopicId).toBeNull();
     expect(state.subjects.algorithms.completedTopicIds).toEqual([]);
     expect(state.subjects.algorithms.bookmarkedTopicId).toBeNull();
+    expect(state.subjects.digitalLogic.completedTopicIds).toEqual([]);
+    expect(state.subjects.digitalLogic.bookmarkedTopicId).toBeNull();
+    expect(state.subjects.operatingSystems.completedTopicIds).toEqual([]);
+    expect(state.subjects.operatingSystems.bookmarkedTopicId).toBeNull();
+    expect(state.subjects.computerPrinciplesV2.completedTopicIds).toEqual([]);
+    expect(state.subjects.computerPrinciplesV2.bookmarkedTopicId).toBeNull();
+  });
+
+  it('moves legacy computer-principles completed topics into split subject entries', () => {
+    const storage = createMemoryStorage({
+      [subjectTopicProgressStorageKey]: JSON.stringify({
+        version: 1,
+        subjects: {
+          computerPrinciples: {
+            completedTopicIds: ['cp-common-units', 'cp-digital-logic-basics', 'cp-os-basics'],
+            bookmarkedTopicId: null,
+            updatedAt: '2026-06-13T03:00:00.000Z'
+          },
+          networking: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          informationManagement: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          programming: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          english: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          chinese: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' }
+        }
+      })
+    });
+
+    const state = readSubjectTopicProgress(storage);
+
+    expect(state.subjects.computerPrinciples.completedTopicIds).toEqual(['cp-common-units']);
+    expect(state.subjects.digitalLogic.completedTopicIds).toEqual(['cp-digital-logic-basics']);
+    expect(state.subjects.operatingSystems.completedTopicIds).toEqual(['cp-os-basics']);
+  });
+
+  it('moves a legacy computer-principles bookmark into the matching split subject entry', () => {
+    const storage = createMemoryStorage({
+      [subjectTopicProgressStorageKey]: JSON.stringify({
+        version: 1,
+        subjects: {
+          computerPrinciples: {
+            completedTopicIds: [],
+            bookmarkedTopicId: 'cp-karnaugh-map',
+            updatedAt: '2026-06-13T04:00:00.000Z'
+          },
+          networking: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          informationManagement: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          programming: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          english: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' },
+          chinese: { completedTopicIds: [], bookmarkedTopicId: null, updatedAt: '' }
+        }
+      })
+    });
+
+    const state = readSubjectTopicProgress(storage);
+
+    expect(state.subjects.computerPrinciples.bookmarkedTopicId).toBeNull();
+    expect(state.subjects.digitalLogic.bookmarkedTopicId).toBe('cp-karnaugh-map');
+    expect(state.subjects.operatingSystems.bookmarkedTopicId).toBeNull();
+  });
+
+  it('saves split subject progress without changing the storage version', () => {
+    const storage = createMemoryStorage();
+
+    saveCompletedTopicIds('digitalLogic', ['cp-digital-logic-basics'], storage, '2026-06-13T05:00:00.000Z');
+    const nextState = saveBookmarkedTopicId('operatingSystems', 'cp-os-basics', storage, '2026-06-13T06:00:00.000Z');
+
+    expect(nextState.version).toBe(1);
+    expect(nextState.subjects.digitalLogic.completedTopicIds).toEqual(['cp-digital-logic-basics']);
+    expect(nextState.subjects.operatingSystems.bookmarkedTopicId).toBe('cp-os-basics');
+  });
+
+  it('saves computer principles v2 progress without migrating v1 topic ids', () => {
+    const storage = createMemoryStorage();
+    const initialState = createEmptySubjectTopicProgressState();
+    initialState.subjects.computerPrinciples.completedTopicIds = ['cp-common-units'];
+    initialState.subjects.computerPrinciples.bookmarkedTopicId = 'cp-common-units';
+    expect(writeSubjectTopicProgress(initialState, storage)).toBe(true);
+
+    const nextState = saveCompletedTopicIds(
+      'computerPrinciplesV2',
+      ['cpv2-architecture-computation-theory'],
+      storage,
+      '2026-06-19T00:00:00.000Z'
+    );
+
+    expect(nextState.version).toBe(1);
+    expect(nextState.subjects.computerPrinciples.completedTopicIds).toEqual(['cp-common-units']);
+    expect(nextState.subjects.computerPrinciples.bookmarkedTopicId).toBe('cp-common-units');
+    expect(nextState.subjects.computerPrinciplesV2.completedTopicIds).toEqual(['cpv2-architecture-computation-theory']);
+    expect(nextState.subjects.computerPrinciplesV2.bookmarkedTopicId).toBeNull();
   });
 });

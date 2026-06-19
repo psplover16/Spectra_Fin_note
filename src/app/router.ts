@@ -11,9 +11,24 @@ export default createRouter({
       meta: { title: '計概' }
     },
     {
+      path: '/computer-principles-v2',
+      component: routeComponentLoaders['/computer-principles-v2'],
+      meta: { title: '計概(v2)' }
+    },
+    {
       path: '/networking',
       component: routeComponentLoaders['/networking'],
       meta: { title: '網概' }
+    },
+    {
+      path: '/digital-logic',
+      component: routeComponentLoaders['/digital-logic'],
+      meta: { title: '數位邏輯' }
+    },
+    {
+      path: '/operating-systems',
+      component: routeComponentLoaders['/operating-systems'],
+      meta: { title: '作業系統' }
     },
     {
       path: '/information-management',

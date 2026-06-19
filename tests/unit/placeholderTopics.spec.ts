@@ -4,7 +4,10 @@ import { subjectKeys, type SubjectTopic, type SubjectTopicBlock } from '@/module
 
 const expectedSubjectKeys = [
   'computerPrinciples',
+  'computerPrinciplesV2',
   'networking',
+  'digitalLogic',
+  'operatingSystems',
   'informationManagement',
   'programming',
   'database',
@@ -13,7 +16,16 @@ const expectedSubjectKeys = [
   'english',
   'chinese'
 ] as const;
-const expectedRenderablePlaceholderSubjectKeys = expectedSubjectKeys.filter((subjectKey) => subjectKey !== 'systemDesign');
+const expectedRenderablePlaceholderSubjectKeys = [
+  'computerPrinciples',
+  'networking',
+  'informationManagement',
+  'programming',
+  'database',
+  'algorithms',
+  'english',
+  'chinese'
+] as const;
 const allowedTopicKeys = ['blocks', 'id', 'subjectKey', 'summary', 'title'];
 const allowedParagraphBlockKeys = ['kind', 'text'];
 const allowedTeachingCodeBlockKeys = ['code', 'description', 'kind', 'language', 'title'];

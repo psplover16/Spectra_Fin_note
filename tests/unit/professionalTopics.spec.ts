@@ -7,7 +7,10 @@ const readText = (path: string) => readFileSync(path, 'utf8');
 
 const professionalSubjectKeys = [
   'computerPrinciples',
+  'computerPrinciplesV2',
   'networking',
+  'digitalLogic',
+  'operatingSystems',
   'database',
   'informationManagement',
   'programming',
@@ -16,10 +19,13 @@ const professionalSubjectKeys = [
 ] as const;
 
 const expectedCounts = {
-  computerPrinciples: 34,
+  computerPrinciples: 18,
+  computerPrinciplesV2: 13,
   networking: 11,
+  digitalLogic: 5,
+  operatingSystems: 11,
   database: 17,
-  informationManagement: 7,
+  informationManagement: 14,
   programming: 46,
   algorithms: 31,
   systemDesign: 5
@@ -58,6 +64,21 @@ const baseConversionTopicId = 'cp-base-conversion';
 const complementConversionTopicId = 'cp-complement-conversion';
 const floatingPointConversionTopicId = 'cp-floating-point-conversion';
 const codesAndCheckCodesTopicId = 'cp-codes-and-check-codes';
+const computerPrinciplesV2TopicIds = [
+  'cpv2-architecture-computation-theory',
+  'cpv2-machine-instruction-cycle',
+  'cpv2-pipeline-hazard',
+  'cpv2-performance-risc-cisc',
+  'cpv2-bus-usb',
+  'cpv2-memory-hierarchy-classification',
+  'cpv2-registers-cache',
+  'cpv2-base-conversion',
+  'cpv2-complement-conversion',
+  'cpv2-floating-point-conversion',
+  'cpv2-codes-and-character-sets',
+  'cpv2-parity-crc',
+  'cpv2-hamming-code-distance'
+] as const;
 const markdownBackedComputerPrinciplesTopicIds = [
   'cp-performance-formulas',
   'cp-risc-cisc',
@@ -133,16 +154,16 @@ const operatingSystemSourcesByTopicId = {
   'cp-disk-management': ['_private/計算機概論.txt', '_private/MD/計概/3c作業系統/作業系統_3-10_磁碟管理.md']
 } as const satisfies Record<(typeof operatingSystemTopicIds)[number], readonly string[]>;
 const operatingSystemExpectedTitlesByTopicId = {
-  'cp-os-basics': '作業系統 1：OS 基礎概念(Operating System Basics)',
-  'cp-io-and-interrupts': '作業系統 2：I/O 中斷方式 與 硬體保護(I/O and Interrupts)',
-  'cp-os-structure': '作業系統 3-4：OS 的結構(Operating System Structure)',
-  'cp-process': '作業系統 3-5（上）：Process 基礎(Process)',
-  'cp-cpu-scheduling': '作業系統 3-5（下）：CPU 排程演算法(CPU Scheduling)',
-  'cp-deadlock': '作業系統 3-6：Deadlock（死結）(Deadlock)',
-  'cp-process-communication': '作業系統 3-7：Process Communication(Process Communication)',
-  'cp-memory-management': '作業系統 3-8：Memory Management（記憶體管理）(Memory Management)',
-  'cp-virtual-memory': '作業系統 3-9：Virtual Memory（虛擬記憶體）(Virtual Memory)',
-  'cp-disk-management': '作業系統 3-10：Disk Management（磁碟管理）(Disk Management)'
+  'cp-os-basics': 'OS 基礎概念(Operating System Basics)',
+  'cp-io-and-interrupts': 'I/O 中斷方式 與 硬體保護(I/O and Interrupts)',
+  'cp-os-structure': 'OS 的結構(Operating System Structure)',
+  'cp-process': 'Process 基礎(Process)',
+  'cp-cpu-scheduling': 'CPU 排程演算法(CPU Scheduling)',
+  'cp-deadlock': 'Deadlock（死結）(Deadlock)',
+  'cp-process-communication': 'Process Communication(Process Communication)',
+  'cp-memory-management': 'Memory Management（記憶體管理）(Memory Management)',
+  'cp-virtual-memory': 'Virtual Memory（虛擬記憶體）(Virtual Memory)',
+  'cp-disk-management': 'Disk Management（磁碟管理）(Disk Management)'
 } as const satisfies Record<(typeof operatingSystemTopicIds)[number], string>;
 const operatingSystemRepresentativeKeywordsByTopicId = {
   'cp-os-basics': ['OS 分類比較表'],
@@ -263,55 +284,55 @@ const bucketSortSource = '_private/MD/演算法/GeneralBucketSort.java';
 const dataStructureAlgorithmTopicCases = [
   {
     id: 'algorithm-big-o-complexity',
-    title: '資料結構與演算法 1：演算法定義 + Big-O 複雜度 ★',
+    title: '演算法定義 + Big-O 複雜度 ★',
     source: '_private/MD/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md',
     keywords: ['演算法 5 條件', 'O(log n)', '時間複雜度']
   },
   {
     id: 'algorithm-array-linked-list',
-    title: '資料結構與演算法 2：陣列 Array + 鏈結串列 Linked List',
+    title: '陣列 Array + 鏈結串列 Linked List',
     source: '_private/MD/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md',
     keywords: ['Row-major', 'Column-major', 'Doubly Linked List']
   },
   {
     id: 'algorithm-stack-queue',
-    title: '資料結構與演算法 3：堆疊 Stack + 佇列 Queue',
+    title: '堆疊 Stack + 佇列 Queue',
     source: '_private/MD/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md',
     keywords: ['LIFO', 'FIFO', 'Circular Queue']
   },
   {
     id: 'algorithm-tree-traversal-basics',
-    title: '資料結構與演算法 4：樹 Tree（基本）+ 前中後序走訪',
+    title: '樹 Tree（基本）+ 前中後序走訪',
     source: '_private/MD/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md',
     keywords: ['Preorder', 'Inorder', 'Postorder']
   },
   {
     id: 'algorithm-advanced-trees',
-    title: '資料結構與演算法 5：高等樹 ★（AVL／B-Tree／Heap／紅黑樹）',
+    title: '高等樹 ★（AVL／B-Tree／Heap／紅黑樹）',
     source: '_private/MD/資料結構與演算法/資料結構與演算法_5_高等樹.md',
     keywords: ['AVL', 'B-Tree', 'Red-Black Tree']
   },
   {
     id: 'algorithm-graph-basics-traversal',
-    title: '資料結構與演算法 6（上）：圖 Graph 基礎 + DFS／BFS ★',
+    title: '圖 Graph 基礎 + DFS／BFS ★',
     source: '_private/MD/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md',
     keywords: ['Adjacency Matrix', 'DFS', 'BFS']
   },
   {
     id: 'algorithm-graph-algorithms',
-    title: '資料結構與演算法 6（下）：圖演算法 ★（MST／最短路徑／AOV-AOE）',
+    title: '圖演算法 ★（MST／最短路徑／AOV-AOE）',
     source: '_private/MD/資料結構與演算法/資料結構與演算法_6下_圖演算法.md',
     keywords: ['Minimum Spanning Tree', 'Dijkstra', 'Topological Sort']
   },
   {
     id: 'algorithm-sorting-overview',
-    title: '資料結構與演算法 7：排序 Sorting ★',
+    title: '排序 Sorting ★',
     source: '_private/MD/資料結構與演算法/資料結構與演算法_7_排序.md',
     keywords: ['Stable', 'Quick Sort', 'Heap Sort']
   },
   {
     id: 'algorithm-hashing',
-    title: '資料結構與演算法 8：雜湊 Hashing',
+    title: '雜湊 Hashing',
     source: '_private/MD/資料結構與演算法/資料結構與演算法_8_雜湊.md',
     keywords: ['Hash Table', 'Collision', 'Open Addressing']
   }
@@ -353,37 +374,37 @@ const importedDatabaseProgrammingSystemDesignBatch = 'fill-database-programming-
 const databaseMarkdownTopicCases = [
   {
     id: 'database-md-foundations-architecture',
-    title: '資料庫 1：基礎概念 + ANSI/SPARC 架構',
+    title: '基礎概念 + ANSI/SPARC 架構',
     source: '_private/MD/資料庫/資料庫_1_基礎概念與架構.md',
     keyword: 'ANSI/SPARC 三層架構'
   },
   {
     id: 'database-md-keys-erd',
-    title: '資料庫 2：Key（鍵）+ ERD（實體關係圖）',
+    title: 'Key（鍵）+ ERD（實體關係圖）',
     source: '_private/MD/資料庫/資料庫_2_鍵與ERD.md',
     keyword: '超鍵'
   },
   {
     id: 'database-md-normalization',
-    title: '資料庫 3：正規化 Normalization ★',
+    title: '正規化 Normalization ★',
     source: '_private/MD/資料庫/資料庫_3_正規化.md',
     keyword: '1NF'
   },
   {
     id: 'database-md-sql-crud',
-    title: '資料庫 4：SQL 分類 + CRUD 基礎語法 ★',
+    title: 'SQL 分類 + CRUD 基礎語法 ★',
     source: '_private/MD/資料庫/資料庫_4_SQL分類與CRUD.md',
     keyword: 'UPDATE／DELETE 必加 WHERE'
   },
   {
     id: 'database-md-sql-advanced-query',
-    title: '資料庫 5：SQL 查詢進階 ★',
+    title: 'SQL 查詢進階 ★',
     source: '_private/MD/資料庫/資料庫_5_SQL查詢進階.md',
     keyword: 'WHERE vs HAVING'
   },
   {
     id: 'database-md-transactions-nosql',
-    title: '資料庫 6：交易 ACID + NoSQL',
+    title: '交易 ACID + NoSQL',
     source: '_private/MD/資料庫/資料庫_6_交易ACID與NoSQL.md',
     keyword: 'ACID'
   }
@@ -391,43 +412,43 @@ const databaseMarkdownTopicCases = [
 const programmingMarkdownTopicCases = [
   {
     id: 'programming-md-language-execution-basics',
-    title: '程式設計 1：語言執行方式 + 程式基礎',
+    title: '語言執行方式 + 程式基礎',
     source: '_private/MD/程式設計/程式設計_1_語言執行方式與程式基礎.md',
     keyword: 'Assembler'
   },
   {
     id: 'programming-md-functions-parameter-passing',
-    title: '程式設計 2：函式 + 參數傳遞 ★',
+    title: '函式 + 參數傳遞 ★',
     source: '_private/MD/程式設計/程式設計_2_函式與參數傳遞.md',
     keyword: 'Java 全部都是「傳值」'
   },
   {
     id: 'programming-md-arrays-strings-exceptions',
-    title: '程式設計 3：陣列 + 字串函式 + 例外處理',
+    title: '陣列 + 字串函式 + 例外處理',
     source: '_private/MD/程式設計/程式設計_3_陣列字串與例外處理.md',
     keyword: '.equals()'
   },
   {
     id: 'programming-md-pointers',
-    title: '程式設計 4：指標 Pointer ★（C／C++）',
+    title: '指標 Pointer ★（C／C++）',
     source: '_private/MD/程式設計/程式設計_4_指標.md',
     keyword: '指標存的是「位址」'
   },
   {
     id: 'programming-md-oop',
-    title: '程式設計 5：物件導向 OOP 三大特性 ★',
+    title: '物件導向 OOP 三大特性 ★',
     source: '_private/MD/程式設計/程式設計_5_物件導向OOP.md',
     keyword: '封裝'
   },
   {
     id: 'programming-md-recursion',
-    title: '程式設計 6：遞迴 Recursion ★',
+    title: '遞迴 Recursion ★',
     source: '_private/MD/程式設計/程式設計_6_遞迴.md',
     keyword: '終止條件'
   },
   {
     id: 'programming-md-language-features',
-    title: '程式設計 7：各語言特性（Java GC／Python 容器）',
+    title: '各語言特性（Java GC／Python 容器）',
     source: '_private/MD/程式設計/程式設計_7_各語言特性.md',
     keyword: 'Python 四種內建容器'
   }
@@ -435,31 +456,31 @@ const programmingMarkdownTopicCases = [
 const systemDesignMarkdownTopicCases = [
   {
     id: 'system-design-sdlc-ssdlc',
-    title: '系統分析與設計 1：SDLC + SSDLC',
+    title: 'SDLC + SSDLC',
     source: '_private/MD/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md',
     keyword: 'Security by Design'
   },
   {
     id: 'system-design-cohesion-coupling',
-    title: '系統分析與設計 2：內聚力 Cohesion + 耦合力 Coupling ★',
+    title: '內聚力 Cohesion + 耦合力 Coupling ★',
     source: '_private/MD/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md',
     keyword: '高內聚、低耦合'
   },
   {
     id: 'system-design-oo-uml',
-    title: '系統分析與設計 3：OO 四種關係 + UML 四種圖',
+    title: 'OO 四種關係 + UML 四種圖',
     source: '_private/MD/系統分析與設計/系統分析與設計_3_OO關係與UML.md',
     keyword: '聚合 vs 組合'
   },
   {
     id: 'system-design-testing',
-    title: '系統分析與設計 4：測試 Testing',
+    title: '測試 Testing',
     source: '_private/MD/系統分析與設計/系統分析與設計_4_測試.md',
     keyword: 'Alpha 在內部、Beta 給外部真實使用者'
   },
   {
     id: 'system-design-conversion-pdca',
-    title: '系統分析與設計 5：系統導入 + PDCA',
+    title: '系統導入 + PDCA',
     source: '_private/MD/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md',
     keyword: 'Plan（計畫）→ Do（執行）→ Check（檢核）→ Act（行動／改善）'
   }
@@ -470,7 +491,12 @@ const importedDatabaseProgrammingSystemDesignSubjectCases = [
   { subjectKey: 'systemDesign', topicCases: systemDesignMarkdownTopicCases }
 ] as const;
 const importedDatabaseProgrammingSystemDesignTopicIdSet = new Set<string>(
-  importedDatabaseProgrammingSystemDesignSubjectCases.flatMap(({ topicCases }) => topicCases.map((topicCase) => topicCase.id))
+  [
+    ...importedDatabaseProgrammingSystemDesignSubjectCases.flatMap(({ topicCases }) => topicCases.map((topicCase) => topicCase.id)),
+    ...professionalTopicsBySubject.informationManagement
+      .filter((topic) => topic.sourceBatch === 'fill-information-management-md-content')
+      .map((topic) => topic.id)
+  ]
 );
 const algorithmCodeMethodNames = {
   'bubble-sort': ['bubbleSortRecursive', 'bubbleSortIterative'],
@@ -517,8 +543,12 @@ const filledTopicIds = new Set([
   codesAndCheckCodesTopicId,
   ...digitalLogicTopicIds,
   ...operatingSystemTopicIds,
+  ...computerPrinciplesV2TopicIds,
   ...markdownBackedComputerPrinciplesTopicIds,
   ...networkingTopicIds,
+  ...professionalTopicsBySubject.informationManagement
+    .filter((topic) => topic.sourceBatch === 'fill-information-management-md-content')
+    .map((topic) => topic.id),
   ...dataStructureAlgorithmTopicIds,
   ...firstBatchAlgorithmTopicIds,
   ...databaseMarkdownTopicCases.map((topicCase) => topicCase.id),
@@ -1693,7 +1723,7 @@ describe('professional topic skeleton data', () => {
 
   it('fills 3b digital logic topics with source traceability, confirmed corrections, and reveal metadata', () => {
     const digitalLogicTopics = digitalLogicTopicIds.map((topicId) =>
-      professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId)
+      professionalTopicsBySubject.digitalLogic.find((topic) => topic.id === topicId)
     );
     const rawInstructionPhrases = ['用table做', '內部值都是空的', '點選標題，才會讓值跑出來'];
 
@@ -1777,7 +1807,7 @@ describe('professional topic skeleton data', () => {
 
   it('fills 3c operating-system topics with source traceability and source-preserving lesson articles', () => {
     const operatingSystemTopics = operatingSystemTopicIds.map((topicId) =>
-      professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId)
+      professionalTopicsBySubject.operatingSystems.find((topic) => topic.id === topicId)
     );
 
     for (const topic of operatingSystemTopics) {
@@ -1817,7 +1847,7 @@ describe('professional topic skeleton data', () => {
       }
     }
 
-    const hardwareProtectionTopic = professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === 'cp-hardware-protection');
+    const hardwareProtectionTopic = professionalTopicsBySubject.operatingSystems.find((topic) => topic.id === 'cp-hardware-protection');
     const hardwareProtectionLessonArticle = hardwareProtectionTopic?.blocks[0];
 
     expect(hardwareProtectionTopic?.summary).toBe('');
@@ -1930,16 +1960,21 @@ describe('professional topic skeleton data', () => {
   });
 
   it('normalizes imported Computer Principles Markdown instructions and obvious input errors', () => {
-    const importedTopics = [
+    const computerPrinciplesImportedTopics = [
       hazardTopicId,
       usbSpeedTopicId,
       baseConversionTopicId,
       complementConversionTopicId,
       floatingPointConversionTopicId,
-      codesAndCheckCodesTopicId,
-      ...digitalLogicTopicIds,
-      ...operatingSystemTopicIds
+      codesAndCheckCodesTopicId
     ].map((topicId) => professionalTopicsBySubject.computerPrinciples.find((topic) => topic.id === topicId));
+    const digitalLogicImportedTopics = digitalLogicTopicIds.map((topicId) =>
+      professionalTopicsBySubject.digitalLogic.find((topic) => topic.id === topicId)
+    );
+    const operatingSystemImportedTopics = operatingSystemTopicIds.map((topicId) =>
+      professionalTopicsBySubject.operatingSystems.find((topic) => topic.id === topicId)
+    );
+    const importedTopics = [...computerPrinciplesImportedTopics, ...digitalLogicImportedTopics, ...operatingSystemImportedTopics];
     const serializedTopics = JSON.stringify(importedTopics);
 
     expect(serializedTopics).not.toContain('用table');

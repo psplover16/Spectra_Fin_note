@@ -40,6 +40,21 @@ describe('project architecture document', () => {
     }
   });
 
+  it('documents computer principles v2 route ownership', () => {
+    const documentText = readFileSync('PROJECT_ARCHITECTURE.md', 'utf8');
+
+    for (const requiredText of [
+      '/computer-principles-v2',
+      'computerPrinciplesV2',
+      'src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue',
+      '計概(v2)',
+      'computerPrinciplesV2Topics',
+      'computer-principles-v2-route'
+    ]) {
+      expect(documentText).toContain(requiredText);
+    }
+  });
+
   it('documents professional topic content model ownership', () => {
     const documentText = readFileSync('PROJECT_ARCHITECTURE.md', 'utf8');
 

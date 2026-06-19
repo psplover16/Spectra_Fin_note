@@ -16049,3 +16049,1580 @@ tests:
   - tests/unit/staleProfessionalContentAudit.spec.ts
   - tests/unit/subjectTopics.spec.ts
 -->
+
+---
+### Requirement: Computer Principles floating-point and code topics contain finalized lesson articles
+
+The professional topic data SHALL provide finalized lessonArticle content for the Computer Principles topics `cp-floating-point-conversion` and `cp-codes-and-check-codes`. Each topic SHALL include source traceability to `_private/計算機概論.txt` and its matching Markdown source file.
+
+#### Scenario: Floating-point conversion topic is filled
+
+- **WHEN** professional topic data is loaded for `computerPrinciples`
+- **THEN** the topic with id `cp-floating-point-conversion` contains one non-empty lessonArticle block
+- **AND** the topic title is `浮點數轉換(Floating-Point Conversion)`
+- **AND** the lessonArticle sourceFiles include `_private/計算機概論.txt` and `_private/MD/計概/3a基本計概/十六、浮點數轉換_新手國考教材.md`
+- **AND** the content includes `IEEE 754`, `bias`, `0x41240000`, `0.0001100110011`, and a decimal-fraction multiplication explanation that removes the integer part before the next multiplication
+
+#### Scenario: Codes and check codes topic is filled
+
+- **WHEN** professional topic data is loaded for `computerPrinciples`
+- **THEN** the topic with id `cp-codes-and-check-codes` contains one non-empty lessonArticle block
+- **AND** the topic title is `數碼、文字碼與檢查碼(Codes and Check Codes)`
+- **AND** the lessonArticle sourceFiles include `_private/計算機概論.txt` and `_private/MD/計概/3a基本計概/十七、數碼、文字碼與檢查碼_新手國考教材.md`
+- **AND** the content includes `BCD`, `Gray Code`, `Unicode`, `UTF-8`, `CRC`, `Hamming Code`, `Hamming Distance`, and `Syndrome`
+- **AND** the content follows the source Markdown structure rather than a compressed outline, including the quick memorization sentence, common code table, BCD `259` example, Binary `1011` to Gray `1110` and Gray `1110` to Binary `1011` as subsection-level learning steps inside the `Gray Code` section, CRC `一、定義與用途` / `二、傳送與接收流程` / `三、算法` subsection-level content with modulo-2 algorithm steps, Hamming `2^r ≥ m + r + 1`, a source-style Hamming(7,4) position layout, Hamming 1/2/3 as aligned ordered steps with 3-1 through 3-4, Hamming(7,4), the table, and the data-placement note grouped in one shallow inner indentation block under the third step, P1/P2/P4 check-bit details nested one indentation level under 3-3, Syndrome `S4 S2 S1` inside `Hamming Code（漢明碼）`, Hamming Distance formulas, and exam quick review content split into `常見陷阱`, `國考答題句`, and `考前速記` subsections
+
+#### Scenario: Imported content is cleaned and corrected
+
+- **WHEN** the two filled topics are serialized for rendering
+- **THEN** the serialized content does not include raw display instructions `用table`, `用table做`, `用UL/LI表示`, or `此處用 UL/LI表示`
+- **AND** Hamming Code check-bit content uses `P1`, `P2`, and `P4` for Hamming(7,4)
+- **AND** the serialized content does not include `P3` as the position-name for the check bit at position 4
+- **AND** the BCD explanation identifies `0000` through `1001` as the valid range for one 8421 BCD digit
+
+<!-- @trace
+source: fill-floating-point-and-codes-content
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/演算法/BubbleSort.java
+  - _private/MD/done/計概/3c作業系統/作業系統_3-5下_CPU排程演算法.md
+  - _private/MD/系統分析與設計/五、UML.md
+  - _private/MD/計概/3a基本計概/done/五、匯流排（Bus）_新手國考教材.md
+  - _private/MD/資料結構與演算法/十、高等樹.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - _private/MD/計概/3c作業系統/七、Process Communication_新手國考教材.md
+  - _private/MD/計概/3a基本計概/done/二、圖靈機與圖靈測試.md
+  - _private/MD/資訊管理/一、準備方向.md
+  - _private/MD/計概/3a基本計概/done/六、效能名詞與公式_新手國考教材.md
+  - _private/MD/計概/3b數位邏輯/五、組合與循序電路_新手國考教材.md
+  - _private/MD/計概/3c作業系統/四、OS 結構_新手國考教材.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-10_磁碟管理.md
+  - _private/TMP/information-management-md-content-review.md
+  - _private/MD/done/計概/3a基本計概/done/八、Memory 階層圖_新手國考教材.md
+  - _private/MD/網概/九、傳輸層.md
+  - _private/MD/資訊管理/四、ESG.md
+  - _private/MD/done/網概/網路概論_7下_資料鏈結層.md
+  - _private/MD/資料庫/六、正規化.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/計概/3a基本計概/done/十六、浮點數轉換_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/計概/3b數位邏輯/四、萬用閘_新手國考教材.md
+  - _private/MD/資料結構與演算法/七、Tree.md
+  - _private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/done/計概/3a基本計概/done/六、效能名詞與公式_新手國考教材.md
+  - _private/MD/資料結構與演算法/四、陣列（Array）.md
+  - _private/MD/done/計概/3a基本計概/done/四、Pipeline（管線化）_新手國考教材.md
+  - _private/MD/done/計概/3c作業系統/3-2. IO 中斷方式 與 硬體保護.md
+  - _private/MD/done/計概/3b數位邏輯/四、萬用閘_新手國考教材.md
+  - _private/MD/計概/3a基本計概/done/九、Memory 分類圖_新手國考教材.md
+  - _private/MD/網概/二、網路概論.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - _private/MD/done/程式設計/程式設計_6_遞迴.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - _private/MD/done/網概/網路概論_7上_實體層.md
+  - _private/MD/計概/3c作業系統/八、Memory Management_新手國考教材.md
+  - _private/MD/資料庫/三、資料庫基礎.md
+  - _private/MD/done/計概/3b數位邏輯/三、卡諾圖化簡_新手國考教材.md
+  - _private/MD/計概/3b數位邏輯/二、SOP 與 POS_新手國考教材.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計概/3a基本計概/done/十、Register（暫存器）_新手國考教材.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md
+  - _private/MD/done/網概/網路概論_2_基礎概念.md
+  - _private/MD/資料庫/七、SQL 分類與 CRUD.md
+  - _private/MD/計概/3c作業系統/九、Virtual Memory_新手國考教材.md
+  - _private/MD/done/計概/3b數位邏輯/五、組合與循序電路_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/五、匯流排（Bus）_新手國考教材.md
+  - _private/MD/程式/四、Python 特殊資料型別.md
+  - _private/MD/資訊管理/資訊管理_3b_數據分類與隱私悖論.md
+  - _private/MD/done/計概/3a基本計概/done/三、機器指令與指令週期_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/一、馮紐曼架構.md
+  - _private/MD/資料庫/一、準備方向.md
+  - src/shared/components/RouteTabs.vue
+  - _private/MD/系統分析與設計/二、系統分析與設計概論.md
+  - _private/MD/done/計概/3a基本計概/done/十、Register（暫存器）_新手國考教材.md
+  - _private/MD/網概/十一、資訊安全.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md
+  - _private/MD/計概/3a基本計概/done/一、馮紐曼架構.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - _private/MD/done/計概/3a基本計概/done/十五、補數轉換_新手國考教材.md
+  - _private/MD/網概/五、OSI 7 層與 TCPIP 5 層.md
+  - _private/MD/資料結構與演算法/十一、雜湊法（Hashing）.md
+  - _private/MD/程式/二、基礎.md
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _private/MD/計概/3a基本計概/done/四、Pipeline（管線化）_新手國考教材.md
+  - _private/MD/done/網概/網路概論_4上_IP與子網路計算.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-7_ProcessCommunication_跳過分析.md
+  - _private/MD/done/計概/3c作業系統/3-4_OS結構.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/done/計概/3c作業系統/3-1. OS 基礎概念.md
+  - _private/MD/計概/3b數位邏輯/一、基本邏輯_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md
+  - _private/MD/網概/三、網路設備與 OSI 層.md
+  - _private/MD/計概/3a基本計概/done/八、Memory 階層圖_新手國考教材.md
+  - _private/MD/資訊管理/資訊管理_1_數位轉型與ESG.md
+  - _private/MD/程式/三、中階.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_3_OO關係與UML.md
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/done/程式設計/程式設計_3_陣列字串與例外處理.md
+  - _private/MD/done/程式設計/程式設計_7_各語言特性.md
+  - _private/MD/資訊管理/二、數位轉型.md
+  - _private/MD/done/計概/3a基本計概/done/十七、數碼、文字碼與檢查碼_新手國考教材.md
+  - _private/MD/計概/3a基本計概/done/十七、數碼、文字碼與檢查碼_新手國考教材.md
+  - _private/MD/done/計概/3b數位邏輯/一、基本邏輯_新手國考教材.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-8_記憶體管理.md
+  - _private/MD/資料結構與演算法/一、準備方向.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_8_雜湊.md
+  - src/shared/components/RouteSubMenu.vue
+  - _private/MD/演算法/GeneralBucketSort.java
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/done/網概/網路概論_3_網路設備對應層級.md
+  - _private/MD/done/程式設計/程式設計_1_語言執行方式與程式基礎.md
+  - _private/MD/done/計概/3a基本計概/done/二、圖靈機與圖靈測試.md
+  - _private/MD/計概/3b數位邏輯/三、卡諾圖化簡_新手國考教材.md
+  - _private/MD/資料庫/八、ACID 與交易.md
+  - _private/MD/done/計概/3a基本計概/done/七、RISC 與 CISC_新手國考教材.md
+  - _private/ques/原文.txt
+  - _private/propose.md
+  - _private/MD/資訊管理/資訊管理_4b_GDPR.md
+  - _private/MD/done/演算法/BubbleSort.java
+  - _private/MD/done/資料庫/資料庫_4_SQL分類與CRUD.md
+  - _private/MD/done/網概/網路概論_6_應用層與Port對照.md
+  - _private/ques/計算機概論.txt
+  - PROJECT_ARCHITECTURE.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - _private/MD/計概/3a基本計概/done/三、機器指令與指令週期_新手國考教材.md
+  - _private/MD/資料庫/十、資料庫補充考點.md
+  - _private/MD/done/網概/網路概論_5_傳輸層.md
+  - _private/MD/done/資料庫/資料庫_1_基礎概念與架構.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - _private/MD/計概/3c作業系統/五、Process_新手國考教材.md
+  - _private/MD/系統分析與設計/六、專案管理.md
+  - _private/MD/系統分析與設計/三、結構化分析與設計.md
+  - _private/MD/done/計概/3a基本計概/done/九、Memory 分類圖_新手國考教材.md
+  - _private/MD/done/網概/網路概論_8下_防禦設備與攻擊.md
+  - _private/MD/資訊管理/資訊管理_3a_資訊倫理.md
+  - src/modules/subjectTopics/components/SubjectTopicPage.vue
+  - _private/MD/系統分析與設計/四、物件導向.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - _private/MD/計概/3a基本計概/done/十二、Hazard_新手國考教材.md
+  - _private/MD/done/網概/網路概論_8上_資安觀念與加密.md
+  - _private/MD/資料庫/九、NoSQL.md
+  - _private/MD/資訊管理/六、資訊管理補充考點.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - _private/MD/資料結構與演算法/二、演算法.md
+  - _private/MD/計概/3c作業系統/六、Deadlock_新手國考教材.md
+  - _private/MD/網概/六、實體層.md
+  - _private/MD/done/資料庫/資料庫_3_正規化.md
+  - _private/MD/網概/四、常見 Port Number.md
+  - _private/MD/資料結構與演算法/九、排序.md
+  - _private/MD/done/計概/3a基本計概/done/十三、USB 速度_新手國考教材.md
+  - _private/MD/資訊管理/三、資訊系統開發流程與模式.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-5上_Process基礎.md
+  - _private/MD/資訊管理/資訊管理_2a_傳統開發模式.md
+  - _private/MD/系統分析與設計/一、準備方向.md
+  - _private/MD/計概/3a基本計概/done/十四、進制轉換_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/十二、Hazard_新手國考教材.md
+  - _private/MD/計概/3c作業系統/一、基本常識_新手國考教材.md
+  - src/modules/systemDesign/views/SystemDesignView.vue
+  - _private/MD/計概/3a基本計概/done/十一、Cache_新手國考教材.md
+  - _private/MD/done/程式設計/程式設計_5_物件導向OOP.md
+  - src/styles/main.css
+  - _private/MD/done/網概/網路概論_1_OSI七層與TCPIP.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md
+  - _private/MD/計概/3a基本計概/done/十三、USB 速度_新手國考教材.md
+  - _private/MD/計概/3c作業系統/三、硬體保護_新手國考教材.md
+  - _private/MD/done/演算法/GeneralBucketSort.java
+  - _private/MD/done/系統分析與設計/系統分析與設計_4_測試.md
+  - _private/MD/計概/3a基本計概/done/七、RISC 與 CISC_新手國考教材.md
+  - _private/MD/計算機概論/00_目錄.md
+  - _private/MD/程式/五、C C++ Java 補充重點.md
+  - _private/MD/資訊管理/五、資訊系統倫理與新興法規.md
+  - _private/MD/網概/十、應用層.md
+  - _private/MD/done/資料庫/資料庫_6_交易ACID與NoSQL.md
+  - _private/MD/資料庫/四、Key.md
+  - _private/MD/計概/3a基本計概/done/十五、補數轉換_新手國考教材.md
+  - _private/MD/done/計概/3a基本計概/done/十四、進制轉換_新手國考教材.md
+  - _private/MD/網概/一、準備方向.md
+  - src/app/router.ts
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_7_排序.md
+  - _private/MD/done/資料庫/資料庫_5_SQL查詢進階.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_5_高等樹.md
+  - _private/MD/資料庫/二、ANSISPARC 架構.md
+  - _private/MD/計概/3c作業系統/二、IO與中斷_新手國考教材.md
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - _private/MD/資料結構與演算法/六、Stack 與 Queue.md
+  - _private/MD/done/程式設計/程式設計_2_函式與參數傳遞.md
+  - _private/MD/資料結構與演算法/八、圖（Graph）.md
+  - _private/MD/資訊管理/資訊管理_4a_個人資料保護法.md
+  - _private/筆記.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-9_虛擬記憶體.md
+  - _private/MD/資料結構與演算法/五、Linked List.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - _private/MD/done/程式設計/程式設計_4_指標.md
+  - _private/MD/網概/八、網路層.md
+  - _private/MD/網概/七、資料鏈結層.md
+  - _private/MD/程式/一、準備方向.md
+  - _private/MD/done/計概/3c作業系統/作業系統_3-6_Deadlock.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/done/資料庫/資料庫_2_鍵與ERD.md
+  - _private/MD/done/計概/3a基本計概/done/十一、Cache_新手國考教材.md
+  - _private/MD/done/計概/3b數位邏輯/二、SOP 與 POS_新手國考教材.md
+  - src/app/routePreload.ts
+  - _private/MD/done/網概/網路概論_4下_路由與L3協定.md
+  - _private/MD/資訊管理/資訊管理_2b_敏捷開發.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - _private/MD/資料庫/五、ERD.md
+  - _private/discuss.txt
+  - _private/MD/done/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/計概/3c作業系統/十、Disk Management_新手國考教材.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6下_圖演算法.md
+  - _private/MD/done/計概/3a基本計概/done/十六、浮點數轉換_新手國考教材.md
+tests:
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/programmingRouteWorkflow.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/unit/databaseRouteWorkflow.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/SubjectTopicPage.spec.ts
+-->
+
+---
+### Requirement: Imported Markdown topics carry exact source traceability
+
+Each imported Database, Programming, and System Design professional topic SHALL record exact Markdown source traceability. For each imported topic, the top-level `sourceFiles` field and every `lessonArticle.sourceFiles` field SHALL contain the matching Markdown source path for that topic. These imported topics SHALL NOT use `_private/TMP/` draft paths or legacy `.txt` source paths as their source traceability.
+
+#### Scenario: Imported topic sources are exact Markdown files
+
+- **WHEN** formal professional topic data is loaded
+- **THEN** every imported Database topic contains exactly one source path under `_private/MD/資料庫/`
+- **AND** every imported Programming topic contains exactly one source path under `_private/MD/程式設計/`
+- **AND** every imported System Design topic contains exactly one source path under `_private/MD/系統分析與設計/`
+- **AND** no imported topic contains a `_private/TMP/` source path
+- **AND** no imported topic contains a legacy `.txt` source path
+
+##### Example: imported source inventory
+
+| Subject key | Required source file |
+| ----- | ----- |
+| `database` | `_private/MD/資料庫/資料庫_1_基礎概念與架構.md` |
+| `database` | `_private/MD/資料庫/資料庫_2_鍵與ERD.md` |
+| `database` | `_private/MD/資料庫/資料庫_3_正規化.md` |
+| `database` | `_private/MD/資料庫/資料庫_4_SQL分類與CRUD.md` |
+| `database` | `_private/MD/資料庫/資料庫_5_SQL查詢進階.md` |
+| `database` | `_private/MD/資料庫/資料庫_6_交易ACID與NoSQL.md` |
+| `programming` | `_private/MD/程式設計/程式設計_1_語言執行方式與程式基礎.md` |
+| `programming` | `_private/MD/程式設計/程式設計_2_函式與參數傳遞.md` |
+| `programming` | `_private/MD/程式設計/程式設計_3_陣列字串與例外處理.md` |
+| `programming` | `_private/MD/程式設計/程式設計_4_指標.md` |
+| `programming` | `_private/MD/程式設計/程式設計_5_物件導向OOP.md` |
+| `programming` | `_private/MD/程式設計/程式設計_6_遞迴.md` |
+| `programming` | `_private/MD/程式設計/程式設計_7_各語言特性.md` |
+| `systemDesign` | `_private/MD/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md` |
+| `systemDesign` | `_private/MD/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md` |
+| `systemDesign` | `_private/MD/系統分析與設計/系統分析與設計_3_OO關係與UML.md` |
+| `systemDesign` | `_private/MD/系統分析與設計/系統分析與設計_4_測試.md` |
+| `systemDesign` | `_private/MD/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md` |
+
+#### Scenario: Source batch identifies the import change
+
+- **WHEN** an imported Database, Programming, or System Design topic is inspected
+- **THEN** its `sourceBatch` identifies the `fill-database-programming-system-design-content` import batch
+- **AND** its `sourceSummary` describes the Markdown section or topic basis used for that topic
+
+
+<!-- @trace
+source: fill-database-programming-system-design-content
+updated: 2026-06-19
+code:
+  - _private/MD/資料庫/四、Key.md
+  - _private/MD/資訊管理/四、ESG.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_3_OO關係與UML.md
+  - src/app/routePreload.ts
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_5_高等樹.md
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - _private/MD/done/網概/網路概論_4下_路由與L3協定.md
+  - _private/MD/資料庫/六、正規化.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_7_排序.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/done/資料庫/資料庫_3_正規化.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_6下_圖演算法.md
+  - _private/MD/程式/四、Python 特殊資料型別.md
+  - _private/MD/done/程式設計/程式設計_6_遞迴.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_5_高等樹.md
+  - _private/MD/done/資料庫/資料庫_2_鍵與ERD.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md
+  - _private/MD/系統分析與設計/四、物件導向.md
+  - _private/propose.md
+  - _private/MD/系統分析與設計/一、準備方向.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - src/modules/systemDesign/views/SystemDesignView.vue
+  - _private/MD/done/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md
+  - _private/MD/done/網概/網路概論_7上_實體層.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/done/網概/網路概論_6_應用層與Port對照.md
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md
+  - _private/MD/資訊管理/六、資訊管理補充考點.md
+  - _private/MD/網概/網路概論_2_基礎概念.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md
+  - _private/MD/資訊管理/資訊管理_1_數位轉型與ESG.md
+  - _private/MD/網概/網路概論_6_應用層與Port對照.md
+  - _private/MD/done/程式設計/程式設計_7_各語言特性.md
+  - _private/MD/資訊管理/資訊管理_4b_GDPR.md
+  - _private/MD/done/網概/網路概論_3_網路設備對應層級.md
+  - _private/MD/網概/網路概論_5_傳輸層.md
+  - _private/MD/done/程式設計/程式設計_4_指標.md
+  - _private/ques/原文.txt
+  - _private/MD/資料庫/七、SQL 分類與 CRUD.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md
+  - _private/MD/done/網概/網路概論_2_基礎概念.md
+  - _private/MD/資訊管理/資訊管理_4a_個人資料保護法.md
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - _private/MD/資訊管理/一、準備方向.md
+  - _private/MD/網概/網路概論_3_網路設備對應層級.md
+  - _private/MD/系統分析與設計/三、結構化分析與設計.md
+  - _private/MD/done/程式設計/程式設計_2_函式與參數傳遞.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_8_雜湊.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - _private/MD/程式/三、中階.md
+  - PROJECT_ARCHITECTURE.md
+  - _private/MD/網概/網路概論_4下_路由與L3協定.md
+  - _private/MD/資訊管理/三、資訊系統開發流程與模式.md
+  - _private/MD/done/程式設計/程式設計_3_陣列字串與例外處理.md
+  - _private/MD/資訊管理/二、數位轉型.md
+  - _private/MD/資訊管理/資訊管理_3a_資訊倫理.md
+  - _private/MD/done/資料庫/資料庫_1_基礎概念與架構.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - _private/MD/資訊管理/資訊管理_2b_敏捷開發.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md
+  - _private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/網概/網路概論_7下_資料鏈結層.md
+  - _private/MD/done/網概/網路概論_4上_IP與子網路計算.md
+  - _private/MD/資料庫/三、資料庫基礎.md
+  - _private/MD/done/程式設計/程式設計_5_物件導向OOP.md
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/資訊管理/資訊管理_3b_數據分類與隱私悖論.md
+  - _private/MD/done/網概/網路概論_8下_防禦設備與攻擊.md
+  - _private/MD/演算法/GeneralBucketSort.java
+  - _private/MD/網概/網路概論_8上_資安觀念與加密.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_8_雜湊.md
+  - _private/MD/done/網概/網路概論_7下_資料鏈結層.md
+  - _private/MD/資訊管理/資訊管理_2a_傳統開發模式.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md
+  - _private/MD/done/演算法/GeneralBucketSort.java
+  - _private/MD/程式/二、基礎.md
+  - _private/MD/程式/五、C C++ Java 補充重點.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - _private/MD/done/資料庫/資料庫_4_SQL分類與CRUD.md
+  - _private/MD/done/資料庫/資料庫_6_交易ACID與NoSQL.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6下_圖演算法.md
+  - _private/MD/系統分析與設計/二、系統分析與設計概論.md
+  - _private/MD/資料庫/八、ACID 與交易.md
+  - _private/discuss.txt
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/資訊管理/五、資訊系統倫理與新興法規.md
+  - _private/MD/資料庫/二、ANSISPARC 架構.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - _private/MD/網概/網路概論_1_OSI七層與TCPIP.md
+  - src/shared/components/RouteSubMenu.vue
+  - _private/MD/資料庫/五、ERD.md
+  - _private/MD/網概/網路概論_8下_防禦設備與攻擊.md
+  - src/shared/components/RouteTabs.vue
+  - _private/MD/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_4_測試.md
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/done/程式設計/程式設計_1_語言執行方式與程式基礎.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md
+  - _private/MD/done/網概/網路概論_5_傳輸層.md
+  - _private/MD/計算機概論/00_目錄.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - src/styles/main.css
+  - _private/MD/done/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/資料庫/九、NoSQL.md
+  - _private/MD/資料庫/一、準備方向.md
+  - _private/MD/done/資料庫/資料庫_5_SQL查詢進階.md
+  - _private/MD/done/演算法/BubbleSort.java
+  - _private/MD/系統分析與設計/五、UML.md
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - src/app/router.ts
+  - _private/MD/資料結構與演算法/資料結構與演算法_7_排序.md
+  - _private/MD/資料庫/十、資料庫補充考點.md
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - _private/MD/演算法/BubbleSort.java
+  - _private/MD/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md
+  - _private/MD/程式/一、準備方向.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _private/MD/網概/網路概論_4上_IP與子網路計算.md
+  - _private/MD/網概/網路概論_7上_實體層.md
+  - _private/TMP/information-management-md-content-review.md
+  - _private/MD/done/網概/網路概論_1_OSI七層與TCPIP.md
+  - _private/MD/系統分析與設計/六、專案管理.md
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/done/網概/網路概論_8上_資安觀念與加密.md
+tests:
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/databaseRouteWorkflow.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/unit/programmingRouteWorkflow.spec.ts
+  - tests/unit/routeConfig.spec.ts
+-->
+
+---
+### Requirement: Imported Markdown topics use lessonArticle display shape
+
+Each imported Database, Programming, and System Design topic SHALL expose learner-facing content through the existing `lessonArticle` block shape. The imported content SHALL preserve source learning guidance such as reminders, understanding notes, and learning-method notes when present. The imported content SHALL normalize Markdown headings, lists, tables, and code examples into supported lessonArticle blocks.
+
+#### Scenario: Imported topics have visible lessonArticle content
+
+- **WHEN** formal professional topic data is loaded
+- **THEN** every imported Database topic contains at least one `lessonArticle` block
+- **AND** every imported Programming topic contains at least one `lessonArticle` block
+- **AND** every imported System Design topic contains at least one `lessonArticle` block
+- **AND** every imported `lessonArticle` has at least one section with visible learner-facing content
+
+#### Scenario: Learner-facing guidance is preserved
+
+- **WHEN** an imported Markdown source contains a reminder, understanding note, or learning-method note for the learner
+- **THEN** the corresponding formal topic keeps that guidance in the `lessonArticle.lead` or a relevant lesson section
+- **AND** the guidance remains visible on the subject topic page
+
+#### Scenario: Renderer instructions are not learner-facing text
+
+- **WHEN** imported topics are serialized from formal professional data
+- **THEN** the serialized learner-facing content does not contain raw renderer instructions such as `用table`, `ul/li做`, `紅色文字顏色`, or `你幫我設計顯示方式`
+- **AND** any equivalent display intent is represented through supported lessonArticle table, list, or paragraph blocks
+
+
+<!-- @trace
+source: fill-database-programming-system-design-content
+updated: 2026-06-19
+code:
+  - _private/MD/資料庫/四、Key.md
+  - _private/MD/資訊管理/四、ESG.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_3_OO關係與UML.md
+  - src/app/routePreload.ts
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_5_高等樹.md
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - _private/MD/done/網概/網路概論_4下_路由與L3協定.md
+  - _private/MD/資料庫/六、正規化.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_7_排序.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/done/資料庫/資料庫_3_正規化.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_6下_圖演算法.md
+  - _private/MD/程式/四、Python 特殊資料型別.md
+  - _private/MD/done/程式設計/程式設計_6_遞迴.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_5_高等樹.md
+  - _private/MD/done/資料庫/資料庫_2_鍵與ERD.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md
+  - _private/MD/系統分析與設計/四、物件導向.md
+  - _private/propose.md
+  - _private/MD/系統分析與設計/一、準備方向.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - src/modules/systemDesign/views/SystemDesignView.vue
+  - _private/MD/done/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md
+  - _private/MD/done/網概/網路概論_7上_實體層.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/done/網概/網路概論_6_應用層與Port對照.md
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md
+  - _private/MD/資訊管理/六、資訊管理補充考點.md
+  - _private/MD/網概/網路概論_2_基礎概念.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md
+  - _private/MD/資訊管理/資訊管理_1_數位轉型與ESG.md
+  - _private/MD/網概/網路概論_6_應用層與Port對照.md
+  - _private/MD/done/程式設計/程式設計_7_各語言特性.md
+  - _private/MD/資訊管理/資訊管理_4b_GDPR.md
+  - _private/MD/done/網概/網路概論_3_網路設備對應層級.md
+  - _private/MD/網概/網路概論_5_傳輸層.md
+  - _private/MD/done/程式設計/程式設計_4_指標.md
+  - _private/ques/原文.txt
+  - _private/MD/資料庫/七、SQL 分類與 CRUD.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md
+  - _private/MD/done/網概/網路概論_2_基礎概念.md
+  - _private/MD/資訊管理/資訊管理_4a_個人資料保護法.md
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - _private/MD/資訊管理/一、準備方向.md
+  - _private/MD/網概/網路概論_3_網路設備對應層級.md
+  - _private/MD/系統分析與設計/三、結構化分析與設計.md
+  - _private/MD/done/程式設計/程式設計_2_函式與參數傳遞.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_8_雜湊.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - _private/MD/程式/三、中階.md
+  - PROJECT_ARCHITECTURE.md
+  - _private/MD/網概/網路概論_4下_路由與L3協定.md
+  - _private/MD/資訊管理/三、資訊系統開發流程與模式.md
+  - _private/MD/done/程式設計/程式設計_3_陣列字串與例外處理.md
+  - _private/MD/資訊管理/二、數位轉型.md
+  - _private/MD/資訊管理/資訊管理_3a_資訊倫理.md
+  - _private/MD/done/資料庫/資料庫_1_基礎概念與架構.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - _private/MD/資訊管理/資訊管理_2b_敏捷開發.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md
+  - _private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/網概/網路概論_7下_資料鏈結層.md
+  - _private/MD/done/網概/網路概論_4上_IP與子網路計算.md
+  - _private/MD/資料庫/三、資料庫基礎.md
+  - _private/MD/done/程式設計/程式設計_5_物件導向OOP.md
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/資訊管理/資訊管理_3b_數據分類與隱私悖論.md
+  - _private/MD/done/網概/網路概論_8下_防禦設備與攻擊.md
+  - _private/MD/演算法/GeneralBucketSort.java
+  - _private/MD/網概/網路概論_8上_資安觀念與加密.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_8_雜湊.md
+  - _private/MD/done/網概/網路概論_7下_資料鏈結層.md
+  - _private/MD/資訊管理/資訊管理_2a_傳統開發模式.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md
+  - _private/MD/done/演算法/GeneralBucketSort.java
+  - _private/MD/程式/二、基礎.md
+  - _private/MD/程式/五、C C++ Java 補充重點.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - _private/MD/done/資料庫/資料庫_4_SQL分類與CRUD.md
+  - _private/MD/done/資料庫/資料庫_6_交易ACID與NoSQL.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6下_圖演算法.md
+  - _private/MD/系統分析與設計/二、系統分析與設計概論.md
+  - _private/MD/資料庫/八、ACID 與交易.md
+  - _private/discuss.txt
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/資訊管理/五、資訊系統倫理與新興法規.md
+  - _private/MD/資料庫/二、ANSISPARC 架構.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - _private/MD/網概/網路概論_1_OSI七層與TCPIP.md
+  - src/shared/components/RouteSubMenu.vue
+  - _private/MD/資料庫/五、ERD.md
+  - _private/MD/網概/網路概論_8下_防禦設備與攻擊.md
+  - src/shared/components/RouteTabs.vue
+  - _private/MD/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_4_測試.md
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/done/程式設計/程式設計_1_語言執行方式與程式基礎.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md
+  - _private/MD/done/網概/網路概論_5_傳輸層.md
+  - _private/MD/計算機概論/00_目錄.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - src/styles/main.css
+  - _private/MD/done/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/資料庫/九、NoSQL.md
+  - _private/MD/資料庫/一、準備方向.md
+  - _private/MD/done/資料庫/資料庫_5_SQL查詢進階.md
+  - _private/MD/done/演算法/BubbleSort.java
+  - _private/MD/系統分析與設計/五、UML.md
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - src/app/router.ts
+  - _private/MD/資料結構與演算法/資料結構與演算法_7_排序.md
+  - _private/MD/資料庫/十、資料庫補充考點.md
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - _private/MD/演算法/BubbleSort.java
+  - _private/MD/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md
+  - _private/MD/程式/一、準備方向.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _private/MD/網概/網路概論_4上_IP與子網路計算.md
+  - _private/MD/網概/網路概論_7上_實體層.md
+  - _private/TMP/information-management-md-content-review.md
+  - _private/MD/done/網概/網路概論_1_OSI七層與TCPIP.md
+  - _private/MD/系統分析與設計/六、專案管理.md
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/done/網概/網路概論_8上_資安觀念與加密.md
+tests:
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/databaseRouteWorkflow.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/unit/programmingRouteWorkflow.spec.ts
+  - tests/unit/routeConfig.spec.ts
+-->
+
+---
+### Requirement: Imported Markdown topics keep professional topic metadata complete
+
+Each imported Database, Programming, and System Design topic SHALL remain a complete `ProfessionalSubjectTopic`. Each imported topic SHALL include `subjectKey`, `title`, `summary`, `examOutline`, `memoryPoints`, `understandingNotes`, `difficulty`, `topicType`, `terms`, `sourceBatch`, `sourceFiles`, `sourceSummary`, and `blocks`.
+
+#### Scenario: Imported metadata supports route rendering and progress
+
+- **WHEN** the subject topic page receives imported professional topic data
+- **THEN** each imported Database topic has `subjectKey` set to `database`
+- **AND** each imported Programming topic has `subjectKey` set to `programming`
+- **AND** each imported System Design topic has `subjectKey` set to `systemDesign`
+- **AND** each imported topic has non-empty `title`, `summary`, `examOutline`, `memoryPoints`, and `understandingNotes`
+
+#### Scenario: No quiz data is introduced by the import
+
+- **WHEN** imported professional topic data is inspected
+- **THEN** the imported topics do not introduce quiz question fields
+- **AND** the import does not introduce answer option fields
+- **AND** the import does not introduce backend synchronization fields
+
+##### Example: topic data remains lecture-only
+
+| Imported topic field group | Expected presence |
+| ----- | ----- |
+| `lessonArticle` content blocks | Present |
+| `sourceFiles` and `sourceSummary` | Present |
+| `questionText`, `options`, `correctAnswer`, `optionExplanations` | Absent |
+| `backendSyncId`, `remoteQuestionId` | Absent |
+
+<!-- @trace
+source: fill-database-programming-system-design-content
+updated: 2026-06-19
+code:
+  - _private/MD/資料庫/四、Key.md
+  - _private/MD/資訊管理/四、ESG.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_3_OO關係與UML.md
+  - src/app/routePreload.ts
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_5_高等樹.md
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - _private/MD/done/網概/網路概論_4下_路由與L3協定.md
+  - _private/MD/資料庫/六、正規化.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_7_排序.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/done/資料庫/資料庫_3_正規化.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_6下_圖演算法.md
+  - _private/MD/程式/四、Python 特殊資料型別.md
+  - _private/MD/done/程式設計/程式設計_6_遞迴.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_5_高等樹.md
+  - _private/MD/done/資料庫/資料庫_2_鍵與ERD.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md
+  - _private/MD/系統分析與設計/四、物件導向.md
+  - _private/propose.md
+  - _private/MD/系統分析與設計/一、準備方向.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - src/modules/systemDesign/views/SystemDesignView.vue
+  - _private/MD/done/系統分析與設計/系統分析與設計_2_內聚力與耦合力.md
+  - _private/MD/done/網概/網路概論_7上_實體層.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/done/網概/網路概論_6_應用層與Port對照.md
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md
+  - _private/MD/資訊管理/六、資訊管理補充考點.md
+  - _private/MD/網概/網路概論_2_基礎概念.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md
+  - _private/MD/資訊管理/資訊管理_1_數位轉型與ESG.md
+  - _private/MD/網概/網路概論_6_應用層與Port對照.md
+  - _private/MD/done/程式設計/程式設計_7_各語言特性.md
+  - _private/MD/資訊管理/資訊管理_4b_GDPR.md
+  - _private/MD/done/網概/網路概論_3_網路設備對應層級.md
+  - _private/MD/網概/網路概論_5_傳輸層.md
+  - _private/MD/done/程式設計/程式設計_4_指標.md
+  - _private/ques/原文.txt
+  - _private/MD/資料庫/七、SQL 分類與 CRUD.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md
+  - _private/MD/done/網概/網路概論_2_基礎概念.md
+  - _private/MD/資訊管理/資訊管理_4a_個人資料保護法.md
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - _private/MD/資訊管理/一、準備方向.md
+  - _private/MD/網概/網路概論_3_網路設備對應層級.md
+  - _private/MD/系統分析與設計/三、結構化分析與設計.md
+  - _private/MD/done/程式設計/程式設計_2_函式與參數傳遞.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_8_雜湊.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_3_堆疊與佇列.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - _private/MD/程式/三、中階.md
+  - PROJECT_ARCHITECTURE.md
+  - _private/MD/網概/網路概論_4下_路由與L3協定.md
+  - _private/MD/資訊管理/三、資訊系統開發流程與模式.md
+  - _private/MD/done/程式設計/程式設計_3_陣列字串與例外處理.md
+  - _private/MD/資訊管理/二、數位轉型.md
+  - _private/MD/資訊管理/資訊管理_3a_資訊倫理.md
+  - _private/MD/done/資料庫/資料庫_1_基礎概念與架構.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - _private/MD/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - _private/MD/資訊管理/資訊管理_2b_敏捷開發.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_4_樹基本與走訪.md
+  - _private/MD/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/網概/網路概論_7下_資料鏈結層.md
+  - _private/MD/done/網概/網路概論_4上_IP與子網路計算.md
+  - _private/MD/資料庫/三、資料庫基礎.md
+  - _private/MD/done/程式設計/程式設計_5_物件導向OOP.md
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/資訊管理/資訊管理_3b_數據分類與隱私悖論.md
+  - _private/MD/done/網概/網路概論_8下_防禦設備與攻擊.md
+  - _private/MD/演算法/GeneralBucketSort.java
+  - _private/MD/網概/網路概論_8上_資安觀念與加密.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_8_雜湊.md
+  - _private/MD/done/網概/網路概論_7下_資料鏈結層.md
+  - _private/MD/資訊管理/資訊管理_2a_傳統開發模式.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_5_系統導入與PDCA.md
+  - _private/MD/done/演算法/GeneralBucketSort.java
+  - _private/MD/程式/二、基礎.md
+  - _private/MD/程式/五、C C++ Java 補充重點.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - _private/MD/done/資料庫/資料庫_4_SQL分類與CRUD.md
+  - _private/MD/done/資料庫/資料庫_6_交易ACID與NoSQL.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_6下_圖演算法.md
+  - _private/MD/系統分析與設計/二、系統分析與設計概論.md
+  - _private/MD/資料庫/八、ACID 與交易.md
+  - _private/discuss.txt
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/資訊管理/五、資訊系統倫理與新興法規.md
+  - _private/MD/資料庫/二、ANSISPARC 架構.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - _private/MD/網概/網路概論_1_OSI七層與TCPIP.md
+  - src/shared/components/RouteSubMenu.vue
+  - _private/MD/資料庫/五、ERD.md
+  - _private/MD/網概/網路概論_8下_防禦設備與攻擊.md
+  - src/shared/components/RouteTabs.vue
+  - _private/MD/資料結構與演算法/資料結構與演算法_6上_圖基礎與走訪.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_4_測試.md
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/done/程式設計/程式設計_1_語言執行方式與程式基礎.md
+  - _private/MD/done/系統分析與設計/系統分析與設計_1_SDLC與SSDLC.md
+  - _private/MD/done/網概/網路概論_5_傳輸層.md
+  - _private/MD/計算機概論/00_目錄.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - src/styles/main.css
+  - _private/MD/done/演算法/國考常見演算法_Java遞迴非遞迴_時間複雜度.md
+  - _private/MD/資料庫/九、NoSQL.md
+  - _private/MD/資料庫/一、準備方向.md
+  - _private/MD/done/資料庫/資料庫_5_SQL查詢進階.md
+  - _private/MD/done/演算法/BubbleSort.java
+  - _private/MD/系統分析與設計/五、UML.md
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - src/app/router.ts
+  - _private/MD/資料結構與演算法/資料結構與演算法_7_排序.md
+  - _private/MD/資料庫/十、資料庫補充考點.md
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - _private/MD/演算法/BubbleSort.java
+  - _private/MD/資料結構與演算法/資料結構與演算法_1_Big-O複雜度.md
+  - _private/MD/程式/一、準備方向.md
+  - _private/MD/done/資料結構與演算法/資料結構與演算法_2_陣列與鏈結串列.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _private/MD/網概/網路概論_4上_IP與子網路計算.md
+  - _private/MD/網概/網路概論_7上_實體層.md
+  - _private/TMP/information-management-md-content-review.md
+  - _private/MD/done/網概/網路概論_1_OSI七層與TCPIP.md
+  - _private/MD/系統分析與設計/六、專案管理.md
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/done/網概/網路概論_8上_資安觀念與加密.md
+tests:
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/databaseRouteWorkflow.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/unit/programmingRouteWorkflow.spec.ts
+  - tests/unit/routeConfig.spec.ts
+-->
+
+---
+### Requirement: Information Management imports Markdown-backed lesson articles
+
+The system SHALL provide finalized `lessonArticle` topics for every Markdown file under `_private/MD/資訊管理/`. The imported Information Management topics SHALL appear in the same natural filename order as the source Markdown files and SHALL appear before existing Information Management skeleton topics in formal topic data.
+
+#### Scenario: Imported topics appear in source order
+
+- **WHEN** `professionalTopicsBySubject.informationManagement` is loaded
+- **THEN** the first seven topics have ids and titles in this order:
+
+##### Example: ordered imported topics
+
+| Position | Topic id | Title | Source file |
+| ----- | ----- | ----- | ----- |
+| 1 | `im-md-digital-transformation-esg` | `資訊管理 1：數位轉型 + ESG` | `_private/MD/資訊管理/資訊管理_1_數位轉型與ESG.md` |
+| 2 | `im-md-traditional-development-models` | `資訊管理 2a：傳統開發模式（漸增／雛形／螺旋）` | `_private/MD/資訊管理/資訊管理_2a_傳統開發模式.md` |
+| 3 | `im-md-agile-development` | `資訊管理 2b：敏捷開發 Agile` | `_private/MD/資訊管理/資訊管理_2b_敏捷開發.md` |
+| 4 | `im-md-information-ethics` | `資訊管理 3a：資訊倫理（PAPA 四大議題）` | `_private/MD/資訊管理/資訊管理_3a_資訊倫理.md` |
+| 5 | `im-md-data-classification-privacy-paradox` | `資訊管理 3b：數據分類 + 隱私悖論` | `_private/MD/資訊管理/資訊管理_3b_數據分類與隱私悖論.md` |
+| 6 | `im-md-personal-data-protection-act` | `資訊管理 4a：個人資料保護法（個資法）` | `_private/MD/資訊管理/資訊管理_4a_個人資料保護法.md` |
+| 7 | `im-md-gdpr` | `資訊管理 4b：GDPR（歐盟一般資料保護規則）` | `_private/MD/資訊管理/資訊管理_4b_GDPR.md` |
+
+#### Scenario: Existing skeleton topics remain after imported topics
+
+- **WHEN** `professionalTopicsBySubject.informationManagement` is loaded
+- **THEN** every existing Information Management skeleton topic remains after the seven imported Markdown topics
+- **AND** the existing skeleton topics preserve their previous relative order
+- **AND** no imported Markdown topic reuses an existing skeleton topic id.
+
+
+<!-- @trace
+source: fill-information-management-md-content
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - src/shared/components/RouteSubMenu.vue
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/app/routePreload.ts
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - _private/discuss.txt
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - src/styles/main.css
+  - src/app/router.ts
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/計算機概論/00_目錄.md
+  - src/shared/components/RouteTabs.vue
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/計算機概論/10_浮點數轉換.md
+tests:
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+-->
+
+---
+### Requirement: Imported Information Management topics preserve source traceability and article shape
+
+Each imported Information Management topic SHALL record exact Markdown source traceability and SHALL expose one learner-facing `lessonArticle` block with non-empty sections.
+
+#### Scenario: Each imported topic has exact source traceability
+
+- **WHEN** an imported Information Management topic is loaded
+- **THEN** `sourceFiles` contains exactly one path
+- **AND** that path is the matching Markdown source under `_private/MD/資訊管理/`
+- **AND** `sourceSummary` equals the Markdown H1
+- **AND** the `lessonArticle.sourceFiles` value equals the topic `sourceFiles`
+- **AND** the `lessonArticle.sourceSection` equals the topic `sourceSummary`.
+
+#### Scenario: Each imported topic has learner-facing lesson content
+
+- **WHEN** an imported Information Management topic is loaded
+- **THEN** the topic has exactly one block
+- **AND** the block kind is `lessonArticle`
+- **AND** the block has at least one section
+- **AND** at least one section contains visible paragraph, list, table, or subsection content
+- **AND** the topic does not use `sourceNote`, `examOutline`, `memoryPoints`, `understanding`, `termList`, `workedExample`, or `pitfall` blocks as separate learner-facing blocks.
+
+
+<!-- @trace
+source: fill-information-management-md-content
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - src/shared/components/RouteSubMenu.vue
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/app/routePreload.ts
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - _private/discuss.txt
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - src/styles/main.css
+  - src/app/router.ts
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/計算機概論/00_目錄.md
+  - src/shared/components/RouteTabs.vue
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/計算機概論/10_浮點數轉換.md
+tests:
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+-->
+
+---
+### Requirement: Imported Information Management content keeps source structure with minimal corrections
+
+The system SHALL preserve the relative reading order of each Markdown source while converting headings, paragraphs, blockquotes, bullet lists, ordered lists, and tables into existing `lessonArticle` content blocks. The system MUST apply only the smallest corrections needed for factual accuracy, legal/current-affairs freshness, and renderer compatibility.
+
+#### Scenario: Agile topic preserves section order
+
+- **WHEN** the `im-md-agile-development` lesson article is loaded
+- **THEN** its learner-facing sections preserve this source order: `定義`, `核心價值（敏捷宣言四大價值）`, `優缺點`, `三個常見框架`, `重點整理（背這張）`.
+
+#### Scenario: Source-only verification meta text is not learner-facing
+
+- **WHEN** any imported Information Management lesson article is serialized from formal topic data
+- **THEN** the serialized learner-facing text does not contain `內容經網路查證`
+- **AND** the serialized learner-facing text does not contain `內容經查證`
+- **AND** concrete caveats from the source, including the differing wording of Digital Transformation success factors, remain represented when they affect learning.
+
+#### Scenario: Known factual corrections are applied conservatively
+
+- **WHEN** the `im-md-data-classification-privacy-paradox` topic is loaded
+- **THEN** the Second-Party Data example uses a conservative partner-sharing description such as `合作夥伴分享的會員/客戶行為資料`
+- **AND** the topic does not present generic Facebook or Instagram advertising behavior data as direct Second-Party Data ownership.
+
+#### Scenario: Legal and GDPR wording is current at apply time
+
+- **WHEN** the `im-md-personal-data-protection-act` and `im-md-gdpr` topics are loaded
+- **THEN** the Personal Data Protection Act topic describes the Personal Data Protection Commission status according to official sources checked during apply
+- **AND** the topic distinguishes enacted provisions, pending effective dates, and preparatory-office status without describing pending powers as fully active
+- **AND** the GDPR topic uses wording compatible with GDPR territorial scope for data subjects in the European Union
+- **AND** the GDPR fine summary includes the higher-of threshold of 20 million euros or 4 percent of worldwide annual turnover.
+
+
+<!-- @trace
+source: fill-information-management-md-content
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - src/shared/components/RouteSubMenu.vue
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/app/routePreload.ts
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - _private/discuss.txt
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - src/styles/main.css
+  - src/app/router.ts
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/計算機概論/00_目錄.md
+  - src/shared/components/RouteTabs.vue
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/計算機概論/10_浮點數轉換.md
+tests:
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+-->
+
+---
+### Requirement: Information Management import review is recorded
+
+The system SHALL record the content verification decisions for this import in a review note so that future apply or archive work can understand which source text was normalized and why.
+
+#### Scenario: Review note records corrections and verification sources
+
+- **WHEN** the import is completed
+- **THEN** `_private/TMP/information-management-md-content-review.md` exists
+- **AND** it lists all seven imported Markdown files
+- **AND** it records the Personal Data Protection Act and GDPR verification date
+- **AND** it records the Second-Party Data example correction
+- **AND** it records that source-only verification meta text was excluded from learner-facing article text.
+
+<!-- @trace
+source: fill-information-management-md-content
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - src/shared/components/RouteSubMenu.vue
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/app/routePreload.ts
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - _private/discuss.txt
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - src/styles/main.css
+  - src/app/router.ts
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/計算機概論/00_目錄.md
+  - src/shared/components/RouteTabs.vue
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/計算機概論/10_浮點數轉換.md
+tests:
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+-->
+
+---
+### Requirement: Computer principles topics are split into dedicated formal subjects
+
+Formal professional topic data SHALL move digital logic and operating system topics out of `computerPrinciples` and into dedicated `digitalLogic` and `operatingSystems` subject collections. The moved topics SHALL keep their existing topic ids, route-scoped display titles, source traceability, lessonArticle content, difficulty, topic type, and terms. Topic display titles SHALL omit redundant subject/chapter prefixes when the route already supplies that context.
+
+#### Scenario: Digital logic topics belong only to digitalLogic
+
+- **WHEN** `professionalTopicsBySubject` is loaded
+- **THEN** `professionalTopicsBySubject.digitalLogic` contains exactly the five moved digital logic topic ids in source order
+- **AND** `professionalTopicsBySubject.computerPrinciples` does not contain any of those topic ids
+
+##### Example: digital logic topic ownership
+
+| Position | Topic id | Expected subject |
+| ----- | ----- | ----- |
+| 1 | `cp-digital-logic-basics` | `digitalLogic` |
+| 2 | `cp-sop-pos` | `digitalLogic` |
+| 3 | `cp-karnaugh-map` | `digitalLogic` |
+| 4 | `cp-universal-gates` | `digitalLogic` |
+| 5 | `cp-combinational-sequential-circuits` | `digitalLogic` |
+
+#### Scenario: Operating system topics belong only to operatingSystems
+
+- **WHEN** `professionalTopicsBySubject` is loaded
+- **THEN** `professionalTopicsBySubject.operatingSystems` contains exactly the eleven moved operating system topic ids in source order
+- **AND** `professionalTopicsBySubject.computerPrinciples` does not contain any of those topic ids
+
+##### Example: operating system topic ownership
+
+| Position | Topic id | Expected subject |
+| ----- | ----- | ----- |
+| 1 | `cp-os-basics` | `operatingSystems` |
+| 2 | `cp-io-and-interrupts` | `operatingSystems` |
+| 3 | `cp-hardware-protection` | `operatingSystems` |
+| 4 | `cp-os-structure` | `operatingSystems` |
+| 5 | `cp-process` | `operatingSystems` |
+| 6 | `cp-cpu-scheduling` | `operatingSystems` |
+| 7 | `cp-deadlock` | `operatingSystems` |
+| 8 | `cp-process-communication` | `operatingSystems` |
+| 9 | `cp-memory-management` | `operatingSystems` |
+| 10 | `cp-virtual-memory` | `operatingSystems` |
+| 11 | `cp-disk-management` | `operatingSystems` |
+
+#### Scenario: Computer principles keeps only remaining computer-principles topics
+
+- **WHEN** `getSubjectTopics('computerPrinciples')` is loaded
+- **THEN** it includes remaining computer-principles topics such as `cp-common-units`, `cp-von-neumann-architecture`, and `cp-codes-and-check-codes`
+- **AND** it does not include `cp-digital-logic-basics`
+- **AND** it does not include `cp-os-basics`
+
+#### Scenario: Empty hardware protection skeleton is not route-visible
+
+- **WHEN** `professionalTopicsBySubject.operatingSystems` is loaded
+- **THEN** it includes `cp-hardware-protection` as an `operatingSystems` formal topic
+- **AND** that topic has no visible lessonArticle sections, no summary, and no terms
+- **WHEN** `getSubjectTopics('operatingSystems')` is loaded
+- **THEN** it does not include `cp-hardware-protection`
+
+#### Scenario: Split routes retain learner-facing lessonArticle content
+
+- **WHEN** `getSubjectTopics('digitalLogic')` and `getSubjectTopics('operatingSystems')` are loaded
+- **THEN** every returned topic has at least one visible learner-facing content block
+- **AND** moved topics keep their existing `sourceFiles` and `sourceSummary` values
+
+
+<!-- @trace
+source: split-computer-principles-routes
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - src/app/router.ts
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - src/shared/components/RouteTabs.vue
+  - src/app/routePreload.ts
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - src/shared/components/RouteSubMenu.vue
+  - src/styles/main.css
+  - _private/MD/計算機概論/00_目錄.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - _private/MD/計算機概論/09_補數轉換.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/discuss.txt
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+tests:
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+-->
+
+---
+### Requirement: Professional route topic titles are route-scoped
+
+Professional route topic display titles SHALL omit redundant subject names and chapter numbers once the containing route already provides subject context. Source traceability fields SHALL preserve the underlying source location independently from the display title.
+
+#### Scenario: Imported professional topic titles omit redundant prefixes
+
+- **WHEN** formal professional topics are loaded for operating systems, networking, algorithms, information management, database, programming, and system design
+- **THEN** learner-facing `title` values do not include route-level prefixes such as `作業系統 1：`, `網路概論 1：`, `資料結構與演算法 1：`, `資訊管理 1：`, `資料庫 1：`, `程式設計 1：`, or `系統分析與設計 1：`
+- **AND** examples include `OS 基礎概念`, `OSI 七層 + TCP/IP ★`, `演算法定義 + Big-O 複雜度 ★`, `數位轉型 + ESG`, `基礎概念 + ANSI/SPARC 架構`, `語言執行方式 + 程式基礎`, and `SDLC + SSDLC`
+- **AND** `sourceFiles`, `sourceSummary`, and lessonArticle `sourceSection` remain available for source traceability
+
+<!-- @trace
+source: split-computer-principles-routes
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - src/app/router.ts
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - src/shared/components/RouteTabs.vue
+  - src/app/routePreload.ts
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - src/shared/components/RouteSubMenu.vue
+  - src/styles/main.css
+  - _private/MD/計算機概論/00_目錄.md
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - _private/MD/計算機概論/09_補數轉換.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/discuss.txt
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+tests:
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+-->
+
+---
+### Requirement: Computer Principles v2 topics preserve source traceability
+
+Formal professional topic data SHALL include a `computerPrinciplesV2` collection containing exactly 13 source-backed topics imported from `_private/MD/計算機概論/01_架構與計算理論.md` through `_private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md`. Each topic SHALL record its Markdown source file and the catalog title used for display.
+
+#### Scenario: V2 topic data has exact source files
+
+- **WHEN** `professionalTopicsBySubject.computerPrinciplesV2` is loaded
+- **THEN** it contains exactly 13 topics
+- **AND** each topic has `sourceBatch` set to `computer-principles-v2-route`
+- **AND** each topic `sourceFiles` includes exactly one content Markdown file from `_private/MD/計算機概論/01_架構與計算理論.md` through `_private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md`
+- **AND** no topic uses `_private/MD/計算機概論/00_目錄.md` as its content source file
+
+##### Example: required source files
+
+| Position | Required source file |
+| ----- | ----- |
+| 1 | `_private/MD/計算機概論/01_架構與計算理論.md` |
+| 2 | `_private/MD/計算機概論/02_機器指令與指令週期.md` |
+| 3 | `_private/MD/計算機概論/03_Pipeline與Hazard.md` |
+| 4 | `_private/MD/計算機概論/04_效能與RISC-CISC.md` |
+| 5 | `_private/MD/計算機概論/05_匯流排與USB.md` |
+| 6 | `_private/MD/計算機概論/06_記憶體-階層與分類.md` |
+| 7 | `_private/MD/計算機概論/07_記憶體-暫存器與Cache.md` |
+| 8 | `_private/MD/計算機概論/08_進制轉換.md` |
+| 9 | `_private/MD/計算機概論/09_補數轉換.md` |
+| 10 | `_private/MD/計算機概論/10_浮點數轉換.md` |
+| 11 | `_private/MD/計算機概論/11_數碼與文字碼.md` |
+| 12 | `_private/MD/計算機概論/12_檢查碼-Parity與CRC.md` |
+| 13 | `_private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md` |
+
+#### Scenario: Source summary links display title and source chapter
+
+- **WHEN** a Computer Principles v2 topic is loaded
+- **THEN** the topic `title` matches the catalog `篇名` value
+- **AND** the topic `sourceSummary` identifies the catalog title or source chapter used for that topic
+- **AND** the lessonArticle `sourceSection` equals the topic `sourceSummary`
+
+
+<!-- @trace
+source: computer-principles-v2-route
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - src/app/router.ts
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - src/shared/components/RouteTabs.vue
+  - _private/MD/計算機概論/00_目錄.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - src/styles/main.css
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - _private/discuss.txt
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - src/shared/components/RouteSubMenu.vue
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - src/app/routePreload.ts
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+tests:
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+-->
+
+---
+### Requirement: Computer Principles v2 topics keep source-authored teaching structure
+
+Computer Principles v2 topics SHALL preserve the source-authored teaching structure while converting it into supported formal content blocks. The conversion MUST NOT replace source-authored explanations with generated summaries.
+
+#### Scenario: LessonArticle content is non-empty and source-shaped
+
+- **WHEN** each Computer Principles v2 topic is loaded
+- **THEN** it contains one `lessonArticle` block
+- **AND** the lessonArticle has at least one non-empty section
+- **AND** section headings and content follow the source Markdown topic structure
+- **AND** calculation-heavy topics preserve worked examples and practice explanations from the source Markdown
+
+#### Scenario: Catalog-only content is not learner-facing
+
+- **WHEN** the formal `computerPrinciplesV2` topics are serialized
+- **THEN** no topic id, title, or lessonArticle section represents `_private/MD/計算機概論/00_目錄.md` as learner-facing content
+- **AND** the catalog file is used only to verify order and title mapping
+
+#### Scenario: Question-bank constraints are not introduced
+
+- **WHEN** Computer Principles v2 topics are loaded
+- **THEN** the topics do not require multiple-choice question fields
+- **AND** the topics do not require answer uniqueness metadata
+- **AND** the topics do not require option distinguishability metadata
+
+<!-- @trace
+source: computer-principles-v2-route
+updated: 2026-06-19
+code:
+  - _private/MD/計算機概論/01_架構與計算理論.md
+  - src/app/router.ts
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - src/shared/components/RouteTabs.vue
+  - _private/MD/計算機概論/00_目錄.md
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
+  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
+  - _private/MD/計算機概論_基本計概_彙整版.md
+  - _private/MD/計算機概論/03_Pipeline與Hazard.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - src/styles/main.css
+  - _private/MD/計算機概論/06_記憶體-階層與分類.md
+  - _private/MD/計算機概論/08_進制轉換.md
+  - _private/MD/計算機概論/04_效能與RISC-CISC.md
+  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - src/modules/digitalLogic/views/DigitalLogicView.vue
+  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
+  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
+  - _private/discuss.txt
+  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - src/shared/components/RouteSubMenu.vue
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/operatingSystems/views/OperatingSystemsView.vue
+  - _private/MD/計算機概論/09_補數轉換.md
+  - _private/MD/計算機概論/02_機器指令與指令週期.md
+  - _private/MD/計算機概論/05_匯流排與USB.md
+  - src/app/routePreload.ts
+  - _private/MD/計算機概論/10_浮點數轉換.md
+  - _private/MD/計算機概論/11_數碼與文字碼.md
+tests:
+  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/networkingRouteWorkflow.spec.ts
+  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
+  - tests/unit/informationManagementRouteWorkflow.spec.ts
+  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/algorithmsRouteWorkflow.spec.ts
+  - tests/unit/projectArchitecture.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+-->
