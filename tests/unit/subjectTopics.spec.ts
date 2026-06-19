@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { getSubjectTopics, hasSubjectTopicContent } from '@/modules/subjectTopics/data/subjectTopics';
-import type { SubjectTopic } from '@/modules/subjectTopics/types/subjectTopic';
+import type { SubjectKey, SubjectTopic } from '@/modules/subjectTopics/types/subjectTopic';
 
 const expectedNetworkingRouteTopicIds: readonly string[] = [
   'networking-osi-tcpip',
@@ -49,6 +49,56 @@ const expectedSystemDesignImportedRouteTopicIds: readonly string[] = [
   'system-design-testing',
   'system-design-conversion-pdca'
 ];
+const expectedDigitalLogicRouteTopicIds: readonly string[] = [
+  'cp-digital-logic-basics',
+  'cp-sop-pos',
+  'cp-karnaugh-map',
+  'cp-universal-gates',
+  'cp-combinational-sequential-circuits'
+];
+const expectedOperatingSystemsRouteTopicIds: readonly string[] = [
+  'cp-os-basics',
+  'cp-io-and-interrupts',
+  'cp-os-structure',
+  'cp-process',
+  'cp-cpu-scheduling',
+  'cp-deadlock',
+  'cp-process-communication',
+  'cp-memory-management',
+  'cp-virtual-memory',
+  'cp-disk-management'
+];
+const computerPrinciplesV2SubjectKey = 'computerPrinciplesV2' as SubjectKey;
+const expectedComputerPrinciplesV2RouteTopicIds: readonly string[] = [
+  'cpv2-architecture-computation-theory',
+  'cpv2-machine-instruction-cycle',
+  'cpv2-pipeline-hazard',
+  'cpv2-performance-risc-cisc',
+  'cpv2-bus-usb',
+  'cpv2-memory-hierarchy-classification',
+  'cpv2-registers-cache',
+  'cpv2-base-conversion',
+  'cpv2-complement-conversion',
+  'cpv2-floating-point-conversion',
+  'cpv2-codes-and-character-sets',
+  'cpv2-parity-crc',
+  'cpv2-hamming-code-distance'
+];
+const expectedComputerPrinciplesV2RouteTitles: readonly string[] = [
+  '架構與計算理論',
+  '機器指令與指令週期',
+  'Pipeline 與 Hazard',
+  '效能與 RISC／CISC',
+  '匯流排與 USB',
+  '記憶體（一）階層與分類',
+  '記憶體（二）暫存器與 Cache',
+  '進制轉換',
+  '補數轉換',
+  '浮點數轉換',
+  '數碼與文字碼',
+  '檢查碼（一）Parity 與 CRC',
+  '檢查碼（二）漢明碼與漢明距'
+];
 
 describe('subject topic route data helpers', () => {
   it('treats an empty lessonArticle skeleton as no route-visible content', () => {
@@ -95,22 +145,7 @@ describe('subject topic route data helpers', () => {
       '進制轉換(Base Conversion)',
       '補數轉換(Complement Representation)',
       '浮點數轉換(Floating-Point Conversion)',
-      '數碼、文字碼與檢查碼(Codes and Check Codes)',
-      '基本邏輯(Digital Logic Basics)',
-      'SOP 與 POS(SOP and POS)',
-      '卡諾圖化簡(Karnaugh Map Simplification)',
-      '萬用閘(Universal Gates)',
-      '組合與循序電路(Combinational and Sequential Circuits)',
-      '作業系統 1：OS 基礎概念(Operating System Basics)',
-      '作業系統 2：I/O 中斷方式 與 硬體保護(I/O and Interrupts)',
-      '作業系統 3-4：OS 的結構(Operating System Structure)',
-      '作業系統 3-5（上）：Process 基礎(Process)',
-      '作業系統 3-5（下）：CPU 排程演算法(CPU Scheduling)',
-      '作業系統 3-6：Deadlock（死結）(Deadlock)',
-      '作業系統 3-7：Process Communication(Process Communication)',
-      '作業系統 3-8：Memory Management（記憶體管理）(Memory Management)',
-      '作業系統 3-9：Virtual Memory（虛擬記憶體）(Virtual Memory)',
-      '作業系統 3-10：Disk Management（磁碟管理）(Disk Management)'
+      '數碼、文字碼與檢查碼(Codes and Check Codes)'
     ]);
     expect(computerPrinciplesIds.slice(computerPrinciplesIds.indexOf('cp-pipeline'), computerPrinciplesIds.indexOf('cp-bus') + 1)).toEqual([
       'cp-pipeline',
@@ -129,41 +164,20 @@ describe('subject topic route data helpers', () => {
         computerPrinciplesIds.indexOf('cp-codes-and-check-codes') + 1
       )
     ).toEqual(['cp-complement-conversion', 'cp-floating-point-conversion', 'cp-codes-and-check-codes']);
-    const digitalLogicStartIndex = computerPrinciplesIds.indexOf('cp-codes-and-check-codes') + 1;
-
-    expect(computerPrinciplesIds.slice(digitalLogicStartIndex, digitalLogicStartIndex + 5)).toEqual([
-      'cp-digital-logic-basics',
-      'cp-sop-pos',
-      'cp-karnaugh-map',
-      'cp-universal-gates',
-      'cp-combinational-sequential-circuits'
-    ]);
-    const operatingSystemStartIndex = digitalLogicStartIndex + 5;
-
-    expect(computerPrinciplesIds.slice(operatingSystemStartIndex, operatingSystemStartIndex + 10)).toEqual([
-      'cp-os-basics',
-      'cp-io-and-interrupts',
-      'cp-os-structure',
-      'cp-process',
-      'cp-cpu-scheduling',
-      'cp-deadlock',
-      'cp-process-communication',
-      'cp-memory-management',
-      'cp-virtual-memory',
-      'cp-disk-management'
-    ]);
+    expect(computerPrinciplesIds).not.toEqual(expect.arrayContaining([...expectedDigitalLogicRouteTopicIds]));
+    expect(computerPrinciplesIds).not.toEqual(expect.arrayContaining([...expectedOperatingSystemsRouteTopicIds]));
     expect(computerPrinciplesIds).not.toContain('cp-hardware-protection');
 
     expect(algorithmTitles).toEqual([
-      '資料結構與演算法 1：演算法定義 + Big-O 複雜度 ★',
-      '資料結構與演算法 2：陣列 Array + 鏈結串列 Linked List',
-      '資料結構與演算法 3：堆疊 Stack + 佇列 Queue',
-      '資料結構與演算法 4：樹 Tree（基本）+ 前中後序走訪',
-      '資料結構與演算法 5：高等樹 ★（AVL／B-Tree／Heap／紅黑樹）',
-      '資料結構與演算法 6（上）：圖 Graph 基礎 + DFS／BFS ★',
-      '資料結構與演算法 6（下）：圖演算法 ★（MST／最短路徑／AOV-AOE）',
-      '資料結構與演算法 7：排序 Sorting ★',
-      '資料結構與演算法 8：雜湊 Hashing',
+      '演算法定義 + Big-O 複雜度 ★',
+      '陣列 Array + 鏈結串列 Linked List',
+      '堆疊 Stack + 佇列 Queue',
+      '樹 Tree（基本）+ 前中後序走訪',
+      '高等樹 ★（AVL／B-Tree／Heap／紅黑樹）',
+      '圖 Graph 基礎 + DFS／BFS ★',
+      '圖演算法 ★（MST／最短路徑／AOV-AOE）',
+      '排序 Sorting ★',
+      '雜湊 Hashing',
       '氣泡排序法(Bubble Sort)',
       '選擇排序法(Selection Sort)',
       '快速排序法(Quick Sort)',
@@ -180,6 +194,24 @@ describe('subject topic route data helpers', () => {
 
     expect(networkingTopicIds).toEqual(expectedNetworkingRouteTopicIds);
     expect(networkingTopicIds.filter((topicId) => oldNetworkingSkeletonTopicIds.includes(topicId))).toEqual([]);
+  });
+
+  it('exposes split digital logic and operating systems topics in source chapter order', () => {
+    expect(getSubjectTopics('digitalLogic').map((topic) => topic.id)).toEqual(expectedDigitalLogicRouteTopicIds);
+    expect(getSubjectTopics('operatingSystems').map((topic) => topic.id)).toEqual(expectedOperatingSystemsRouteTopicIds);
+  });
+
+  it('exposes computer principles v2 topics from the catalog manifest only', () => {
+    const topics = getSubjectTopics(computerPrinciplesV2SubjectKey);
+    const topicIds = topics.map((topic) => topic.id);
+    const topicTitles = topics.map((topic) => topic.title);
+
+    expect(topicIds).toEqual(expectedComputerPrinciplesV2RouteTopicIds);
+    expect(topicTitles).toEqual(expectedComputerPrinciplesV2RouteTitles);
+    expect(topicTitles.some((title) => title.includes('00_目錄') || title.startsWith('基本計概'))).toBe(false);
+    expect(getSubjectTopics('computerPrinciples').map((topic) => topic.id)).not.toEqual(
+      expect.arrayContaining([...expectedComputerPrinciplesV2RouteTopicIds])
+    );
   });
 
   it('exposes imported database, programming, and system design topics before skeleton topics', () => {
@@ -231,7 +263,6 @@ describe('subject topic route data helpers', () => {
   });
 
   it('does not fall back to placeholder topics when a route has no filled content', () => {
-    expect(getSubjectTopics('informationManagement')).toEqual([]);
     expect(getSubjectTopics('english')).toEqual([]);
     expect(getSubjectTopics('chinese')).toEqual([]);
   });

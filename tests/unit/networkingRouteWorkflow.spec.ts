@@ -122,21 +122,26 @@ describe('networking route-scoped content workflow', () => {
 
     expect(formalTopics).toHaveLength(manifestRows.length);
 
-    for (const row of manifestRows) {
-      const topicId = `networking-${row.id}`;
-      const topic = formalTopics.find((formalTopic) => formalTopic.id === topicId);
+    for (const topic of formalTopics) {
+      expect(topic.sourceFiles).toEqual(expect.arrayContaining(['_private/網概.txt']));
+      expect(topic.blocks).toHaveLength(1);
 
-      expect(topic).toBeDefined();
-      expect(topic?.sourceFiles).toEqual(expect.arrayContaining(['_private/網概.txt']));
-      expect(topic?.blocks).toHaveLength(1);
-      expect(topic?.blocks[0]).toEqual(expect.objectContaining({ kind: 'lessonArticle', lead: [], sections: [] }));
-      expect(topic?.blocks.some((block) => block.kind === 'sourceNote')).toBe(false);
-      expect(topic?.blocks.some((block) => block.kind === 'examOutline')).toBe(false);
-      expect(topic?.blocks.some((block) => block.kind === 'memoryPoints')).toBe(false);
-      expect(topic?.blocks.some((block) => block.kind === 'understanding')).toBe(false);
-      expect(topic?.blocks.some((block) => block.kind === 'termList')).toBe(false);
-      expect(topic?.blocks.some((block) => block.kind === 'workedExample')).toBe(false);
-      expect(topic?.blocks.some((block) => block.kind === 'pitfall')).toBe(false);
+      const lessonArticle = topic.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topic.id} should render as lessonArticle`);
+      }
+      expect(lessonArticle.lead).toEqual(expect.any(Array));
+      expect(lessonArticle.sections.length, `${topic.id} should have filled sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0)).toBe(true);
+      expect(topic.blocks.some((block) => block.kind === 'sourceNote')).toBe(false);
+      expect(topic.blocks.some((block) => block.kind === 'examOutline')).toBe(false);
+      expect(topic.blocks.some((block) => block.kind === 'memoryPoints')).toBe(false);
+      expect(topic.blocks.some((block) => block.kind === 'understanding')).toBe(false);
+      expect(topic.blocks.some((block) => block.kind === 'termList')).toBe(false);
+      expect(topic.blocks.some((block) => block.kind === 'workedExample')).toBe(false);
+      expect(topic.blocks.some((block) => block.kind === 'pitfall')).toBe(false);
     }
   });
 });

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router';
 import { preloadRouteComponent } from '@/app/routePreload';
+import ComputerFoundationSubjectSwitcher from '@/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue';
 
 interface RouteTab {
   to: string;
@@ -11,8 +12,6 @@ interface RouteTab {
 const route = useRoute();
 
 const primaryTabs = [
-  { to: '/computer-principles', label: '計概', testId: 'route-tab-computer-principles' },
-  { to: '/networking', label: '網概', testId: 'route-tab-networking' },
   { to: '/information-management', label: '資管', testId: 'route-tab-information-management' },
   { to: '/programming', label: '程式', testId: 'route-tab-programming' },
   { to: '/database', label: '資料庫', testId: 'route-tab-database' },
@@ -31,6 +30,7 @@ function routeTabClass(to: string): string {
 
 <template>
   <nav data-testid="route-tabs" class="route-tabs" aria-label="主要科目">
+    <ComputerFoundationSubjectSwitcher />
     <RouterLink
       v-for="tab in primaryTabs"
       :key="tab.to"

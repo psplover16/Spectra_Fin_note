@@ -11,7 +11,10 @@ describe('route config', () => {
       expect.arrayContaining([
         '/',
         '/computer-principles',
+        '/computer-principles-v2',
         '/networking',
+        '/digital-logic',
+        '/operating-systems',
         '/information-management',
         '/programming',
         '/database',
@@ -26,7 +29,10 @@ describe('route config', () => {
   it('exposes lazy loaders for every primary route path', () => {
     expect(primaryRoutePaths).toEqual([
       '/computer-principles',
+      '/computer-principles-v2',
       '/networking',
+      '/digital-logic',
+      '/operating-systems',
       '/information-management',
       '/programming',
       '/database',

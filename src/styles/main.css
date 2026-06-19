@@ -58,7 +58,15 @@
   }
 
   .route-sub-menu {
-    @apply absolute right-0 top-full z-50 mt-1 min-w-24 overflow-hidden rounded border border-clay/20 bg-white shadow-soft;
+    @apply absolute top-full z-50 mt-1 min-w-24 overflow-hidden rounded border border-clay/20 bg-white shadow-soft;
+  }
+
+  .route-sub-menu-start {
+    @apply left-0;
+  }
+
+  .route-sub-menu-end {
+    @apply right-0;
   }
 
   .route-sub-menu-item {

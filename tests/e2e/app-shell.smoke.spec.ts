@@ -19,12 +19,34 @@ test('loads computer principles route directly', async ({ page }) => {
 
   await expect(page.getByTestId('subject-view-computer-principles')).toContainText('電腦常用單位');
   await expect(page.getByTestId('subject-view-computer-principles')).toContainText('馮紐曼架構');
+  await expect(page.getByTestId('subject-view-computer-principles')).not.toContainText('基本邏輯(Digital Logic Basics)');
+  await expect(page.getByTestId('subject-view-computer-principles')).not.toContainText('OS 基礎概念');
+});
+
+test('loads computer principles v2 route directly', async ({ page }) => {
+  await page.goto('/computer-principles-v2');
+
+  await expect(page.getByTestId('subject-view-computer-principles-v2')).toContainText('計概(v2)');
+  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('架構與計算理論');
+  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('檢查碼（二）漢明碼與漢明距');
+  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).not.toContainText('00_目錄');
+  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).not.toContainText('基本計概 01：');
+});
+
+test('loads split computer-foundation routes directly', async ({ page }) => {
+  await page.goto('/digital-logic');
+  await expect(page.getByTestId('subject-view-digital-logic')).toContainText('數位邏輯');
+  await expect(page.getByTestId('subject-topic-list-digitalLogic')).toContainText('基本邏輯(Digital Logic Basics)');
+
+  await page.goto('/operating-systems');
+  await expect(page.getByTestId('subject-view-operating-systems')).toContainText('作業系統');
+  await expect(page.getByTestId('subject-topic-list-operatingSystems')).toContainText('OS 基礎概念');
 });
 
 test('loads database and algorithms professional routes directly', async ({ page }) => {
   await page.goto('/database');
   await expect(page.getByTestId('subject-view-database')).toContainText('資料庫');
-  await expect(page.getByTestId('subject-topic-list-database')).toContainText('資料庫 1：基礎概念 + ANSI/SPARC 架構');
+  await expect(page.getByTestId('subject-topic-list-database')).toContainText('基礎概念 + ANSI/SPARC 架構');
 
   await page.goto('/algorithms');
   await expect(page.getByTestId('subject-view-algorithms')).toContainText('演算法');
@@ -59,5 +81,39 @@ test('primary navigation reaches database, algorithms, and system design', async
   await page.getByTestId('route-tab-system-design').click();
   await expect(page).toHaveURL(/\/system-design$/);
   await expect(page.getByTestId('subject-view-system-design')).toBeVisible();
-  await expect(page.getByTestId('subject-topic-list-systemDesign')).toContainText('系統分析與設計 1：SDLC + SSDLC');
+  await expect(page.getByTestId('subject-topic-list-systemDesign')).toContainText('SDLC + SSDLC');
+});
+
+test('computer-foundation navigation reaches split routes', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('app-shell')).toBeVisible();
+  await expect(page.getByTestId('route-tab-computer-foundation')).toBeEnabled();
+
+  await page.getByTestId('route-tab-computer-foundation').click();
+  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('計概');
+  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('計概(v2)');
+  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('網概');
+  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('數位邏輯');
+  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('作業系統');
+  const triggerBox = await page.getByTestId('route-tab-computer-foundation').boundingBox();
+  const menuBox = await page.getByTestId('computer-foundation-subject-menu').boundingBox();
+
+  expect(triggerBox).not.toBeNull();
+  expect(menuBox).not.toBeNull();
+  expect(menuBox?.x).toBeGreaterThanOrEqual((triggerBox?.x ?? 0) - 1);
+  expect(menuBox?.x).toBeLessThanOrEqual((triggerBox?.x ?? 0) + 1);
+
+  await page.getByTestId('computer-foundation-subject-option-digital-logic').click();
+  await expect(page).toHaveURL(/\/digital-logic$/);
+  await expect(page.getByTestId('subject-view-digital-logic')).toBeVisible();
+
+  await page.getByTestId('route-tab-computer-foundation').click();
+  await page.getByTestId('computer-foundation-subject-option-computer-principles-v2').click();
+  await expect(page).toHaveURL(/\/computer-principles-v2$/);
+  await expect(page.getByTestId('subject-view-computer-principles-v2')).toContainText('計概(v2)');
+
+  await page.getByTestId('route-tab-computer-foundation').click();
+  await page.getByTestId('computer-foundation-subject-option-operating-systems').click();
+  await expect(page).toHaveURL(/\/operating-systems$/);
+  await expect(page.getByTestId('subject-view-operating-systems')).toBeVisible();
 });

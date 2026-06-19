@@ -9,6 +9,11 @@ interface RouteSubMenuOption {
 defineProps<{
   options: readonly RouteSubMenuOption[];
   activePath: string;
+  overlayTestId?: string;
+  menuId?: string;
+  menuTestId?: string;
+  ariaLabel?: string;
+  menuAlign?: 'start' | 'end';
 }>();
 
 const emit = defineEmits<{
@@ -41,13 +46,19 @@ function handleKeydown(event: KeyboardEvent) {
 </script>
 
 <template>
-  <div data-testid="common-subject-overlay" class="route-sub-menu-overlay" aria-hidden="true" @click="closeMenu" />
   <div
-    id="common-subject-menu"
-    data-testid="common-subject-menu"
+    :data-testid="overlayTestId ?? 'common-subject-overlay'"
+    class="route-sub-menu-overlay"
+    aria-hidden="true"
+    @click="closeMenu"
+  />
+  <div
+    :id="menuId ?? 'common-subject-menu'"
+    :data-testid="menuTestId ?? 'common-subject-menu'"
     class="route-sub-menu"
+    :class="menuAlign === 'start' ? 'route-sub-menu-start' : 'route-sub-menu-end'"
     role="menu"
-    aria-label="共同科目"
+    :aria-label="ariaLabel ?? '共同科目'"
     @keydown="handleKeydown"
   >
     <button

@@ -48,6 +48,7 @@ while ((1 << parityBits) < dataBits + parityBits + 1) {
       ]
     }
   ],
+  computerPrinciplesV2: [],
   networking: [
     {
       id: 'osi-model',
@@ -74,6 +75,8 @@ while ((1 << parityBits) < dataBits + parityBits + 1) {
       ]
     }
   ],
+  digitalLogic: [],
+  operatingSystems: [],
   informationManagement: [
     {
       id: 'database-normalization',

@@ -54,12 +54,14 @@ describe('stale professional content audit', () => {
   it('keeps only current route-rebuild topics in formal professional data', () => {
     const report = readText('_private/TMP/stale-professional-content-audit.md');
 
-    expect(professionalTopicsBySubject.computerPrinciples).toHaveLength(33);
+    expect(professionalTopicsBySubject.computerPrinciples).toHaveLength(18);
     expect(professionalTopicsBySubject.networking).toHaveLength(11);
+    expect(professionalTopicsBySubject.digitalLogic).toHaveLength(5);
+    expect(professionalTopicsBySubject.operatingSystems).toHaveLength(11);
     expect(professionalTopicsBySubject.database).toHaveLength(17);
-    expect(professionalTopicsBySubject.informationManagement).toHaveLength(7);
+    expect(professionalTopicsBySubject.informationManagement).toHaveLength(14);
     expect(professionalTopicsBySubject.programming).toHaveLength(46);
-    expect(professionalTopicsBySubject.algorithms).toHaveLength(21);
+    expect(professionalTopicsBySubject.algorithms).toHaveLength(31);
     expect(professionalTopicsBySubject.systemDesign).toHaveLength(5);
 
     const allTopicIds = Object.values(professionalTopicsBySubject)
@@ -111,6 +113,8 @@ describe('stale professional content audit', () => {
     const professionalSubjectKeys: readonly SubjectKey[] = [
       'computerPrinciples',
       'networking',
+      'digitalLogic',
+      'operatingSystems',
       'database',
       'informationManagement',
       'programming',
