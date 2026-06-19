@@ -1,0 +1,1 @@
+import{g as o,_ as s}from"./subjectTopics-BKwchkOm.js";import{d as c,g as r,h as n,o as a}from"./vendor-vue-DdfuOPvT.js";const e="programming",g=c({__name:"ProgrammingView",setup(i){const t=o(e);return(m,p)=>(a(),r(s,{title:"程式設計","subject-key":e,"test-id":"subject-view-programming",topics:n(t)},null,8,["topics"]))}});export{g as default};
