@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { professionalTopicsBySubject } from '@/modules/subjectTopics/data/professionalTopics';
-import type { LessonArticleContentBlock } from '@/modules/subjectTopics/types/subjectTopic';
+import type { LessonArticleContentBlock, ProfessionalSubjectTopic } from '@/modules/subjectTopics/types/subjectTopic';
 
 const readText = (path: string) => readFileSync(path, 'utf8');
 
@@ -9,6 +9,7 @@ const professionalSubjectKeys = [
   'computerPrinciples',
   'computerPrinciplesV2',
   'networking',
+  'networkingV2',
   'digitalLogic',
   'operatingSystems',
   'database',
@@ -22,6 +23,7 @@ const expectedCounts = {
   computerPrinciples: 18,
   computerPrinciplesV2: 13,
   networking: 11,
+  networkingV2: 12,
   digitalLogic: 5,
   operatingSystems: 11,
   database: 17,
@@ -247,6 +249,81 @@ const networkingTopicCases = [
   }
 ] as const;
 const networkingTopicIds = networkingTopicCases.map((topicCase) => topicCase.id);
+const networkingV2TopicCases = [
+  {
+    id: 'networking-v2-osi-tcpip',
+    title: 'OSI 七層 + TCP/IP ★',
+    source: '_private/MD/網路概論v2/網路概論_1_OSI七層與TCPIP.md',
+    keywords: ['每層的職責', 'OSI 七層']
+  },
+  {
+    id: 'networking-v2-basics',
+    title: '基礎概念',
+    source: '_private/MD/網路概論v2/網路概論_2_基礎概念.md',
+    keywords: ['LAN vs MAN vs WAN', 'HTTP/HTTPS 的 port 80/443']
+  },
+  {
+    id: 'networking-v2-security-crypto-tls',
+    title: '資安：加密、雜湊、數位簽章、憑證與 TLS',
+    source: '_private/MD/網路概論v2/網路概論_2下_資安_加密與TLS.md',
+    keywords: ['資訊安全三要素 CIA', 'TLS']
+  },
+  {
+    id: 'networking-v2-devices-osi',
+    title: '網路設備對應層級（看得懂版）',
+    source: '_private/MD/網路概論v2/網路概論_3上_網路設備對應層級.md',
+    keywords: ['越往上層，設備越「聰明」', '碰撞域']
+  },
+  {
+    id: 'networking-v2-wireless-access-devices',
+    title: '無線與上網接取設備',
+    source: '_private/MD/網路概論v2/網路概論_3下_無線與上網接取設備.md',
+    keywords: ['對外上網', '無線']
+  },
+  {
+    id: 'networking-v2-ip-subnetting',
+    title: 'IP 基礎 + 子網路計算 ★',
+    source: '_private/MD/網路概論v2/網路概論_4上_IP與子網路計算.md',
+    keywords: ['子網路切割是網路科唯一的大計算題', 'VLSM']
+  },
+  {
+    id: 'networking-v2-transport-layer',
+    title: '傳輸層',
+    source: '_private/MD/網路概論v2/網路概論_5_傳輸層.md',
+    keywords: ['握手順序', 'header 大小']
+  },
+  {
+    id: 'networking-v2-application-ports',
+    title: '應用層協定 + Port Number 對照表 ★',
+    source: '_private/MD/網路概論v2/網路概論_6_應用層與Port對照.md',
+    keywords: ['Port 號 + 屬 TCP/UDP', 'IANA']
+  },
+  {
+    id: 'networking-v2-physical-layer',
+    title: '實體層 + 標準速度表 ★',
+    source: '_private/MD/網路概論v2/網路概論_7上_實體層.md',
+    keywords: ['IEEE 標準', 'IoT']
+  },
+  {
+    id: 'networking-v2-data-link-layer',
+    title: '資料鏈結層',
+    source: '_private/MD/網路概論v2/網路概論_7下_資料鏈結層.md',
+    keywords: ['543 Rule', 'CSMA/CD']
+  },
+  {
+    id: 'networking-v2-security-crypto',
+    title: '資安觀念與加密 ★',
+    source: '_private/MD/網路概論v2/網路概論_8上_資安觀念與加密.md',
+    keywords: ['加密演算法名稱', '數位簽章']
+  },
+  {
+    id: 'networking-v2-defense-attacks',
+    title: '防禦設備與攻擊類型 ★',
+    source: '_private/MD/網路概論v2/網路概論_8下_防禦設備與攻擊.md',
+    keywords: ['ISO 27001', 'NIST']
+  }
+] as const;
+const networkingV2TopicIds = networkingV2TopicCases.map((topicCase) => topicCase.id);
 const markdownBackedComputerPrinciplesTopicCases = [
   {
     id: 'cp-performance-formulas',
@@ -546,6 +623,7 @@ const filledTopicIds = new Set([
   ...computerPrinciplesV2TopicIds,
   ...markdownBackedComputerPrinciplesTopicIds,
   ...networkingTopicIds,
+  ...networkingV2TopicIds,
   ...professionalTopicsBySubject.informationManagement
     .filter((topic) => topic.sourceBatch === 'fill-information-management-md-content')
     .map((topic) => topic.id),
@@ -585,8 +663,10 @@ describe('professional topic skeleton data', () => {
       expect(professionalTopicsBySubject[subjectKey]).toHaveLength(expectedCounts[subjectKey]);
 
       for (const topic of professionalTopicsBySubject[subjectKey]) {
+        const typedTopic: ProfessionalSubjectTopic = topic;
         const isFilledTopic = filledTopicIds.has(topic.id);
         const isImportedDatabaseProgrammingSystemDesignTopic = importedDatabaseProgrammingSystemDesignTopicIdSet.has(topic.id);
+        const keepsImportedLearningMetadata = isImportedDatabaseProgrammingSystemDesignTopic || subjectKey === 'networkingV2';
 
         expect(topic.id).not.toBe('');
         expect(topic.title).not.toBe('');
@@ -597,7 +677,7 @@ describe('professional topic skeleton data', () => {
         }
         expect(topic.sourceFiles.length).toBeGreaterThan(0);
         expect(topic.sourceSummary).not.toBe('');
-        if (isImportedDatabaseProgrammingSystemDesignTopic) {
+        if (keepsImportedLearningMetadata) {
           expect(topic.examOutline.length).toBeGreaterThan(0);
           expect(topic.memoryPoints.length).toBeGreaterThan(0);
           expect(topic.understandingNotes.length).toBeGreaterThan(0);
@@ -611,9 +691,9 @@ describe('professional topic skeleton data', () => {
         } else {
           expect(topic.terms).toEqual([]);
         }
-        expect(topic.verifiedBy).toBeUndefined();
-        expect(topic.verifiedAt).toBeUndefined();
-        expect(topic.verifierSummary).toBeUndefined();
+        expect(typedTopic.verifiedBy).toBeUndefined();
+        expect(typedTopic.verifiedAt).toBeUndefined();
+        expect(typedTopic.verifierSummary).toBeUndefined();
 
         if (firstBatchAlgorithmTopicIdSet.has(topic.id)) {
           expect(topic.blocks.length).toBeGreaterThan(1);
@@ -1891,6 +1971,53 @@ describe('professional topic skeleton data', () => {
         true
       );
       expect(JSON.stringify(topic), `${topic.id} should contain ${topicCase.keyword}`).toContain(topicCase.keyword);
+    }
+  });
+
+  it('fills networking v2 Markdown topics with exact source traceability and source-preserving lesson articles', () => {
+    expect(professionalTopicsBySubject.networkingV2.map((topic) => topic.id)).toEqual([...networkingV2TopicIds]);
+
+    for (const topicCase of networkingV2TopicCases) {
+      const topic = professionalTopicsBySubject.networkingV2.find((networkingTopic) => networkingTopic.id === topicCase.id);
+
+      if (!topic) {
+        throw new Error(`${topicCase.id} should exist`);
+      }
+
+      expect(topic.subjectKey).toBe('networkingV2');
+      expect(topic.title).toBe(topicCase.title);
+      expect(topic.sourceBatch).toBe('networking-v2-route');
+      expect(topic.sourceFiles).toEqual([topicCase.source]);
+      expect(topic.sourceSummary, `${topic.id} should point to the v2 chapter topic`).toContain(topicCase.title.replace(' ★', ''));
+      expect(topic.summary, `${topic.id} should have a summary`).not.toBe('');
+      expect(topic.examOutline.length, `${topic.id} should have exam outline`).toBeGreaterThan(0);
+      expect(topic.memoryPoints.length, `${topic.id} should have memory points`).toBeGreaterThan(0);
+      expect(topic.understandingNotes.length, `${topic.id} should have understanding notes`).toBeGreaterThan(0);
+      expect(topic.terms.length, `${topic.id} should have terms`).toBeGreaterThan(0);
+      expect(topic.blocks).toHaveLength(1);
+
+      const lessonArticle = topic.blocks[0];
+
+      expect(lessonArticle?.kind).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topic.id} should render as lessonArticle`);
+      }
+
+      expect(lessonArticle.sourceFiles).toEqual([topicCase.source]);
+      expect(lessonArticle.sourceSection).toBe(topic.sourceSummary);
+      expect(lessonArticle.sections.length, `${topic.id} should have lesson sections`).toBeGreaterThan(0);
+      expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topic.id} should not have empty sections`).toBe(
+        true
+      );
+
+      const serializedTopic = JSON.stringify(topic);
+
+      for (const keyword of topicCase.keywords) {
+        expect(serializedTopic, `${topic.id} should contain ${keyword}`).toContain(keyword);
+      }
+      for (const forbiddenKey of ['questionText', 'correctAnswer', 'choiceAnalysis', 'options']) {
+        expect(serializedTopic).not.toContain(forbiddenKey);
+      }
     }
   });
 

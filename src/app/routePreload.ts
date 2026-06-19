@@ -4,6 +4,7 @@ export type PrimaryRoutePath =
   | '/computer-principles'
   | '/computer-principles-v2'
   | '/networking'
+  | '/networking-v2'
   | '/digital-logic'
   | '/operating-systems'
   | '/information-management'
@@ -22,6 +23,7 @@ export const primaryRoutePaths = [
   '/computer-principles',
   '/computer-principles-v2',
   '/networking',
+  '/networking-v2',
   '/digital-logic',
   '/operating-systems',
   '/information-management',
@@ -37,6 +39,7 @@ export const routeComponentLoaders: Record<PrimaryRoutePath, RouteComponentLoade
   '/computer-principles': () => import('@/modules/computerPrinciples/views/ComputerPrinciplesView.vue'),
   '/computer-principles-v2': () => import('@/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue'),
   '/networking': () => import('@/modules/networking/views/NetworkingView.vue'),
+  '/networking-v2': () => import('@/modules/networkingV2/views/NetworkingV2View.vue'),
   '/digital-logic': () => import('@/modules/digitalLogic/views/DigitalLogicView.vue'),
   '/operating-systems': () => import('@/modules/operatingSystems/views/OperatingSystemsView.vue'),
   '/information-management': () => import('@/modules/informationManagement/views/InformationManagementView.vue'),

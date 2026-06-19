@@ -4,11 +4,12 @@ export type ComputerFoundationSubjectValue =
   | 'computerPrinciples'
   | 'computerPrinciplesV2'
   | 'networking'
+  | 'networkingV2'
   | 'digitalLogic'
   | 'operatingSystems';
 export type ComputerFoundationSubjectPath = Extract<
   PrimaryRoutePath,
-  '/computer-principles' | '/computer-principles-v2' | '/networking' | '/digital-logic' | '/operating-systems'
+  '/computer-principles' | '/computer-principles-v2' | '/networking' | '/networking-v2' | '/digital-logic' | '/operating-systems'
 >;
 
 export interface ComputerFoundationSubjectOption {
@@ -32,6 +33,12 @@ export const computerFoundationSubjectOptions = [
     testId: 'computer-foundation-subject-option-computer-principles-v2'
   },
   { value: 'networking', label: '網概', path: '/networking', testId: 'computer-foundation-subject-option-networking' },
+  {
+    value: 'networkingV2',
+    label: '網路概論(v2)',
+    path: '/networking-v2',
+    testId: 'computer-foundation-subject-option-networking-v2'
+  },
   { value: 'digitalLogic', label: '數位邏輯', path: '/digital-logic', testId: 'computer-foundation-subject-option-digital-logic' },
   {
     value: 'operatingSystems',

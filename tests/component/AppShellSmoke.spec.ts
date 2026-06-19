@@ -12,6 +12,7 @@ function createTestRouter(initialPath = '/computer-principles') {
       { path: '/computer-principles', component: routeComponentLoaders['/computer-principles'] },
       { path: '/computer-principles-v2', component: routeComponentLoaders['/computer-principles-v2'] },
       { path: '/networking', component: routeComponentLoaders['/networking'] },
+      { path: '/networking-v2', component: { template: '<section>網路概論(v2)</section>' } },
       { path: '/digital-logic', component: routeComponentLoaders['/digital-logic'] },
       { path: '/operating-systems', component: routeComponentLoaders['/operating-systems'] },
       { path: '/information-management', component: routeComponentLoaders['/information-management'] },
@@ -71,6 +72,7 @@ describe('AppShell smoke', () => {
     expect(menu.text()).toContain('計概');
     expect(menu.text()).toContain('計概(v2)');
     expect(menu.text()).toContain('網概');
+    expect(menu.text()).toContain('網路概論(v2)');
     expect(menu.text()).toContain('數位邏輯');
     expect(menu.text()).toContain('作業系統');
 
@@ -89,5 +91,15 @@ describe('AppShell smoke', () => {
       expect(router.currentRoute.value.path).toBe('/computer-principles-v2');
     });
     expect(wrapper.get('[data-testid="app-main"]').text()).toContain('計概(v2)');
+
+    await wrapper.get('[data-testid="route-tab-computer-foundation"]').trigger('click');
+    await wrapper.get('[data-testid="computer-foundation-subject-option-networking-v2"]').trigger('click');
+    await flushPromises();
+
+    await vi.waitFor(() => {
+      expect(router.currentRoute.value.path).toBe('/networking-v2');
+    });
+    expect(wrapper.find('[data-testid="route-tab-networking-v2"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="app-main"]').text()).toContain('網路概論(v2)');
   });
 });

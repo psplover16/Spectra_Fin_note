@@ -15,6 +15,35 @@ const expectedNetworkingRouteTopicIds: readonly string[] = [
   'networking-security-crypto',
   'networking-defense-attacks'
 ];
+const networkingV2SubjectKey = 'networkingV2' as SubjectKey;
+const expectedNetworkingV2RouteTopicIds: readonly string[] = [
+  'networking-v2-osi-tcpip',
+  'networking-v2-basics',
+  'networking-v2-security-crypto-tls',
+  'networking-v2-devices-osi',
+  'networking-v2-wireless-access-devices',
+  'networking-v2-ip-subnetting',
+  'networking-v2-transport-layer',
+  'networking-v2-application-ports',
+  'networking-v2-physical-layer',
+  'networking-v2-data-link-layer',
+  'networking-v2-security-crypto',
+  'networking-v2-defense-attacks'
+];
+const expectedNetworkingV2RouteTitles: readonly string[] = [
+  'OSI 七層 + TCP/IP ★',
+  '基礎概念',
+  '資安：加密、雜湊、數位簽章、憑證與 TLS',
+  '網路設備對應層級（看得懂版）',
+  '無線與上網接取設備',
+  'IP 基礎 + 子網路計算 ★',
+  '傳輸層',
+  '應用層協定 + Port Number 對照表 ★',
+  '實體層 + 標準速度表 ★',
+  '資料鏈結層',
+  '資安觀念與加密 ★',
+  '防禦設備與攻擊類型 ★'
+];
 
 const oldNetworkingSkeletonTopicIds: readonly string[] = [
   'networking-prep-direction',
@@ -194,6 +223,19 @@ describe('subject topic route data helpers', () => {
 
     expect(networkingTopicIds).toEqual(expectedNetworkingRouteTopicIds);
     expect(networkingTopicIds.filter((topicId) => oldNetworkingSkeletonTopicIds.includes(topicId))).toEqual([]);
+  });
+
+  it('exposes networking v2 topics from the filename manifest only', () => {
+    const topics = getSubjectTopics(networkingV2SubjectKey);
+    const topicIds = topics.map((topic) => topic.id);
+    const topicTitles = topics.map((topic) => topic.title);
+
+    expect(topicIds).toEqual(expectedNetworkingV2RouteTopicIds);
+    expect(topicTitles).toEqual(expectedNetworkingV2RouteTitles);
+    expect(topicTitles.some((title) => title.includes('網路概論_') || /^\\d/.test(title))).toBe(false);
+    expect(getSubjectTopics('networking').map((topic) => topic.id)).not.toEqual(
+      expect.arrayContaining([...expectedNetworkingV2RouteTopicIds])
+    );
   });
 
   it('exposes split digital logic and operating systems topics in source chapter order', () => {
