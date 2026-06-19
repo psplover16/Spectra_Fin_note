@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-test('database and algorithms routes support topic interactions', async ({ page }) => {
+test('database and algorithms routes show imported topics and support topic interactions', async ({ page }) => {
   await page.goto('/database');
   await expect(page.getByTestId('subject-view-database')).toBeVisible();
-  await expect(page.getByTestId('subject-topic-empty-state')).toContainText('資料庫尚未建立主題內容');
+  await expect(page.getByTestId('subject-topic-empty-state')).toHaveCount(0);
+  await expect(page.getByTestId('subject-topic-list-database')).toContainText('基礎概念 + ANSI/SPARC 架構');
 
   await page.goto('/algorithms');
   await expect(page.getByTestId('subject-view-algorithms')).toBeVisible();

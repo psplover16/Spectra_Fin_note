@@ -1,4 +1,16 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+async function openComputerFoundationMenu(page: Page) {
+  const trigger = page.getByTestId('route-tab-computer-foundation');
+  const menu = page.getByTestId('computer-foundation-subject-menu');
+
+  await expect(trigger).toBeVisible();
+  await trigger.scrollIntoViewIfNeeded();
+  await trigger.click();
+  await expect(menu).toBeVisible();
+
+  return menu;
+}
 
 test('renders the app shell', async ({ page }) => {
   await page.goto('/');
@@ -85,18 +97,19 @@ test('primary navigation reaches database, algorithms, and system design', async
 });
 
 test('computer-foundation navigation reaches split routes', async ({ page }) => {
+  await page.addInitScript(() => window.localStorage.clear());
   await page.goto('/');
   await expect(page.getByTestId('app-shell')).toBeVisible();
   await expect(page.getByTestId('route-tab-computer-foundation')).toBeEnabled();
 
-  await page.getByTestId('route-tab-computer-foundation').click();
-  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('計概');
-  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('計概(v2)');
-  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('網概');
-  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('數位邏輯');
-  await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('作業系統');
+  const menu = await openComputerFoundationMenu(page);
+  await expect(menu).toContainText('計概');
+  await expect(menu).toContainText('計概(v2)');
+  await expect(menu).toContainText('網概');
+  await expect(menu).toContainText('數位邏輯');
+  await expect(menu).toContainText('作業系統');
   const triggerBox = await page.getByTestId('route-tab-computer-foundation').boundingBox();
-  const menuBox = await page.getByTestId('computer-foundation-subject-menu').boundingBox();
+  const menuBox = await menu.boundingBox();
 
   expect(triggerBox).not.toBeNull();
   expect(menuBox).not.toBeNull();
@@ -107,12 +120,12 @@ test('computer-foundation navigation reaches split routes', async ({ page }) => 
   await expect(page).toHaveURL(/\/digital-logic$/);
   await expect(page.getByTestId('subject-view-digital-logic')).toBeVisible();
 
-  await page.getByTestId('route-tab-computer-foundation').click();
+  await openComputerFoundationMenu(page);
   await page.getByTestId('computer-foundation-subject-option-computer-principles-v2').click();
   await expect(page).toHaveURL(/\/computer-principles-v2$/);
   await expect(page.getByTestId('subject-view-computer-principles-v2')).toContainText('計概(v2)');
 
-  await page.getByTestId('route-tab-computer-foundation').click();
+  await openComputerFoundationMenu(page);
   await page.getByTestId('computer-foundation-subject-option-operating-systems').click();
   await expect(page).toHaveURL(/\/operating-systems$/);
   await expect(page.getByTestId('subject-view-operating-systems')).toBeVisible();
