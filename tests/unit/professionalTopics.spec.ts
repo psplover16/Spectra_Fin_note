@@ -81,6 +81,23 @@ const computerPrinciplesV2TopicIds = [
   'cpv2-parity-crc',
   'cpv2-hamming-code-distance'
 ] as const;
+const refreshedCpv2FloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
+const deprecatedCpv2FloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
+const computerPrinciplesV2TopicSources = [
+  '_private/MD/計算機概論/01_架構與計算理論.md',
+  '_private/MD/計算機概論/02_機器指令與指令週期.md',
+  '_private/MD/計算機概論/03_Pipeline與Hazard.md',
+  '_private/MD/計算機概論/04_效能與RISC-CISC.md',
+  '_private/MD/計算機概論/05_匯流排與USB.md',
+  '_private/MD/計算機概論/06_記憶體-階層與分類.md',
+  '_private/MD/計算機概論/07_記憶體-暫存器與Cache.md',
+  '_private/MD/計算機概論/08_進制轉換.md',
+  '_private/MD/計算機概論/09_補數轉換.md',
+  refreshedCpv2FloatingPointSourceFile,
+  '_private/MD/計算機概論/11_數碼與文字碼.md',
+  '_private/MD/計算機概論/12_檢查碼-Parity與CRC.md',
+  '_private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md'
+] as const satisfies readonly string[];
 const markdownBackedComputerPrinciplesTopicIds = [
   'cp-performance-formulas',
   'cp-risc-cisc',
@@ -732,6 +749,38 @@ describe('professional topic skeleton data', () => {
         ).toBe(firstBatchAlgorithmTopicIdSet.has(topic.id));
       }
     }
+  });
+
+  it('refreshes only the Computer Principles v2 floating point topic source and keeps neighboring topics stable', () => {
+    const topics = professionalTopicsBySubject.computerPrinciplesV2;
+    const floatingPointTopic = topics.find((topic) => topic.id === 'cpv2-floating-point-conversion');
+
+    expect(topics.map((topic) => topic.id)).toEqual([...computerPrinciplesV2TopicIds]);
+    topics.forEach((topic, index) => {
+      expect(topic.sourceFiles, `${topic.id} should keep its expected source file`).toEqual([computerPrinciplesV2TopicSources[index]]);
+    });
+
+    expect(floatingPointTopic).toMatchObject({
+      id: 'cpv2-floating-point-conversion',
+      subjectKey: 'computerPrinciplesV2',
+      title: '浮點數轉換',
+      difficulty: 'core',
+      topicType: 'procedure'
+    });
+    expect(floatingPointTopic?.sourceFiles).toEqual([refreshedCpv2FloatingPointSourceFile]);
+    expect(floatingPointTopic?.sourceFiles).not.toContain(deprecatedCpv2FloatingPointSourceFile);
+
+    const lessonArticle = floatingPointTopic?.blocks[0];
+
+    expect(lessonArticle?.kind).toBe('lessonArticle');
+    if (lessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cpv2-floating-point-conversion should render as lessonArticle');
+    }
+
+    expect(lessonArticle.sourceFiles).toEqual([refreshedCpv2FloatingPointSourceFile]);
+    expect(lessonArticle.sourceFiles).not.toContain(deprecatedCpv2FloatingPointSourceFile);
+    expect(lessonArticle.sourceSection).toBe(floatingPointTopic?.sourceSummary);
+    expect(JSON.stringify(floatingPointTopic)).not.toContain(deprecatedCpv2FloatingPointSourceFile);
   });
 
   it('preserves route, topic id, title, and source-section skeletons for later manual paste-in', () => {

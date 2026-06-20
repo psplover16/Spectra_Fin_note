@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { professionalTopicsBySubject } from '@/modules/subjectTopics/data/professionalTopics';
 import { placeholderTopicsBySubject } from '@/modules/subjectTopics/data/placeholderTopics';
@@ -7,6 +8,9 @@ import { subjectKeys, type ProfessionalSubjectTopic, type SubjectKey } from '@/m
 const subjectKey = 'computerPrinciplesV2' as SubjectKey;
 const sourceBatch = 'computer-principles-v2-route';
 const catalogSourceFile = '_private/MD/計算機概論/00_目錄.md';
+const floatingPointContentReviewPath = '_TMP/reviews/cpv2-floating-point-content-review.md';
+const refreshedFloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
+const deprecatedFloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 
 const topicCases = [
   {
@@ -66,8 +70,8 @@ const topicCases = [
   {
     id: 'cpv2-floating-point-conversion',
     title: '浮點數轉換',
-    source: '_private/MD/計算機概論/10_浮點數轉換.md',
-    keyword: '0x41240000'
+    source: refreshedFloatingPointSourceFile,
+    keyword: '傳統（一般）浮點表示法'
   },
   {
     id: 'cpv2-codes-and-character-sets',
@@ -168,6 +172,68 @@ describe('computer principles v2 route workflow', () => {
       for (const forbiddenKey of ['questionText', 'correctAnswer', 'backendSyncId', 'remoteQuestionId']) {
         expect(serializedTopic).not.toContain(forbiddenKey);
       }
+    }
+  });
+
+  it('uses the refreshed v2 floating point source in the tenth catalog position', () => {
+    const topics = getSubjectTopics(subjectKey);
+    const floatingPointTopic = topics[9];
+
+    expect(floatingPointTopic?.id).toBe('cpv2-floating-point-conversion');
+    expect(floatingPointTopic?.title).toBe('浮點數轉換');
+    expect(floatingPointTopic?.subjectKey).toBe('computerPrinciplesV2');
+
+    const lessonArticle = floatingPointTopic?.blocks[0];
+
+    expect(lessonArticle?.kind).toBe('lessonArticle');
+    if (lessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cpv2-floating-point-conversion should render through lessonArticle');
+    }
+
+    expect(lessonArticle.sourceFiles).toEqual([refreshedFloatingPointSourceFile]);
+    expect(lessonArticle.sourceFiles).not.toContain(deprecatedFloatingPointSourceFile);
+    expect(lessonArticle.sections.map((section) => section.heading)).toEqual(
+      expect.arrayContaining([
+        '16. 浮點數轉換 / 傳統（一般）浮點表示法　【理解】',
+        '16. 浮點數轉換 / IEEE 754 欄位',
+        '16. 浮點數轉換 / 完整流程（發送端：算出要傳什麼）',
+        '16. 浮點數轉換 / 範例：IEEE 754 反推',
+        '16. 浮點數轉換 / 為什麼 0.1 可能不精確？',
+        '加強練習　【練流程】'
+      ])
+    );
+
+    const serializedTopic = JSON.stringify(floatingPointTopic);
+
+    for (const refreshedPhrase of [
+      '傳統（一般）浮點表示法',
+      'IEEE 754 欄位',
+      '0.1(10) = 0.0001100110011…(2)',
+      '練習 6（兩種表示法對照）'
+    ]) {
+      expect(serializedTopic).toContain(refreshedPhrase);
+    }
+  });
+
+  it('records a manual content review for the refreshed floating point lesson', () => {
+    const review = readFileSync(floatingPointContentReviewPath, 'utf8');
+
+    for (const requiredReviewText of [
+      'source: _private/MD/計算機概論v2/10_浮點數轉換.md',
+      'target: cpv2-floating-point-conversion',
+      '傳統表示法: pass',
+      'IEEE 754 公式: pass',
+      '正規化流程: pass',
+      '反推流程: pass',
+      '0.1 精度說明: pass',
+      '易錯陷阱: pass',
+      '6 題練習: pass',
+      'lecture-only',
+      '4 個選項：不適用',
+      '1 個正解：不適用',
+      '選項辨析：不適用'
+    ]) {
+      expect(review).toContain(requiredReviewText);
     }
   });
 });

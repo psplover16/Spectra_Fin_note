@@ -98,6 +98,8 @@ const expectedOperatingSystemsRouteTopicIds: readonly string[] = [
   'cp-disk-management'
 ];
 const computerPrinciplesV2SubjectKey = 'computerPrinciplesV2' as SubjectKey;
+const refreshedCpv2FloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
+const deprecatedCpv2FloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 const expectedComputerPrinciplesV2RouteTopicIds: readonly string[] = [
   'cpv2-architecture-computation-theory',
   'cpv2-machine-instruction-cycle',
@@ -247,6 +249,8 @@ describe('subject topic route data helpers', () => {
     const topics = getSubjectTopics(computerPrinciplesV2SubjectKey);
     const topicIds = topics.map((topic) => topic.id);
     const topicTitles = topics.map((topic) => topic.title);
+    const floatingPointTopic = topics.find((topic) => topic.id === 'cpv2-floating-point-conversion');
+    const floatingPointLessonArticle = floatingPointTopic?.blocks[0];
 
     expect(topicIds).toEqual(expectedComputerPrinciplesV2RouteTopicIds);
     expect(topicTitles).toEqual(expectedComputerPrinciplesV2RouteTitles);
@@ -254,6 +258,14 @@ describe('subject topic route data helpers', () => {
     expect(getSubjectTopics('computerPrinciples').map((topic) => topic.id)).not.toEqual(
       expect.arrayContaining([...expectedComputerPrinciplesV2RouteTopicIds])
     );
+    expect(floatingPointLessonArticle?.kind).toBe('lessonArticle');
+    if (floatingPointLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cpv2-floating-point-conversion should expose refreshed lessonArticle content');
+    }
+    expect(floatingPointLessonArticle.sourceFiles).toEqual([refreshedCpv2FloatingPointSourceFile]);
+    expect(floatingPointLessonArticle.sourceFiles).not.toContain(deprecatedCpv2FloatingPointSourceFile);
+    expect(JSON.stringify(floatingPointTopic)).toContain('練習 6（兩種表示法對照）');
+    expect(JSON.stringify(floatingPointTopic)).not.toContain(deprecatedCpv2FloatingPointSourceFile);
   });
 
   it('exposes imported database, programming, and system design topics before skeleton topics', () => {

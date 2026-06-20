@@ -49,7 +49,11 @@ describe('project architecture document', () => {
       'src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue',
       '計概(v2)',
       'computerPrinciplesV2Topics',
-      'computer-principles-v2-route'
+      'computer-principles-v2-route',
+      'cpv2-floating-point-conversion',
+      '浮點數轉換',
+      '_private/MD/計算機概論v2/10_浮點數轉換.md',
+      '13 篇'
     ]) {
       expect(documentText).toContain(requiredText);
     }

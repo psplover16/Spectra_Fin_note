@@ -1,0 +1,16 @@
+## 1. 測試基線
+
+- [x] [P] 1.1 為 Floating point conversion topic uses refreshed v2 source 建立失敗測試：在 `tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts` 驗證 `cpv2-floating-point-conversion` 仍是第 10 個 route-visible topic、標題為 `浮點數轉換`、source file 改為 `_private/MD/計算機概論v2/10_浮點數轉換.md`，且 lessonArticle 包含 `傳統（一般）浮點表示法`、`IEEE 754 欄位`、`0.1(10) = 0.0001100110011…(2)` 與 `練習 6（兩種表示法對照）`；以 `npx vitest run tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts` 確認實作前失敗。
+- [x] [P] 1.2 為 Refreshed professional topic content replaces deprecated source content 建立失敗測試：在 `tests/unit/professionalTopics.spec.ts` 與 `tests/unit/subjectTopics.spec.ts` 驗證 refreshed topic 保留 `computerPrinciplesV2`、`cpv2-floating-point-conversion`、`浮點數轉換`、difficulty 與 topic type，其他 12 個 `computerPrinciplesV2` topics 的 ids、titles、order、sourceFiles 不變，且目標 topic 不再使用 `_private/MD/計算機概論/10_浮點數轉換.md` 作為 learner-facing source；以 `npx vitest run tests/unit/professionalTopics.spec.ts tests/unit/subjectTopics.spec.ts` 確認實作前失敗。
+
+## 2. 內容替換與來源追溯
+
+- [x] 2.1 實作 Floating point conversion topic uses refreshed v2 source：將 `_private/MD/計算機概論v2/10_浮點數轉換.md` 轉成既有 `lessonArticle` block，保留段落、表格、流程清單、程式碼區塊與加強練習，使 `/computer-principles-v2` 的 `浮點數轉換` topic 顯示新版教學內容；以 `npx vitest run tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts tests/component/SubjectRoutesSmoke.spec.ts` 驗證。
+- [x] 2.2 實作 Refreshed professional topic content replaces deprecated source content：更新 `cpv2-floating-point-conversion` 的 `sourceFiles`、`sourceSummary`、`lessonArticle.sourceFiles` 與 `lessonArticle.sourceSection` 指向新版來源，並確認 topic id、subject key、title、difficulty、topicType 與其他 12 個 v2 topics 不變；以 `npx vitest run tests/unit/professionalTopics.spec.ts tests/unit/subjectTopics.spec.ts` 驗證。
+- [x] 2.3 移除目標 topic 的廢棄 learner-facing 內容：確認舊來源 `_private/MD/計算機概論/10_浮點數轉換.md` 不再出現在 `cpv2-floating-point-conversion` 的 learner-facing source traceability 或 displayed blocks，且不影響舊 `computerPrinciples` route 的 `cp-floating-point-conversion`；以 `npx vitest run tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts tests/unit/professionalTopics.spec.ts` 驗證。
+
+## 3. 審查、文件與總驗證
+
+- [x] 3.1 執行專業科目內容審查：逐段比對 `_private/MD/計算機概論v2/10_浮點數轉換.md` 與正式 topic，確認傳統表示法、IEEE 754 公式、正規化流程、反推流程、0.1 精度說明、易錯陷阱與 6 題練習未遺漏；記錄 `_TMP/reviews/cpv2-floating-point-content-review.md`，並註明本次為 lecture-only，因此 4 個選項、1 個正解與選項辨析不適用；以 `npx vitest run tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts` 驗證審查紀錄存在且代表文字仍可讀取。
+- [x] 3.2 同步 `PROJECT_ARCHITECTURE.md` 的 Computer Principles v2 來源說明：文件需描述 `computerPrinciplesV2Topics` 的第 10 篇 `浮點數轉換` 已由 `_private/MD/計算機概論v2/10_浮點數轉換.md` 覆蓋，且 route、subject key、topic count 與 topic order 不變；以 `rg -n "計算機概論v2/10_浮點數轉換|cpv2-floating-point-conversion|浮點數轉換" PROJECT_ARCHITECTURE.md` 與 `npx vitest run tests/unit/projectArchitecture.spec.ts` 驗證。
+- [x] 3.3 完成總驗證與 Spectra artifact 檢查：執行 `npm run typecheck`、`npx vitest run tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts tests/unit/professionalTopics.spec.ts tests/unit/subjectTopics.spec.ts tests/unit/projectArchitecture.spec.ts tests/component/SubjectRoutesSmoke.spec.ts`、`spectra analyze refresh-cpv2-floating-point-content --json`、`spectra validate refresh-cpv2-floating-point-content`，確認 proposal、specs、tasks 與實作行為一致。
