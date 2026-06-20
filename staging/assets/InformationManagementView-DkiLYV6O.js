@@ -1,1 +1,0 @@
-import{g as n,_ as o}from"./subjectTopics-__tfk6Ab.js";import{d as a,g as s,h as c,o as i}from"./vendor-vue-DdfuOPvT.js";const e="informationManagement",u=a({__name:"InformationManagementView",setup(m){const t=n(e);return(r,p)=>(i(),s(o,{title:"資訊管理","subject-key":e,"test-id":"subject-view-information-management",topics:c(t)},null,8,["topics"]))}});export{u as default};
