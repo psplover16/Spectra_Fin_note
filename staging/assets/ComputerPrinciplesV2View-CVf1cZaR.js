@@ -1,1 +1,0 @@
-import{g as s,_ as c}from"./subjectTopics-17o1bk5O.js";import{d as o,g as i,h as p,o as r}from"./vendor-vue-DdfuOPvT.js";const e="computerPrinciplesV2",l=o({__name:"ComputerPrinciplesV2View",setup(n){const t=s(e);return(a,u)=>(r(),i(c,{title:"計概(v2)","subject-key":e,"test-id":"subject-view-computer-principles-v2",topics:p(t)},null,8,["topics"]))}});export{l as default};

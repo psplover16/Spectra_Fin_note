@@ -1,1 +1,0 @@
-import{g as t,_ as c}from"./subjectTopics-17o1bk5O.js";import{d as o,g as n,h as i,o as a}from"./vendor-vue-DdfuOPvT.js";const e="chinese",f=o({__name:"ChineseView",setup(p){const s=t(e);return(r,_)=>(a(),n(c,{title:"國文","subject-key":e,"test-id":"subject-view-chinese",topics:i(s)},null,8,["topics"]))}});export{f as default};
