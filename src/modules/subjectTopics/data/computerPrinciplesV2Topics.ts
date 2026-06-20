@@ -1,6 +1,39 @@
-import type { ProfessionalSubjectTopic } from '@/modules/subjectTopics/types/subjectTopic';
+import type { LessonArticleSection, ProfessionalSubjectTopic } from '@/modules/subjectTopics/types/subjectTopic';
 
 // Static lessonArticle data generated from _private/MD/計算機概論 source Markdown.
+export const computerPrinciplesV2RouteSections: readonly LessonArticleSection[] = [
+  {
+    heading: '加強練習',
+    blocks: [
+      {
+        kind: 'orderedList',
+        items: [
+          '指令組成:50% 需 1 週期、30% 需 2 週期、20% 需 4 週期,平均 CPI 為?',
+          'USB 速度',
+          'Write Through VS Write Back',
+          'Write Back 為判斷區塊是否被修改過,通常搭配哪個位元?  同位元?',
+          'EBCDIC 8位元 IBM字元編碼',
+          '浮點數 IAAAC計算',
+          'CRC，生成多項式 > 生成多項式位元數-1，在資料後方補0，做摸2除法，於數就是 CRC。元資料+CRC = 發送資料',
+          '漢明碼，',
+          '漢明距，是兩個碼字不同 bit 的數量',
+          '1byte = 8bits',
+          'Write Back 為判斷區塊是否被修改過,通常搭配哪個位元 (107)',
+          'Gen A × B   總速率 = 每條 lane 速率 × lane 數'
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '一個 cache資料，有包含：\na.Valid bit: 裡面現在是不是「有效資料」，0代表垃圾，1位元\nb.Dirty bit: 預設為0，1代表 資料改過 改過，1位元\nc.Tag 表示 這條 line 現在放的是哪一個記憶體區塊，多位元\nd.然後真正的資料'
+      },
+      {
+        kind: 'paragraph',
+        text: '資管題目:\n1. AI、資安的影響\n2.'
+      }
+    ]
+  }
+];
+
 export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
   {
     "id": "cpv2-architecture-computation-theory",
@@ -2446,7 +2479,9 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
     "summary": "整理傳統浮點表示法、IEEE 754 單/雙精度、編碼與反推。",
     "sourceBatch": "computer-principles-v2-route",
     "sourceFiles": [
-      "_private/MD/計算機概論v2/10_浮點數轉換.md"
+      "_private/MD/計算機概論v2/10_浮點數轉換.md",
+      "_private/discuss.txt",
+      "_private/MD/0621/IEEE754_浮點數特殊值_速記.md"
     ],
     "sourceSummary": "基本計概(v2) / 浮點數轉換",
     "examOutline": [],
@@ -2484,7 +2519,9 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
       {
         "kind": "lessonArticle",
         "sourceFiles": [
-          "_private/MD/計算機概論v2/10_浮點數轉換.md"
+          "_private/MD/計算機概論v2/10_浮點數轉換.md",
+          "_private/discuss.txt",
+          "_private/MD/0621/IEEE754_浮點數特殊值_速記.md"
         ],
         "sourceSection": "基本計概(v2) / 浮點數轉換",
         "lead": [
@@ -2498,6 +2535,119 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
               {
                 "kind": "paragraph",
                 "text": "浮點數是電腦用來表示小數或很大、很小數字的方法。"
+              }
+            ]
+          },
+          {
+            "heading": "IEEE 754 浮點數特殊值・速記版",
+            "blocks": [
+              {
+                "kind": "paragraph",
+                "text": "判斷只看兩件事：① 指數欄位是不是全 0 / 全 1；② 尾數是不是 0。"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "指數欄位",
+                  "尾數(mantissa)",
+                  "代表",
+                  "隱藏位元"
+                ],
+                "rows": [
+                  [
+                    "全 0",
+                    "全 0",
+                    "±0",
+                    "—"
+                  ],
+                  [
+                    "全 0",
+                    "≠ 0",
+                    "非正規化數(denormal/subnormal)",
+                    "0"
+                  ],
+                  [
+                    "介於兩者之間",
+                    "任意",
+                    "正規化數(一般的數)",
+                    "1"
+                  ],
+                  [
+                    "全 1",
+                    "全 0",
+                    "±∞ 無限大",
+                    "—"
+                  ],
+                  [
+                    "全 1",
+                    "≠ 0",
+                    "NaN(不是數)",
+                    "—"
+                  ]
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "「介於兩者之間」= 單精度 1~254、雙精度 1~2046。"
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "指數全 0 → 最小那一端：尾數 0 → ±0；尾數 ≠ 0 → denormal。",
+                  "指數全 1 → 壞掉/超出那一端：尾數 0 → ±∞；尾數 ≠ 0 → NaN。"
+                ]
+              },
+              {
+                "kind": "bulletList",
+                "items": [
+                  "±0：有符號位，所以有 +0 與 −0。兩者相等，但 1÷(+0)=+∞、1÷(−0)=−∞。",
+                  "±∞：溢位或除以 0 時出現，例如 1.0 ÷ 0.0 = +∞。",
+                  "NaN：無意義運算的結果，例如 0÷0、∞−∞、∞÷∞、√(−1)。NaN ≠ 任何值，連自己都不等於。",
+                  "非正規化數：隱藏位元變 0，值 = 0.尾數 × 2^(−126)（單精度），用途是填補 0 與最小正規化數之間的縫隙。",
+                  "正規化數：隱藏位元固定為 1，值 = 1.尾數 × 2^(指數−bias)。"
+                ]
+              },
+              {
+                "kind": "paragraph",
+                "text": "+0  :  0 00000000 00000000000000000000000\n−0  :  1 00000000 00000000000000000000000\n+∞  :  0 11111111 00000000000000000000000\n−∞  :  1 11111111 00000000000000000000000\nNaN :  x 11111111 (尾數任一位為 1)"
+              },
+              {
+                "kind": "table",
+                "headers": [
+                  "",
+                  "符號",
+                  "指數",
+                  "尾數",
+                  "bias",
+                  "「指數全 1」="
+                ],
+                "rows": [
+                  [
+                    "單精度 (32-bit)",
+                    "1",
+                    "8",
+                    "23",
+                    "127",
+                    "255"
+                  ],
+                  [
+                    "雙精度 (64-bit)",
+                    "1",
+                    "11",
+                    "52",
+                    "1023",
+                    "2047"
+                  ]
+                ]
+              },
+              {
+                "kind": "orderedList",
+                "items": [
+                  "∞ vs NaN：都「指數全 1」，差在尾數；尾數 0 是 ∞、尾數 ≠ 0 是 NaN。",
+                  "±0 vs denormal：都「指數全 0」，差在尾數；尾數 0 是 ±0、尾數 ≠ 0 是 denormal。",
+                  "NaN ≠ NaN，連自己都不相等。",
+                  "隱藏位元：正規化 = 1、非正規化 = 0。"
+                ]
               }
             ]
           },

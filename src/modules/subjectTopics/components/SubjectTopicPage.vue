@@ -26,9 +26,11 @@ const props = withDefaults(
     subjectKey: SubjectKey;
     testId: string;
     topics: readonly SubjectTopic[];
+    routeSections?: readonly LessonArticleSection[];
     openLastTopicByDefault?: boolean;
   }>(),
   {
+    routeSections: () => [],
     openLastTopicByDefault: import.meta.env.DEV && import.meta.env.MODE !== 'test'
   }
 );
@@ -67,6 +69,14 @@ function updateTopicBookmarked(topic: SubjectTopic, bookmarked: boolean) {
 
 function blockTestId(topic: SubjectTopic, block: SubjectTopicBlock, index: number): string {
   return `topic-block-${topic.id}-${block.kind}-${index}`;
+}
+
+function routeSectionTestId(index: number): string {
+  return `subject-route-section-${props.subjectKey}-${index}`;
+}
+
+function routeSectionBlockTestId(sectionIndex: number, block: LessonArticleContentBlock, blockIndex: number): string {
+  return `subject-route-section-${props.subjectKey}-${sectionIndex}-${block.kind}-${blockIndex}`;
 }
 
 function isTopicDefaultExpanded(topic: SubjectTopic): boolean {
@@ -230,6 +240,64 @@ function toggleLessonTableColumn(tableKey: string, block: TableContentBlock, col
     <header class="subject-page-header">
       <h1>{{ props.title }}</h1>
     </header>
+
+    <div v-if="props.routeSections.length > 0" :data-testid="`subject-route-sections-${props.subjectKey}`" class="subject-route-sections">
+      <section
+        v-for="(section, sectionIndex) in props.routeSections"
+        :key="section.heading"
+        :data-testid="routeSectionTestId(sectionIndex)"
+        class="subject-topic-card subject-route-section"
+      >
+        <header class="subject-route-section-header">
+          <h2>{{ section.heading }}</h2>
+        </header>
+        <div class="subject-topic-detail subject-route-section-detail">
+          <template
+            v-for="(contentBlock, contentBlockIndex) in section.blocks"
+            :key="`${section.heading}-${contentBlock.kind}-${JSON.stringify(contentBlock)}`"
+          >
+            <p
+              v-if="contentBlock.kind === 'paragraph'"
+              :data-testid="routeSectionBlockTestId(sectionIndex, contentBlock, contentBlockIndex)"
+              class="subject-topic-paragraph subject-topic-text"
+            >
+              {{ contentBlock.text }}
+            </p>
+            <ul
+              v-else-if="contentBlock.kind === 'bulletList'"
+              :data-testid="routeSectionBlockTestId(sectionIndex, contentBlock, contentBlockIndex)"
+            >
+              <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+            </ul>
+            <ol
+              v-else-if="contentBlock.kind === 'orderedList'"
+              :data-testid="routeSectionBlockTestId(sectionIndex, contentBlock, contentBlockIndex)"
+              :class="orderedListMarkerClass(contentBlock)"
+            >
+              <li v-for="item in contentBlock.items" :key="item" class="subject-topic-text">{{ item }}</li>
+            </ol>
+            <div
+              v-else-if="contentBlock.kind === 'table'"
+              :data-testid="routeSectionBlockTestId(sectionIndex, contentBlock, contentBlockIndex)"
+              class="subject-topic-table-wrap"
+            >
+              <table class="subject-topic-table">
+                <thead>
+                  <tr>
+                    <th v-for="header in contentBlock.headers" :key="header" class="subject-topic-text">{{ header }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row, rowIndex) in contentBlock.rows" :key="rowIndex">
+                    <td v-for="(cell, cellIndex) in row" :key="`${rowIndex}-${cellIndex}`" class="subject-topic-text">{{ cell }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </template>
+        </div>
+      </section>
+    </div>
 
     <p v-if="props.topics.length === 0" data-testid="subject-topic-empty-state" class="subject-topic-empty-state">
       {{ props.title }}尚未建立主題內容。

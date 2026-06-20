@@ -1,6 +1,35 @@
+路由 computer-principles-v2，浮點數轉換 的 section下方，要新增一個section,section內容為下面的md檔
+@/_private/MD/0621/IEEE754_浮點數特殊值_速記.md 的內容
 
 
 
-路由 computer-principles-v2 ，浮點數轉換 的 section內容要更換
-換成 @/_private/MD/計算機概論v2/10_浮點數轉換.md 的內容
-原本的內容廢棄
+
+
+
+
+
+
+幫我在最上方，添加一個 section，主題為加強練習
+內容如下，直接貼進去就好
+
+1. 指令組成:50% 需 1 週期、30% 需 2 週期、20% 需 4 週期,平均 CPI 為?
+2. USB 速度
+3. Write Through VS Write Back
+4. Write Back 為判斷區塊是否被修改過,通常搭配哪個位元?  同位元?
+一個 cache資料，有包含 
+	a.Valid bit: 裡面現在是不是「有效資料」，0代表垃圾，1位元
+	b.Dirty bit: 預設為0，1代表 資料改過 改過，1位元
+	c.Tag 表示 這條 line 現在放的是哪一個記憶體區塊，多位元
+	d.然後真正的資料
+5. EBCDIC 8位元 IBM字元編碼
+6. 浮點數 IAAAC計算
+7. CRC，生成多項式 > 生成多項式位元數-1，在資料後方補0，做摸2除法，於數就是 CRC。元資料+CRC = 發送資料
+8. 漢明碼，
+9. 漢明距，是兩個碼字不同 bit 的數量
+10. 1byte = 8bits
+11. Write Back 為判斷區塊是否被修改過,通常搭配哪個位元 (107)
+12. Gen A × B   總速率 = 每條 lane 速率 × lane 數
+
+資管題目:
+1. AI、資安的影響
+2. 

@@ -100,4 +100,19 @@ describe('subject route views', () => {
     expect(algorithmsWrapper.text()).toContain('二元搜尋法(Binary Search)');
     expect(algorithmsWrapper.text()).not.toContain('正式內容會保留複雜度');
   });
+
+  it('renders the Computer Principles v2 route practice section before the topic list', () => {
+    const wrapper = mount(ComputerPrinciplesV2View);
+    const routeSections = wrapper.get('[data-testid="subject-route-sections-computerPrinciplesV2"]');
+    const practiceSection = wrapper.get('[data-testid="subject-route-section-computerPrinciplesV2-0"]');
+    const topicList = wrapper.get('[data-testid="subject-topic-list-computerPrinciplesV2"]');
+
+    expect(practiceSection.classes()).toContain('subject-topic-card');
+    expect(practiceSection.text()).toContain('加強練習');
+    expect(practiceSection.text()).toContain('指令組成:50% 需 1 週期');
+    expect(practiceSection.text()).toContain('Valid bit');
+    expect(practiceSection.text()).toContain('資管題目:');
+    expect(routeSections.element.compareDocumentPosition(topicList.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(wrapper.find('[data-testid="topic-detail-cpv2-floating-point-conversion"]').exists()).toBe(false);
+  });
 });

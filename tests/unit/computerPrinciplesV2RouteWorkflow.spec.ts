@@ -3,14 +3,23 @@ import { describe, expect, it } from 'vitest';
 import { professionalTopicsBySubject } from '@/modules/subjectTopics/data/professionalTopics';
 import { placeholderTopicsBySubject } from '@/modules/subjectTopics/data/placeholderTopics';
 import { getSubjectTopics } from '@/modules/subjectTopics/data/subjectTopics';
+import { computerPrinciplesV2RouteSections } from '@/modules/subjectTopics/data/computerPrinciplesV2Topics';
 import { subjectKeys, type ProfessionalSubjectTopic, type SubjectKey } from '@/modules/subjectTopics/types/subjectTopic';
 
 const subjectKey = 'computerPrinciplesV2' as SubjectKey;
 const sourceBatch = 'computer-principles-v2-route';
 const catalogSourceFile = '_private/MD/計算機概論/00_目錄.md';
 const floatingPointContentReviewPath = '_TMP/reviews/cpv2-floating-point-content-review.md';
+const floatingPointSupplementalReviewPath = '_TMP/reviews/cpv2-floating-point-special-values-practice-review.md';
 const refreshedFloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
+const supplementalPracticeSourceFile = '_private/discuss.txt';
+const specialValuesSourceFile = '_private/MD/0621/IEEE754_浮點數特殊值_速記.md';
 const deprecatedFloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
+const refreshedFloatingPointSourceFiles = [
+  refreshedFloatingPointSourceFile,
+  supplementalPracticeSourceFile,
+  specialValuesSourceFile
+] as const;
 
 const topicCases = [
   {
@@ -144,7 +153,9 @@ describe('computer principles v2 route workflow', () => {
       expect(topic.subjectKey).toBe('computerPrinciplesV2');
       expect(topic.title).toBe(topicCase.title);
       expect(topic.sourceBatch).toBe(sourceBatch);
-      expect(topic.sourceFiles).toEqual([topicCase.source]);
+      const expectedSourceFiles =
+        topicCase.id === 'cpv2-floating-point-conversion' ? [...refreshedFloatingPointSourceFiles] : [topicCase.source];
+      expect(topic.sourceFiles).toEqual(expectedSourceFiles);
       expect(topic.sourceSummary).toContain(topicCase.title);
       expect(topic.summary).not.toBe('');
       expect(topic.terms.length, `${topicCase.id} should expose source terms`).toBeGreaterThan(0);
@@ -156,7 +167,7 @@ describe('computer principles v2 route workflow', () => {
         throw new Error(`${topicCase.id} should render through lessonArticle`);
       }
 
-      expect(lessonArticle.sourceFiles).toEqual([topicCase.source]);
+      expect(lessonArticle.sourceFiles).toEqual(expectedSourceFiles);
       expect(lessonArticle.sourceSection).toBe(topic.sourceSummary);
       expect(lessonArticle.sections.length, `${topicCase.id} should have sections`).toBeGreaterThan(0);
       expect(lessonArticle.sections.every((section) => section.blocks.length > 0), `${topicCase.id} should not have empty sections`).toBe(
@@ -175,6 +186,22 @@ describe('computer principles v2 route workflow', () => {
     }
   });
 
+  it('keeps the supplemental practice content as a route-level section above the topic list', () => {
+    expect(computerPrinciplesV2RouteSections).toHaveLength(1);
+
+    const practiceSection = computerPrinciplesV2RouteSections[0];
+    const serializedPracticeSection = JSON.stringify(practiceSection);
+
+    expect(practiceSection?.heading).toBe('加強練習');
+    expect(serializedPracticeSection).toContain('指令組成:50% 需 1 週期、30% 需 2 週期、20% 需 4 週期,平均 CPI 為?');
+    expect(serializedPracticeSection).toContain('Valid bit');
+    expect(serializedPracticeSection).toContain('Dirty bit');
+    expect(serializedPracticeSection).toContain('Tag 表示');
+    expect(serializedPracticeSection).toContain('真正的資料');
+    expect(serializedPracticeSection).toContain('Gen A × B');
+    expect(serializedPracticeSection).toContain('資管題目:');
+  });
+
   it('uses the refreshed v2 floating point source in the tenth catalog position', () => {
     const topics = getSubjectTopics(subjectKey);
     const floatingPointTopic = topics[9];
@@ -190,8 +217,16 @@ describe('computer principles v2 route workflow', () => {
       throw new Error('cpv2-floating-point-conversion should render through lessonArticle');
     }
 
-    expect(lessonArticle.sourceFiles).toEqual([refreshedFloatingPointSourceFile]);
+    expect(lessonArticle.sourceFiles).toEqual([...refreshedFloatingPointSourceFiles]);
     expect(lessonArticle.sourceFiles).not.toContain(deprecatedFloatingPointSourceFile);
+    expect(getSubjectTopics(subjectKey).map((topic) => topic.id)).toEqual(topicCases.map((topicCase) => topicCase.id));
+    expect(
+      getSubjectTopics(subjectKey).some((topic) =>
+        topic.blocks.some(
+          (block) => block.kind === 'lessonArticle' && block.sourceFiles.includes(specialValuesSourceFile)
+        ) && topic.id !== 'cpv2-floating-point-conversion'
+      )
+    ).toBe(false);
     expect(lessonArticle.sections.map((section) => section.heading)).toEqual(
       expect.arrayContaining([
         '16. 浮點數轉換 / 傳統（一般）浮點表示法　【理解】',
@@ -199,9 +234,17 @@ describe('computer principles v2 route workflow', () => {
         '16. 浮點數轉換 / 完整流程（發送端：算出要傳什麼）',
         '16. 浮點數轉換 / 範例：IEEE 754 反推',
         '16. 浮點數轉換 / 為什麼 0.1 可能不精確？',
+        'IEEE 754 浮點數特殊值・速記版',
         '加強練習　【練流程】'
       ])
     );
+    expect(lessonArticle.sections.map((section) => section.heading)).not.toContain('加強練習');
+    expect(lessonArticle.sections[0]?.heading).toBe('16. 浮點數轉換');
+
+    const headingOrder = lessonArticle.sections.map((section) => section.heading);
+    expect(headingOrder[headingOrder.indexOf('16. 浮點數轉換') + 1]).toBe('IEEE 754 浮點數特殊值・速記版');
+
+    const specialValuesSection = lessonArticle.sections.find((section) => section.heading === 'IEEE 754 浮點數特殊值・速記版');
 
     const serializedTopic = JSON.stringify(floatingPointTopic);
 
@@ -209,10 +252,20 @@ describe('computer principles v2 route workflow', () => {
       '傳統（一般）浮點表示法',
       'IEEE 754 欄位',
       '0.1(10) = 0.0001100110011…(2)',
-      '練習 6（兩種表示法對照）'
+      '練習 6（兩種表示法對照）',
+      '±0',
+      '非正規化數',
+      '±∞',
+      'NaN',
+      '隱藏位元變 0',
+      '正規化 = 1',
+      '單精度 (32-bit)',
+      '雙精度 (64-bit)'
     ]) {
       expect(serializedTopic).toContain(refreshedPhrase);
     }
+    expect(JSON.stringify(specialValuesSection)).toContain('指數全 0');
+    expect(JSON.stringify(specialValuesSection)).toContain('指數全 1');
   });
 
   it('records a manual content review for the refreshed floating point lesson', () => {
@@ -228,6 +281,26 @@ describe('computer principles v2 route workflow', () => {
       '0.1 精度說明: pass',
       '易錯陷阱: pass',
       '6 題練習: pass',
+      'lecture-only',
+      '4 個選項：不適用',
+      '1 個正解：不適用',
+      '選項辨析：不適用'
+    ]) {
+      expect(review).toContain(requiredReviewText);
+    }
+  });
+
+  it('records a manual content review for the supplemental floating point refresh', () => {
+    const review = readFileSync(floatingPointSupplementalReviewPath, 'utf8');
+
+    for (const requiredReviewText of [
+      'practice source: _private/discuss.txt',
+      'special-values source: _private/MD/0621/IEEE754_浮點數特殊值_速記.md',
+      'target: cpv2-floating-point-conversion',
+      '12 題加強練習: pass',
+      'IEEE 754 特殊值判讀: pass',
+      'hidden bit 對照: pass',
+      'single/double precision table: pass',
       'lecture-only',
       '4 個選項：不適用',
       '1 個正解：不適用',

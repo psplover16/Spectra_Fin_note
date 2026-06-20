@@ -82,7 +82,14 @@ const computerPrinciplesV2TopicIds = [
   'cpv2-hamming-code-distance'
 ] as const;
 const refreshedCpv2FloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
+const supplementalCpv2FloatingPointPracticeSourceFile = '_private/discuss.txt';
+const supplementalCpv2FloatingPointSpecialValuesSourceFile = '_private/MD/0621/IEEE754_浮點數特殊值_速記.md';
 const deprecatedCpv2FloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
+const refreshedCpv2FloatingPointSourceFiles = [
+  refreshedCpv2FloatingPointSourceFile,
+  supplementalCpv2FloatingPointPracticeSourceFile,
+  supplementalCpv2FloatingPointSpecialValuesSourceFile
+] as const;
 const computerPrinciplesV2TopicSources = [
   '_private/MD/計算機概論/01_架構與計算理論.md',
   '_private/MD/計算機概論/02_機器指令與指令週期.md',
@@ -757,7 +764,9 @@ describe('professional topic skeleton data', () => {
 
     expect(topics.map((topic) => topic.id)).toEqual([...computerPrinciplesV2TopicIds]);
     topics.forEach((topic, index) => {
-      expect(topic.sourceFiles, `${topic.id} should keep its expected source file`).toEqual([computerPrinciplesV2TopicSources[index]]);
+      const expectedSourceFiles =
+        topic.id === 'cpv2-floating-point-conversion' ? [...refreshedCpv2FloatingPointSourceFiles] : [computerPrinciplesV2TopicSources[index]];
+      expect(topic.sourceFiles, `${topic.id} should keep its expected source file`).toEqual(expectedSourceFiles);
     });
 
     expect(floatingPointTopic).toMatchObject({
@@ -767,7 +776,7 @@ describe('professional topic skeleton data', () => {
       difficulty: 'core',
       topicType: 'procedure'
     });
-    expect(floatingPointTopic?.sourceFiles).toEqual([refreshedCpv2FloatingPointSourceFile]);
+    expect(floatingPointTopic?.sourceFiles).toEqual([...refreshedCpv2FloatingPointSourceFiles]);
     expect(floatingPointTopic?.sourceFiles).not.toContain(deprecatedCpv2FloatingPointSourceFile);
 
     const lessonArticle = floatingPointTopic?.blocks[0];
@@ -777,10 +786,18 @@ describe('professional topic skeleton data', () => {
       throw new Error('cpv2-floating-point-conversion should render as lessonArticle');
     }
 
-    expect(lessonArticle.sourceFiles).toEqual([refreshedCpv2FloatingPointSourceFile]);
+    expect(lessonArticle.sourceFiles).toEqual([...refreshedCpv2FloatingPointSourceFiles]);
     expect(lessonArticle.sourceFiles).not.toContain(deprecatedCpv2FloatingPointSourceFile);
     expect(lessonArticle.sourceSection).toBe(floatingPointTopic?.sourceSummary);
-    expect(JSON.stringify(floatingPointTopic)).not.toContain(deprecatedCpv2FloatingPointSourceFile);
+    const serializedTopic = JSON.stringify(floatingPointTopic);
+    for (const supplementalPhrase of ['IEEE 754', 'NaN', '非正規化數']) {
+      expect(serializedTopic).toContain(supplementalPhrase);
+    }
+    expect(lessonArticle.sections.map((section) => section.heading)).not.toContain('加強練習');
+    for (const forbiddenKey of ['questionText', 'correctAnswer', 'backendSyncId', 'remoteQuestionId']) {
+      expect(serializedTopic).not.toContain(forbiddenKey);
+    }
+    expect(serializedTopic).not.toContain(deprecatedCpv2FloatingPointSourceFile);
   });
 
   it('preserves route, topic id, title, and source-section skeletons for later manual paste-in', () => {

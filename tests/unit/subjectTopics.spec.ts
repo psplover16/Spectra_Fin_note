@@ -99,7 +99,14 @@ const expectedOperatingSystemsRouteTopicIds: readonly string[] = [
 ];
 const computerPrinciplesV2SubjectKey = 'computerPrinciplesV2' as SubjectKey;
 const refreshedCpv2FloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
+const supplementalCpv2FloatingPointPracticeSourceFile = '_private/discuss.txt';
+const supplementalCpv2FloatingPointSpecialValuesSourceFile = '_private/MD/0621/IEEE754_浮點數特殊值_速記.md';
 const deprecatedCpv2FloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
+const refreshedCpv2FloatingPointSourceFiles = [
+  refreshedCpv2FloatingPointSourceFile,
+  supplementalCpv2FloatingPointPracticeSourceFile,
+  supplementalCpv2FloatingPointSpecialValuesSourceFile
+] as const;
 const expectedComputerPrinciplesV2RouteTopicIds: readonly string[] = [
   'cpv2-architecture-computation-theory',
   'cpv2-machine-instruction-cycle',
@@ -262,8 +269,11 @@ describe('subject topic route data helpers', () => {
     if (floatingPointLessonArticle?.kind !== 'lessonArticle') {
       throw new Error('cpv2-floating-point-conversion should expose refreshed lessonArticle content');
     }
-    expect(floatingPointLessonArticle.sourceFiles).toEqual([refreshedCpv2FloatingPointSourceFile]);
+    expect(floatingPointLessonArticle.sourceFiles).toEqual([...refreshedCpv2FloatingPointSourceFiles]);
     expect(floatingPointLessonArticle.sourceFiles).not.toContain(deprecatedCpv2FloatingPointSourceFile);
+    expect(floatingPointLessonArticle.sections[0]?.heading).toBe('16. 浮點數轉換');
+    expect(floatingPointLessonArticle.sections.map((section) => section.heading)).not.toContain('加強練習');
+    expect(JSON.stringify(floatingPointTopic)).toContain('IEEE 754 浮點數特殊值・速記版');
     expect(JSON.stringify(floatingPointTopic)).toContain('練習 6（兩種表示法對照）');
     expect(JSON.stringify(floatingPointTopic)).not.toContain(deprecatedCpv2FloatingPointSourceFile);
   });
