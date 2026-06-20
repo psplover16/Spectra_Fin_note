@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { professionalTopicsBySubject } from '@/modules/subjectTopics/data/professionalTopics';
 import { placeholderTopicsBySubject } from '@/modules/subjectTopics/data/placeholderTopics';
 import { getSubjectTopics } from '@/modules/subjectTopics/data/subjectTopics';
-import { computerPrinciplesV2RouteSections } from '@/modules/subjectTopics/data/computerPrinciplesV2Topics';
 import { subjectKeys, type ProfessionalSubjectTopic, type SubjectKey } from '@/modules/subjectTopics/types/subjectTopic';
 
 const subjectKey = 'computerPrinciplesV2' as SubjectKey;
@@ -17,11 +16,16 @@ const specialValuesSourceFile = '_private/MD/0621/IEEE754_浮點數特殊值_速
 const deprecatedFloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 const refreshedFloatingPointSourceFiles = [
   refreshedFloatingPointSourceFile,
-  supplementalPracticeSourceFile,
   specialValuesSourceFile
 ] as const;
 
 const topicCases = [
+  {
+    id: 'cpv2-supplemental-practice',
+    title: '加強練習',
+    source: supplementalPracticeSourceFile,
+    keyword: '指令組成:50% 需 1 週期'
+  },
   {
     id: 'cpv2-architecture-computation-theory',
     title: '架構與計算理論',
@@ -186,25 +190,33 @@ describe('computer principles v2 route workflow', () => {
     }
   });
 
-  it('keeps the supplemental practice content as a route-level section above the topic list', () => {
-    expect(computerPrinciplesV2RouteSections).toHaveLength(1);
+  it('keeps the supplemental practice content as the first route-visible topic card', () => {
+    const topics = getSubjectTopics(subjectKey);
+    const practiceTopic = topics[0];
+    const lessonArticle = practiceTopic?.blocks[0];
 
-    const practiceSection = computerPrinciplesV2RouteSections[0];
-    const serializedPracticeSection = JSON.stringify(practiceSection);
+    expect(practiceTopic?.id).toBe('cpv2-supplemental-practice');
+    expect(practiceTopic?.title).toBe('加強練習');
+    expect(lessonArticle?.kind).toBe('lessonArticle');
+    if (lessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cpv2-supplemental-practice should render through lessonArticle');
+    }
 
-    expect(practiceSection?.heading).toBe('加強練習');
-    expect(serializedPracticeSection).toContain('指令組成:50% 需 1 週期、30% 需 2 週期、20% 需 4 週期,平均 CPI 為?');
-    expect(serializedPracticeSection).toContain('Valid bit');
-    expect(serializedPracticeSection).toContain('Dirty bit');
-    expect(serializedPracticeSection).toContain('Tag 表示');
-    expect(serializedPracticeSection).toContain('真正的資料');
-    expect(serializedPracticeSection).toContain('Gen A × B');
-    expect(serializedPracticeSection).toContain('資管題目:');
+    const serializedPracticeTopic = JSON.stringify(practiceTopic);
+    expect(lessonArticle.sourceFiles).toEqual([supplementalPracticeSourceFile]);
+    expect(lessonArticle.sections[0]?.heading).toBe('加強練習');
+    expect(serializedPracticeTopic).toContain('指令組成:50% 需 1 週期、30% 需 2 週期、20% 需 4 週期,平均 CPI 為?');
+    expect(serializedPracticeTopic).toContain('Valid bit');
+    expect(serializedPracticeTopic).toContain('Dirty bit');
+    expect(serializedPracticeTopic).toContain('Tag 表示');
+    expect(serializedPracticeTopic).toContain('真正的資料');
+    expect(serializedPracticeTopic).toContain('Gen A × B');
+    expect(serializedPracticeTopic).toContain('資管題目:');
   });
 
-  it('uses the refreshed v2 floating point source in the tenth catalog position', () => {
+  it('uses the refreshed v2 floating point source after the first practice topic', () => {
     const topics = getSubjectTopics(subjectKey);
-    const floatingPointTopic = topics[9];
+    const floatingPointTopic = topics[10];
 
     expect(floatingPointTopic?.id).toBe('cpv2-floating-point-conversion');
     expect(floatingPointTopic?.title).toBe('浮點數轉換');
@@ -219,6 +231,7 @@ describe('computer principles v2 route workflow', () => {
 
     expect(lessonArticle.sourceFiles).toEqual([...refreshedFloatingPointSourceFiles]);
     expect(lessonArticle.sourceFiles).not.toContain(deprecatedFloatingPointSourceFile);
+    expect(lessonArticle.sourceFiles).not.toContain(supplementalPracticeSourceFile);
     expect(getSubjectTopics(subjectKey).map((topic) => topic.id)).toEqual(topicCases.map((topicCase) => topicCase.id));
     expect(
       getSubjectTopics(subjectKey).some((topic) =>

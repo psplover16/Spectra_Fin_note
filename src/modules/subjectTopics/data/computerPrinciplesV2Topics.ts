@@ -1,7 +1,7 @@
 import type { LessonArticleSection, ProfessionalSubjectTopic } from '@/modules/subjectTopics/types/subjectTopic';
 
 // Static lessonArticle data generated from _private/MD/計算機概論 source Markdown.
-export const computerPrinciplesV2RouteSections: readonly LessonArticleSection[] = [
+const supplementalPracticeSections: readonly LessonArticleSection[] = [
   {
     heading: '加強練習',
     blocks: [
@@ -35,6 +35,53 @@ export const computerPrinciplesV2RouteSections: readonly LessonArticleSection[] 
 ];
 
 export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
+  {
+    "id": "cpv2-supplemental-practice",
+    "subjectKey": "computerPrinciplesV2",
+    "title": "加強練習",
+    "summary": "整理跨章加強練習提示、Cache 欄位與資管延伸題目。",
+    "sourceBatch": "computer-principles-v2-route",
+    "sourceFiles": [
+      "_private/discuss.txt"
+    ],
+    "sourceSummary": "計概(v2) / 加強練習",
+    "examOutline": [],
+    "memoryPoints": [],
+    "understandingNotes": [],
+    "difficulty": "core",
+    "topicType": "concept",
+    "terms": [
+      {
+        "zh": "有效位元",
+        "en": "Valid Bit"
+      },
+      {
+        "zh": "髒位元",
+        "en": "Dirty Bit"
+      },
+      {
+        "zh": "標籤",
+        "en": "Tag"
+      },
+      {
+        "zh": "每指令週期數",
+        "en": "Cycles Per Instruction"
+      }
+    ],
+    "blocks": [
+      {
+        "kind": "lessonArticle",
+        "sourceFiles": [
+          "_private/discuss.txt"
+        ],
+        "sourceSection": "計概(v2) / 加強練習",
+        "lead": [
+          "跨章加強練習提示與 Cache 欄位速記。"
+        ],
+        "sections": supplementalPracticeSections
+      }
+    ]
+  },
   {
     "id": "cpv2-architecture-computation-theory",
     "subjectKey": "computerPrinciplesV2",
@@ -2480,7 +2527,6 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
     "sourceBatch": "computer-principles-v2-route",
     "sourceFiles": [
       "_private/MD/計算機概論v2/10_浮點數轉換.md",
-      "_private/discuss.txt",
       "_private/MD/0621/IEEE754_浮點數特殊值_速記.md"
     ],
     "sourceSummary": "基本計概(v2) / 浮點數轉換",
@@ -2520,7 +2566,6 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
         "kind": "lessonArticle",
         "sourceFiles": [
           "_private/MD/計算機概論v2/10_浮點數轉換.md",
-          "_private/discuss.txt",
           "_private/MD/0621/IEEE754_浮點數特殊值_速記.md"
         ],
         "sourceSection": "基本計概(v2) / 浮點數轉換",

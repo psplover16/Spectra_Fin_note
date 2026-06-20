@@ -17626,3 +17626,204 @@ tests:
   - tests/unit/projectArchitecture.spec.ts
   - tests/unit/subjectTopicProgressStorage.spec.ts
 -->
+
+---
+### Requirement: Networking v2 topics preserve exact source traceability
+
+Formal professional topic data SHALL include a `networkingV2` collection containing exactly 12 source-backed topics imported from `_private/MD/網路概論v2/`. Each topic SHALL record its Markdown source file and the cleaned source subject used for display.
+
+#### Scenario: V2 topic data has exact source files
+
+- **WHEN** formal professional topic data is loaded for `networkingV2`
+- **THEN** it contains exactly 12 topics
+- **AND** each topic has `sourceBatch` set to `networking-v2-route`
+- **AND** each topic `sourceFiles` includes exactly one content Markdown file from `_private/MD/網路概論v2/`
+- **AND** no topic uses `_private/TMP/` draft paths or legacy `.txt` paths as source traceability
+- **AND** each topic's `lessonArticle.sourceFiles` value equals the topic `sourceFiles` value
+
+##### Example: required source files
+
+| Position | Source file |
+| ----- | ----- |
+| 1 | `_private/MD/網路概論v2/網路概論_1_OSI七層與TCPIP.md` |
+| 2 | `_private/MD/網路概論v2/網路概論_2_基礎概念.md` |
+| 3 | `_private/MD/網路概論v2/網路概論_2下_資安_加密與TLS.md` |
+| 4 | `_private/MD/網路概論v2/網路概論_3上_網路設備對應層級.md` |
+| 5 | `_private/MD/網路概論v2/網路概論_3下_無線與上網接取設備.md` |
+| 6 | `_private/MD/網路概論v2/網路概論_4上_IP與子網路計算.md` |
+| 7 | `_private/MD/網路概論v2/網路概論_5_傳輸層.md` |
+| 8 | `_private/MD/網路概論v2/網路概論_6_應用層與Port對照.md` |
+| 9 | `_private/MD/網路概論v2/網路概論_7上_實體層.md` |
+| 10 | `_private/MD/網路概論v2/網路概論_7下_資料鏈結層.md` |
+| 11 | `_private/MD/網路概論v2/網路概論_8上_資安觀念與加密.md` |
+| 12 | `_private/MD/網路概論v2/網路概論_8下_防禦設備與攻擊.md` |
+
+#### Scenario: V2 topic metadata remains complete
+
+- **WHEN** a Networking v2 topic is loaded
+- **THEN** the topic has `subjectKey` set to `networkingV2`
+- **AND** the topic has non-empty `title`, `summary`, `sourceSummary`, `examOutline`, `memoryPoints`, `understandingNotes`, `difficulty`, `topicType`, `terms`, and `blocks`
+- **AND** the lessonArticle `sourceSection` equals the topic `sourceSummary`
+
+
+<!-- @trace
+source: networking-v2-route
+updated: 2026-06-21
+code:
+  - src/modules/subjectTopics/components/SubjectTopicPage.vue
+  - _private/MD/0621/IEEE754_浮點數特殊值_速記.md
+  - _private/discuss.txt
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _TMP/reviews/cpv2-floating-point-special-values-practice-review.md
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - src/styles/main.css
+tests:
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+-->
+
+---
+### Requirement: Networking v2 topics keep source-authored teaching structure
+
+Networking v2 topics SHALL preserve the source-authored teaching structure while converting it into supported formal content blocks. The conversion MUST NOT replace source-authored explanations with generated summaries or omit source tables and examples.
+
+#### Scenario: Every v2 topic has learner-facing lessonArticle content
+
+- **WHEN** each Networking v2 topic is loaded
+- **THEN** the topic contains exactly one `lessonArticle` block
+- **AND** the lessonArticle contains at least one non-empty section
+- **AND** section headings and content follow the source Markdown topic structure
+- **AND** tables in the source remain represented as table blocks when the existing schema can represent them
+
+#### Scenario: Source-authored guidance remains visible
+
+- **WHEN** the source Markdown contains learning guidance, warnings, comparison notes, worked examples, or review summaries
+- **THEN** the corresponding formal topic keeps that content in the `lessonArticle.lead` or a relevant lesson section
+- **AND** the content remains visible on the subject topic page
+
+#### Scenario: Networking v2 topics remain lecture-only data
+
+- **WHEN** formal `networkingV2` topics are inspected
+- **THEN** the topics do not introduce quiz question fields
+- **AND** the topics do not introduce four-option answer fields
+- **AND** the topics do not introduce correct-answer fields
+- **AND** the topics do not introduce option analysis fields
+
+<!-- @trace
+source: networking-v2-route
+updated: 2026-06-21
+code:
+  - src/modules/subjectTopics/components/SubjectTopicPage.vue
+  - _private/MD/0621/IEEE754_浮點數特殊值_速記.md
+  - _private/discuss.txt
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - _TMP/reviews/cpv2-floating-point-special-values-practice-review.md
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - src/styles/main.css
+tests:
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+-->
+
+---
+### Requirement: Refreshed professional topic content replaces deprecated source content
+
+When a professional topic is refreshed from a newly approved Markdown source, the formal app data SHALL update the topic source traceability and learner-facing lessonArticle content to match the newly approved source. The refreshed topic SHALL keep stable route ownership, topic id, title, difficulty, and topic type unless the proposal explicitly changes them. Deprecated source content SHALL NOT remain in learner-facing blocks for the refreshed topic.
+
+#### Scenario: Refresh a single professional lessonArticle topic
+
+- **WHEN** a topic refresh targets one existing professional topic
+- **THEN** the refreshed topic keeps the same subject key, topic id, title, difficulty, and topic type unless the change proposal explicitly lists a change to those fields
+- **THEN** `sourceFiles`, `sourceSummary`, `lessonArticle.sourceFiles`, and `lessonArticle.sourceSection` identify the newly approved source
+- **THEN** the lessonArticle lead and sections are derived from the newly approved source structure
+- **THEN** deprecated source content is not rendered as learner-facing lessonArticle blocks for that topic
+- **THEN** other topics in the same subject remain unchanged unless they are listed in the change proposal
+
+##### Example: cpv2 floating point source replacement
+
+| Field or behavior | Expected value after refresh |
+| ----- | ----- |
+| Subject key | `computerPrinciplesV2` |
+| Topic id | `cpv2-floating-point-conversion` |
+| Topic title | `浮點數轉換` |
+| New source file | `_private/MD/計算機概論v2/10_浮點數轉換.md` |
+| Unchanged neighboring topics | The other 12 Computer Principles v2 topics keep their existing ids, titles, order, and source files |
+
+<!-- @trace
+source: refresh-cpv2-floating-point-content
+updated: 2026-06-21
+code:
+  - _TMP/reviews/cpv2-floating-point-special-values-practice-review.md
+  - _private/discuss.txt
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - src/modules/subjectTopics/components/SubjectTopicPage.vue
+  - src/styles/main.css
+  - _private/MD/0621/IEEE754_浮點數特殊值_速記.md
+tests:
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+-->
+
+---
+### Requirement: Refreshed practice and floating point topics trace supplemental sources
+
+The new `cpv2-supplemental-practice` professional topic SHALL trace `_private/discuss.txt` as its source. The refreshed `cpv2-floating-point-conversion` professional topic SHALL trace the floating-point lesson source and the IEEE 754 special-values source. Both topics SHALL remain lecture-only content and MUST NOT introduce quiz-only fields such as question text, answer keys, backend sync identifiers, or remote question identifiers.
+
+#### Scenario: Practice source is recorded on the practice topic
+
+- **WHEN** the `cpv2-supplemental-practice` professional topic is loaded from formal app data
+- **THEN** the topic `sourceFiles` include `_private/discuss.txt`
+- **AND** the topic lessonArticle `sourceFiles` include `_private/discuss.txt`
+- **AND** the topic `sourceSummary` identifies the content as Computer Principles v2 practice material
+
+#### Scenario: IEEE 754 supplemental source is recorded on the floating point topic
+
+- **WHEN** the `cpv2-floating-point-conversion` professional topic is loaded from formal app data
+- **THEN** the topic `sourceFiles` include `_private/MD/計算機概論v2/10_浮點數轉換.md`
+- **AND** the topic `sourceFiles` include `_private/MD/0621/IEEE754_浮點數特殊值_速記.md`
+- **AND** the topic lessonArticle `sourceFiles` include the same two source paths
+- **AND** the topic `sourceSummary` identifies the content as Computer Principles v2 floating-point conversion material
+
+#### Scenario: Supplemental content remains lecture-only
+
+- **WHEN** the refreshed floating-point topic is serialized for inspection
+- **THEN** the serialized topic contains the phrases `IEEE 754`, `NaN`, and `非正規化數`
+- **AND** the floating-point topic lessonArticle does not contain a section titled `加強練習`
+- **AND** the practice topic serialized content contains `加強練習`, `Valid bit`, and `資管題目:`
+- **AND** the serialized topic does not contain `questionText`
+- **AND** the serialized topic does not contain `correctAnswer`
+- **AND** the serialized topic does not contain `backendSyncId`
+- **AND** the serialized topic does not contain `remoteQuestionId`
+
+#### Scenario: Manual content review records the supplemental refresh
+
+- **WHEN** the manual review artifact for this change is read
+- **THEN** it records `_private/discuss.txt` as the practice-section source
+- **AND** it records `_private/MD/0621/IEEE754_浮點數特殊值_速記.md` as the IEEE 754 special-value source
+- **AND** it records the supplemental refresh as `lecture-only`
+- **AND** it records that 4 options, 1 correct answer, and option rationales are not applicable
+
+<!-- @trace
+source: add-cpv2-floating-special-values-practice
+updated: 2026-06-21
+code:
+  - _private/discuss.txt
+  - _TMP/reviews/cpv2-floating-point-special-values-practice-review.md
+  - src/modules/subjectTopics/components/SubjectTopicPage.vue
+  - _private/MD/0621/IEEE754_浮點數特殊值_速記.md
+  - src/styles/main.css
+  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+tests:
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+-->

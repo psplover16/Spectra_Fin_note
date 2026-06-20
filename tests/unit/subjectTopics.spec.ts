@@ -104,10 +104,10 @@ const supplementalCpv2FloatingPointSpecialValuesSourceFile = '_private/MD/0621/I
 const deprecatedCpv2FloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 const refreshedCpv2FloatingPointSourceFiles = [
   refreshedCpv2FloatingPointSourceFile,
-  supplementalCpv2FloatingPointPracticeSourceFile,
   supplementalCpv2FloatingPointSpecialValuesSourceFile
 ] as const;
 const expectedComputerPrinciplesV2RouteTopicIds: readonly string[] = [
+  'cpv2-supplemental-practice',
   'cpv2-architecture-computation-theory',
   'cpv2-machine-instruction-cycle',
   'cpv2-pipeline-hazard',
@@ -123,6 +123,7 @@ const expectedComputerPrinciplesV2RouteTopicIds: readonly string[] = [
   'cpv2-hamming-code-distance'
 ];
 const expectedComputerPrinciplesV2RouteTitles: readonly string[] = [
+  '加強練習',
   '架構與計算理論',
   '機器指令與指令週期',
   'Pipeline 與 Hazard',
@@ -257,7 +258,9 @@ describe('subject topic route data helpers', () => {
     const topicIds = topics.map((topic) => topic.id);
     const topicTitles = topics.map((topic) => topic.title);
     const floatingPointTopic = topics.find((topic) => topic.id === 'cpv2-floating-point-conversion');
+    const practiceTopic = topics.find((topic) => topic.id === 'cpv2-supplemental-practice');
     const floatingPointLessonArticle = floatingPointTopic?.blocks[0];
+    const practiceLessonArticle = practiceTopic?.blocks[0];
 
     expect(topicIds).toEqual(expectedComputerPrinciplesV2RouteTopicIds);
     expect(topicTitles).toEqual(expectedComputerPrinciplesV2RouteTitles);
@@ -270,12 +273,20 @@ describe('subject topic route data helpers', () => {
       throw new Error('cpv2-floating-point-conversion should expose refreshed lessonArticle content');
     }
     expect(floatingPointLessonArticle.sourceFiles).toEqual([...refreshedCpv2FloatingPointSourceFiles]);
+    expect(floatingPointLessonArticle.sourceFiles).not.toContain(supplementalCpv2FloatingPointPracticeSourceFile);
     expect(floatingPointLessonArticle.sourceFiles).not.toContain(deprecatedCpv2FloatingPointSourceFile);
     expect(floatingPointLessonArticle.sections[0]?.heading).toBe('16. 浮點數轉換');
     expect(floatingPointLessonArticle.sections.map((section) => section.heading)).not.toContain('加強練習');
     expect(JSON.stringify(floatingPointTopic)).toContain('IEEE 754 浮點數特殊值・速記版');
     expect(JSON.stringify(floatingPointTopic)).toContain('練習 6（兩種表示法對照）');
     expect(JSON.stringify(floatingPointTopic)).not.toContain(deprecatedCpv2FloatingPointSourceFile);
+    expect(practiceLessonArticle?.kind).toBe('lessonArticle');
+    if (practiceLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cpv2-supplemental-practice should expose practice lessonArticle content');
+    }
+    expect(practiceLessonArticle.sourceFiles).toEqual([supplementalCpv2FloatingPointPracticeSourceFile]);
+    expect(practiceLessonArticle.sections[0]?.heading).toBe('加強練習');
+    expect(JSON.stringify(practiceTopic)).toContain('Valid bit');
   });
 
   it('exposes imported database, programming, and system design topics before skeleton topics', () => {

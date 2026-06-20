@@ -101,18 +101,25 @@ describe('subject route views', () => {
     expect(algorithmsWrapper.text()).not.toContain('正式內容會保留複雜度');
   });
 
-  it('renders the Computer Principles v2 route practice section before the topic list', () => {
+  it('renders the Computer Principles v2 practice card as the first unfinished topic', async () => {
     const wrapper = mount(ComputerPrinciplesV2View);
-    const routeSections = wrapper.get('[data-testid="subject-route-sections-computerPrinciplesV2"]');
-    const practiceSection = wrapper.get('[data-testid="subject-route-section-computerPrinciplesV2-0"]');
-    const topicList = wrapper.get('[data-testid="subject-topic-list-computerPrinciplesV2"]');
+    const unfinishedSection = wrapper.get('[data-testid="subject-topic-unfinished-computerPrinciplesV2"]');
+    const practiceCard = wrapper.get('[data-testid="subject-topic-card-cpv2-supplemental-practice"]');
+    const architectureCard = wrapper.get('[data-testid="subject-topic-card-cpv2-architecture-computation-theory"]');
 
-    expect(practiceSection.classes()).toContain('subject-topic-card');
-    expect(practiceSection.text()).toContain('加強練習');
-    expect(practiceSection.text()).toContain('指令組成:50% 需 1 週期');
-    expect(practiceSection.text()).toContain('Valid bit');
-    expect(practiceSection.text()).toContain('資管題目:');
-    expect(routeSections.element.compareDocumentPosition(topicList.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(wrapper.find('[data-testid="subject-route-sections-computerPrinciplesV2"]').exists()).toBe(false);
+    expect(unfinishedSection.element.contains(practiceCard.element)).toBe(true);
+    expect(practiceCard.classes()).toContain('subject-topic-card');
+    expect(practiceCard.text()).toContain('加強練習');
+    expect(practiceCard.element.compareDocumentPosition(architectureCard.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(wrapper.find('[data-testid="topic-detail-cpv2-supplemental-practice"]').exists()).toBe(false);
+
+    await wrapper.get('[data-testid="topic-title-cpv2-supplemental-practice"]').trigger('click');
+
+    const practiceDetail = wrapper.get('[data-testid="topic-detail-cpv2-supplemental-practice"]');
+    expect(practiceDetail.text()).toContain('指令組成:50% 需 1 週期');
+    expect(practiceDetail.text()).toContain('Valid bit');
+    expect(practiceDetail.text()).toContain('資管題目:');
     expect(wrapper.find('[data-testid="topic-detail-cpv2-floating-point-conversion"]').exists()).toBe(false);
   });
 });

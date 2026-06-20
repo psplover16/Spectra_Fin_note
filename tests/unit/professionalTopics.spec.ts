@@ -21,7 +21,7 @@ const professionalSubjectKeys = [
 
 const expectedCounts = {
   computerPrinciples: 18,
-  computerPrinciplesV2: 13,
+  computerPrinciplesV2: 14,
   networking: 11,
   networkingV2: 12,
   digitalLogic: 5,
@@ -67,6 +67,7 @@ const complementConversionTopicId = 'cp-complement-conversion';
 const floatingPointConversionTopicId = 'cp-floating-point-conversion';
 const codesAndCheckCodesTopicId = 'cp-codes-and-check-codes';
 const computerPrinciplesV2TopicIds = [
+  'cpv2-supplemental-practice',
   'cpv2-architecture-computation-theory',
   'cpv2-machine-instruction-cycle',
   'cpv2-pipeline-hazard',
@@ -87,10 +88,10 @@ const supplementalCpv2FloatingPointSpecialValuesSourceFile = '_private/MD/0621/I
 const deprecatedCpv2FloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 const refreshedCpv2FloatingPointSourceFiles = [
   refreshedCpv2FloatingPointSourceFile,
-  supplementalCpv2FloatingPointPracticeSourceFile,
   supplementalCpv2FloatingPointSpecialValuesSourceFile
 ] as const;
 const computerPrinciplesV2TopicSources = [
+  supplementalCpv2FloatingPointPracticeSourceFile,
   '_private/MD/計算機概論/01_架構與計算理論.md',
   '_private/MD/計算機概論/02_機器指令與指令週期.md',
   '_private/MD/計算機概論/03_Pipeline與Hazard.md',
@@ -758,8 +759,9 @@ describe('professional topic skeleton data', () => {
     }
   });
 
-  it('refreshes only the Computer Principles v2 floating point topic source and keeps neighboring topics stable', () => {
+  it('adds the Computer Principles v2 practice topic and refreshes only the floating point source', () => {
     const topics = professionalTopicsBySubject.computerPrinciplesV2;
+    const practiceTopic = topics.find((topic) => topic.id === 'cpv2-supplemental-practice');
     const floatingPointTopic = topics.find((topic) => topic.id === 'cpv2-floating-point-conversion');
 
     expect(topics.map((topic) => topic.id)).toEqual([...computerPrinciplesV2TopicIds]);
@@ -778,8 +780,18 @@ describe('professional topic skeleton data', () => {
     });
     expect(floatingPointTopic?.sourceFiles).toEqual([...refreshedCpv2FloatingPointSourceFiles]);
     expect(floatingPointTopic?.sourceFiles).not.toContain(deprecatedCpv2FloatingPointSourceFile);
+    expect(floatingPointTopic?.sourceFiles).not.toContain(supplementalCpv2FloatingPointPracticeSourceFile);
+    expect(practiceTopic).toMatchObject({
+      id: 'cpv2-supplemental-practice',
+      subjectKey: 'computerPrinciplesV2',
+      title: '加強練習',
+      sourceFiles: [supplementalCpv2FloatingPointPracticeSourceFile],
+      difficulty: 'core',
+      topicType: 'concept'
+    });
 
     const lessonArticle = floatingPointTopic?.blocks[0];
+    const practiceLessonArticle = practiceTopic?.blocks[0];
 
     expect(lessonArticle?.kind).toBe('lessonArticle');
     if (lessonArticle?.kind !== 'lessonArticle') {
@@ -788,12 +800,21 @@ describe('professional topic skeleton data', () => {
 
     expect(lessonArticle.sourceFiles).toEqual([...refreshedCpv2FloatingPointSourceFiles]);
     expect(lessonArticle.sourceFiles).not.toContain(deprecatedCpv2FloatingPointSourceFile);
+    expect(lessonArticle.sourceFiles).not.toContain(supplementalCpv2FloatingPointPracticeSourceFile);
     expect(lessonArticle.sourceSection).toBe(floatingPointTopic?.sourceSummary);
     const serializedTopic = JSON.stringify(floatingPointTopic);
     for (const supplementalPhrase of ['IEEE 754', 'NaN', '非正規化數']) {
       expect(serializedTopic).toContain(supplementalPhrase);
     }
     expect(lessonArticle.sections.map((section) => section.heading)).not.toContain('加強練習');
+    expect(practiceLessonArticle?.kind).toBe('lessonArticle');
+    if (practiceLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cpv2-supplemental-practice should render as lessonArticle');
+    }
+    expect(practiceLessonArticle.sourceFiles).toEqual([supplementalCpv2FloatingPointPracticeSourceFile]);
+    expect(practiceLessonArticle.sections[0]?.heading).toBe('加強練習');
+    expect(JSON.stringify(practiceTopic)).toContain('Valid bit');
+    expect(JSON.stringify(practiceTopic)).toContain('資管題目:');
     for (const forbiddenKey of ['questionText', 'correctAnswer', 'backendSyncId', 'remoteQuestionId']) {
       expect(serializedTopic).not.toContain(forbiddenKey);
     }

@@ -98,31 +98,6 @@
     @apply flex min-w-0 flex-col gap-4;
   }
 
-  .subject-route-sections {
-    @apply mb-4 flex min-w-0 flex-col gap-3;
-  }
-
-  .subject-route-section-header {
-    @apply px-3 py-2;
-  }
-
-  .subject-route-section h2 {
-    @apply m-0 text-base font-semibold text-ink;
-  }
-
-  .subject-route-section-detail {
-    @apply flex min-w-0 flex-col gap-2;
-  }
-
-  .subject-route-section-detail ul,
-  .subject-route-section-detail ol {
-    @apply m-0 pl-5;
-  }
-
-  .subject-route-section-detail ol {
-    list-style-type: decimal;
-  }
-
   .subject-topic-empty-state {
     @apply rounded border border-dashed border-clay/30 bg-white/70 p-3 text-sm text-ink/75;
   }
