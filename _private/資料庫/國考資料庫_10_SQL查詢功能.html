@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國考資料庫申論講義 10｜SQL 查詢功能</title>
+<style>
+:root{
+  --paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;
+  --hl:#FBE6A8;--note-bg:#EDF3F5;--warn:#9E3B30;--warn-bg:#F8ECE9;--warn-bd:#E6C6BF;--line:#D9D5CC;
+  --font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;
+  --font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;letter-spacing:.01em;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:9px 20px;background:rgba(251,250,247,.93);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.toolbar .where{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;}
+.toggle{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--accent);background:transparent;
+  border:1.5px solid var(--accent);border-radius:999px;padding:6px 15px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s;}
+.toggle[aria-pressed="true"]{background:var(--accent);color:var(--paper);}
+.wrap{max-width:720px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12.5px;letter-spacing:.2em;color:var(--accent);font-weight:700;}
+h1{font-family:var(--font-head);font-size:31px;line-height:1.22;margin:.32em 0 .14em;color:var(--accent);letter-spacing:.01em;}
+.subtitle{color:var(--ink-soft);font-size:15px;letter-spacing:.05em;font-style:italic;}
+.usage{margin:20px 0 4px;padding:12px 16px;border:1px dashed var(--line);border-radius:9px;font-size:13.5px;color:var(--ink-soft);line-height:1.6;background:#fff;}
+.usage b{color:var(--ink);}
+.dot{display:inline-block;width:.82em;height:.82em;border-radius:3px;vertical-align:-1px;margin-right:.3em;}
+section.block{margin-top:36px;}
+.head{font-family:var(--font-head);font-size:21px;color:var(--ink);display:flex;align-items:center;gap:.55em;border-bottom:2px solid var(--accent);padding-bottom:7px;margin:0 0 14px;}
+.ord{flex:0 0 auto;width:1.65em;height:1.65em;border-radius:50%;background:var(--accent);color:var(--paper);font-size:.82em;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
+.subhead{font-family:var(--font-head);font-size:16.5px;font-weight:700;color:var(--accent);margin:20px 0 4px;}
+p{margin:.55em 0;}
+ol.ans,ul.ans{margin:.4em 0;padding-left:1.45em;}
+ol.ans>li,ul.ans>li{margin:.5em 0;padding-left:.2em;}
+.k{background:linear-gradient(transparent 56%,var(--hl) 56%);font-weight:600;padding:0 1px;}
+.fd{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F1EEE6;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em;font-weight:600;color:var(--accent);white-space:nowrap;}
+.code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F4F1EA;border:1px solid var(--line);border-radius:8px;
+  padding:11px 14px;font-size:13px;line-height:1.65;overflow-x:auto;white-space:pre;color:#2a2a26;margin:10px 0;}
+.code .kw{color:var(--accent);font-weight:700;}
+.code .cm{color:#9a948a;}
+.note{background:var(--note-bg);border-left:4px solid var(--accent);border-radius:0 9px 9px 0;padding:11px 16px;margin:16px 0;font-size:14.5px;color:#3f4a4e;line-height:1.66;}
+.note .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:2px;}
+.tip{background:var(--warn-bg);border:1px solid var(--warn-bd);border-left:4px solid var(--warn);border-radius:0 9px 9px 0;padding:12px 16px;margin:20px 0;font-size:14.5px;line-height:1.66;}
+.tip .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--warn);margin-bottom:5px;}
+.tip ul{margin:.2em 0;padding-left:1.25em;}
+.tip li{margin:.35em 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border-radius:9px;border:1px solid var(--line);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px;}
+th{background:var(--accent);color:var(--paper);text-align:left;padding:8px 10px;font-weight:600;letter-spacing:.02em;}
+td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:8px 10px;vertical-align:top;line-height:1.55;}
+td:first-child{border-left:none;}
+tr:nth-child(even) td{background:#FAF6EF;}
+td b{color:var(--accent);}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 14px;margin:18px 0;}
+.arch{display:block;width:100%;height:auto;}
+.arch text{font-family:var(--font-body);}
+.caption{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:8px;line-height:1.55;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:25px;}.head{font-size:18.5px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}.code{font-size:12px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.note,.tip,.code,.diagram,.tablewrap{break-inside:avoid;}.usage{display:none;}}
+.reciteHint{display:none;margin:14px 0 0;padding:10px 14px;border-radius:8px;background:var(--accent-tint);color:var(--accent);font-size:13px;font-weight:600;line-height:1.55;text-align:center;}
+body.recite .reciteHint{display:block;}
+body.recite .usage,body.recite .tip{display:none;}
+body.recite .block > :not(.head){display:none;}
+body.recite .block.revealed > :not(.head){display:block;}
+body.recite .head{cursor:pointer;}
+body.recite .head::after{content:"點標題核對 ▾";margin-left:auto;flex:0 0 auto;font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--accent);opacity:.65;}
+body.recite .block.revealed .head::after{content:"收合 ▴";}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="where">國考資料庫 · 申論講義 10</span>
+  <button class="toggle" aria-pressed="false" id="rt">默寫模式：關</button>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">SQL 語言</div>
+    <h1>SQL 查詢功能</h1>
+    <div class="subtitle">JOIN · 彙總 · 子查詢 · 集合運算</div>
+  </header>
+
+  <div class="usage">
+    <b>怎麼用這份文件：</b>
+    <span class="dot" style="background:var(--paper);border:1px solid var(--line)"></span>正文（一、二、三…）= <b>申論默寫核心</b>。
+    <span class="dot" style="background:var(--note-bg);border:1px solid var(--accent)"></span>淺藍框 = <b>理解</b>，不必抄。
+    <span class="dot" style="background:var(--warn-bg);border:1px solid var(--warn)"></span>紅框 = <b>考點提醒</b>。按右上「<b>默寫模式</b>」收起內文、只留標題。
+  </div>
+  <div class="reciteHint">默寫模式：只顯示各段標題。請依標題在紙上默寫，再點標題展開核對。</div>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">一</span>JOIN 連接（最重要）</h2>
+    <p><b>為什麼需要 JOIN：</b>正規化為了消除重複，把資料拆成多張表；查詢時要用 <span class="k">JOIN</span> 依「關聯欄位（通常是外來鍵）」把它們<b>接回來</b>。</p>
+    <div class="diagram">
+      <svg class="arch" viewBox="0 0 480 104" role="img" aria-label="四種 JOIN 示意圖：INNER 取兩圓交集、LEFT 取左圓全部、RIGHT 取右圓全部、FULL 取兩圓全部">
+        <defs><clipPath id="jr"><circle cx="74" cy="44" r="24"/></clipPath></defs>
+        <circle cx="46" cy="44" r="24" fill="#163A52" clip-path="url(#jr)"/>
+        <circle cx="46" cy="44" r="24" fill="none" stroke="#163A52" stroke-width="1.3"/>
+        <circle cx="74" cy="44" r="24" fill="none" stroke="#163A52" stroke-width="1.3"/>
+        <text x="60" y="92" font-size="11" font-weight="700" fill="#163A52" text-anchor="middle">INNER</text>
+        <circle cx="166" cy="44" r="24" fill="#163A52"/>
+        <circle cx="194" cy="44" r="24" fill="none" stroke="#163A52" stroke-width="1.3"/>
+        <circle cx="166" cy="44" r="24" fill="none" stroke="#163A52" stroke-width="1.3"/>
+        <text x="180" y="92" font-size="11" font-weight="700" fill="#163A52" text-anchor="middle">LEFT</text>
+        <circle cx="314" cy="44" r="24" fill="#163A52"/>
+        <circle cx="286" cy="44" r="24" fill="none" stroke="#163A52" stroke-width="1.3"/>
+        <text x="300" y="92" font-size="11" font-weight="700" fill="#163A52" text-anchor="middle">RIGHT</text>
+        <circle cx="406" cy="44" r="24" fill="#163A52"/>
+        <circle cx="434" cy="44" r="24" fill="#163A52"/>
+        <circle cx="406" cy="44" r="24" fill="none" stroke="#163A52" stroke-width="1.3"/>
+        <circle cx="434" cy="44" r="24" fill="none" stroke="#163A52" stroke-width="1.3"/>
+        <text x="420" y="92" font-size="11" font-weight="700" fill="#163A52" text-anchor="middle">FULL</text>
+      </svg>
+      <div class="caption">深色 ＝ 該 JOIN 保留的列。兩圓分別代表左表、右表，交疊處 ＝ 兩表對得上的列</div>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>JOIN 型別</th><th>保留哪些列</th></tr></thead>
+        <tbody>
+          <tr><td><b>INNER JOIN</b></td><td>只保留兩表<b>都對得上</b>的列（交集）</td></tr>
+          <tr><td><b>LEFT (OUTER) JOIN</b></td><td>左表<b>全部</b> ＋ 右表對得上的；對不上補 NULL</td></tr>
+          <tr><td><b>RIGHT (OUTER) JOIN</b></td><td>右表<b>全部</b> ＋ 左表對得上的；對不上補 NULL</td></tr>
+          <tr><td><b>FULL (OUTER) JOIN</b></td><td>兩表<b>全部</b>；對不上的一邊補 NULL</td></tr>
+          <tr><td><b>CROSS JOIN</b></td><td>笛卡兒積：每列兩兩相配，<b>無 ON 條件</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="subhead">語法與範例</p>
+    <div class="code"><span class="kw">SELECT</span> emp.name, dept.name
+<span class="kw">FROM</span> emp
+<span class="kw">INNER JOIN</span> dept <span class="kw">ON</span> emp.dept_id = dept.id;</div>
+    <div class="code"><span class="kw">SELECT</span> emp.name, dept.name
+<span class="kw">FROM</span> emp
+<span class="kw">LEFT JOIN</span> dept <span class="kw">ON</span> emp.dept_id = dept.id;
+<span class="cm">-- 沒部門的員工也會列出，dept.name 顯示 NULL</span></div>
+    <div class="note"><span class="lbl">💡 INNER 與 LEFT 差在哪</span>同一筆查詢，<b>INNER</b> 會把「對不上的列」丟掉；<b>LEFT</b> 會保留左表那些對不上的列（右邊欄位補 NULL）。想「不漏掉左表任何一列」就用 LEFT。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">二</span>彙總函式與 GROUP BY / HAVING</h2>
+    <p class="subhead">彙總函式（Aggregate）</p>
+    <p><span class="fd">COUNT</span> 計數、<span class="fd">SUM</span> 總和、<span class="fd">AVG</span> 平均、<span class="fd">MAX</span> 最大、<span class="fd">MIN</span> 最小。</p>
+    <p class="subhead">GROUP BY（分組）與 HAVING（分組後篩選）</p>
+    <div class="code"><span class="kw">SELECT</span> dept_id, <span class="kw">COUNT</span>(*) <span class="kw">AS</span> 人數, <span class="kw">AVG</span>(salary) <span class="kw">AS</span> 平均薪
+<span class="kw">FROM</span> emp
+<span class="kw">GROUP BY</span> dept_id
+<span class="kw">HAVING</span> <span class="kw">COUNT</span>(*) &gt;= 3;</div>
+    <p>語意：依 dept_id 分組，對每組算人數與平均薪，再只留「人數 ≥ 3」的組。</p>
+    <div class="note"><span class="lbl">💡 WHERE 與 HAVING 的差別</span><b>WHERE</b> 在分組<b>前</b>逐列篩選（此時還算不出 COUNT/AVG，故 WHERE <b>不能</b>放彙總函式）；<b>HAVING</b> 在分組<b>後</b>對「每一組」篩選，可用彙總函式。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">三</span>子查詢（Subquery）</h2>
+    <p>把一個 <span class="k">SELECT 巢狀</span>在另一個查詢裡，常放在 WHERE。常搭配 <span class="fd">IN</span>、<span class="fd">EXISTS</span> 或比較運算子。</p>
+    <div class="code"><span class="kw">SELECT</span> name <span class="kw">FROM</span> emp
+<span class="kw">WHERE</span> dept_id <span class="kw">IN</span> (
+  <span class="kw">SELECT</span> id <span class="kw">FROM</span> dept <span class="kw">WHERE</span> name = '研發部'
+);</div>
+    <p>語意：先查出「研發部」的部門 id，再撈出屬於這些部門的員工。</p>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">四</span>集合運算</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>運算</th><th>意義</th></tr></thead>
+        <tbody>
+          <tr><td><b>UNION</b></td><td>合併兩查詢結果，<b>去除重複</b></td></tr>
+          <tr><td><b>UNION ALL</b></td><td>合併但<b>保留重複</b>（較快）</td></tr>
+          <tr><td><b>INTERSECT</b></td><td>交集（兩邊都有的列）</td></tr>
+          <tr><td><b>EXCEPT</b>（Oracle 為 <b>MINUS</b>）</td><td>差集（左有右無的列）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>條件：上下兩個查詢的<b>欄位數量與型別需相容</b>。</p>
+    <div class="code"><span class="kw">SELECT</span> name <span class="kw">FROM</span> emp_taipei
+<span class="kw">UNION</span>
+<span class="kw">SELECT</span> name <span class="kw">FROM</span> emp_taichung;</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">五</span>常用運算子與其他</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>運算子</th><th>意義</th><th>例</th></tr></thead>
+        <tbody>
+          <tr><td><b>BETWEEN a AND b</b></td><td>範圍（含端點）</td><td>salary BETWEEN 30000 AND 50000</td></tr>
+          <tr><td><b>IN (…)</b></td><td>屬於清單之一</td><td>dept_id IN (1, 2, 3)</td></tr>
+          <tr><td><b>LIKE</b></td><td>模糊比對</td><td>name LIKE '王%'</td></tr>
+          <tr><td><b>IS NULL</b></td><td>判斷空值</td><td>addr IS NULL</td></tr>
+          <tr><td><b>DISTINCT</b></td><td>去除重複列</td><td>SELECT DISTINCT city</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><b>LIKE 萬用字元：</b><span class="fd">%</span> ＝ 任意多個字元、<span class="fd">_</span> ＝ 剛好一個字元。<b>別名</b>用 <span class="fd">AS</span>（給欄位或表取簡名）。</p>
+    <div class="code"><span class="kw">SELECT</span> name, salary <span class="kw">FROM</span> emp
+<span class="kw">WHERE</span> salary <span class="kw">BETWEEN</span> 30000 <span class="kw">AND</span> 50000
+  <span class="kw">AND</span> name <span class="kw">LIKE</span> '王%'
+  <span class="kw">AND</span> dept_id <span class="kw">IS NOT NULL</span>;</div>
+    <div class="note"><span class="lbl">💡 空值不能用 = 比</span>判斷空值要用 <span class="fd">IS NULL</span> ／ <span class="fd">IS NOT NULL</span>，<b>不能</b>寫 <span class="fd">= NULL</span>（NULL 代表「未知」，和任何值比較都不成立）。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">六</span>結論</h2>
+    <p>正規化把資料拆開，<span class="k">JOIN</span> 再依關聯欄位接回來（INNER 取交集、LEFT／RIGHT／FULL 保留某邊或雙邊）。<span class="k">彙總函式</span>搭 GROUP BY 分組統計、HAVING 於分組後篩選；<span class="k">子查詢</span>巢狀求值；<span class="k">集合運算</span>合併結果（UNION 去重）。這些與 CRUD（講義 09）合起來即涵蓋 SQL 基本查詢能力。</p>
+  </section>
+
+  <div class="tip">
+    <span class="lbl">⚠️ 考點提醒</span>
+    <ul>
+      <li><b>五種 JOIN</b>：INNER（交集）、LEFT／RIGHT（保留某一邊全部）、FULL（雙邊全部）、CROSS（笛卡兒積）。</li>
+      <li><b>WHERE 不能放彙總函式</b>，要用 <b>HAVING</b>；WHERE 分組前、HAVING 分組後。</li>
+      <li><b>COUNT(*)</b> 算列數；<b>COUNT(欄位)</b> 不計 NULL。</li>
+      <li><b>UNION 去重、UNION ALL 留重複</b>；差集 EXCEPT（Oracle 為 MINUS）。</li>
+      <li><b>LIKE</b>：% 任意多字元、_ 單一字元；判斷空值用 <b>IS NULL</b>（非 = NULL）。</li>
+    </ul>
+  </div>
+
+  <div class="foot">國考資料庫申論講義 10 ／ SQL 查詢功能</div>
+
+</div>
+
+<script>
+  var btn=document.getElementById('rt');
+  function clearRevealed(){
+    var r=document.querySelectorAll('.block.revealed');
+    for(var i=0;i<r.length;i++){r[i].classList.remove('revealed');}
+  }
+  btn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('recite');
+    btn.setAttribute('aria-pressed',on?'true':'false');
+    btn.textContent=on?'默寫模式：開':'默寫模式：關';
+    if(!on){clearRevealed();}
+  });
+  var heads=document.querySelectorAll('.head');
+  for(var i=0;i<heads.length;i++){
+    heads[i].addEventListener('click',function(){
+      if(!document.body.classList.contains('recite'))return;
+      this.parentElement.classList.toggle('revealed');
+    });
+  }
+</script>
+</body>
+</html>

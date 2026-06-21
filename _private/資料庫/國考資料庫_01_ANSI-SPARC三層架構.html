@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國考資料庫申論講義 01｜ANSI/SPARC 三層架構</title>
+<style>
+:root{
+  --paper:#FBFAF7;
+  --ink:#23211C;
+  --ink-soft:#5C574E;
+  --accent:#163A52;
+  --accent-tint:#E7EEF2;
+  --hl:#FBE6A8;
+  --note-bg:#EDF3F5;
+  --warn:#9E3B30;
+  --warn-bg:#F8ECE9;
+  --warn-bd:#E6C6BF;
+  --line:#D9D5CC;
+  --font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;
+  --font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);
+  font-size:16px;line-height:1.78;letter-spacing:.01em;}
+
+/* toolbar */
+.toolbar{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;
+  gap:12px;padding:9px 20px;background:rgba(251,250,247,.93);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.toolbar .where{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;}
+.toggle{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--accent);
+  background:transparent;border:1.5px solid var(--accent);border-radius:999px;padding:6px 15px;cursor:pointer;
+  white-space:nowrap;transition:background .15s,color .15s;}
+.toggle[aria-pressed="true"]{background:var(--accent);color:var(--paper);}
+
+.wrap{max-width:720px;margin:0 auto;padding:30px 22px 90px;}
+
+/* header */
+.eyebrow{font-size:12.5px;letter-spacing:.2em;color:var(--accent);font-weight:700;}
+h1{font-family:var(--font-head);font-size:31px;line-height:1.22;margin:.32em 0 .14em;color:var(--accent);
+  letter-spacing:.01em;}
+.subtitle{color:var(--ink-soft);font-size:15px;letter-spacing:.05em;font-style:italic;}
+.usage{margin:20px 0 4px;padding:12px 16px;border:1px dashed var(--line);border-radius:9px;
+  font-size:13.5px;color:var(--ink-soft);line-height:1.6;background:#fff;}
+.usage b{color:var(--ink);}
+.dot{display:inline-block;width:.82em;height:.82em;border-radius:3px;vertical-align:-1px;margin-right:.3em;}
+
+/* sections */
+section.block{margin-top:36px;}
+.head{font-family:var(--font-head);font-size:21px;color:var(--ink);display:flex;align-items:center;gap:.55em;
+  border-bottom:2px solid var(--accent);padding-bottom:7px;margin:0 0 14px;}
+.ord{flex:0 0 auto;width:1.65em;height:1.65em;border-radius:50%;background:var(--accent);color:var(--paper);
+  font-size:.82em;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
+p{margin:.55em 0;}
+ol.ans,ul.ans{margin:.4em 0;padding-left:1.45em;}
+ol.ans>li,ul.ans>li{margin:.5em 0;padding-left:.2em;}
+.k{background:linear-gradient(transparent 56%,var(--hl) 56%);font-weight:600;padding:0 1px;}
+.en{color:var(--ink-soft);font-style:italic;}
+
+/* 理解 note */
+.note{background:var(--note-bg);border-left:4px solid var(--accent);border-radius:0 9px 9px 0;
+  padding:11px 16px;margin:16px 0;font-size:14.5px;color:#3f4a4e;line-height:1.66;}
+.note .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:2px;}
+
+/* 考點 tip */
+.tip{background:var(--warn-bg);border:1px solid var(--warn-bd);border-left:4px solid var(--warn);
+  border-radius:0 9px 9px 0;padding:12px 16px;margin:20px 0;font-size:14.5px;line-height:1.66;}
+.tip .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--warn);margin-bottom:5px;}
+.tip ul{margin:.2em 0;padding-left:1.25em;}
+.tip li{margin:.35em 0;}
+
+/* table */
+.tablewrap{overflow-x:auto;margin:16px 0;border-radius:9px;border:1px solid var(--line);}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px;}
+th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;font-weight:600;
+  letter-spacing:.02em;}
+td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;line-height:1.6;}
+td:first-child{border-left:none;}
+tr:nth-child(even) td{background:#FAF6EF;}
+td b{color:var(--accent);}
+
+/* diagram */
+.diagram{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 14px;margin:18px 0;}
+.arch{display:block;width:100%;height:auto;}
+.arch text{font-family:var(--font-body);}
+.caption{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+
+/* how to draw */
+.draw{margin:16px 0;background:#FCFBF8;border:1px solid var(--line);border-radius:11px;padding:14px 18px;}
+.draw .lbl{font-family:var(--font-head);font-size:16px;color:var(--accent);margin:0 0 6px;}
+.draw ol{margin:.3em 0;padding-left:1.4em;}
+.draw li{margin:.45em 0;font-size:14.5px;}
+
+/* footer */
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);text-align:center;}
+
+@media (max-width:520px){
+  .wrap{padding:24px 16px 70px;}
+  h1{font-size:25px;}
+  .head{font-size:18.5px;}
+  body{font-size:15.5px;}
+  .toolbar{padding:8px 14px;}
+}
+@media print{
+  .toolbar{display:none;}
+  body{background:#fff;font-size:11.5pt;line-height:1.55;}
+  .note,.tip,.draw,.diagram,.tablewrap{break-inside:avoid;}
+  .usage{display:none;}
+}
+
+/* 默寫模式：把各段答案藏起來，只留標題當提示；點標題展開核對 */
+.reciteHint{display:none;margin:14px 0 0;padding:10px 14px;border-radius:8px;background:var(--accent-tint);
+  color:var(--accent);font-size:13px;font-weight:600;line-height:1.55;text-align:center;}
+body.recite .reciteHint{display:block;}
+body.recite .usage,
+body.recite .tip{display:none;}
+body.recite .block > :not(.head){display:none;}
+body.recite .block.revealed > :not(.head){display:block;}
+body.recite .head{cursor:pointer;}
+body.recite .head::after{content:"點標題核對 ▾";margin-left:auto;flex:0 0 auto;
+  font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--accent);opacity:.65;}
+body.recite .block.revealed .head::after{content:"收合 ▴";}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="where">國考資料庫 · 申論講義 01</span>
+  <button class="toggle" aria-pressed="false" id="rt">默寫模式：關</button>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">基礎理論</div>
+    <h1>ANSI/SPARC 三層架構</h1>
+    <div class="subtitle">Three-Schema Architecture</div>
+  </header>
+
+  <div class="usage">
+    <b>怎麼用這份文件：</b>
+    <span class="dot" style="background:var(--paper);border:1px solid var(--line)"></span>正文（一、二、三…）= <b>申論默寫核心</b>，直接抄寫即可得分。
+    <span class="dot" style="background:var(--note-bg);border:1px solid var(--accent)"></span>淺藍框 = 幫你<b>理解</b>，不必抄。
+    <span class="dot" style="background:var(--warn-bg);border:1px solid var(--warn)"></span>紅框 = <b>考點提醒</b>。按右上「<b>默寫模式</b>」會把內文收起、只留標題，讓你先默寫再點開核對。
+  </div>
+  <div class="reciteHint">默寫模式：只顯示各段標題。請依標題在紙上默寫完整答案，再點該標題展開、對照核對。</div>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">一</span>定義</h2>
+    <p><span class="k">ANSI/SPARC 三層架構</span>（又稱三層綱要架構，<span class="en">Three-Schema Architecture</span>）為美國國家標準協會（<span class="en">ANSI</span>）所屬 SPARC 委員會於 <span class="k">1975 年</span>提出。它將資料庫系統的描述劃分為三個抽象層次——<span class="k">外部層</span>（External Level）、<span class="k">概念層</span>（Conceptual Level）、<span class="k">內部層</span>（Internal Level），其核心目的在於達成「<span class="k">資料獨立性</span>（Data Independence）」。</p>
+    <div class="note"><span class="lbl">💡 理解</span>所謂「三層」，是對<b>同一份資料的三種看法</b>：使用者看到的、整體邏輯、實體儲存。把三者分開，任一層改動就不必牽動其他層——這正是「資料獨立性」的本質。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">二</span>使用目的（為何採用）</h2>
+    <p>採用三層架構的主要效益如下：</p>
+    <ol class="ans">
+      <li><span class="k">資料獨立性</span>：上層不因下層變動而需改寫，分為邏輯與實體兩種獨立性。</li>
+      <li><span class="k">隱藏複雜性</span>：使用者無須了解資料的實體儲存方式。</li>
+      <li><span class="k">多重視觀</span>：同一資料庫可依不同使用者需求，提供不同的外部視觀。</li>
+      <li><span class="k">提升安全性</span>：使用者僅能存取其視觀範圍內的資料。</li>
+      <li><span class="k">易於維護</span>：修改儲存或邏輯結構時，可降低對既有應用程式的衝擊。</li>
+    </ol>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">三</span>三層之對象、內容、特色與例子</h2>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>層次</th><th>對象</th><th>內容（綱要）</th><th>特色</th><th>例子</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>外部層</b><br>External</td>
+            <td>終端使用者、<br>應用程式設計師</td>
+            <td>外部視觀（External View），以<b>子綱要 Subschema</b> 描述</td>
+            <td>每人僅見所需資料；<b>可有多個視觀</b>；天然提供安全隔離</td>
+            <td>員工視觀僅含「姓名、分機」；人事視觀含「姓名、薪資、考績」</td>
+          </tr>
+          <tr>
+            <td><b>概念層</b><br>Conceptual</td>
+            <td>資料庫管理師<br>（DBA）</td>
+            <td>全庫邏輯結構，以<b>概念綱要</b> 描述（表格、欄位、型態、關聯、限制）</td>
+            <td>只描述邏輯、不涉儲存；<b>全庫唯一</b>；為上下兩層之橋樑</td>
+            <td>定義 員工、部門 兩表，及員工.部門編號 參照 部門 之外來鍵</td>
+          </tr>
+          <tr>
+            <td><b>內部層</b><br>Internal</td>
+            <td>資料庫系統／<br>儲存引擎</td>
+            <td>實體儲存結構，以<b>內部綱要</b> 描述（檔案組織、索引、存取路徑）</td>
+            <td>關注儲存空間與存取效率；<b>全庫唯一</b>；為最低抽象層</td>
+            <td>員工表以堆積檔儲存，並於員工編號建立 B+Tree 索引</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">四</span>兩個對應與兩種資料獨立性</h2>
+    <p>三層之間以兩個「對應（Mapping）」連接，各提供一種資料獨立性：</p>
+    <ol class="ans">
+      <li><span class="k">外部／概念對應</span>（External/Conceptual Mapping）→ <span class="k">邏輯資料獨立性</span>（Logical Data Independence）：當概念層改變（如新增欄位、拆分表格）時，不影響外部視觀與應用程式。此種獨立性<b>較難</b>達成。</li>
+      <li><span class="k">概念／內部對應</span>（Conceptual/Internal Mapping）→ <span class="k">實體資料獨立性</span>（Physical Data Independence）：當內部層改變（如更換索引、改變檔案組織）時，不影響概念層。此種獨立性<b>較易</b>達成。</li>
+    </ol>
+    <div class="note"><span class="lbl">💡 理解（記法）</span>「<b>邏輯</b>」靠近「<b>外部</b>」，「<b>實體</b>」靠近「<b>內部</b>」。越接近實體儲存的越容易達成——改一個磁碟索引，比改整體邏輯結構的影響小得多。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">五</span>架構圖與畫法</h2>
+    <div class="diagram">
+      <svg class="arch" viewBox="0 0 480 348" role="img" aria-label="ANSI/SPARC 三層架構圖：外部層含多個視觀，概念層為整體邏輯，內部層為實體儲存，相鄰兩層間以對應連接並提供資料獨立性">
+        <!-- 外部層 -->
+        <rect x="30" y="14" width="420" height="88" rx="8" fill="#E7EEF2" stroke="#163A52" stroke-width="1.5"/>
+        <text x="44" y="33" font-size="13.5" font-weight="700" fill="#163A52">外部層 External Level</text>
+        <rect x="46" y="44" width="124" height="42" rx="5" fill="#ffffff" stroke="#B9C4CC"/>
+        <text x="108" y="69" font-size="12" fill="#163A52" text-anchor="middle">員工視觀</text>
+        <rect x="180" y="44" width="124" height="42" rx="5" fill="#ffffff" stroke="#B9C4CC"/>
+        <text x="242" y="69" font-size="12" fill="#163A52" text-anchor="middle">人事視觀</text>
+        <rect x="314" y="44" width="124" height="42" rx="5" fill="#ffffff" stroke="#B9C4CC"/>
+        <text x="376" y="69" font-size="12" fill="#163A52" text-anchor="middle">主管視觀</text>
+        <!-- 對應1 -->
+        <text x="240" y="124" font-size="13" font-weight="600" fill="#163A52" text-anchor="middle">⇅　外部／概念對應 → 邏輯資料獨立性</text>
+        <!-- 概念層 -->
+        <rect x="30" y="150" width="420" height="66" rx="8" fill="#E7EEF2" stroke="#163A52" stroke-width="1.5"/>
+        <text x="44" y="178" font-size="13.5" font-weight="700" fill="#163A52">概念層 Conceptual Level</text>
+        <text x="44" y="199" font-size="11.5" fill="#5C574E">整體邏輯結構：表格、欄位、關聯、限制</text>
+        <!-- 對應2 -->
+        <text x="240" y="240" font-size="13" font-weight="600" fill="#163A52" text-anchor="middle">⇅　概念／內部對應 → 實體資料獨立性</text>
+        <!-- 內部層 -->
+        <rect x="30" y="262" width="420" height="66" rx="8" fill="#E7EEF2" stroke="#163A52" stroke-width="1.5"/>
+        <text x="44" y="290" font-size="13.5" font-weight="700" fill="#163A52">內部層 Internal Level</text>
+        <text x="44" y="311" font-size="11.5" fill="#5C574E">實體儲存：檔案組織、索引、存取路徑</text>
+      </svg>
+      <div class="caption">三層由上而下：抽象程度遞減、越往下越接近實體儲存</div>
+    </div>
+
+    <div class="draw">
+      <p class="lbl">✍️ 如何畫（申論手繪步驟）</p>
+      <ol>
+        <li>由上而下畫三個長方形，依序標示<b>外部層 / 概念層 / 內部層</b>。</li>
+        <li>在最上的外部層內，再畫數個小框代表不同使用者的視觀（View 1、View 2…），凸顯「多重視觀」。</li>
+        <li>在外部層與概念層之間畫一組<b>雙向箭頭</b>，標註「外部／概念對應」與「邏輯資料獨立性」。</li>
+        <li>在概念層與內部層之間畫一組<b>雙向箭頭</b>，標註「概念／內部對應」與「實體資料獨立性」。</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">六</span>結論</h2>
+    <p>ANSI/SPARC 三層架構透過外部、概念、內部三層的分離，並以兩層對應提供<span class="k">邏輯</span>與<span class="k">實體</span>資料獨立性，使資料的<b>使用、設計與儲存得以解耦</b>，是資料庫管理系統的重要設計基礎。</p>
+  </section>
+
+  <div class="tip">
+    <span class="lbl">⚠️ 考點提醒</span>
+    <ul>
+      <li><b>對應 ↔ 獨立性（最常考、最易記反）</b>：邏輯獨立性 ↔ 外部／概念對應；實體獨立性 ↔ 概念／內部對應。</li>
+      <li>實體資料獨立性<b>較易</b>達成、邏輯資料獨立性<b>較難</b>達成。</li>
+      <li>三層中<b>僅外部層</b>可有多個視觀；概念層、內部層各<b>只有一個</b>綱要。</li>
+      <li>常見變化題：「修改磁碟上的索引結構屬於何種獨立性？」→ 答<b>實體資料獨立性</b>（改的是內部層）。</li>
+    </ul>
+  </div>
+
+  <div class="foot">國考資料庫申論講義 01 ／ ANSI/SPARC 三層架構</div>
+
+</div>
+
+<script>
+  var btn=document.getElementById('rt');
+  function clearRevealed(){
+    var r=document.querySelectorAll('.block.revealed');
+    for(var i=0;i<r.length;i++){r[i].classList.remove('revealed');}
+  }
+  btn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('recite');
+    btn.setAttribute('aria-pressed',on?'true':'false');
+    btn.textContent=on?'默寫模式：開':'默寫模式：關';
+    if(!on){clearRevealed();}
+  });
+  var heads=document.querySelectorAll('.head');
+  for(var i=0;i<heads.length;i++){
+    heads[i].addEventListener('click',function(){
+      if(!document.body.classList.contains('recite'))return;
+      this.parentElement.classList.toggle('revealed');
+    });
+  }
+</script>
+</body>
+</html>

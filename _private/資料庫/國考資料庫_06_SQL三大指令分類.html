@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國考資料庫申論講義 06｜SQL 三大指令分類</title>
+<style>
+:root{
+  --paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;
+  --hl:#FBE6A8;--note-bg:#EDF3F5;--warn:#9E3B30;--warn-bg:#F8ECE9;--warn-bd:#E6C6BF;--line:#D9D5CC;
+  --font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;
+  --font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;letter-spacing:.01em;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:9px 20px;background:rgba(251,250,247,.93);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.toolbar .where{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;}
+.toggle{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--accent);background:transparent;
+  border:1.5px solid var(--accent);border-radius:999px;padding:6px 15px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s;}
+.toggle[aria-pressed="true"]{background:var(--accent);color:var(--paper);}
+.wrap{max-width:720px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12.5px;letter-spacing:.2em;color:var(--accent);font-weight:700;}
+h1{font-family:var(--font-head);font-size:31px;line-height:1.22;margin:.32em 0 .14em;color:var(--accent);letter-spacing:.01em;}
+.subtitle{color:var(--ink-soft);font-size:15px;letter-spacing:.05em;font-style:italic;}
+.usage{margin:20px 0 4px;padding:12px 16px;border:1px dashed var(--line);border-radius:9px;font-size:13.5px;color:var(--ink-soft);line-height:1.6;background:#fff;}
+.usage b{color:var(--ink);}
+.dot{display:inline-block;width:.82em;height:.82em;border-radius:3px;vertical-align:-1px;margin-right:.3em;}
+section.block{margin-top:36px;}
+.head{font-family:var(--font-head);font-size:21px;color:var(--ink);display:flex;align-items:center;gap:.55em;border-bottom:2px solid var(--accent);padding-bottom:7px;margin:0 0 14px;}
+.ord{flex:0 0 auto;width:1.65em;height:1.65em;border-radius:50%;background:var(--accent);color:var(--paper);font-size:.82em;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
+.subhead{font-family:var(--font-head);font-size:16.5px;font-weight:700;color:var(--accent);margin:20px 0 4px;}
+p{margin:.55em 0;}
+ol.ans,ul.ans{margin:.4em 0;padding-left:1.45em;}
+ol.ans>li,ul.ans>li{margin:.5em 0;padding-left:.2em;}
+.k{background:linear-gradient(transparent 56%,var(--hl) 56%);font-weight:600;padding:0 1px;}
+.cmd{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F1EEE6;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em;font-weight:600;color:var(--accent);white-space:nowrap;}
+.note{background:var(--note-bg);border-left:4px solid var(--accent);border-radius:0 9px 9px 0;padding:11px 16px;margin:16px 0;font-size:14.5px;color:#3f4a4e;line-height:1.66;}
+.note .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:2px;}
+.tip{background:var(--warn-bg);border:1px solid var(--warn-bd);border-left:4px solid var(--warn);border-radius:0 9px 9px 0;padding:12px 16px;margin:20px 0;font-size:14.5px;line-height:1.66;}
+.tip .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--warn);margin-bottom:5px;}
+.tip ul{margin:.2em 0;padding-left:1.25em;}
+.tip li{margin:.35em 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border-radius:9px;border:1px solid var(--line);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px;}
+th{background:var(--accent);color:var(--paper);text-align:left;padding:8px 10px;font-weight:600;letter-spacing:.02em;}
+td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:8px 10px;vertical-align:top;line-height:1.55;}
+td:first-child{border-left:none;}
+tr:nth-child(even) td{background:#FAF6EF;}
+td b{color:var(--accent);}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 14px;margin:18px 0;}
+.arch{display:block;width:100%;height:auto;}
+.arch text{font-family:var(--font-body);}
+.caption{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:8px;line-height:1.55;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:25px;}.head{font-size:18.5px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.note,.tip,.diagram,.tablewrap{break-inside:avoid;}.usage{display:none;}}
+.reciteHint{display:none;margin:14px 0 0;padding:10px 14px;border-radius:8px;background:var(--accent-tint);color:var(--accent);font-size:13px;font-weight:600;line-height:1.55;text-align:center;}
+body.recite .reciteHint{display:block;}
+body.recite .usage,body.recite .tip{display:none;}
+body.recite .block > :not(.head){display:none;}
+body.recite .block.revealed > :not(.head){display:block;}
+body.recite .head{cursor:pointer;}
+body.recite .head::after{content:"點標題核對 ▾";margin-left:auto;flex:0 0 auto;font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--accent);opacity:.65;}
+body.recite .block.revealed .head::after{content:"收合 ▴";}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="where">國考資料庫 · 申論講義 06</span>
+  <button class="toggle" aria-pressed="false" id="rt">默寫模式：關</button>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">SQL 語言</div>
+    <h1>SQL 三大指令分類</h1>
+    <div class="subtitle">DDL · DML · DCL（＋TCL）</div>
+  </header>
+
+  <div class="usage">
+    <b>怎麼用這份文件：</b>
+    <span class="dot" style="background:var(--paper);border:1px solid var(--line)"></span>正文（一、二、三…）= <b>申論默寫核心</b>，直接抄寫即可得分。
+    <span class="dot" style="background:var(--note-bg);border:1px solid var(--accent)"></span>淺藍框 = 幫你<b>理解</b>，不必抄。
+    <span class="dot" style="background:var(--warn-bg);border:1px solid var(--warn)"></span>紅框 = <b>考點提醒</b>。按右上「<b>默寫模式</b>」會把內文收起、只留標題，讓你先默寫再點開核對。
+  </div>
+  <div class="reciteHint">默寫模式：只顯示各段標題。請依標題在紙上默寫完整答案，再點該標題展開、對照核對。</div>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">一</span>SQL 概說與四大分類</h2>
+    <p><span class="k">SQL（Structured Query Language，結構化查詢語言）</span>是操作關聯式資料庫的<span class="k">標準語言</span>。依功能可分為四大類：</p>
+    <div class="diagram">
+      <svg class="arch" viewBox="0 0 480 198" role="img" aria-label="SQL 指令四大分類樹：DDL 資料定義、DML 資料操作、DCL 資料控制、TCL 交易控制，及各自代表指令">
+        <line x1="240" y1="44" x2="66" y2="80" stroke="#163A52" stroke-width="1"/>
+        <line x1="240" y1="44" x2="182" y2="80" stroke="#163A52" stroke-width="1"/>
+        <line x1="240" y1="44" x2="298" y2="80" stroke="#163A52" stroke-width="1"/>
+        <line x1="240" y1="44" x2="414" y2="80" stroke="#163A52" stroke-width="1"/>
+        <rect x="205" y="14" width="70" height="30" rx="6" fill="#163A52" stroke="#163A52"/>
+        <text x="240" y="29" font-size="13" font-weight="700" fill="#FBFAF7" text-anchor="middle" dominant-baseline="central">SQL</text>
+        <rect x="18" y="80" width="96" height="32" rx="6" fill="#E7EEF2" stroke="#163A52" stroke-width="1.3"/>
+        <text x="66" y="93" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle">DDL</text>
+        <text x="66" y="106" font-size="9.5" fill="#5C574E" text-anchor="middle">資料定義</text>
+        <rect x="134" y="80" width="96" height="32" rx="6" fill="#E7EEF2" stroke="#163A52" stroke-width="1.3"/>
+        <text x="182" y="93" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle">DML</text>
+        <text x="182" y="106" font-size="9.5" fill="#5C574E" text-anchor="middle">資料操作</text>
+        <rect x="250" y="80" width="96" height="32" rx="6" fill="#E7EEF2" stroke="#163A52" stroke-width="1.3"/>
+        <text x="298" y="93" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle">DCL</text>
+        <text x="298" y="106" font-size="9.5" fill="#5C574E" text-anchor="middle">資料控制</text>
+        <rect x="366" y="80" width="96" height="32" rx="6" fill="#E7EEF2" stroke="#163A52" stroke-width="1.3"/>
+        <text x="414" y="93" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle">TCL</text>
+        <text x="414" y="106" font-size="9.5" fill="#5C574E" text-anchor="middle">交易控制</text>
+        <text x="66" y="131" font-size="11" fill="#163A52" text-anchor="middle">CREATE</text>
+        <text x="66" y="147" font-size="11" fill="#163A52" text-anchor="middle">ALTER</text>
+        <text x="66" y="163" font-size="11" fill="#163A52" text-anchor="middle">DROP</text>
+        <text x="66" y="179" font-size="11" fill="#163A52" text-anchor="middle">TRUNCATE</text>
+        <text x="182" y="131" font-size="11" fill="#163A52" text-anchor="middle">INSERT</text>
+        <text x="182" y="147" font-size="11" fill="#163A52" text-anchor="middle">UPDATE</text>
+        <text x="182" y="163" font-size="11" fill="#163A52" text-anchor="middle">DELETE</text>
+        <text x="182" y="179" font-size="11" fill="#163A52" text-anchor="middle">SELECT</text>
+        <text x="298" y="131" font-size="11" fill="#163A52" text-anchor="middle">GRANT</text>
+        <text x="298" y="147" font-size="11" fill="#163A52" text-anchor="middle">REVOKE</text>
+        <text x="414" y="131" font-size="11" fill="#163A52" text-anchor="middle">COMMIT</text>
+        <text x="414" y="147" font-size="11" fill="#163A52" text-anchor="middle">ROLLBACK</text>
+        <text x="414" y="163" font-size="11" fill="#163A52" text-anchor="middle">SAVEPOINT</text>
+      </svg>
+      <div class="caption">看「動到什麼」分類：動結構＝DDL、動資料＝DML、動權限＝DCL、控制交易＝TCL</div>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>類別</th><th>全名</th><th>功能</th><th>代表指令</th></tr></thead>
+        <tbody>
+          <tr><td><b>DDL</b></td><td>Data Definition Language<br>資料定義語言</td><td>定義／修改資料庫<b>結構</b></td><td>CREATE、ALTER、DROP、TRUNCATE</td></tr>
+          <tr><td><b>DML</b></td><td>Data Manipulation Language<br>資料操作語言</td><td>對表中的<b>資料</b>進行存取</td><td>INSERT、UPDATE、DELETE、SELECT</td></tr>
+          <tr><td><b>DCL</b></td><td>Data Control Language<br>資料控制語言</td><td>控制使用者<b>權限</b></td><td>GRANT、REVOKE</td></tr>
+          <tr><td><b>TCL</b></td><td>Transaction Control Language<br>交易控制語言</td><td>管理<b>交易</b></td><td>COMMIT、ROLLBACK、SAVEPOINT</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>題目常問的「<b>三大類</b>」指 <span class="k">DDL／DML／DCL</span>；TCL 為交易控制，部分教材另列。</p>
+    <div class="note"><span class="lbl">🗺️ SQL 章節地圖（建議閱讀順序）</span>這四類會在後續逐篇展開：<b>06 分類（本篇）→ 07 建表與物件（DDL）→ 08 增刪改查 CRUD（DML）→ 09 查詢 JOIN／彙總（DML）→ 10 交易 ACID（TCL）→ 11 NoSQL</b>。先用本篇掌握分類全貌，再依序深入。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">二</span>DDL 資料定義語言</h2>
+    <p>作用對象：資料庫的<span class="k">結構（綱要）</span>。</p>
+    <ul class="ans">
+      <li><span class="cmd">CREATE</span>：建立物件（表、檢視表、索引等）。</li>
+      <li><span class="cmd">ALTER</span>：修改物件結構（如新增欄位）。</li>
+      <li><span class="cmd">DROP</span>：刪除整個物件（含結構與資料）。</li>
+      <li><span class="cmd">TRUNCATE</span>：清空表中所有資料，但<b>保留表結構</b>。</li>
+    </ul>
+    <p>特性：DDL 指令通常會<span class="k">自動提交（auto-commit）</span>，執行後即生效。</p>
+    <div class="note"><span class="lbl">💡 重點：TRUNCATE 是 DDL（常考）＋ rollback 細節</span>TRUNCATE 整批釋放資料頁、速度快、<b>不可加 WHERE</b>。關於 rollback：<b>考試上答「不能 rollback」</b>（因視為 DDL、自動提交）；但實務上 <b>SQL Server、PostgreSQL 在交易中「可」rollback</b>，Oracle、MySQL「不可」。→ 記「<b>考試答不能、實務看系統</b>」。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">三</span>DML 資料操作語言</h2>
+    <p>作用對象：資料表中的<span class="k">資料（列）</span>。</p>
+    <ul class="ans">
+      <li><span class="cmd">INSERT</span>：新增資料列。</li>
+      <li><span class="cmd">UPDATE</span>：修改資料列。</li>
+      <li><span class="cmd">DELETE</span>：刪除資料列（<b>可加 WHERE、可 rollback</b>）。</li>
+      <li><span class="cmd">SELECT</span>：查詢資料。</li>
+    </ul>
+    <div class="note"><span class="lbl">💡 SELECT 的歸類</span>多數教材把 SELECT 歸於 DML；部分教材獨立為 <b>DQL（Data Query Language，資料查詢語言）</b>。兩種說法都要會，作答時可註明「SELECT 屬 DML（部分稱 DQL）」。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">四</span>DCL 資料控制 與 TCL 交易控制</h2>
+    <p class="subhead">DCL（Data Control Language）—— 控制存取權限</p>
+    <ul class="ans">
+      <li><span class="cmd">GRANT</span>：授予權限。</li>
+      <li><span class="cmd">REVOKE</span>：收回權限。</li>
+    </ul>
+    <p class="subhead">TCL（Transaction Control Language）—— 管理交易</p>
+    <ul class="ans">
+      <li><span class="cmd">COMMIT</span>：確認交易、永久寫入。</li>
+      <li><span class="cmd">ROLLBACK</span>：回復交易至先前狀態。</li>
+      <li><span class="cmd">SAVEPOINT</span>：設定交易內的存檔點，可部分回復。</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">五</span>DELETE vs TRUNCATE vs DROP（常考比較）</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>項目</th><th>DELETE</th><th>TRUNCATE</th><th>DROP</th></tr></thead>
+        <tbody>
+          <tr><td><b>類別</b></td><td>DML</td><td>DDL</td><td>DDL</td></tr>
+          <tr><td><b>作用</b></td><td>刪除符合條件的列</td><td>清空所有列</td><td>刪除整個表</td></tr>
+          <tr><td><b>WHERE</b></td><td>可</td><td>不可</td><td>不可</td></tr>
+          <tr><td><b>速度</b></td><td>慢（逐列）</td><td>快（釋放資料頁）</td><td>快</td></tr>
+          <tr><td><b>Rollback</b></td><td>可</td><td>考試：不可<br>（實務看系統）</td><td>不可</td></tr>
+          <tr><td><b>觸發器</b></td><td>會觸發</td><td>不觸發</td><td>不觸發</td></tr>
+          <tr><td><b>自增值重置</b></td><td>否</td><td>是</td><td>—</td></tr>
+          <tr><td><b>表結構</b></td><td>保留</td><td>保留</td><td>移除</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><span class="lbl">💡 理解（本質差異）</span>DELETE 逐列刪、<b>留軌跡</b>（可回復、會觸發 trigger）；TRUNCATE 像「整桶倒掉」、<b>直接釋放空間</b>（快但不留逐列軌跡）；DROP 連<b>桶子（表結構）一起丟</b>。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">六</span>結論</h2>
+    <p>SQL 依功能分為 <span class="k">DDL（結構）、DML（資料）、DCL（權限）、TCL（交易）</span>四類。常考辨析包括：<b>TRUNCATE 屬 DDL</b>、<b>SELECT 多歸 DML</b>，以及 <b>DELETE／TRUNCATE／DROP</b> 的差異。</p>
+  </section>
+
+  <div class="tip">
+    <span class="lbl">⚠️ 考點提醒</span>
+    <ul>
+      <li><b>TRUNCATE 屬 DDL</b>（不是 DML）—— 最常考的陷阱。</li>
+      <li>DELETE 是 DML、可加 WHERE、可 rollback；TRUNCATE 是 DDL、清空全表、<b>考試答不可 rollback</b>。</li>
+      <li><b>DROP</b> 連表結構一起刪除。</li>
+      <li><b>GRANT／REVOKE</b> 屬 DCL；<b>COMMIT／ROLLBACK</b> 屬 TCL。</li>
+      <li><b>SELECT</b> 多歸 DML，部分教材稱 DQL。</li>
+    </ul>
+  </div>
+
+  <div class="foot">國考資料庫申論講義 06 ／ SQL 三大指令分類</div>
+
+</div>
+
+<script>
+  var btn=document.getElementById('rt');
+  function clearRevealed(){
+    var r=document.querySelectorAll('.block.revealed');
+    for(var i=0;i<r.length;i++){r[i].classList.remove('revealed');}
+  }
+  btn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('recite');
+    btn.setAttribute('aria-pressed',on?'true':'false');
+    btn.textContent=on?'默寫模式：開':'默寫模式：關';
+    if(!on){clearRevealed();}
+  });
+  var heads=document.querySelectorAll('.head');
+  for(var i=0;i<heads.length;i++){
+    heads[i].addEventListener('click',function(){
+      if(!document.body.classList.contains('recite'))return;
+      this.parentElement.classList.toggle('revealed');
+    });
+  }
+</script>
+</body>
+</html>

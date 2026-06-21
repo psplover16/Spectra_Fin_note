@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國考資料庫申論講義 05｜正規化</title>
+<style>
+:root{
+  --paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;
+  --hl:#FBE6A8;--note-bg:#EDF3F5;--warn:#9E3B30;--warn-bg:#F8ECE9;--warn-bd:#E6C6BF;--line:#D9D5CC;
+  --font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;
+  --font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;letter-spacing:.01em;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:9px 20px;background:rgba(251,250,247,.93);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.toolbar .where{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;}
+.toggle{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--accent);background:transparent;
+  border:1.5px solid var(--accent);border-radius:999px;padding:6px 15px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s;}
+.toggle[aria-pressed="true"]{background:var(--accent);color:var(--paper);}
+.wrap{max-width:720px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12.5px;letter-spacing:.2em;color:var(--accent);font-weight:700;}
+h1{font-family:var(--font-head);font-size:31px;line-height:1.22;margin:.32em 0 .14em;color:var(--accent);letter-spacing:.01em;}
+.subtitle{color:var(--ink-soft);font-size:15px;letter-spacing:.05em;font-style:italic;}
+.usage{margin:20px 0 4px;padding:12px 16px;border:1px dashed var(--line);border-radius:9px;font-size:13.5px;color:var(--ink-soft);line-height:1.6;background:#fff;}
+.usage b{color:var(--ink);}
+.dot{display:inline-block;width:.82em;height:.82em;border-radius:3px;vertical-align:-1px;margin-right:.3em;}
+section.block{margin-top:36px;}
+.head{font-family:var(--font-head);font-size:21px;color:var(--ink);display:flex;align-items:center;gap:.55em;border-bottom:2px solid var(--accent);padding-bottom:7px;margin:0 0 14px;}
+.ord{flex:0 0 auto;width:1.65em;height:1.65em;border-radius:50%;background:var(--accent);color:var(--paper);font-size:.82em;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
+.subhead{font-family:var(--font-head);font-size:16.5px;font-weight:700;color:var(--accent);margin:20px 0 4px;}
+p{margin:.55em 0;}
+ol.ans,ul.ans{margin:.4em 0;padding-left:1.45em;}
+ol.ans>li,ul.ans>li{margin:.5em 0;padding-left:.2em;}
+.k{background:linear-gradient(transparent 56%,var(--hl) 56%);font-weight:600;padding:0 1px;}
+.en{color:var(--ink-soft);font-style:italic;}
+.fd{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F1EEE6;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.92em;white-space:nowrap;}
+.note{background:var(--note-bg);border-left:4px solid var(--accent);border-radius:0 9px 9px 0;padding:11px 16px;margin:16px 0;font-size:14.5px;color:#3f4a4e;line-height:1.66;}
+.note .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:2px;}
+.tip{background:var(--warn-bg);border:1px solid var(--warn-bd);border-left:4px solid var(--warn);border-radius:0 9px 9px 0;padding:12px 16px;margin:20px 0;font-size:14.5px;line-height:1.66;}
+.tip .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--warn);margin-bottom:5px;}
+.tip ul{margin:.2em 0;padding-left:1.25em;}
+.tip li{margin:.35em 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border-radius:9px;border:1px solid var(--line);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px;}
+th{background:var(--accent);color:var(--paper);text-align:left;padding:8px 10px;font-weight:600;letter-spacing:.02em;}
+td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:8px 10px;vertical-align:top;line-height:1.55;}
+td:first-child{border-left:none;}
+tr:nth-child(even) td{background:#FAF6EF;}
+td b{color:var(--accent);}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 14px;margin:18px 0;}
+.arch{display:block;width:100%;height:auto;}
+.arch text{font-family:var(--font-body);}
+.caption{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:8px;line-height:1.55;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:25px;}.head{font-size:18.5px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.note,.tip,.diagram,.tablewrap{break-inside:avoid;}.usage{display:none;}}
+.reciteHint{display:none;margin:14px 0 0;padding:10px 14px;border-radius:8px;background:var(--accent-tint);color:var(--accent);font-size:13px;font-weight:600;line-height:1.55;text-align:center;}
+body.recite .reciteHint{display:block;}
+body.recite .usage,body.recite .tip{display:none;}
+body.recite .block > :not(.head){display:none;}
+body.recite .block.revealed > :not(.head){display:block;}
+body.recite .head{cursor:pointer;}
+body.recite .head::after{content:"點標題核對 ▾";margin-left:auto;flex:0 0 auto;font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--accent);opacity:.65;}
+body.recite .block.revealed .head::after{content:"收合 ▴";}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="where">國考資料庫 · 申論講義 05</span>
+  <button class="toggle" aria-pressed="false" id="rt">默寫模式：關</button>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">資料庫設計</div>
+    <h1>正規化</h1>
+    <div class="subtitle">Normalization（1NF ～ BCNF ～ 5NF）</div>
+  </header>
+
+  <div class="usage">
+    <b>怎麼用這份文件：</b>
+    <span class="dot" style="background:var(--paper);border:1px solid var(--line)"></span>正文（一、二、三…）= <b>申論默寫核心</b>，直接抄寫即可得分。
+    <span class="dot" style="background:var(--note-bg);border:1px solid var(--accent)"></span>淺藍框 = 幫你<b>理解</b>，不必抄。
+    <span class="dot" style="background:var(--warn-bg);border:1px solid var(--warn)"></span>紅框 = <b>考點提醒</b>。按右上「<b>默寫模式</b>」會把內文收起、只留標題，讓你先默寫再點開核對。
+  </div>
+  <div class="reciteHint">默寫模式：只顯示各段標題。請依標題在紙上默寫完整答案，再點該標題展開、對照核對。</div>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">一</span>定義、目的與三種異常</h2>
+    <p><span class="k">正規化（Normalization）</span>是依據<span class="k">函數相依（Functional Dependency）</span>，將關聯表逐步分解，以<span class="k">消除資料重複與更新異常</span>的設計程序。目的是讓每個事實只儲存一次，避免下列三種異常：</p>
+    <ol class="ans">
+      <li><span class="k">新增異常（Insertion Anomaly）</span>：因缺少其他資料而無法新增某筆資料。</li>
+      <li><span class="k">刪除異常（Deletion Anomaly）</span>：刪除某筆資料時，連帶遺失其他不該遺失的資訊。</li>
+      <li><span class="k">修改異常（Update Anomaly）</span>：同一資訊重複存放，修改時須改多處，易造成不一致。</li>
+    </ol>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">二</span>低階正規化（1NF ～ 3NF）</h2>
+
+    <p class="subhead">（一）第一正規化 1NF</p>
+    <p>要求：所有欄位值皆為<span class="k">單一值（atomic）</span>，不可有重複群組或多值欄位。</p>
+    <p><b>處理方式：</b>將非原子的欄位拆成單一值；若為重複群組，則把該群組分離成新關聯，並以原表主鍵作為外來鍵連結。</p>
+    <p><b>範例（違反 → 修正）</b></p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>學號</th><th>姓名</th><th>電話</th></tr></thead>
+        <tbody>
+          <tr><td>S01</td><td>王小明</td><td>0912-111、0922-222</td></tr>
+          <tr><td>S02</td><td>李小華</td><td>0933-333</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>問題：S01 的「電話」一格塞了兩個值，<b>違反 1NF</b>（欄位值不是單一值）。</p>
+    <p><b>處理後</b>（把電話另立一張表，每格只放單一值）：</p>
+    <ul class="ans">
+      <li>學生（<u>學號</u>、姓名）</li>
+      <li>學生電話（<u>學號 FK</u>、<u>電話</u>）　主鍵 = {學號, 電話}</li>
+    </ul>
+
+    <p class="subhead">（二）第二正規化 2NF</p>
+    <p>要求：在 1NF 之上，<span class="k">消除「部分相依」</span>——非主屬性不可只依賴<b>複合主鍵的一部分</b>。（<b>只有複合主鍵的表</b>才可能違反 2NF）</p>
+    <p><b>處理方式：</b>找出部分相依，將「該部分主鍵及其所決定的非主屬性」取出另立新關聯（以該部分鍵為主鍵），原關聯刪除這些非主屬性、保留該部分鍵作為外來鍵。</p>
+    <p><b>範例（違反 → 修正）</b></p>
+    <p>原表：選課（學號, 課號, 成績, 課名），主鍵 = {學號, 課號}。函數相依：</p>
+    <ul class="ans">
+      <li><span class="fd">{學號, 課號} → 成績</span>　需要兩個鍵才能決定 → 完全相依（OK）</li>
+      <li><span class="fd">課號 → 課名</span>　只靠課號就能決定 → <b>部分相依（違反 2NF）</b></li>
+    </ul>
+    <p>為何違反：課名只依賴主鍵的「<b>一部分</b>」（課號），不是整個主鍵。</p>
+    <p><b>處理後</b>（把「課號＋課名」抽出另立表，原表保留課號當外來鍵）：</p>
+    <ul class="ans">
+      <li>選課（<u>學號</u>、<u>課號</u>、成績）　主鍵 = {學號, 課號}；課號 為 FK → 課程</li>
+      <li>課程（<u>課號</u>、課名）</li>
+    </ul>
+
+    <p class="subhead">（三）第三正規化 3NF</p>
+    <p>要求：在 2NF 之上，<span class="k">消除「遞移相依」</span>——非主屬性不可依賴<b>另一個非主屬性</b>。</p>
+    <p><b>處理方式：</b>將遞移相依中「非鍵的決定因素及其相依屬性」取出，建立新關聯（以該決定因素為主鍵），並將相依屬性自原關聯刪除，保留該決定因素作為外來鍵。</p>
+    <p><b>範例（違反 → 修正）</b></p>
+    <p>原表：學生（學號, 系所, 系主任），主鍵 = {學號}。函數相依：</p>
+    <ul class="ans">
+      <li><span class="fd">學號 → 系所</span>（學生屬於某系）</li>
+      <li><span class="fd">系所 → 系主任</span>（系決定系主任）</li>
+      <li>⇒ 推得 <span class="fd">學號 → 系主任</span>，為<b>遞移相依</b></li>
+    </ul>
+    <p>為何違反：系主任（非主屬性）是透過「系所」間接依賴主鍵，即依賴<b>另一個非主屬性</b>。</p>
+    <p><b>處理後</b>（把「系所＋系主任」抽出另立表，原表保留系所當外來鍵）：</p>
+    <ul class="ans">
+      <li>學生（<u>學號</u>、系所 FK）</li>
+      <li>系所（<u>系所</u>、系主任）</li>
+    </ul>
+    <div class="note"><span class="lbl">💡 理解（一句話記 2NF／3NF ＋ 共通解法）</span>2NF 趕走「只靠<b>半把鑰匙</b>就能決定的欄位」（部分相依）；3NF 趕走「靠<b>另一個非鍵欄位</b>就能決定的欄位」（遞移相依）。<br><b>解法共通模式</b>：2NF／3NF／BCNF 都是同一招——把「<b>決定因素 ＋ 被它決定的屬性</b>」搬到新表（決定因素當主鍵），原表保留該決定因素當外來鍵。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">三</span>高階正規化：BCNF</h2>
+    <p><span class="k">BCNF（Boyce-Codd 正規化）</span>：對每一個非顯然的函數相依 <span class="fd">X → A</span>，<span class="k">X 都必須是「超鍵」</span>（即每個決定因素都是超鍵）。比 3NF 更嚴格。</p>
+    <p><b>3NF 與 BCNF 的差別：</b>3NF 允許「<span class="fd">X → A</span> 中 A 是<b>主屬性</b>」即可（即使 X 不是超鍵）；BCNF <b>不允許</b>這個例外。</p>
+    <p><b>處理方式：</b>找出違反的函數相依 <span class="fd">X → Y</span>（X 非超鍵），將 {X 及 Y} 取出另立新關聯（X 為主鍵），原關聯刪除 Y、保留 X 作為外來鍵。此分解<b>保證無損，但可能犧牲相依保存</b>。</p>
+    <p class="subhead">經典例：符合 3NF 但違反 BCNF</p>
+    <p>指導<span class="fd">(學生, 科目, 老師)</span>，已知 <span class="fd">{學生,科目} → 老師</span>、<span class="fd">老師 → 科目</span>。候選鍵為 {學生,科目} 與 {學生,老師}，故學生、科目、老師<b>皆為主屬性</b>。</p>
+    <ul class="ans">
+      <li>檢查 <span class="fd">老師 → 科目</span>：老師不是超鍵，但<b>科目是主屬性 → 符合 3NF</b>。</li>
+      <li>同一條 <span class="fd">老師 → 科目</span>：老師不是超鍵 → <b>違反 BCNF</b>。</li>
+    </ul>
+    <p><b>處理後</b>（依違反的 <span class="fd">老師 → 科目</span> 拆解）：</p>
+    <ul class="ans">
+      <li>授課（<u>老師</u>、科目）</li>
+      <li>指導（<u>學生</u>、<u>老師</u>）</li>
+    </ul>
+    <p>注意：此分解<b>無損</b>，但原相依 <span class="fd">{學生,科目} → 老師</span> 跨兩表、<b>無法保存</b>——正是「BCNF 不保證相依保存」之例（詳見第五節）。</p>
+    <div class="note"><span class="lbl">💡 理解（BCNF 為何更嚴）</span>3NF 留了一個後門——只要被決定的是<b>主屬性</b>就放行；BCNF 把這個後門關上，要求<b>所有決定因素都必須是超鍵</b>。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">四</span>4NF 與 5NF（簡述）</h2>
+    <ul class="ans">
+      <li><span class="k">4NF</span>：在 BCNF 之上，消除<span class="k">多值相依（Multivalued Dependency, MVD）</span>。當一個實體有<b>兩組互相獨立的多值屬性</b>存在同一表時會產生重複。<b>處理方式</b>：將彼此獨立的多值屬性，各自與鍵組成獨立關聯。範例：員工<span class="fd">(員工, 技能, 語言)</span>，技能與語言彼此獨立 → 拆成 員工-技能、員工-語言。</li>
+      <li><span class="k">5NF（又稱 PJNF）</span>：在 4NF 之上，消除<span class="k">合併相依（Join Dependency）</span>，處理必須拆成<b>三張以上</b>表才能無損還原的特殊情形。實務罕見，了解即可。</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">五</span>無損分解與相依保存 ★高頻</h2>
+    <p>分解關聯表時有兩個目標：</p>
+    <ul class="ans">
+      <li><span class="k">無損分解（Lossless-join）</span>：分解後再 JOIN 回來，<b>不會多出或遺失資料</b>。</li>
+      <li><span class="k">相依保存（Dependency Preservation）</span>：原本的函數相依，分解後<b>仍能在各表內檢查</b>。</li>
+    </ul>
+    <p><b>關鍵結論：</b></p>
+    <ul class="ans">
+      <li>分解到 <span class="k">3NF</span>：一定能<b>同時</b>做到「無損分解」與「相依保存」。</li>
+      <li>分解到 <span class="k">BCNF</span>：一定能「無損分解」，但<b>不保證相依保存</b>。</li>
+      <li>因此當 BCNF 分解會破壞相依保存時，<b>常選擇停在 3NF</b>。</li>
+    </ul>
+    <p>承上例：指導表拆成 (老師,科目) 與 (學生,老師) 雖<b>無損</b>，但 <span class="fd">{學生,科目} → 老師</span> 跨兩表、<b>相依無法保存</b>。</p>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">六</span>正規化階梯與優缺點</h2>
+    <div class="diagram">
+      <svg class="arch" viewBox="0 0 480 318" role="img" aria-label="正規化階梯：由下而上 1NF、2NF、3NF、BCNF、4NF、5NF，每層消除一種相依、限制更嚴格，且包含下層">
+        <line x1="40" y1="296" x2="40" y2="28" stroke="#163A52" stroke-width="1.4"/>
+        <polygon points="40,18 45,30 35,30" fill="#163A52"/>
+        <text x="22" y="160" font-size="11" fill="#5C574E" text-anchor="middle" transform="rotate(-90 22 160)">越往上越嚴格</text>
+        <rect x="66" y="18" width="398" height="38" rx="7" fill="#D6E2EA" stroke="#163A52" stroke-width="1.3"/>
+        <text x="88" y="37" font-size="13" font-weight="700" fill="#163A52" dominant-baseline="central">5NF</text>
+        <text x="150" y="37" font-size="12.5" fill="#163A52" dominant-baseline="central">消除合併相依（罕見）</text>
+        <rect x="66" y="66" width="398" height="38" rx="7" fill="#DDE8EE" stroke="#163A52" stroke-width="1.3"/>
+        <text x="88" y="85" font-size="13" font-weight="700" fill="#163A52" dominant-baseline="central">4NF</text>
+        <text x="150" y="85" font-size="12.5" fill="#163A52" dominant-baseline="central">消除多值相依（MVD）</text>
+        <rect x="66" y="114" width="398" height="38" rx="7" fill="#E3EDF1" stroke="#163A52" stroke-width="1.3"/>
+        <text x="88" y="133" font-size="13" font-weight="700" fill="#163A52" dominant-baseline="central">BCNF</text>
+        <text x="160" y="133" font-size="12.5" fill="#163A52" dominant-baseline="central">決定因素皆為超鍵</text>
+        <rect x="66" y="162" width="398" height="38" rx="7" fill="#E7EEF2" stroke="#163A52" stroke-width="1.3"/>
+        <text x="88" y="181" font-size="13" font-weight="700" fill="#163A52" dominant-baseline="central">3NF</text>
+        <text x="150" y="181" font-size="12.5" fill="#163A52" dominant-baseline="central">消除遞移相依</text>
+        <rect x="66" y="210" width="398" height="38" rx="7" fill="#ECF2F4" stroke="#163A52" stroke-width="1.3"/>
+        <text x="88" y="229" font-size="13" font-weight="700" fill="#163A52" dominant-baseline="central">2NF</text>
+        <text x="150" y="229" font-size="12.5" fill="#163A52" dominant-baseline="central">消除部分相依</text>
+        <rect x="66" y="258" width="398" height="38" rx="7" fill="#F2F6F7" stroke="#163A52" stroke-width="1.3"/>
+        <text x="88" y="277" font-size="13" font-weight="700" fill="#163A52" dominant-baseline="central">1NF</text>
+        <text x="150" y="277" font-size="12.5" fill="#163A52" dominant-baseline="central">欄位皆為單一值（原子性）</text>
+      </svg>
+      <div class="caption">由下而上：每層消除一種相依、限制更嚴格，且<b>包含下層</b>（符合 3NF 必符合 2NF、1NF）</div>
+    </div>
+    <p class="subhead">優缺點</p>
+    <ul class="ans">
+      <li><b>優點</b>：消除三種異常、降低資料重複、提升一致性。</li>
+      <li><b>缺點</b>：表格變多、查詢需大量 JOIN、查詢效能下降；故實務有時刻意<span class="k">反正規化（Denormalization）</span>，以空間換取查詢速度。</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">七</span>結論</h2>
+    <p>正規化以函數相依為依據，從 1NF 逐步消除部分相依（2NF）、遞移相依（3NF）、非超鍵決定因素（BCNF）、多值相依（4NF）。其中 <span class="k">3NF 兼顧無損與相依保存</span>，是實務最常採用的平衡點。</p>
+  </section>
+
+  <div class="tip">
+    <span class="lbl">⚠️ 考點提醒</span>
+    <ul>
+      <li><b>各階消除的相依</b>：1NF 原子性；2NF 部分相依；3NF 遞移相依；BCNF 決定因素須為超鍵；4NF 多值相依。</li>
+      <li>只有<b>複合主鍵</b>的表才可能違反 2NF。</li>
+      <li><b>3NF 保證無損＋相依保存；BCNF 保證無損但不保證相依保存</b>（最高頻）。</li>
+      <li><b>3NF 形式定義</b>：對每個非顯然 X→A，X 為超鍵 <b>或</b> A 為主屬性。</li>
+      <li><b>反正規化</b>是為了提升查詢效能（以空間換時間）。</li>
+    </ul>
+  </div>
+
+  <div class="foot">國考資料庫申論講義 05 ／ 正規化</div>
+
+</div>
+
+<script>
+  var btn=document.getElementById('rt');
+  function clearRevealed(){
+    var r=document.querySelectorAll('.block.revealed');
+    for(var i=0;i<r.length;i++){r[i].classList.remove('revealed');}
+  }
+  btn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('recite');
+    btn.setAttribute('aria-pressed',on?'true':'false');
+    btn.textContent=on?'默寫模式：開':'默寫模式：關';
+    if(!on){clearRevealed();}
+  });
+  var heads=document.querySelectorAll('.head');
+  for(var i=0;i<heads.length;i++){
+    heads[i].addEventListener('click',function(){
+      if(!document.body.classList.contains('recite'))return;
+      this.parentElement.classList.toggle('revealed');
+    });
+  }
+</script>
+</body>
+</html>

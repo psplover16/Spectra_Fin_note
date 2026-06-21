@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國考資料庫申論講義 03｜Key（鍵）</title>
+<style>
+:root{
+  --paper:#FBFAF7;
+  --ink:#23211C;
+  --ink-soft:#5C574E;
+  --accent:#163A52;
+  --accent-tint:#E7EEF2;
+  --hl:#FBE6A8;
+  --note-bg:#EDF3F5;
+  --warn:#9E3B30;
+  --warn-bg:#F8ECE9;
+  --warn-bd:#E6C6BF;
+  --line:#D9D5CC;
+  --font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;
+  --font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);
+  font-size:16px;line-height:1.78;letter-spacing:.01em;}
+
+.toolbar{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;
+  gap:12px;padding:9px 20px;background:rgba(251,250,247,.93);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.toolbar .where{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;}
+.toggle{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--accent);
+  background:transparent;border:1.5px solid var(--accent);border-radius:999px;padding:6px 15px;cursor:pointer;
+  white-space:nowrap;transition:background .15s,color .15s;}
+.toggle[aria-pressed="true"]{background:var(--accent);color:var(--paper);}
+
+.wrap{max-width:720px;margin:0 auto;padding:30px 22px 90px;}
+
+.eyebrow{font-size:12.5px;letter-spacing:.2em;color:var(--accent);font-weight:700;}
+h1{font-family:var(--font-head);font-size:31px;line-height:1.22;margin:.32em 0 .14em;color:var(--accent);letter-spacing:.01em;}
+.subtitle{color:var(--ink-soft);font-size:15px;letter-spacing:.05em;font-style:italic;}
+.usage{margin:20px 0 4px;padding:12px 16px;border:1px dashed var(--line);border-radius:9px;
+  font-size:13.5px;color:var(--ink-soft);line-height:1.6;background:#fff;}
+.usage b{color:var(--ink);}
+.dot{display:inline-block;width:.82em;height:.82em;border-radius:3px;vertical-align:-1px;margin-right:.3em;}
+
+section.block{margin-top:36px;}
+.head{font-family:var(--font-head);font-size:21px;color:var(--ink);display:flex;align-items:center;gap:.55em;
+  border-bottom:2px solid var(--accent);padding-bottom:7px;margin:0 0 14px;}
+.ord{flex:0 0 auto;width:1.65em;height:1.65em;border-radius:50%;background:var(--accent);color:var(--paper);
+  font-size:.82em;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
+.subhead{font-family:var(--font-head);font-size:16.5px;font-weight:700;color:var(--accent);margin:20px 0 4px;}
+p{margin:.55em 0;}
+ol.ans,ul.ans{margin:.4em 0;padding-left:1.45em;}
+ol.ans>li,ul.ans>li{margin:.5em 0;padding-left:.2em;}
+.k{background:linear-gradient(transparent 56%,var(--hl) 56%);font-weight:600;padding:0 1px;}
+.en{color:var(--ink-soft);font-style:italic;}
+
+.note{background:var(--note-bg);border-left:4px solid var(--accent);border-radius:0 9px 9px 0;
+  padding:11px 16px;margin:16px 0;font-size:14.5px;color:#3f4a4e;line-height:1.66;}
+.note .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:2px;}
+
+.tip{background:var(--warn-bg);border:1px solid var(--warn-bd);border-left:4px solid var(--warn);
+  border-radius:0 9px 9px 0;padding:12px 16px;margin:20px 0;font-size:14.5px;line-height:1.66;}
+.tip .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--warn);margin-bottom:5px;}
+.tip ul{margin:.2em 0;padding-left:1.25em;}
+.tip li{margin:.35em 0;}
+
+.tablewrap{overflow-x:auto;margin:16px 0;border-radius:9px;border:1px solid var(--line);}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px;}
+th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;font-weight:600;letter-spacing:.02em;}
+td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;line-height:1.6;}
+td:first-child{border-left:none;}
+tr:nth-child(even) td{background:#FAF6EF;}
+td b{color:var(--accent);}
+
+.diagram{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 14px;margin:18px 0;}
+.arch{display:block;width:100%;height:auto;}
+.arch text{font-family:var(--font-body);}
+.caption{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);text-align:center;}
+
+@media (max-width:520px){
+  .wrap{padding:24px 16px 70px;}
+  h1{font-size:25px;}
+  .head{font-size:18.5px;}
+  body{font-size:15.5px;}
+  .toolbar{padding:8px 14px;}
+}
+@media print{
+  .toolbar{display:none;}
+  body{background:#fff;font-size:11.5pt;line-height:1.55;}
+  .note,.tip,.diagram,.tablewrap{break-inside:avoid;}
+  .usage{display:none;}
+}
+
+.reciteHint{display:none;margin:14px 0 0;padding:10px 14px;border-radius:8px;background:var(--accent-tint);
+  color:var(--accent);font-size:13px;font-weight:600;line-height:1.55;text-align:center;}
+body.recite .reciteHint{display:block;}
+body.recite .usage,
+body.recite .tip{display:none;}
+body.recite .block > :not(.head){display:none;}
+body.recite .block.revealed > :not(.head){display:block;}
+body.recite .head{cursor:pointer;}
+body.recite .head::after{content:"點標題核對 ▾";margin-left:auto;flex:0 0 auto;
+  font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--accent);opacity:.65;}
+body.recite .block.revealed .head::after{content:"收合 ▴";}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="where">國考資料庫 · 申論講義 03</span>
+  <button class="toggle" aria-pressed="false" id="rt">默寫模式：關</button>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">資料庫設計</div>
+    <h1>Key（鍵）</h1>
+    <div class="subtitle">Keys in the Relational Model</div>
+  </header>
+
+  <div class="usage">
+    <b>怎麼用這份文件：</b>
+    <span class="dot" style="background:var(--paper);border:1px solid var(--line)"></span>正文（一、二、三…）= <b>申論默寫核心</b>，直接抄寫即可得分。
+    <span class="dot" style="background:var(--note-bg);border:1px solid var(--accent)"></span>淺藍框 = 幫你<b>理解</b>，不必抄。
+    <span class="dot" style="background:var(--warn-bg);border:1px solid var(--warn)"></span>紅框 = <b>考點提醒</b>。按右上「<b>默寫模式</b>」會把內文收起、只留標題，讓你先默寫再點開核對。
+  </div>
+  <div class="reciteHint">默寫模式：只顯示各段標題。請依標題在紙上默寫完整答案，再點該標題展開、對照核對。</div>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">一</span>定義與範例表</h2>
+    <p><span class="k">鍵（Key）</span>是用來<span class="k">唯一識別</span>關聯表中某一列（tuple／紀錄）的<span class="k">欄位或欄位組合</span>。以下表貫穿全篇說明：</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>學號 student_id</th><th>身分證字號 id_no</th><th>姓名 name</th><th>系所 dept</th></tr></thead>
+        <tbody>
+          <tr><td>S01</td><td>A123456789</td><td>王小明</td><td>資工</td></tr>
+          <tr><td>S02</td><td>B234567890</td><td>李小華</td><td>電機</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>其中「學號」與「身分證字號」皆可唯一識別一位學生，是後續討論的關鍵。</p>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">二</span>各種鍵的定義</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>鍵</th><th>定義</th><th>範例（依上表）</th></tr></thead>
+        <tbody>
+          <tr><td><b>超鍵<br>Superkey</b></td><td>能<b>唯一識別</b>一列的欄位集合，<b>可包含多餘欄位</b></td><td>{學號}、{學號,姓名}、{身分證}</td></tr>
+          <tr><td><b>候選鍵<br>Candidate Key</b></td><td><b>最小的超鍵</b>：去掉任一欄位就不再唯一</td><td>{學號}、{身分證}</td></tr>
+          <tr><td><b>主鍵<br>Primary Key</b></td><td>從候選鍵<b>選一個</b>當主要識別；<b>不可 NULL、不可重複</b></td><td>選 {學號}</td></tr>
+          <tr><td><b>替代鍵<br>Alternate Key</b></td><td><b>未被選為主鍵</b>的其他候選鍵</td><td>{身分證}</td></tr>
+          <tr><td><b>外來鍵<br>Foreign Key</b></td><td>參照<b>另一表主鍵</b>的欄位，用以建立表間關聯；<b>可為 NULL</b></td><td>選課表的學號參照學生表學號</td></tr>
+          <tr><td><b>複合鍵<br>Composite Key</b></td><td>由<b>兩個以上欄位</b>組成的鍵</td><td>選課表 {學號,課號}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><span class="lbl">💡 理解（超鍵 vs 候選鍵）</span>超鍵可以「多帶欄位」也算（如 {學號,姓名}）；候選鍵是「剛剛好、不能再少」的超鍵（{學號}）。所以<b>候選鍵一定是超鍵，超鍵不一定是候選鍵</b>。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">三</span>鍵的包含關係（最常考）</h2>
+    <p>三者由小到大為 <span class="k">主鍵 ⊆ 候選鍵 ⊆ 超鍵</span>：</p>
+    <div class="diagram">
+      <svg class="arch" viewBox="0 0 480 230" role="img" aria-label="鍵的包含關係：最外層為超鍵，內含候選鍵，候選鍵內含主鍵；其餘候選鍵稱為替代鍵">
+        <rect x="18" y="16" width="444" height="198" rx="10" fill="#F4F1E8" stroke="#163A52" stroke-width="1.4"/>
+        <text x="32" y="37" font-size="13" font-weight="700" fill="#163A52">超鍵 Superkey</text>
+        <rect x="64" y="58" width="352" height="140" rx="9" fill="#E7EEF2" stroke="#163A52" stroke-width="1.4"/>
+        <text x="78" y="79" font-size="13" font-weight="700" fill="#163A52">候選鍵 Candidate Key</text>
+        <text x="78" y="96" font-size="10.5" fill="#5C574E">（最小的超鍵）</text>
+        <rect x="126" y="112" width="228" height="72" rx="8" fill="#D6E2EA" stroke="#163A52" stroke-width="1.6"/>
+        <text x="240" y="141" font-size="13.5" font-weight="700" fill="#163A52" text-anchor="middle">主鍵 Primary Key</text>
+        <text x="240" y="161" font-size="10.5" fill="#5C574E" text-anchor="middle">（選一個候選鍵當主鍵）</text>
+      </svg>
+      <div class="caption">主鍵 ⊆ 候選鍵 ⊆ 超鍵；<b>替代鍵</b> = 候選鍵中沒被選為主鍵的那些</div>
+    </div>
+    <ul class="ans">
+      <li><span class="k">候選鍵</span> = 最小的超鍵。</li>
+      <li><span class="k">主鍵</span> = 從候選鍵中「被選中」的那一個。</li>
+      <li><span class="k">替代鍵</span> = 候選鍵中「沒被選中」的其餘者。</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">四</span>主屬性與非主屬性</h2>
+    <ul class="ans">
+      <li><span class="k">主屬性（Prime Attribute）</span>：屬於<b>某個候選鍵</b>的屬性（如：學號、身分證）。</li>
+      <li><span class="k">非主屬性（Non-prime Attribute）</span>：<b>不屬於任何候選鍵</b>的屬性（如：姓名、系所）。</li>
+    </ul>
+    <div class="note"><span class="lbl">💡 理解（為什麼要記這個）</span>這兩個名詞是「正規化」的基礎——2NF 的部分相依、3NF 的遞移相依，都是在講「非主屬性」對鍵的依賴關係。先把它記熟，正規化會輕鬆很多。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">五</span>結論</h2>
+    <p>鍵的核心是<span class="k">唯一識別</span>：由超鍵收斂到最小的候選鍵，再從候選鍵指定一個主鍵；外來鍵則以<span class="k">「值」</span>參照另一表的主鍵，是關聯式資料庫建立表間關聯的機制。</p>
+  </section>
+
+  <div class="tip">
+    <span class="lbl">⚠️ 考點提醒</span>
+    <ul>
+      <li><b>包含關係</b>：主鍵 ⊆ 候選鍵 ⊆ 超鍵（候選鍵=最小超鍵；主鍵=選中的候選鍵；替代鍵=沒選中的候選鍵）。</li>
+      <li><b>主鍵</b>不可為 NULL、不可重複；一張表<b>可有多個候選鍵，但只有一個主鍵</b>。</li>
+      <li><b>外來鍵</b>參照另一表的<b>主鍵</b>，且<b>可為 NULL</b>（除非另加限制）。</li>
+      <li>多對多關係的中間表，主鍵常為兩個外來鍵組成的<b>複合鍵</b>。</li>
+      <li><b>主屬性／非主屬性</b>之分，是正規化判斷的基礎。</li>
+    </ul>
+  </div>
+
+  <div class="foot">國考資料庫申論講義 03 ／ Key（鍵）</div>
+
+</div>
+
+<script>
+  var btn=document.getElementById('rt');
+  function clearRevealed(){
+    var r=document.querySelectorAll('.block.revealed');
+    for(var i=0;i<r.length;i++){r[i].classList.remove('revealed');}
+  }
+  btn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('recite');
+    btn.setAttribute('aria-pressed',on?'true':'false');
+    btn.textContent=on?'默寫模式：開':'默寫模式：關';
+    if(!on){clearRevealed();}
+  });
+  var heads=document.querySelectorAll('.head');
+  for(var i=0;i<heads.length;i++){
+    heads[i].addEventListener('click',function(){
+      if(!document.body.classList.contains('recite'))return;
+      this.parentElement.classList.toggle('revealed');
+    });
+  }
+</script>
+</body>
+</html>
