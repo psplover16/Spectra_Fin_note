@@ -13,6 +13,19 @@ test('header and route region fit at 375px', async ({ page }) => {
   await expect(page.getByTestId('route-tab-common-subject')).toHaveCount(0);
   await expect(page.getByTestId('subject-view-computer-principles')).toBeVisible();
 
+  await expect(page.getByTestId('route-tab-database')).toContainText('資料庫2');
+  await page.getByTestId('route-tab-database').click();
+  await expect(page.getByTestId('database-subject-menu')).toContainText('資料庫');
+  await expect(page.getByTestId('database-subject-menu')).toContainText('資料庫2');
+  await page.getByTestId('database-subject-option-database').click();
+  await expect(page).toHaveURL(/\/database$/);
+  await expect(page.getByTestId('subject-view-database')).toBeVisible();
+
+  await page.getByTestId('route-tab-database').click();
+  await page.getByTestId('database-subject-option-database-v2').click();
+  await expect(page).toHaveURL(/\/database-v2$/);
+  await expect(page.getByTestId('subject-view-database-v2')).toBeVisible();
+
   await page.getByTestId('route-tab-computer-foundation').click();
   await expect(page.getByTestId('computer-foundation-subject-menu')).toContainText('數位邏輯');
   await page.getByTestId('computer-foundation-subject-option-digital-logic').click();

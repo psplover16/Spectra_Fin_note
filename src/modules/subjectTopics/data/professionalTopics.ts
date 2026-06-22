@@ -10945,6 +10945,7 @@ export const professionalTopicsBySubject = {
   informationManagement: [...informationManagementMarkdownTopics, ...getProfessionalTopicSkeletons('informationManagement')],
   programming: [...programmingMarkdownTopics, ...getProfessionalTopicSkeletons('programming')],
   database: [...databaseMarkdownTopics, ...getProfessionalTopicSkeletons('database')],
+  databaseV2: [],
   algorithms: getProfessionalTopicSkeletons('algorithms'),
   systemDesign: systemDesignMarkdownTopics,
   english: [],

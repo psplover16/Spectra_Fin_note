@@ -1,10 +1,11 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ChineseView from '@/modules/chinese/views/ChineseView.vue';
 import AlgorithmsView from '@/modules/algorithms/views/AlgorithmsView.vue';
 import ComputerPrinciplesView from '@/modules/computerPrinciples/views/ComputerPrinciplesView.vue';
 import ComputerPrinciplesV2View from '@/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue';
 import DatabaseView from '@/modules/database/views/DatabaseView.vue';
+import DatabaseV2View from '@/modules/databaseV2/views/DatabaseV2View.vue';
 import DigitalLogicView from '@/modules/digitalLogic/views/DigitalLogicView.vue';
 import EnglishView from '@/modules/english/views/EnglishView.vue';
 import InformationManagementView from '@/modules/informationManagement/views/InformationManagementView.vue';
@@ -14,6 +15,7 @@ import OperatingSystemsView from '@/modules/operatingSystems/views/OperatingSyst
 import ProgrammingView from '@/modules/programming/views/ProgrammingView.vue';
 import SystemDesignView from '@/modules/systemDesign/views/SystemDesignView.vue';
 import SubjectTopicPage from '@/modules/subjectTopics/components/SubjectTopicPage.vue';
+import { subjectTopicProgressStorageKey } from '@/modules/subjectTopics/storage/subjectTopicProgressStorage';
 
 const subjectRouteCases = [
   [
@@ -46,6 +48,7 @@ const subjectRouteCases = [
   ],
   [ProgrammingView, 'subject-view-programming', 'subject-topic-list-programming', ['語言執行方式 + 程式基礎']],
   [DatabaseView, 'subject-view-database', 'subject-topic-list-database', ['基礎概念 + ANSI/SPARC 架構']],
+  [DatabaseV2View, 'subject-view-database-v2', 'subject-topic-list-databaseV2', ['ANSI-SPARC三層架構']],
   [SystemDesignView, 'subject-view-system-design', 'subject-topic-list-systemDesign', ['SDLC + SSDLC']]
 ] as const;
 
@@ -55,6 +58,10 @@ const emptySubjectRouteCases = [
 ] as const;
 
 describe('subject route views', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -121,5 +128,26 @@ describe('subject route views', () => {
     expect(practiceDetail.text()).toContain('Valid bit');
     expect(practiceDetail.text()).toContain('資管題目:');
     expect(wrapper.find('[data-testid="topic-detail-cpv2-floating-point-conversion"]').exists()).toBe(false);
+  });
+
+  it('renders database v2 rows as static HTML links with independent progress controls', async () => {
+    const wrapper = mount(DatabaseV2View);
+
+    expect(wrapper.find('[data-testid="topic-detail-database-v2-sql-query"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="topic-title-database-v2-sql-query"]').attributes('href')).toBe(
+      '/database-v2/國考資料庫_09_SQL查詢功能.html'
+    );
+
+    await wrapper.get('[data-testid="topic-bookmark-database-v2-sql-query"]').trigger('click');
+    let storedProgress = JSON.parse(localStorage.getItem(subjectTopicProgressStorageKey) ?? '{}');
+    expect(storedProgress.subjects.databaseV2.bookmarkedTopicId).toBe('database-v2-sql-query');
+
+    await wrapper.get<HTMLInputElement>('[data-testid="topic-complete-database-v2-sql-query"]').setValue(true);
+
+    storedProgress = JSON.parse(localStorage.getItem(subjectTopicProgressStorageKey) ?? '{}');
+    expect(storedProgress.subjects.databaseV2.bookmarkedTopicId).toBeNull();
+    expect(storedProgress.subjects.databaseV2.completedTopicIds).toEqual(['database-v2-sql-query']);
+    expect(storedProgress.subjects.database.bookmarkedTopicId).toBeNull();
+    expect(storedProgress.subjects.database.completedTopicIds).toEqual([]);
   });
 });

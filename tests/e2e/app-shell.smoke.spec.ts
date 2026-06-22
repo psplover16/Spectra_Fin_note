@@ -6,8 +6,32 @@ async function openComputerFoundationMenu(page: Page) {
 
   await expect(trigger).toBeVisible();
   await trigger.scrollIntoViewIfNeeded();
-  await trigger.click();
-  await expect(menu).toBeVisible();
+  await expect(async () => {
+    if (await menu.isVisible()) {
+      return;
+    }
+
+    await trigger.click();
+    await expect(menu).toBeVisible({ timeout: 1000 });
+  }).toPass();
+
+  return menu;
+}
+
+async function openDatabaseMenu(page: Page) {
+  const trigger = page.getByTestId('route-tab-database');
+  const menu = page.getByTestId('database-subject-menu');
+
+  await expect(trigger).toBeVisible();
+  await trigger.scrollIntoViewIfNeeded();
+  await expect(async () => {
+    if (await menu.isVisible()) {
+      return;
+    }
+
+    await trigger.click();
+    await expect(menu).toBeVisible({ timeout: 1000 });
+  }).toPass();
 
   return menu;
 }
@@ -68,6 +92,10 @@ test('loads database and algorithms professional routes directly', async ({ page
   await expect(page.getByTestId('subject-view-database')).toContainText('資料庫');
   await expect(page.getByTestId('subject-topic-list-database')).toContainText('基礎概念 + ANSI/SPARC 架構');
 
+  await page.goto('/database-v2');
+  await expect(page.getByTestId('subject-view-database-v2')).toContainText('資料庫2');
+  await expect(page.getByTestId('subject-topic-list-databaseV2')).toContainText('ANSI-SPARC三層架構');
+
   await page.goto('/algorithms');
   await expect(page.getByTestId('subject-view-algorithms')).toContainText('演算法');
   await expect(page.getByTestId('subject-topic-list-algorithms')).toContainText('二元搜尋法(Binary Search)');
@@ -90,9 +118,17 @@ test('loads common subject routes directly without visible header navigation', a
 test('primary navigation reaches database, algorithms, and system design', async ({ page }) => {
   await page.goto('/');
 
-  await page.getByTestId('route-tab-database').click();
+  const databaseMenu = await openDatabaseMenu(page);
+  await expect(databaseMenu).toContainText('資料庫');
+  await expect(databaseMenu).toContainText('資料庫2');
+  await page.getByTestId('database-subject-option-database').click();
   await expect(page).toHaveURL(/\/database$/);
   await expect(page.getByTestId('subject-view-database')).toBeVisible();
+
+  await openDatabaseMenu(page);
+  await page.getByTestId('database-subject-option-database-v2').click();
+  await expect(page).toHaveURL(/\/database-v2$/);
+  await expect(page.getByTestId('subject-view-database-v2')).toBeVisible();
 
   await page.getByTestId('route-tab-algorithms').click();
   await expect(page).toHaveURL(/\/algorithms$/);

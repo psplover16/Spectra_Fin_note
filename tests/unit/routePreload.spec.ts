@@ -34,6 +34,7 @@ describe('route preload registry', () => {
     expect(primaryRoutePaths).toContain('/digital-logic');
     expect(primaryRoutePaths).toContain('/operating-systems');
     expect(primaryRoutePaths).toContain('/database');
+    expect(primaryRoutePaths).toContain('/database-v2');
     expect(primaryRoutePaths).toContain('/algorithms');
     expect(primaryRoutePaths).toContain('/system-design');
     expect(routeComponentLoaders['/computer-principles-v2']).toEqual(expect.any(Function));
@@ -41,6 +42,7 @@ describe('route preload registry', () => {
     expect(routeComponentLoaders['/digital-logic']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/operating-systems']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/database']).toEqual(expect.any(Function));
+    expect((routeComponentLoaders as Partial<Record<string, unknown>>)['/database-v2']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/algorithms']).toEqual(expect.any(Function));
     expect(routeComponentLoaders['/system-design']).toEqual(expect.any(Function));
   });

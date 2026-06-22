@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>國考資料庫申論講義 10｜SQL 查詢功能</title>
+<title>國考資料庫申論講義 09｜SQL 查詢功能</title>
 <style>
 :root{
   --paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;
@@ -17,6 +17,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-bo
 .toolbar{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;gap:12px;
   padding:9px 20px;background:rgba(251,250,247,.93);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
 .toolbar .where{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;}
+.toolbar .back{font-family:var(--font-body);background:transparent;border:0;padding:0;cursor:pointer;text-align:left;}
+.toolbar .back:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px;}
 .toggle{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--accent);background:transparent;
   border:1.5px solid var(--accent);border-radius:999px;padding:6px 15px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s;}
 .toggle[aria-pressed="true"]{background:var(--accent);color:var(--paper);}
@@ -73,7 +75,7 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
 <body>
 
 <div class="toolbar">
-  <span class="where">國考資料庫 · 申論講義 10</span>
+  <button type="button" class="where back" id="backToDatabaseV2">返回</button>
   <button class="toggle" aria-pressed="false" id="rt">默寫模式：關</button>
 </div>
 
@@ -207,7 +209,7 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
 
   <section class="block">
     <h2 class="head"><span class="ord">六</span>結論</h2>
-    <p>正規化把資料拆開，<span class="k">JOIN</span> 再依關聯欄位接回來（INNER 取交集、LEFT／RIGHT／FULL 保留某邊或雙邊）。<span class="k">彙總函式</span>搭 GROUP BY 分組統計、HAVING 於分組後篩選；<span class="k">子查詢</span>巢狀求值；<span class="k">集合運算</span>合併結果（UNION 去重）。這些與 CRUD（講義 09）合起來即涵蓋 SQL 基本查詢能力。</p>
+    <p>正規化把資料拆開，<span class="k">JOIN</span> 再依關聯欄位接回來（INNER 取交集、LEFT／RIGHT／FULL 保留某邊或雙邊）。<span class="k">彙總函式</span>搭 GROUP BY 分組統計、HAVING 於分組後篩選；<span class="k">子查詢</span>巢狀求值；<span class="k">集合運算</span>合併結果（UNION 去重）。這些與 CRUD（講義 08）合起來即涵蓋 SQL 基本查詢能力。</p>
   </section>
 
   <div class="tip">
@@ -221,7 +223,7 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
     </ul>
   </div>
 
-  <div class="foot">國考資料庫申論講義 10 ／ SQL 查詢功能</div>
+  <div class="foot">國考資料庫申論講義 09 ／ SQL 查詢功能</div>
 
 </div>
 
@@ -244,6 +246,27 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
       this.parentElement.classList.toggle('revealed');
     });
   }
+</script>
+<script>
+(function(){
+  function resolveDatabaseV2IndexPath(){
+    var marker='/database-v2/';
+    var markerIndex=window.location.pathname.indexOf(marker);
+    if(markerIndex===-1){
+      return '/database-v2';
+    }
+    return window.location.pathname.slice(0,markerIndex+marker.length-1);
+  }
+  var back=document.getElementById('backToDatabaseV2');
+  if(!back)return;
+  back.addEventListener('click',function(){
+    if(window.history.length>1){
+      window.history.back();
+      return;
+    }
+    window.location.href=resolveDatabaseV2IndexPath();
+  });
+})();
 </script>
 </body>
 </html>

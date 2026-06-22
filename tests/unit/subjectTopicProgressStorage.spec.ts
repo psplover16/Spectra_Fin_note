@@ -91,6 +91,8 @@ describe('subjectTopicProgressStorage', () => {
     expect(state.subjects.programming.bookmarkedTopicId).toBe('java-loop-basics');
     expect(state.subjects.database.completedTopicIds).toEqual([]);
     expect(state.subjects.database.bookmarkedTopicId).toBeNull();
+    expect(state.subjects.databaseV2.completedTopicIds).toEqual([]);
+    expect(state.subjects.databaseV2.bookmarkedTopicId).toBeNull();
     expect(state.subjects.algorithms.completedTopicIds).toEqual([]);
     expect(state.subjects.algorithms.bookmarkedTopicId).toBeNull();
     expect(state.subjects.digitalLogic.completedTopicIds).toEqual([]);
@@ -201,5 +203,21 @@ describe('subjectTopicProgressStorage', () => {
     expect(nextState.subjects.networking.bookmarkedTopicId).toBe('networking-osi-tcpip');
     expect(nextState.subjects.networkingV2.completedTopicIds).toEqual(['networking-v2-osi-tcpip']);
     expect(nextState.subjects.networkingV2.bookmarkedTopicId).toBeNull();
+  });
+
+  it('normalizes database v2 progress without migrating database v1 topic ids', () => {
+    const storage = createMemoryStorage();
+    const initialState = createEmptySubjectTopicProgressState();
+    initialState.subjects.database.completedTopicIds = ['database-normalization'];
+    initialState.subjects.database.bookmarkedTopicId = 'database-normalization';
+    expect(writeSubjectTopicProgress(initialState, storage)).toBe(true);
+
+    const nextState = saveCompletedTopicIds('databaseV2', ['database-v2-sql-query'], storage, '2026-06-22T00:00:00.000Z');
+
+    expect(nextState.version).toBe(1);
+    expect(nextState.subjects.database.completedTopicIds).toEqual(['database-normalization']);
+    expect(nextState.subjects.database.bookmarkedTopicId).toBe('database-normalization');
+    expect(nextState.subjects.databaseV2.completedTopicIds).toEqual(['database-v2-sql-query']);
+    expect(nextState.subjects.databaseV2.bookmarkedTopicId).toBeNull();
   });
 });

@@ -163,6 +163,7 @@ boolean enough = (1 << parityBits) >= dataBits + parityBits + 1;`
       ]
     }
   ],
+  databaseV2: [],
   algorithms: [
     {
       id: 'sorting-overview',

@@ -51,6 +51,11 @@ export default createRouter({
       meta: { title: '資料庫' }
     },
     {
+      path: '/database-v2',
+      component: routeComponentLoaders['/database-v2'],
+      meta: { title: '資料庫2' }
+    },
+    {
       path: '/algorithms',
       component: routeComponentLoaders['/algorithms'],
       meta: { title: '演算法' }

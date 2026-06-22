@@ -8,6 +8,7 @@ export const subjectKeys = [
   'informationManagement',
   'programming',
   'database',
+  'databaseV2',
   'algorithms',
   'systemDesign',
   'english',

@@ -2,6 +2,7 @@
 import { RouterLink, useRoute } from 'vue-router';
 import { preloadRouteComponent } from '@/app/routePreload';
 import ComputerFoundationSubjectSwitcher from '@/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue';
+import DatabaseSubjectSwitcher from '@/modules/databaseSubjects/components/DatabaseSubjectSwitcher.vue';
 
 interface RouteTab {
   to: string;
@@ -14,7 +15,6 @@ const route = useRoute();
 const primaryTabs = [
   { to: '/information-management', label: '資管', testId: 'route-tab-information-management' },
   { to: '/programming', label: '程式', testId: 'route-tab-programming' },
-  { to: '/database', label: '資料庫', testId: 'route-tab-database' },
   { to: '/algorithms', label: '演算法', testId: 'route-tab-algorithms' },
   { to: '/system-design', label: '系統設計', testId: 'route-tab-system-design' }
 ] as const satisfies readonly RouteTab[];
@@ -31,6 +31,7 @@ function routeTabClass(to: string): string {
 <template>
   <nav data-testid="route-tabs" class="route-tabs" aria-label="主要科目">
     <ComputerFoundationSubjectSwitcher />
+    <DatabaseSubjectSwitcher />
     <RouterLink
       v-for="tab in primaryTabs"
       :key="tab.to"

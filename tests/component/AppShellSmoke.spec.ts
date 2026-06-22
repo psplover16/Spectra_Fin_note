@@ -18,6 +18,7 @@ function createTestRouter(initialPath = '/computer-principles') {
       { path: '/information-management', component: routeComponentLoaders['/information-management'] },
       { path: '/programming', component: routeComponentLoaders['/programming'] },
       { path: '/database', component: routeComponentLoaders['/database'] },
+      { path: '/database-v2', component: { template: '<section data-testid="subject-view-database-v2">資料庫2</section>' } },
       { path: '/algorithms', component: routeComponentLoaders['/algorithms'] },
       { path: '/system-design', component: routeComponentLoaders['/system-design'] },
       { path: '/english', component: routeComponentLoaders['/english'] },
@@ -101,5 +102,43 @@ describe('AppShell smoke', () => {
     });
     expect(wrapper.find('[data-testid="route-tab-networking-v2"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="app-main"]').text()).toContain('網路概論(v2)');
+  });
+
+  it('opens a database menu that defaults to database v2 and preserves database v1 navigation', async () => {
+    const router = await createTestRouter();
+
+    const wrapper = mount(AppShell, {
+      global: {
+        plugins: [router]
+      }
+    });
+    await flushPromises();
+
+    const databaseTrigger = wrapper.get('[data-testid="route-tab-database"]');
+    expect(databaseTrigger.text()).toContain('資料庫2');
+
+    await databaseTrigger.trigger('click');
+
+    const menu = wrapper.get('[data-testid="database-subject-menu"]');
+    expect(menu.text()).toContain('資料庫');
+    expect(menu.text()).toContain('資料庫2');
+
+    await wrapper.get('[data-testid="database-subject-option-database"]').trigger('click');
+    await flushPromises();
+
+    await vi.waitFor(() => {
+      expect(router.currentRoute.value.path).toBe('/database');
+    });
+    expect(wrapper.get('[data-testid="route-tab-database"]').text()).toContain('資料庫');
+
+    await wrapper.get('[data-testid="route-tab-database"]').trigger('click');
+    await wrapper.get('[data-testid="database-subject-option-database-v2"]').trigger('click');
+    await flushPromises();
+
+    await vi.waitFor(() => {
+      expect(router.currentRoute.value.path).toBe('/database-v2');
+    });
+    expect(wrapper.get('[data-testid="route-tab-database"]').text()).toContain('資料庫2');
+    expect(wrapper.get('[data-testid="app-main"]').text()).toContain('資料庫2');
   });
 });

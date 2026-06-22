@@ -10,6 +10,7 @@ export type PrimaryRoutePath =
   | '/information-management'
   | '/programming'
   | '/database'
+  | '/database-v2'
   | '/algorithms'
   | '/system-design'
   | '/english'
@@ -29,6 +30,7 @@ export const primaryRoutePaths = [
   '/information-management',
   '/programming',
   '/database',
+  '/database-v2',
   '/algorithms',
   '/system-design',
   '/english',
@@ -45,6 +47,7 @@ export const routeComponentLoaders: Record<PrimaryRoutePath, RouteComponentLoade
   '/information-management': () => import('@/modules/informationManagement/views/InformationManagementView.vue'),
   '/programming': () => import('@/modules/programming/views/ProgrammingView.vue'),
   '/database': () => import('@/modules/database/views/DatabaseView.vue'),
+  '/database-v2': () => import('@/modules/databaseV2/views/DatabaseV2View.vue'),
   '/algorithms': () => import('@/modules/algorithms/views/AlgorithmsView.vue'),
   '/system-design': () => import('@/modules/systemDesign/views/SystemDesignView.vue'),
   '/english': () => import('@/modules/english/views/EnglishView.vue'),
