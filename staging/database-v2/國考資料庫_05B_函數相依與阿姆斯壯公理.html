@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國考資料庫申論講義 05B｜阿姆斯壯公理</title>
+<style>
+:root{
+  --paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;
+  --hl:#FBE6A8;--note-bg:#EDF3F5;--warn:#9E3B30;--warn-bg:#F8ECE9;--warn-bd:#E6C6BF;--line:#D9D5CC;
+  --font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;
+  --font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;letter-spacing:.01em;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:9px 20px;background:rgba(251,250,247,.93);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.toolbar .where{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;}
+.toolbar .back{font-family:var(--font-body);background:transparent;border:0;padding:0;cursor:pointer;text-align:left;}
+.toolbar .back:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px;}
+.toggle{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--accent);background:transparent;
+  border:1.5px solid var(--accent);border-radius:999px;padding:6px 15px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s;}
+.toggle[aria-pressed="true"]{background:var(--accent);color:var(--paper);}
+.wrap{max-width:720px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12.5px;letter-spacing:.2em;color:var(--accent);font-weight:700;}
+h1{font-family:var(--font-head);font-size:31px;line-height:1.22;margin:.32em 0 .14em;color:var(--accent);letter-spacing:.01em;}
+.subtitle{color:var(--ink-soft);font-size:15px;letter-spacing:.05em;font-style:italic;}
+.usage{margin:20px 0 4px;padding:12px 16px;border:1px dashed var(--line);border-radius:9px;font-size:13.5px;color:var(--ink-soft);line-height:1.6;background:#fff;}
+.usage b{color:var(--ink);}
+.dot{display:inline-block;width:.82em;height:.82em;border-radius:3px;vertical-align:-1px;margin-right:.3em;}
+section.block{margin-top:36px;}
+.head{font-family:var(--font-head);font-size:21px;color:var(--ink);display:flex;align-items:center;gap:.55em;border-bottom:2px solid var(--accent);padding-bottom:7px;margin:0 0 14px;}
+.ord{flex:0 0 auto;width:1.65em;height:1.65em;border-radius:50%;background:var(--accent);color:var(--paper);font-size:.82em;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
+.subhead{font-family:var(--font-head);font-size:16.5px;font-weight:700;color:var(--accent);margin:20px 0 4px;}
+p{margin:.55em 0;}
+ol.ans,ul.ans{margin:.4em 0;padding-left:1.45em;}
+ol.ans>li,ul.ans>li{margin:.5em 0;padding-left:.2em;}
+.k{background:linear-gradient(transparent 56%,var(--hl) 56%);font-weight:600;padding:0 1px;}
+.fd{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F1EEE6;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em;white-space:nowrap;}
+.note{background:var(--note-bg);border-left:4px solid var(--accent);border-radius:0 9px 9px 0;padding:11px 16px;margin:16px 0;font-size:14.5px;color:#3f4a4e;line-height:1.66;}
+.note .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:2px;}
+.tip{background:var(--warn-bg);border:1px solid var(--warn-bd);border-left:4px solid var(--warn);border-radius:0 9px 9px 0;padding:12px 16px;margin:20px 0;font-size:14.5px;line-height:1.66;}
+.tip .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--warn);margin-bottom:5px;}
+.tip ul{margin:.2em 0;padding-left:1.25em;}
+.tip li{margin:.35em 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border-radius:9px;border:1px solid var(--line);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px;}
+th{background:var(--accent);color:var(--paper);text-align:left;padding:8px 10px;font-weight:600;letter-spacing:.02em;}
+td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:8px 10px;vertical-align:top;line-height:1.55;}
+td:first-child{border-left:none;}
+tr:nth-child(even) td{background:#FAF6EF;}
+td b{color:var(--accent);}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 14px;margin:18px 0;}
+.arch{display:block;width:100%;height:auto;}
+.arch text{font-family:var(--font-body);}
+.caption{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:8px;line-height:1.55;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:25px;}.head{font-size:18.5px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.note,.tip,.diagram,.tablewrap{break-inside:avoid;}.usage{display:none;}}
+.reciteHint{display:none;margin:14px 0 0;padding:10px 14px;border-radius:8px;background:var(--accent-tint);color:var(--accent);font-size:13px;font-weight:600;line-height:1.55;text-align:center;}
+body.recite .reciteHint{display:block;}
+body.recite .usage,body.recite .tip{display:none;}
+body.recite .block > :not(.head){display:none;}
+body.recite .block.revealed > :not(.head){display:block;}
+body.recite .head{cursor:pointer;}
+body.recite .head::after{content:"點標題核對 ▾";margin-left:auto;flex:0 0 auto;font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--accent);opacity:.65;}
+body.recite .block.revealed .head::after{content:"收合 ▴";}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button type="button" class="where back" id="backToDatabaseV2">返回</button>
+  <button class="toggle" aria-pressed="false" id="rt">默寫模式：關</button>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">資料庫設計 · 正規化基礎</div>
+    <h1>函數相依與阿姆斯壯公理</h1>
+    <div class="subtitle">Functional Dependency · Armstrong's Axioms</div>
+  </header>
+
+  <div class="usage">
+    <b>怎麼用這份文件：</b>
+    <span class="dot" style="background:var(--paper);border:1px solid var(--line)"></span>正文（一、二、三…）= <b>申論默寫核心</b>，直接抄寫即可得分。
+    <span class="dot" style="background:var(--note-bg);border:1px solid var(--accent)"></span>淺藍框 = 幫你<b>理解</b>，不必抄。
+    <span class="dot" style="background:var(--warn-bg);border:1px solid var(--warn)"></span>紅框 = <b>考點提醒</b>。按右上「<b>默寫模式</b>」會把內文收起、只留標題，讓你先默寫再點開核對。
+  </div>
+  <div class="reciteHint">默寫模式：只顯示各段標題。請依標題在紙上默寫完整答案，再點該標題展開、對照核對。</div>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">一</span>相依性與函數相依</h2>
+    <p><span class="k">相依性（Dependency）</span>描述關聯中「某些屬性決定另一些屬性」的限制關係；最重要的一種是<span class="k">函數相依</span>（其餘如多值相依、合併相依，分別對應 4NF、5NF）。</p>
+    <p class="subhead">函數相依（Functional Dependency, FD）完整定義</p>
+    <p>在關聯 R 中，給定屬性集合 X、Y。若 R 內<b>任意兩列，只要在 X 上的值相等，則在 Y 上的值也必定相等</b>，就稱「X 函數決定 Y」（或 Y 函數相依於 X），記作 <span class="fd">X → Y</span>。X 稱<span class="k">決定因素（determinant）</span>、Y 稱<span class="k">相依因素</span>。</p>
+    <p>白話：<b>知道 X 的值，就能唯一決定 Y 的值</b>。例：<span class="fd">學號 → 姓名</span>——同一個學號一定對到同一個姓名。能從已知 FD 推導出所有隱含 FD 的工具，就是後面的<span class="k">阿姆斯壯公理</span>。</p>
+    <div class="note"><span class="lbl">💡 為什麼重要</span>正規化的每一步，本質都在問「<b>哪個屬性被哪個屬性決定</b>」。先能寫出函數相依，才能判斷關聯違反第幾正規化、該怎麼拆。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">二</span>函數相依的種類</h2>
+    <p>以下四種對正規化最關鍵（X、Y 為屬性集合）：</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>種類</th><th>定義</th><th>與正規化的關聯</th></tr></thead>
+        <tbody>
+          <tr><td><b>完全函數相依</b><br>Full FD</td><td>Y 相依於整個 X，且<b>不</b>相依於 X 的任何真子集</td><td>2NF 的要求</td></tr>
+          <tr><td><b>部分函數相依</b><br>Partial FD</td><td>Y 只相依於複合鍵 X 的<b>一部分</b>（真子集）</td><td><b>違反 2NF</b></td></tr>
+          <tr><td><b>遞移函數相依</b><br>Transitive FD</td><td>X→Y、Y→Z 且 Y 不→X，使得 X→Z（透過中介 Y）</td><td><b>違反 3NF</b></td></tr>
+          <tr><td><b>顯然函數相依</b><br>Trivial FD</td><td>Y ⊆ X（右邊是左邊的子集）</td><td>恆成立、可忽略</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><span class="lbl">💡 一句話記憶</span><b>部分相依</b>＝「只用半把鑰匙就開門」（複合鍵的一部分就決定了某屬性）；<b>遞移相依</b>＝「繞了一手」（A 決定 B、B 再決定 C）。<b>2NF 砍部分相依、3NF 砍遞移相依。</b></div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">三</span>三個基本公理</h2>
+    <p>以下 X、Y、Z 皆代表屬性集合（⇒ 表示「可推出」）：</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>公理</th><th>形式</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td><b>反身律</b><br>Reflexivity</td><td><span class="fd">Y ⊆ X ⇒ X → Y</span></td><td>一個集合可決定它的子集（顯然相依）</td></tr>
+          <tr><td><b>擴充律</b><br>Augmentation</td><td><span class="fd">X → Y ⇒ XZ → YZ</span></td><td>兩邊同時加入屬性，相依仍成立</td></tr>
+          <tr><td><b>遞移律</b><br>Transitivity</td><td><span class="fd">X → Y, Y → Z ⇒ X → Z</span></td><td>相依可串接</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>這三條公理即可推導出所有函數相依（健全且完備），其餘規則都由它們導出。</p>
+    <div class="note"><span class="lbl">💡 理解（反身律最直覺）</span><span class="fd">{學號, 姓名} → 姓名</span> 一定成立——知道一組屬性，當然知道其中任一個。這種右邊是左邊子集的相依，稱為「<b>顯然函數相依（trivial FD）</b>」。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">四</span>三個導出律（由基本公理推出）</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>規則</th><th>形式</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td><b>聯合律</b><br>Union</td><td><span class="fd">X → Y, X → Z ⇒ X → YZ</span></td><td>右邊可合併</td></tr>
+          <tr><td><b>分解律</b><br>Decomposition</td><td><span class="fd">X → YZ ⇒ X → Y, X → Z</span></td><td>右邊可拆開</td></tr>
+          <tr><td><b>擬遞移律</b><br>Pseudotransitivity</td><td><span class="fd">X → Y, WY → Z ⇒ WX → Z</span></td><td>帶條件的遞移</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">五</span>屬性閉包 X⁺（最實用的工具）</h2>
+    <p><span class="k">屬性閉包（Attribute Closure）</span><span class="fd">X⁺</span>：是「由 X 能函數決定的<b>所有屬性</b>」之集合。</p>
+    <p class="subhead">計算演算法</p>
+    <ol class="ans">
+      <li>令 <span class="fd">X⁺ = X</span>。</li>
+      <li>反覆檢查每條 FD <span class="fd">A → B</span>：若 A ⊆ X⁺，就把 B 加入 X⁺。</li>
+      <li>直到 X⁺ 不再變大為止。</li>
+    </ol>
+    <p class="subhead">範例</p>
+    <p>R(學號, 系所, 系主任)，F = {<span class="fd">學號→系所</span>, <span class="fd">系所→系主任</span>}，求 <span class="fd">學號⁺</span>：</p>
+    <div class="diagram">
+      <svg class="arch" viewBox="0 0 480 108" role="img" aria-label="屬性閉包計算流程：學號閉包從｛學號｝開始，套用學號→系所得｛學號,系所｝，再套用系所→系主任得｛學號,系所,系主任｝，即全部屬性">
+        <rect x="8" y="40" width="80" height="36" rx="7" fill="#E7EEF2" stroke="#163A52" stroke-width="1.3"/>
+        <text x="48" y="58" font-size="11.5" fill="#163A52" text-anchor="middle" dominant-baseline="central">{學號}</text>
+        <text x="128" y="47" font-size="9.5" fill="#5C574E" text-anchor="middle">學號→系所</text>
+        <line x1="90" y1="58" x2="160" y2="58" stroke="#163A52" stroke-width="1.2"/>
+        <polygon points="168,58 160,54 160,62" fill="#163A52"/>
+        <rect x="170" y="40" width="104" height="36" rx="7" fill="#E7EEF2" stroke="#163A52" stroke-width="1.3"/>
+        <text x="222" y="58" font-size="11" fill="#163A52" text-anchor="middle" dominant-baseline="central">{學號, 系所}</text>
+        <text x="314" y="47" font-size="9.5" fill="#5C574E" text-anchor="middle">系所→系主任</text>
+        <line x1="276" y1="58" x2="346" y2="58" stroke="#163A52" stroke-width="1.2"/>
+        <polygon points="354,58 346,54 346,62" fill="#163A52"/>
+        <rect x="356" y="40" width="118" height="36" rx="7" fill="#D6E2EA" stroke="#163A52" stroke-width="1.5"/>
+        <text x="415" y="58" font-size="10.5" font-weight="700" fill="#163A52" text-anchor="middle" dominant-baseline="central">{學號,系所,系主任}</text>
+        <text x="240" y="98" font-size="11" fill="#163A52" text-anchor="middle">＝ 全部屬性 → 學號 是候選鍵</text>
+      </svg>
+      <div class="caption">每套用一條相依，閉包就長大一次，直到無法再加入新屬性</div>
+    </div>
+    <p class="subhead">兩大用途</p>
+    <ul class="ans">
+      <li><b>判斷 <span class="fd">X → Y</span> 是否成立</b>：看 Y 是否 ⊆ X⁺。</li>
+      <li><b>判斷 X 是否為超鍵</b>：若 X⁺ = 全部屬性，則 X 是超鍵；若再「拿掉任一屬性就不再涵蓋全部」，則為<b>候選鍵</b>。</li>
+    </ul>
+    <p>上例 <span class="fd">學號⁺</span> = 全部屬性，故學號是候選鍵。</p>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">六</span>結論</h2>
+    <p>阿姆斯壯公理（<span class="k">反身、擴充、遞移</span>三基本 ＋ 聯合、分解、擬遞移三導出）讓我們能推導所有函數相依；搭配<span class="k">屬性閉包</span>，即可判斷 FD、找出候選鍵，進而判斷正規化形式，是正規化的理論基礎。</p>
+  </section>
+
+  <div class="tip">
+    <span class="lbl">⚠️ 考點提醒</span>
+    <ul>
+      <li><b>函數相依四類</b>：完全（2NF 要求）、部分（破 2NF）、遞移（破 3NF）、顯然（恆成立）。</li>
+      <li><b>三個基本公理</b>：反身（Reflexivity）、擴充（Augmentation）、遞移（Transitivity）——必記。</li>
+      <li>阿姆斯壯公理具<b>健全（sound）且完備（complete）</b>性。</li>
+      <li>聯合、分解、擬遞移為<b>導出律</b>（由三基本公理推得）。</li>
+      <li><b>屬性閉包 X⁺ 兩大用途</b>：判斷 FD（Y⊆X⁺）、判斷超鍵／候選鍵（X⁺＝全部屬性）。</li>
+      <li>右邊是左邊子集的相依 = <b>顯然函數相依（trivial FD）</b>。</li>
+    </ul>
+  </div>
+
+  <div class="foot">國考資料庫申論講義 05B ／ 函數相依與阿姆斯壯公理</div>
+
+</div>
+
+<script>
+  var btn=document.getElementById('rt');
+  function clearRevealed(){
+    var r=document.querySelectorAll('.block.revealed');
+    for(var i=0;i<r.length;i++){r[i].classList.remove('revealed');}
+  }
+  btn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('recite');
+    btn.setAttribute('aria-pressed',on?'true':'false');
+    btn.textContent=on?'默寫模式：開':'默寫模式：關';
+    if(!on){clearRevealed();}
+  });
+  var heads=document.querySelectorAll('.head');
+  for(var i=0;i<heads.length;i++){
+    heads[i].addEventListener('click',function(){
+      if(!document.body.classList.contains('recite'))return;
+      this.parentElement.classList.toggle('revealed');
+    });
+  }
+</script>
+<script>
+(function(){
+  function resolveDatabaseV2IndexPath(){
+    var marker='/database-v2/';
+    var markerIndex=window.location.pathname.indexOf(marker);
+    if(markerIndex===-1){
+      return '/database-v2';
+    }
+    return window.location.pathname.slice(0,markerIndex+marker.length-1);
+  }
+  var back=document.getElementById('backToDatabaseV2');
+  if(!back)return;
+  back.addEventListener('click',function(){
+    if(window.history.length>1){
+      window.history.back();
+      return;
+    }
+    window.location.href=resolveDatabaseV2IndexPath();
+  });
+})();
+</script>
+</body>
+</html>

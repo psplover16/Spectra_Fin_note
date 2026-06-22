@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國考資料庫申論講義 04｜ERD 實體關係圖</title>
+<style>
+:root{
+  --paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;
+  --hl:#FBE6A8;--note-bg:#EDF3F5;--warn:#9E3B30;--warn-bg:#F8ECE9;--warn-bd:#E6C6BF;--line:#D9D5CC;
+  --font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;
+  --font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;letter-spacing:.01em;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:9px 20px;background:rgba(251,250,247,.93);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.toolbar .where{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;}
+.toolbar .back{font-family:var(--font-body);background:transparent;border:0;padding:0;cursor:pointer;text-align:left;}
+.toolbar .back:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px;}
+.toggle{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--accent);background:transparent;
+  border:1.5px solid var(--accent);border-radius:999px;padding:6px 15px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s;}
+.toggle[aria-pressed="true"]{background:var(--accent);color:var(--paper);}
+.wrap{max-width:720px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12.5px;letter-spacing:.2em;color:var(--accent);font-weight:700;}
+h1{font-family:var(--font-head);font-size:31px;line-height:1.22;margin:.32em 0 .14em;color:var(--accent);letter-spacing:.01em;}
+.subtitle{color:var(--ink-soft);font-size:15px;letter-spacing:.05em;font-style:italic;}
+.usage{margin:20px 0 4px;padding:12px 16px;border:1px dashed var(--line);border-radius:9px;font-size:13.5px;color:var(--ink-soft);line-height:1.6;background:#fff;}
+.usage b{color:var(--ink);}
+.dot{display:inline-block;width:.82em;height:.82em;border-radius:3px;vertical-align:-1px;margin-right:.3em;}
+section.block{margin-top:36px;}
+.head{font-family:var(--font-head);font-size:21px;color:var(--ink);display:flex;align-items:center;gap:.55em;border-bottom:2px solid var(--accent);padding-bottom:7px;margin:0 0 14px;}
+.ord{flex:0 0 auto;width:1.65em;height:1.65em;border-radius:50%;background:var(--accent);color:var(--paper);font-size:.82em;font-weight:700;display:inline-flex;align-items:center;justify-content:center;}
+.subhead{font-family:var(--font-head);font-size:16.5px;font-weight:700;color:var(--accent);margin:20px 0 4px;}
+p{margin:.55em 0;}
+ol.ans,ul.ans{margin:.4em 0;padding-left:1.45em;}
+ol.ans>li,ul.ans>li{margin:.5em 0;padding-left:.2em;}
+.k{background:linear-gradient(transparent 56%,var(--hl) 56%);font-weight:600;padding:0 1px;}
+.en{color:var(--ink-soft);font-style:italic;}
+.note{background:var(--note-bg);border-left:4px solid var(--accent);border-radius:0 9px 9px 0;padding:11px 16px;margin:16px 0;font-size:14.5px;color:#3f4a4e;line-height:1.66;}
+.note .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:2px;}
+.tip{background:var(--warn-bg);border:1px solid var(--warn-bd);border-left:4px solid var(--warn);border-radius:0 9px 9px 0;padding:12px 16px;margin:20px 0;font-size:14.5px;line-height:1.66;}
+.tip .lbl{display:block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--warn);margin-bottom:5px;}
+.tip ul{margin:.2em 0;padding-left:1.25em;}
+.tip li{margin:.35em 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border-radius:9px;border:1px solid var(--line);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px;}
+th{background:var(--accent);color:var(--paper);text-align:left;padding:8px 10px;font-weight:600;letter-spacing:.02em;}
+td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:8px 10px;vertical-align:top;line-height:1.55;}
+td:first-child{border-left:none;}
+tr:nth-child(even) td{background:#FAF6EF;}
+td b{color:var(--accent);}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 14px;margin:18px 0;}
+.arch{display:block;width:100%;height:auto;}
+.arch text{font-family:var(--font-body);}
+.caption{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:8px;line-height:1.55;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:25px;}.head{font-size:18.5px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.note,.tip,.diagram,.tablewrap{break-inside:avoid;}.usage{display:none;}}
+.reciteHint{display:none;margin:14px 0 0;padding:10px 14px;border-radius:8px;background:var(--accent-tint);color:var(--accent);font-size:13px;font-weight:600;line-height:1.55;text-align:center;}
+body.recite .reciteHint{display:block;}
+body.recite .usage,body.recite .tip{display:none;}
+body.recite .block > :not(.head){display:none;}
+body.recite .block.revealed > :not(.head){display:block;}
+body.recite .head{cursor:pointer;}
+body.recite .head::after{content:"點標題核對 ▾";margin-left:auto;flex:0 0 auto;font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--accent);opacity:.65;}
+body.recite .block.revealed .head::after{content:"收合 ▴";}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button type="button" class="where back" id="backToDatabaseV2">返回</button>
+  <button class="toggle" aria-pressed="false" id="rt">默寫模式：關</button>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">資料庫設計</div>
+    <h1>ERD 實體關係圖</h1>
+    <div class="subtitle">Entity-Relationship Diagram（Chen Notation）</div>
+  </header>
+
+  <div class="usage">
+    <b>怎麼用這份文件：</b>
+    <span class="dot" style="background:var(--paper);border:1px solid var(--line)"></span>正文（一、二、三…）= <b>申論默寫核心</b>，直接抄寫即可得分。
+    <span class="dot" style="background:var(--note-bg);border:1px solid var(--accent)"></span>淺藍框 = 幫你<b>理解</b>，不必抄。
+    <span class="dot" style="background:var(--warn-bg);border:1px solid var(--warn)"></span>紅框 = <b>考點提醒</b>。按右上「<b>默寫模式</b>」會把內文收起、只留標題，讓你先默寫再點開核對。
+  </div>
+  <div class="reciteHint">默寫模式：只顯示各段標題。請依標題在紙上默寫完整答案（含畫圖），再點該標題展開、對照核對。</div>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">一</span>定義</h2>
+    <p><span class="k">實體關係圖（Entity-Relationship Diagram, ERD）</span>由 <span class="k">Peter Chen 於 1976 年</span>提出，以圖形描述資料庫的<span class="k">概念設計</span>：包含有哪些「實體」、實體的「屬性」，以及實體間的「關係」。它對應到資料庫設計的<span class="k">概念層</span>，是轉換為關聯式表格前的藍圖。</p>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">二</span>三大元素與全部符號</h2>
+    <p>ERD 以三種基本圖形為核心：<span class="k">實體（矩形）、屬性（橢圓）、關係（菱形）</span>。各符號的種類與功能如下：</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>類別</th><th>圖案</th><th>名稱</th><th>代表功能</th></tr></thead>
+        <tbody>
+          <tr><td><b>實體</b></td><td>單矩形</td><td>強實體 Strong Entity</td><td>能靠自身主鍵識別的事物；對應一張表</td></tr>
+          <tr><td><b>實體</b></td><td>雙矩形</td><td>弱實體 Weak Entity</td><td>無法自身識別、須依賴其他實體</td></tr>
+          <tr><td><b>屬性</b></td><td>橢圓</td><td>簡單屬性 Simple</td><td>實體的特性；對應一個欄位</td></tr>
+          <tr><td><b>屬性</b></td><td>橢圓＋底線</td><td>主鍵 Key Attribute</td><td>唯一識別實體的屬性</td></tr>
+          <tr><td><b>屬性</b></td><td>橢圓＋虛線底線</td><td>部分鍵 Partial Key</td><td>弱實體的鑑別屬性，須配合所屬強實體主鍵</td></tr>
+          <tr><td><b>屬性</b></td><td>雙橢圓</td><td>多值屬性 Multivalued</td><td>一個實體可有多個值</td></tr>
+          <tr><td><b>屬性</b></td><td>虛線橢圓</td><td>衍生屬性 Derived</td><td>可由其他屬性計算、不實際儲存</td></tr>
+          <tr><td><b>屬性</b></td><td>橢圓串子橢圓</td><td>複合屬性 Composite</td><td>可再拆成更小的屬性</td></tr>
+          <tr><td><b>關係</b></td><td>單菱形</td><td>一般關係 Relationship</td><td>兩個以上實體間的關聯</td></tr>
+          <tr><td><b>關係</b></td><td>雙菱形</td><td>識別關係 Identifying</td><td>連接弱實體與其依賴之強實體</td></tr>
+          <tr><td><b>關係</b></td><td>菱形連橢圓</td><td>關係屬性</td><td>屬於「關係本身」、不屬於任一實體的屬性</td></tr>
+          <tr><td><b>連線</b></td><td>標 1:1／1:N／M:N</td><td>基數 Cardinality</td><td>一端的一筆對應另一端的數量</td></tr>
+          <tr><td><b>連線</b></td><td>雙線</td><td>全部參與 Total</td><td>該實體每個實例都「必須」參與關係</td></tr>
+          <tr><td><b>連線</b></td><td>單線</td><td>部分參與 Partial</td><td>該實體實例可參與、可不參與</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><span class="lbl">💡 理解（兩個易混點）</span><b>雙框 = 弱</b>：弱實體用雙矩形、識別關係用雙菱形。<b>屬性的外框決定種類</b>：底線=主鍵、虛線底線=部分鍵、雙線=多值、虛線=衍生。注意「雙線（參與）」和「雙框（弱）」是兩回事。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">三</span>完整 ERD 範例（員工–部門–眷屬）</h2>
+    <div class="diagram">
+      <svg class="arch" viewBox="0 0 680 510" role="img" aria-label="包含全部元素的 Chen 標記法 ERD：員工與部門為強實體、眷屬為弱實體；員工有主鍵、簡單、多值、衍生、複合等屬性；隸屬為一般關係並帶關係屬性到職日，撫養為識別關係；標註基數與全部參與">
+        <line x1="132" y1="257" x2="145" y2="257" stroke="#163A52" stroke-width="1"/>
+        <line x1="245" y1="257" x2="288" y2="257" stroke="#163A52" stroke-width="1"/>
+        <line x1="392" y1="257" x2="426" y2="257" stroke="#163A52" stroke-width="1"/>
+        <line x1="534" y1="254" x2="552" y2="254" stroke="#163A52" stroke-width="1"/>
+        <line x1="534" y1="260" x2="552" y2="260" stroke="#163A52" stroke-width="1"/>
+        <line x1="272" y1="108" x2="315" y2="228" stroke="#163A52" stroke-width="1"/>
+        <line x1="352" y1="84" x2="345" y2="228" stroke="#163A52" stroke-width="1"/>
+        <line x1="430" y1="114" x2="372" y2="228" stroke="#163A52" stroke-width="1"/>
+        <line x1="293" y1="353" x2="320" y2="286" stroke="#163A52" stroke-width="1"/>
+        <line x1="378" y1="363" x2="360" y2="286" stroke="#163A52" stroke-width="1"/>
+        <line x1="477" y1="353" x2="388" y2="286" stroke="#163A52" stroke-width="1"/>
+        <line x1="455" y1="445" x2="478" y2="391" stroke="#163A52" stroke-width="1"/>
+        <line x1="518" y1="445" x2="492" y2="391" stroke="#163A52" stroke-width="1"/>
+        <line x1="60" y1="169" x2="72" y2="230" stroke="#163A52" stroke-width="1"/>
+        <line x1="128" y1="174" x2="96" y2="230" stroke="#163A52" stroke-width="1"/>
+        <line x1="593" y1="169" x2="595" y2="228" stroke="#163A52" stroke-width="1"/>
+        <line x1="191" y1="353" x2="193" y2="292" stroke="#163A52" stroke-width="1"/>
+        <text x="135" y="246" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle">1</text>
+        <text x="268" y="246" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle">N</text>
+        <text x="402" y="246" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle">1</text>
+        <text x="542" y="246" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle">N</text>
+        <rect x="40" y="230" width="92" height="54" rx="7" fill="#E7EEF2" stroke="#163A52" stroke-width="1.4"/>
+        <text x="86" y="257" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle" dominant-baseline="central">部門</text>
+        <rect x="288" y="228" width="104" height="58" rx="7" fill="#E7EEF2" stroke="#163A52" stroke-width="1.4"/>
+        <text x="340" y="257" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle" dominant-baseline="central">員工</text>
+        <rect x="552" y="228" width="82" height="58" rx="7" fill="#E7EEF2" stroke="#163A52" stroke-width="1.4"/>
+        <rect x="556" y="232" width="74" height="50" rx="5" fill="none" stroke="#163A52" stroke-width="1"/>
+        <text x="593" y="257" font-size="13" font-weight="700" fill="#163A52" text-anchor="middle" dominant-baseline="central">眷屬</text>
+        <polygon points="195,222 245,257 195,292 145,257" fill="#FCEFC9" stroke="#163A52" stroke-width="1.4"/>
+        <text x="195" y="257" font-size="12.5" font-weight="700" fill="#163A52" text-anchor="middle" dominant-baseline="central">隸屬</text>
+        <polygon points="480,216 534,257 480,298 426,257" fill="#FCEFC9" stroke="#163A52" stroke-width="1.4"/>
+        <polygon points="480,224 526,257 480,290 434,257" fill="none" stroke="#163A52" stroke-width="1"/>
+        <text x="480" y="257" font-size="12.5" font-weight="700" fill="#163A52" text-anchor="middle" dominant-baseline="central">撫養</text>
+        <ellipse cx="262" cy="88" rx="46" ry="20" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <text x="262" y="88" font-size="12" fill="#163A52" text-anchor="middle" dominant-baseline="central">員工編號</text>
+        <line x1="232" y1="99" x2="292" y2="99" stroke="#163A52" stroke-width="1.1"/>
+        <ellipse cx="352" cy="66" rx="36" ry="18" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <text x="352" y="66" font-size="12" fill="#163A52" text-anchor="middle" dominant-baseline="central">姓名</text>
+        <ellipse cx="438" cy="96" rx="34" ry="18" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <text x="438" y="96" font-size="12" fill="#163A52" text-anchor="middle" dominant-baseline="central">生日</text>
+        <ellipse cx="285" cy="372" rx="42" ry="19" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2" stroke-dasharray="5 3"/>
+        <text x="285" y="372" font-size="12" fill="#163A52" text-anchor="middle" dominant-baseline="central">年齡</text>
+        <ellipse cx="385" cy="384" rx="44" ry="21" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <ellipse cx="385" cy="384" rx="39" ry="16" fill="none" stroke="#163A52" stroke-width="1"/>
+        <text x="385" y="384" font-size="12" fill="#163A52" text-anchor="middle" dominant-baseline="central">電話</text>
+        <ellipse cx="485" cy="372" rx="42" ry="19" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <text x="485" y="372" font-size="12" fill="#163A52" text-anchor="middle" dominant-baseline="central">地址</text>
+        <ellipse cx="448" cy="462" rx="34" ry="17" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <text x="448" y="462" font-size="11.5" fill="#163A52" text-anchor="middle" dominant-baseline="central">縣市</text>
+        <ellipse cx="526" cy="462" rx="34" ry="17" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <text x="526" y="462" font-size="11.5" fill="#163A52" text-anchor="middle" dominant-baseline="central">路名</text>
+        <ellipse cx="52" cy="150" rx="42" ry="19" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <text x="52" y="150" font-size="12" fill="#163A52" text-anchor="middle" dominant-baseline="central">部門編號</text>
+        <line x1="22" y1="161" x2="82" y2="161" stroke="#163A52" stroke-width="1.1"/>
+        <ellipse cx="134" cy="158" rx="30" ry="16" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <text x="134" y="158" font-size="11.5" fill="#163A52" text-anchor="middle" dominant-baseline="central">名稱</text>
+        <ellipse cx="593" cy="150" rx="40" ry="19" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <text x="593" y="150" font-size="12" fill="#163A52" text-anchor="middle" dominant-baseline="central">姓名</text>
+        <line x1="575" y1="161" x2="611" y2="161" stroke="#163A52" stroke-width="1.1" stroke-dasharray="3 2"/>
+        <ellipse cx="190" cy="372" rx="40" ry="19" fill="#F4F1E8" stroke="#163A52" stroke-width="1.2"/>
+        <text x="190" y="372" font-size="12" fill="#163A52" text-anchor="middle" dominant-baseline="central">到職日</text>
+      </svg>
+      <div class="caption">員工、部門為<b>強實體</b>（單框）；眷屬為<b>弱實體</b>（雙框），以<b>識別關係「撫養」</b>（雙菱形）連到員工。員工編號／部門編號加底線=<b>主鍵</b>；眷屬姓名虛線底線=<b>部分鍵</b>；電話雙橢圓=<b>多值</b>；年齡虛線橢圓=<b>衍生</b>；地址連縣市／路名=<b>複合</b>；到職日連在菱形上=<b>關係屬性</b>。眷屬→撫養雙線=<b>全部參與</b>。（手機可放大檢視）</div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">四</span>基數（Cardinality）與 M:N 的處理</h2>
+    <p class="subhead">基數三種</p>
+    <ul class="ans">
+      <li><span class="k">1:1（一對一）</span>：如一個人對一本護照。</li>
+      <li><span class="k">1:N（一對多）</span>：如一個部門對多位員工。</li>
+      <li><span class="k">M:N（多對多）</span>：如多位學生對多門課程。</li>
+    </ul>
+    <p class="subhead">M:N 的處理（重要）</p>
+    <p>關聯式資料庫<span class="k">不能直接儲存 M:N</span>，須拆成<span class="k">「兩個 1:N ＋ 一張中間表（橋接表）」</span>；中間表的主鍵通常是<span class="k">兩個外來鍵組成的複合鍵</span>。</p>
+    <div class="note"><span class="lbl">💡 理解</span>例：學生 ⟷ 課程（M:N）→ 拆成 學生 1:N 選課表、課程 1:N 選課表；選課表 = {學號(FK), 課號(FK), 成績}，主鍵 = {學號, 課號}。若關係本身有屬性（如成績），剛好放進這張中間表。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">五</span>如何手繪（申論步驟）</h2>
+    <ol class="ans">
+      <li>找出<b>實體</b>，畫成矩形；弱實體畫<b>雙矩形</b>。</li>
+      <li>找出每個實體的<b>屬性</b>，以橢圓連到實體；主鍵加底線、多值畫雙橢圓、衍生畫虛線橢圓、複合屬性再連子橢圓。</li>
+      <li>找出實體間的<b>關係</b>，以菱形連接；連接弱實體的識別關係畫<b>雙菱形</b>。</li>
+      <li>在關係兩端連線上標<b>基數</b>（1、N、M）；必須全部參與者畫<b>雙線</b>。</li>
+      <li>若關係本身有屬性（如成績、到職日），把橢圓<b>連到菱形</b>上。</li>
+    </ol>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">六</span>什麼是關聯表</h2>
+    <p><span class="k">關聯表（Relation／Table）</span>是關聯式資料庫儲存資料的<span class="k">基本單位</span>，為一個<span class="k">二維表格</span>，由「列」與「欄」組成。</p>
+    <div class="diagram">
+      <svg class="arch" viewBox="0 0 480 172" role="img" aria-label="關聯表結構示意：上方標頭為欄（屬性），每一橫列為一筆紀錄（tuple），以學生表為例">
+        <text x="245" y="15" font-size="12" font-weight="700" fill="#163A52" text-anchor="middle">欄（column）＝ 屬性</text>
+        <line x1="245" y1="21" x2="245" y2="35" stroke="#163A52" stroke-width="1.2"/>
+        <polygon points="245,42 241,34 249,34" fill="#163A52"/>
+        <rect x="140" y="44" width="210" height="36" fill="#163A52"/>
+        <rect x="140" y="44" width="210" height="108" fill="none" stroke="#163A52" stroke-width="1.3"/>
+        <line x1="140" y1="80" x2="350" y2="80" stroke="#163A52" stroke-width="1"/>
+        <line x1="140" y1="116" x2="350" y2="116" stroke="#163A52" stroke-width="1"/>
+        <line x1="210" y1="44" x2="210" y2="152" stroke="#163A52" stroke-width="1"/>
+        <line x1="280" y1="44" x2="280" y2="152" stroke="#163A52" stroke-width="1"/>
+        <text x="175" y="67" font-size="12.5" font-weight="700" fill="#FBFAF7" text-anchor="middle">學號</text>
+        <text x="245" y="67" font-size="12.5" font-weight="700" fill="#FBFAF7" text-anchor="middle">姓名</text>
+        <text x="315" y="67" font-size="12.5" font-weight="700" fill="#FBFAF7" text-anchor="middle">系所</text>
+        <text x="175" y="102" font-size="12" fill="#163A52" text-anchor="middle">S01</text>
+        <text x="245" y="102" font-size="12" fill="#163A52" text-anchor="middle">王小明</text>
+        <text x="315" y="102" font-size="12" fill="#163A52" text-anchor="middle">資工</text>
+        <text x="175" y="138" font-size="12" fill="#163A52" text-anchor="middle">S02</text>
+        <text x="245" y="138" font-size="12" fill="#163A52" text-anchor="middle">李小華</text>
+        <text x="315" y="138" font-size="12" fill="#163A52" text-anchor="middle">電機</text>
+        <text x="116" y="102" font-size="12" font-weight="700" fill="#163A52" text-anchor="end">列＝紀錄</text>
+        <line x1="120" y1="98" x2="129" y2="98" stroke="#163A52" stroke-width="1.2"/>
+        <polygon points="137,98 129,94 129,102" fill="#163A52"/>
+      </svg>
+      <div class="caption">學生表範例：上方標頭是「欄（屬性）」，每一橫列是一筆「紀錄（tuple）」</div>
+    </div>
+    <p class="subhead">基本術語</p>
+    <ul class="ans">
+      <li><span class="k">關聯（Relation）＝ 表（Table）</span>：「關聯」是 relation 的中文翻譯，指的就是一張表，<b>不是</b>「關係／連結」的意思。</li>
+      <li><span class="k">列（Row／Tuple）</span>＝ 一筆紀錄（如一位學生）。</li>
+      <li><span class="k">欄（Column／Attribute）</span>＝ 一個欄位／屬性（如學號、姓名）。</li>
+      <li><span class="k">定義域（Domain）</span>＝ 一個欄位允許的值範圍（如「系所」只能填有效系名）。</li>
+      <li><span class="k">度數（Degree）</span>＝ 表的<b>欄數</b>；<span class="k">基數（Cardinality）</span>＝ 表的<b>列數</b>。</li>
+      <li>表與表之間以<span class="k">「值」（外來鍵）</span>連結（關聯式最大特徵）。</li>
+    </ul>
+    <div class="note"><span class="lbl">💡 別混淆</span>這裡的「<b>基數</b>」指「表有幾列」；和前面 ERD 的「<b>關係基數</b>」（1:1、1:N、M:N）是<b>不同的東西</b>，只是中文都叫基數。</div>
+    <p class="subhead">關聯表的基本規則</p>
+    <ul class="ans">
+      <li>每個欄位值都是<b>單一值</b>（原子性；對應 1NF）。</li>
+      <li>每一列都<b>唯一</b>，由主鍵保證、不可重複。</li>
+      <li>列與欄的<b>排列順序</b>不影響資料意義。</li>
+    </ul>
+    <div class="note"><span class="lbl">💡 理解（一句話）</span>關聯表就是 Excel 那種「橫列、直欄」的表：一張表存一種東西，表跟表用「值」串起來。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">七</span>ERD → 關聯表的轉換</h2>
+    <p>將 ERD 轉成關聯式表格，依下列規則：</p>
+    <ul class="ans">
+      <li><b>強實體 → 一張表</b>：簡單屬性變欄位、主鍵變表主鍵；複合屬性只取最小組成當欄位；衍生屬性通常不儲存。</li>
+      <li><b>多值屬性 → 另立一張表</b>：新表 = ｛多值屬性 ＋ 原實體主鍵（FK）｝，兩者組成複合主鍵。</li>
+      <li><b>弱實體 → 一張表</b>：含自身屬性 ＋ 所依賴強實體的主鍵（FK）；主鍵 = 強實體主鍵 ＋ 自身部分鍵。</li>
+      <li><b>1:1</b>：把一方主鍵當外來鍵放到另一方（通常放「全部參與」那方）。</li>
+      <li><b>1:N</b>：把「1」方主鍵當外來鍵，放到「N」方的表；關係屬性也放在 N 方。</li>
+      <li><b>M:N</b>：另立中間表 = ｛雙方主鍵（皆為外來鍵）｝；主鍵 = 兩外來鍵的複合鍵；關係屬性放此表。</li>
+    </ul>
+    <p class="subhead">範例（承本篇「員工–部門–眷屬」ERD；底線為主鍵）</p>
+    <ul class="ans">
+      <li><b>部門</b>（<u>部門編號</u>、名稱）</li>
+      <li><b>員工</b>（<u>員工編號</u>、姓名、生日、地址_縣市、地址_路名、部門編號 FK、到職日）</li>
+      <li><b>員工電話</b>（<u>員工編號 FK</u>、<u>電話</u>）　← 多值屬性「電話」另立表</li>
+      <li><b>眷屬</b>（<u>員工編號 FK</u>、<u>姓名</u>、…）　← 弱實體，主鍵 = 員工主鍵 ＋ 部分鍵</li>
+      <li>「年齡」為衍生屬性，<b>不儲存</b>。</li>
+    </ul>
+    <div class="note"><span class="lbl">💡 理解（一句話）</span>實體變表、屬性變欄；關係看基數——<b>1:N 把外來鍵放 N 方、M:N 另立中間表</b>。多值屬性與弱實體都各自獨立成一張表。</div>
+  </section>
+
+  <section class="block">
+    <h2 class="head"><span class="ord">八</span>結論</h2>
+    <p>ERD 以<span class="k">實體（矩形）、屬性（橢圓）、關係（菱形）</span>三大元素描述概念設計；再透過弱實體、各類屬性、識別關係、基數與參與等細項，完整表達資料語意，作為轉換成關聯式表格的藍圖。</p>
+  </section>
+
+  <div class="tip">
+    <span class="lbl">⚠️ 考點提醒</span>
+    <ul>
+      <li><b>三大元素符號</b>：實體=矩形、屬性=橢圓、關係=菱形（最基本，必記）。</li>
+      <li><b>雙框 = 弱</b>：弱實體用雙矩形、識別關係用雙菱形。</li>
+      <li><b>屬性外框決定種類</b>：底線=主鍵、虛線底線=部分鍵、雙橢圓=多值、虛線橢圓=衍生。</li>
+      <li><b>雙線（參與）≠ 雙框（弱）</b>，勿混淆。</li>
+      <li><b>M:N 不能直接存</b>，須拆中間表，主鍵為兩 FK 的複合鍵。</li>
+      <li>ERD 由 <b>Peter Chen 於 1976 年</b>提出。</li>
+      <li><b>ERD 轉表</b>：1:N 外來鍵放 N 方；M:N 另立中間表（複合主鍵）；多值屬性、弱實體各自獨立成表。</li>
+    </ul>
+  </div>
+
+  <div class="foot">國考資料庫申論講義 04 ／ ERD 實體關係圖</div>
+
+</div>
+
+<script>
+  var btn=document.getElementById('rt');
+  function clearRevealed(){
+    var r=document.querySelectorAll('.block.revealed');
+    for(var i=0;i<r.length;i++){r[i].classList.remove('revealed');}
+  }
+  btn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('recite');
+    btn.setAttribute('aria-pressed',on?'true':'false');
+    btn.textContent=on?'默寫模式：開':'默寫模式：關';
+    if(!on){clearRevealed();}
+  });
+  var heads=document.querySelectorAll('.head');
+  for(var i=0;i<heads.length;i++){
+    heads[i].addEventListener('click',function(){
+      if(!document.body.classList.contains('recite'))return;
+      this.parentElement.classList.toggle('revealed');
+    });
+  }
+</script>
+<script>
+(function(){
+  function resolveDatabaseV2IndexPath(){
+    var marker='/database-v2/';
+    var markerIndex=window.location.pathname.indexOf(marker);
+    if(markerIndex===-1){
+      return '/database-v2';
+    }
+    return window.location.pathname.slice(0,markerIndex+marker.length-1);
+  }
+  var back=document.getElementById('backToDatabaseV2');
+  if(!back)return;
+  back.addEventListener('click',function(){
+    if(window.history.length>1){
+      window.history.back();
+      return;
+    }
+    window.location.href=resolveDatabaseV2IndexPath();
+  });
+})();
+</script>
+</body>
+</html>
