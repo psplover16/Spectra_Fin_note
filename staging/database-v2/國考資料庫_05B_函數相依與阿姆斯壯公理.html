@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>國考資料庫申論講義 05B｜阿姆斯壯公理</title>
+<title>國考資料庫申論講義 05B｜功能相依與阿姆斯壯公理</title>
 <style>
 :root{
   --paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;
@@ -79,7 +79,7 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
 
   <header>
     <div class="eyebrow">資料庫設計 · 正規化基礎</div>
-    <h1>函數相依與阿姆斯壯公理</h1>
+    <h1>功能相依與阿姆斯壯公理</h1>
     <div class="subtitle">Functional Dependency · Armstrong's Axioms</div>
   </header>
 
@@ -92,25 +92,25 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
   <div class="reciteHint">默寫模式：只顯示各段標題。請依標題在紙上默寫完整答案，再點該標題展開、對照核對。</div>
 
   <section class="block">
-    <h2 class="head"><span class="ord">一</span>相依性與函數相依</h2>
-    <p><span class="k">相依性（Dependency）</span>描述關聯中「某些屬性決定另一些屬性」的限制關係；最重要的一種是<span class="k">函數相依</span>（其餘如多值相依、合併相依，分別對應 4NF、5NF）。</p>
-    <p class="subhead">函數相依（Functional Dependency, FD）完整定義</p>
-    <p>在關聯 R 中，給定屬性集合 X、Y。若 R 內<b>任意兩列，只要在 X 上的值相等，則在 Y 上的值也必定相等</b>，就稱「X 函數決定 Y」（或 Y 函數相依於 X），記作 <span class="fd">X → Y</span>。X 稱<span class="k">決定因素（determinant）</span>、Y 稱<span class="k">相依因素</span>。</p>
+    <h2 class="head"><span class="ord">一</span>相依性與功能相依</h2>
+    <p><span class="k">相依性（Dependency）</span>描述關聯中「某些屬性決定另一些屬性」的限制關係；最重要的一種是<span class="k">功能相依</span>（其餘如多值相依、合併相依，分別對應 4NF、5NF）。</p>
+    <p class="subhead">功能相依（Functional Dependency, FD）完整定義</p>
+    <p>在關聯 R 中，給定屬性集合 X、Y。若 R 內<b>任意兩列，只要在 X 上的值相等，則在 Y 上的值也必定相等</b>，就稱「X 功能決定 Y」（或 Y 功能相依於 X），記作 <span class="fd">X → Y</span>。X 稱<span class="k">決定因素（determinant）</span>、Y 稱<span class="k">相依因素</span>。</p>
     <p>白話：<b>知道 X 的值，就能唯一決定 Y 的值</b>。例：<span class="fd">學號 → 姓名</span>——同一個學號一定對到同一個姓名。能從已知 FD 推導出所有隱含 FD 的工具，就是後面的<span class="k">阿姆斯壯公理</span>。</p>
-    <div class="note"><span class="lbl">💡 為什麼重要</span>正規化的每一步，本質都在問「<b>哪個屬性被哪個屬性決定</b>」。先能寫出函數相依，才能判斷關聯違反第幾正規化、該怎麼拆。</div>
+    <div class="note"><span class="lbl">💡 為什麼重要</span>正規化的每一步，本質都在問「<b>哪個屬性被哪個屬性決定</b>」。先能寫出功能相依，才能判斷關聯違反第幾正規化、該怎麼拆。</div>
   </section>
 
   <section class="block">
-    <h2 class="head"><span class="ord">二</span>函數相依的種類</h2>
+    <h2 class="head"><span class="ord">二</span>功能相依的種類</h2>
     <p>以下四種對正規化最關鍵（X、Y 為屬性集合）：</p>
     <div class="tablewrap">
       <table>
         <thead><tr><th>種類</th><th>定義</th><th>與正規化的關聯</th></tr></thead>
         <tbody>
-          <tr><td><b>完全函數相依</b><br>Full FD</td><td>Y 相依於整個 X，且<b>不</b>相依於 X 的任何真子集</td><td>2NF 的要求</td></tr>
-          <tr><td><b>部分函數相依</b><br>Partial FD</td><td>Y 只相依於複合鍵 X 的<b>一部分</b>（真子集）</td><td><b>違反 2NF</b></td></tr>
-          <tr><td><b>遞移函數相依</b><br>Transitive FD</td><td>X→Y、Y→Z 且 Y 不→X，使得 X→Z（透過中介 Y）</td><td><b>違反 3NF</b></td></tr>
-          <tr><td><b>顯然函數相依</b><br>Trivial FD</td><td>Y ⊆ X（右邊是左邊的子集）</td><td>恆成立、可忽略</td></tr>
+          <tr><td><b>完全功能相依</b><br>Full FD</td><td>Y 相依於整個 X，且<b>不</b>相依於 X 的任何真子集</td><td>2NF 的要求</td></tr>
+          <tr><td><b>部分功能相依</b><br>Partial FD</td><td>Y 只相依於複合鍵 X 的<b>一部分</b>（真子集）</td><td><b>違反 2NF</b></td></tr>
+          <tr><td><b>遞移功能相依</b><br>Transitive FD</td><td>X→Y、Y→Z 且 Y 不→X，使得 X→Z（透過中介 Y）</td><td><b>違反 3NF</b></td></tr>
+          <tr><td><b>顯然功能相依</b><br>Trivial FD</td><td>Y ⊆ X（右邊是左邊的子集）</td><td>恆成立、可忽略</td></tr>
         </tbody>
       </table>
     </div>
@@ -130,8 +130,8 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
         </tbody>
       </table>
     </div>
-    <p>這三條公理即可推導出所有函數相依（健全且完備），其餘規則都由它們導出。</p>
-    <div class="note"><span class="lbl">💡 理解（反身律最直覺）</span><span class="fd">{學號, 姓名} → 姓名</span> 一定成立——知道一組屬性，當然知道其中任一個。這種右邊是左邊子集的相依，稱為「<b>顯然函數相依（trivial FD）</b>」。</div>
+    <p>這三條公理即可推導出所有功能相依（健全且完備），其餘規則都由它們導出。</p>
+    <div class="note"><span class="lbl">💡 理解（反身律最直覺）</span><span class="fd">{學號, 姓名} → 姓名</span> 一定成立——知道一組屬性，當然知道其中任一個。這種右邊是左邊子集的相依，稱為「<b>顯然功能相依（trivial FD）</b>」。</div>
   </section>
 
   <section class="block">
@@ -150,7 +150,7 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
 
   <section class="block">
     <h2 class="head"><span class="ord">五</span>屬性閉包 X⁺（最實用的工具）</h2>
-    <p><span class="k">屬性閉包（Attribute Closure）</span><span class="fd">X⁺</span>：是「由 X 能函數決定的<b>所有屬性</b>」之集合。</p>
+    <p><span class="k">屬性閉包（Attribute Closure）</span><span class="fd">X⁺</span>：是「由 X 能功能決定的<b>所有屬性</b>」之集合。</p>
     <p class="subhead">計算演算法</p>
     <ol class="ans">
       <li>令 <span class="fd">X⁺ = X</span>。</li>
@@ -187,22 +187,22 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
 
   <section class="block">
     <h2 class="head"><span class="ord">六</span>結論</h2>
-    <p>阿姆斯壯公理（<span class="k">反身、擴充、遞移</span>三基本 ＋ 聯合、分解、擬遞移三導出）讓我們能推導所有函數相依；搭配<span class="k">屬性閉包</span>，即可判斷 FD、找出候選鍵，進而判斷正規化形式，是正規化的理論基礎。</p>
+    <p>阿姆斯壯公理（<span class="k">反身、擴充、遞移</span>三基本 ＋ 聯合、分解、擬遞移三導出）讓我們能推導所有功能相依；搭配<span class="k">屬性閉包</span>，即可判斷 FD、找出候選鍵，進而判斷正規化形式，是正規化的理論基礎。</p>
   </section>
 
   <div class="tip">
     <span class="lbl">⚠️ 考點提醒</span>
     <ul>
-      <li><b>函數相依四類</b>：完全（2NF 要求）、部分（破 2NF）、遞移（破 3NF）、顯然（恆成立）。</li>
+      <li><b>功能相依四類</b>：完全（2NF 要求）、部分（破 2NF）、遞移（破 3NF）、顯然（恆成立）。</li>
       <li><b>三個基本公理</b>：反身（Reflexivity）、擴充（Augmentation）、遞移（Transitivity）——必記。</li>
       <li>阿姆斯壯公理具<b>健全（sound）且完備（complete）</b>性。</li>
       <li>聯合、分解、擬遞移為<b>導出律</b>（由三基本公理推得）。</li>
       <li><b>屬性閉包 X⁺ 兩大用途</b>：判斷 FD（Y⊆X⁺）、判斷超鍵／候選鍵（X⁺＝全部屬性）。</li>
-      <li>右邊是左邊子集的相依 = <b>顯然函數相依（trivial FD）</b>。</li>
+      <li>右邊是左邊子集的相依 = <b>顯然功能相依（trivial FD）</b>。</li>
     </ul>
   </div>
 
-  <div class="foot">國考資料庫申論講義 05B ／ 函數相依與阿姆斯壯公理</div>
+  <div class="foot">國考資料庫申論講義 05B ／ 功能相依與阿姆斯壯公理</div>
 
 </div>
 
