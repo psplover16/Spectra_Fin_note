@@ -51,13 +51,15 @@ td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:8p
 td:first-child{border-left:none;}
 tr:nth-child(even) td{background:#FAF6EF;}
 td b{color:var(--accent);}
+.symbolLegend{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin:10px 0 18px;overflow:hidden;}
+.symbolLegend img{display:block;width:100%;max-width:380px;height:auto;margin:0 auto;}
 .diagram{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 14px;margin:18px 0;}
 .arch{display:block;width:100%;height:auto;}
 .arch text{font-family:var(--font-body);}
 .caption{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:8px;line-height:1.55;}
 .foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);text-align:center;}
-@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:25px;}.head{font-size:18.5px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
-@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.note,.tip,.diagram,.tablewrap{break-inside:avoid;}.usage{display:none;}}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:25px;}.head{font-size:18.5px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}.symbolLegend{padding:10px 8px;margin:12px 0 16px;}.symbolLegend img{max-width:100%;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.note,.tip,.diagram,.tablewrap,.symbolLegend{break-inside:avoid;}.usage{display:none;}}
 .reciteHint{display:none;margin:14px 0 0;padding:10px 14px;border-radius:8px;background:var(--accent-tint);color:var(--accent);font-size:13px;font-weight:600;line-height:1.55;text-align:center;}
 body.recite .reciteHint{display:block;}
 body.recite .usage,body.recite .tip{display:none;}
@@ -120,6 +122,9 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
         </tbody>
       </table>
     </div>
+    <figure class="symbolLegend">
+      <img src="erd_symbols_chen_legend.svg" alt="ERD 常用符號圖例，包含實體、弱實體、關係、識別關係、屬性、主鍵屬性、多值屬性與衍生屬性">
+    </figure>
     <div class="note"><span class="lbl">💡 理解（兩個易混點）</span><b>雙框 = 弱</b>：弱實體用雙矩形、識別關係用雙菱形。<b>屬性的外框決定種類</b>：底線=主鍵、虛線底線=部分鍵、雙線=多值、虛線=衍生。注意「雙線（參與）」和「雙框（弱）」是兩回事。</div>
   </section>
 
