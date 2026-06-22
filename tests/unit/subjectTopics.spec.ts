@@ -100,6 +100,7 @@ const expectedOperatingSystemsRouteTopicIds: readonly string[] = [
 const computerPrinciplesV2SubjectKey = 'computerPrinciplesV2' as SubjectKey;
 const refreshedCpv2FloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
 const supplementalCpv2FloatingPointPracticeSourceFile = '_private/discuss.txt';
+const supplementalCpv2DataSourceFile = '_private/計概補充/計算機概論_重點講義_01.md';
 const supplementalCpv2FloatingPointSpecialValuesSourceFile = '_private/MD/0621/IEEE754_浮點數特殊值_速記.md';
 const deprecatedCpv2FloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 const refreshedCpv2FloatingPointSourceFiles = [
@@ -108,6 +109,7 @@ const refreshedCpv2FloatingPointSourceFiles = [
 ] as const;
 const expectedComputerPrinciplesV2RouteTopicIds: readonly string[] = [
   'cpv2-supplemental-practice',
+  'cpv2-supplemental-data',
   'cpv2-architecture-computation-theory',
   'cpv2-machine-instruction-cycle',
   'cpv2-pipeline-hazard',
@@ -124,6 +126,7 @@ const expectedComputerPrinciplesV2RouteTopicIds: readonly string[] = [
 ];
 const expectedComputerPrinciplesV2RouteTitles: readonly string[] = [
   '加強練習',
+  '補充資料',
   '架構與計算理論',
   '機器指令與指令週期',
   'Pipeline 與 Hazard',
@@ -259,8 +262,10 @@ describe('subject topic route data helpers', () => {
     const topicTitles = topics.map((topic) => topic.title);
     const floatingPointTopic = topics.find((topic) => topic.id === 'cpv2-floating-point-conversion');
     const practiceTopic = topics.find((topic) => topic.id === 'cpv2-supplemental-practice');
+    const supplementalDataTopic = topics.find((topic) => topic.id === 'cpv2-supplemental-data');
     const floatingPointLessonArticle = floatingPointTopic?.blocks[0];
     const practiceLessonArticle = practiceTopic?.blocks[0];
+    const supplementalDataLessonArticle = supplementalDataTopic?.blocks[0];
 
     expect(topicIds).toEqual(expectedComputerPrinciplesV2RouteTopicIds);
     expect(topicTitles).toEqual(expectedComputerPrinciplesV2RouteTitles);
@@ -287,6 +292,13 @@ describe('subject topic route data helpers', () => {
     expect(practiceLessonArticle.sourceFiles).toEqual([supplementalCpv2FloatingPointPracticeSourceFile]);
     expect(practiceLessonArticle.sections[0]?.heading).toBe('加強練習');
     expect(JSON.stringify(practiceTopic)).toContain('Valid bit');
+    expect(supplementalDataLessonArticle?.kind).toBe('lessonArticle');
+    if (supplementalDataLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cpv2-supplemental-data should expose supplemental lessonArticle content');
+    }
+    expect(supplementalDataLessonArticle.sourceFiles).toEqual([supplementalCpv2DataSourceFile]);
+    expect(supplementalDataLessonArticle.sections[0]?.heading).toBe('一、機器指令週期（Machine Instruction Cycle）');
+    expect(JSON.stringify(supplementalDataTopic)).toContain("Amdahl's Law");
   });
 
   it('exposes imported database, programming, and system design topics before skeleton topics', () => {

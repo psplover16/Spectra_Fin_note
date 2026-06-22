@@ -12,6 +12,7 @@ const floatingPointContentReviewPath = '_TMP/reviews/cpv2-floating-point-content
 const floatingPointSupplementalReviewPath = '_TMP/reviews/cpv2-floating-point-special-values-practice-review.md';
 const refreshedFloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
 const supplementalPracticeSourceFile = '_private/discuss.txt';
+const supplementalDataSourceFile = '_private/計概補充/計算機概論_重點講義_01.md';
 const specialValuesSourceFile = '_private/MD/0621/IEEE754_浮點數特殊值_速記.md';
 const deprecatedFloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 const refreshedFloatingPointSourceFiles = [
@@ -25,6 +26,12 @@ const topicCases = [
     title: '加強練習',
     source: supplementalPracticeSourceFile,
     keyword: '指令組成:50% 需 1 週期'
+  },
+  {
+    id: 'cpv2-supplemental-data',
+    title: '補充資料',
+    source: supplementalDataSourceFile,
+    keyword: 'Amdahl'
   },
   {
     id: 'cpv2-architecture-computation-theory',
@@ -193,10 +200,15 @@ describe('computer principles v2 route workflow', () => {
   it('keeps the supplemental practice content as the first route-visible topic card', () => {
     const topics = getSubjectTopics(subjectKey);
     const practiceTopic = topics[0];
+    const supplementalDataTopic = topics[1];
+    const architectureTopic = topics[2];
     const lessonArticle = practiceTopic?.blocks[0];
 
     expect(practiceTopic?.id).toBe('cpv2-supplemental-practice');
     expect(practiceTopic?.title).toBe('加強練習');
+    expect(supplementalDataTopic?.id).toBe('cpv2-supplemental-data');
+    expect(supplementalDataTopic?.title).toBe('補充資料');
+    expect(architectureTopic?.id).toBe('cpv2-architecture-computation-theory');
     expect(lessonArticle?.kind).toBe('lessonArticle');
     if (lessonArticle?.kind !== 'lessonArticle') {
       throw new Error('cpv2-supplemental-practice should render through lessonArticle');
@@ -214,9 +226,43 @@ describe('computer principles v2 route workflow', () => {
     expect(serializedPracticeTopic).toContain('資管題目:');
   });
 
-  it('uses the refreshed v2 floating point source after the first practice topic', () => {
+  it('keeps the supplemental data content as the second route-visible topic card', () => {
     const topics = getSubjectTopics(subjectKey);
-    const floatingPointTopic = topics[10];
+    const supplementalDataTopic = topics[1];
+    const lessonArticle = supplementalDataTopic?.blocks[0];
+
+    expect(supplementalDataTopic?.id).toBe('cpv2-supplemental-data');
+    expect(supplementalDataTopic?.title).toBe('補充資料');
+    expect(lessonArticle?.kind).toBe('lessonArticle');
+    if (lessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cpv2-supplemental-data should render through lessonArticle');
+    }
+
+    expect(lessonArticle.sourceFiles).toEqual([supplementalDataSourceFile]);
+    expect(lessonArticle.sections.map((section) => section.heading)).toEqual([
+      '一、機器指令週期（Machine Instruction Cycle）',
+      "二、阿姆達爾定律（Amdahl's Law）",
+      '三、五大單元（Five Functional Units）',
+      '四、CPU 組成（CPU Components）',
+      '五、記憶體速度比較（Memory Hierarchy）',
+      '六、CPU 排班演算法（CPU Scheduling）',
+      '七、死結（Deadlock）',
+      '八、分頁與分段記憶體管理（Paging & Segmentation）',
+      '九、物件導向特性（OOP Characteristics）',
+      '十、基礎資料結構（Basic Data Structures）'
+    ]);
+
+    const serializedSupplementalDataTopic = JSON.stringify(supplementalDataTopic);
+    expect(serializedSupplementalDataTopic).toContain('PC（程式計數器）');
+    expect(serializedSupplementalDataTopic).toContain('整體加速比');
+    expect(serializedSupplementalDataTopic).toContain('FCFS');
+    expect(serializedSupplementalDataTopic).toContain('四個必要條件');
+    expect(serializedSupplementalDataTopic).toContain('Stack');
+  });
+
+  it('uses the refreshed v2 floating point source after the supplemental topics', () => {
+    const topics = getSubjectTopics(subjectKey);
+    const floatingPointTopic = topics[11];
 
     expect(floatingPointTopic?.id).toBe('cpv2-floating-point-conversion');
     expect(floatingPointTopic?.title).toBe('浮點數轉換');
@@ -232,6 +278,7 @@ describe('computer principles v2 route workflow', () => {
     expect(lessonArticle.sourceFiles).toEqual([...refreshedFloatingPointSourceFiles]);
     expect(lessonArticle.sourceFiles).not.toContain(deprecatedFloatingPointSourceFile);
     expect(lessonArticle.sourceFiles).not.toContain(supplementalPracticeSourceFile);
+    expect(lessonArticle.sourceFiles).not.toContain(supplementalDataSourceFile);
     expect(getSubjectTopics(subjectKey).map((topic) => topic.id)).toEqual(topicCases.map((topicCase) => topicCase.id));
     expect(
       getSubjectTopics(subjectKey).some((topic) =>

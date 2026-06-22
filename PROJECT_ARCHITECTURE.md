@@ -18,7 +18,7 @@
   - 依功能或科目分組的模組。
   - 科目頁放在各自模組，跨科目主題卡與進度儲存放在 `src/modules/subjectTopics/`。
   - `src/modules/computerFoundationSubjects/` 管理 AppShell header 的計概類群組選項與 switcher；目前包含 `計概`、`計概(v2)`、`網概`、`網路概論(v2)`、`數位邏輯`、`作業系統`。
-  - `src/modules/databaseSubjects/` 管理 AppShell header 的資料庫類群組選項與 `DatabaseSubjectSwitcher`；選單包含 `資料庫` 與 `資料庫2`，預設導向 `/database-v2`。
+  - `src/modules/databaseSubjects/` 管理 AppShell header 的資料庫類群組選項與 `DatabaseSubjectSwitcher`；選單包含 `資料庫` 與 `資料庫2`，預設導向 `/database`。
   - `src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue` 擁有 `/computer-principles-v2` route view，使用 `SubjectTopicPage`、`computerPrinciplesV2` subject key 與標題 `計概(v2)`。
   - `src/modules/networkingV2/views/NetworkingV2View.vue` 擁有 `/networking-v2` route view，使用 `SubjectTopicPage`、`networkingV2` subject key 與標題 `網路概論(v2)`。
   - `src/modules/digitalLogic/views/DigitalLogicView.vue` 擁有數位邏輯 route view，使用 `SubjectTopicPage` 與 `digitalLogic` subject key。

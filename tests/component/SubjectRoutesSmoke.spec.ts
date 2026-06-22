@@ -28,7 +28,7 @@ const subjectRouteCases = [
     ComputerPrinciplesV2View,
     'subject-view-computer-principles-v2',
     'subject-topic-list-computerPrinciplesV2',
-    ['架構與計算理論', '檢查碼（二）漢明碼與漢明距']
+    ['補充資料', '架構與計算理論', '檢查碼（二）漢明碼與漢明距']
   ],
   [AlgorithmsView, 'subject-view-algorithms', 'subject-topic-list-algorithms', ['二元搜尋法(Binary Search)']],
   [NetworkingView, 'subject-view-networking', 'subject-topic-list-networking', ['OSI 七層 + TCP/IP ★']],
@@ -112,14 +112,21 @@ describe('subject route views', () => {
     const wrapper = mount(ComputerPrinciplesV2View);
     const unfinishedSection = wrapper.get('[data-testid="subject-topic-unfinished-computerPrinciplesV2"]');
     const practiceCard = wrapper.get('[data-testid="subject-topic-card-cpv2-supplemental-practice"]');
+    const supplementalDataCard = wrapper.get('[data-testid="subject-topic-card-cpv2-supplemental-data"]');
     const architectureCard = wrapper.get('[data-testid="subject-topic-card-cpv2-architecture-computation-theory"]');
 
     expect(wrapper.find('[data-testid="subject-route-sections-computerPrinciplesV2"]').exists()).toBe(false);
     expect(unfinishedSection.element.contains(practiceCard.element)).toBe(true);
+    expect(unfinishedSection.element.contains(supplementalDataCard.element)).toBe(true);
     expect(practiceCard.classes()).toContain('subject-topic-card');
+    expect(supplementalDataCard.classes()).toContain('subject-topic-card');
     expect(practiceCard.text()).toContain('加強練習');
+    expect(supplementalDataCard.text()).toContain('補充資料');
+    expect(practiceCard.element.compareDocumentPosition(supplementalDataCard.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(supplementalDataCard.element.compareDocumentPosition(architectureCard.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(practiceCard.element.compareDocumentPosition(architectureCard.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(wrapper.find('[data-testid="topic-detail-cpv2-supplemental-practice"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="topic-detail-cpv2-supplemental-data"]').exists()).toBe(false);
 
     await wrapper.get('[data-testid="topic-title-cpv2-supplemental-practice"]').trigger('click');
 
@@ -128,6 +135,12 @@ describe('subject route views', () => {
     expect(practiceDetail.text()).toContain('Valid bit');
     expect(practiceDetail.text()).toContain('資管題目:');
     expect(wrapper.find('[data-testid="topic-detail-cpv2-floating-point-conversion"]').exists()).toBe(false);
+
+    await wrapper.get('[data-testid="topic-title-cpv2-supplemental-data"]').trigger('click');
+
+    const supplementalDataDetail = wrapper.get('[data-testid="topic-detail-cpv2-supplemental-data"]');
+    expect(supplementalDataDetail.text()).toContain('Machine Instruction Cycle');
+    expect(supplementalDataDetail.text()).toContain("Amdahl's Law");
   });
 
   it('renders database v2 rows as static HTML links with independent progress controls', async () => {

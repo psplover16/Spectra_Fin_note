@@ -9,7 +9,7 @@
 **Goals:**
 
 - 新增 `/database-v2` route，畫面標題為「資料庫2」。
-- Header 的資料庫入口改為下拉選單，預設顯示並導向「資料庫2」，同時保留「資料庫」選項。
+- Header 的資料庫入口改為下拉選單，預設顯示並導向「資料庫」，同時保留「資料庫2」選項。
 - 將 13 個 `_private/資料庫` HTML 檔搬到 app 可服務的靜態資產路徑，保留原版面與樣式，只把 toolbar 左側標題改為返回按鈕。
 - 讓資料庫2列表依 HTML 檔名排序與命名，移除 `國考資料庫_01_`、`國考資料庫_05B_` 這類前綴後顯示標題。
 - 讓資料庫2的書籤與完成狀態使用獨立 `databaseV2` 命名空間。
@@ -35,7 +35,7 @@
 
 決策：新增 `DatabaseSubjectSwitcher` 與 `databaseSubjectOptions`，沿用 `RouteSubMenu` 的選單互動模式。`RouteTabs` 中不再直接渲染「資料庫」連結，而是渲染資料庫群組控制。
 
-理由：使用者明確要求資料庫選單要像計概一樣。共用 `RouteSubMenu` 可以保留現有 click、Escape、overlay、preload 與 mobile 行為，但資料庫群組仍有自己的選項與預設路由，不和計概設定混在一起。
+理由：使用者明確要求資料庫選單要像計概一樣，並要求選單預設維持在既有「資料庫」。共用 `RouteSubMenu` 可以保留現有 click、Escape、overlay、preload 與 mobile 行為，但資料庫群組仍有自己的選項與預設路由，不和計概設定混在一起。
 
 替代方案：把「資料庫2」新增為另一個 top-level tab。淘汰原因是會增加 header 擁擠度，也違反「資料庫」成為下拉選單的需求。
 
@@ -60,14 +60,14 @@
 **Behavior:**
 
 - `/database-v2` 顯示「資料庫2」列表，共 13 筆，排序與 `_private/資料庫` HTML 檔名排序一致。
-- Header 的資料庫群組預設顯示「資料庫2」。選單中的「資料庫」導向 `/database`，「資料庫2」導向 `/database-v2`。
+- Header 的資料庫群組預設顯示「資料庫」。選單中的「資料庫」導向 `/database`，「資料庫2」導向 `/database-v2`。
 - 資料庫2列表每列有左側書籤、中央標題、右側完成控制。中央標題開啟對應 `public/database-v2/<sourceFilename>` 靜態頁，不展開內文。
 - Copied HTML page 的 learner-facing 內容、內嵌樣式、表格、圖示與默寫模式切換保留；toolbar 左側改為返回按鈕。返回按鈕優先使用 browser history，無上一頁時導回 `/database-v2`。
 
 **Interface / data shape:**
 
 - `PrimaryRoutePath` 包含 `/database-v2`，`routeComponentLoaders` 對應 `DatabaseV2View.vue`。
-- `databaseSubjectOptions` 包含 `{ label: '資料庫', path: '/database' }` 與 `{ label: '資料庫2', path: '/database-v2' }`，default option 是 `/database-v2`。
+- `databaseSubjectOptions` 包含 `{ label: '資料庫', path: '/database' }` 與 `{ label: '資料庫2', path: '/database-v2' }`，default option 是 `/database`。
 - `DatabaseV2Page` 至少包含 `id: string`、`sourceFilename: string`、`title: string`、`href: string`。
 - `SubjectKey` 包含 `databaseV2`。localStorage key 與 version 維持 `spectra:subject-topic-progress:v1` 與 `version: 1`，normalize 時為缺少 `databaseV2` 的舊 state 補上空進度，不遷移既有 `database` 內容。
 

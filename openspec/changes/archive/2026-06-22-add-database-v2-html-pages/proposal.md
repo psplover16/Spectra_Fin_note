@@ -5,7 +5,7 @@
 ## What Changes
 
 - 新增資料庫2學習入口，穩定路由為 /database-v2，顯示名稱為「資料庫2」。
-- Header 的「資料庫」改為下拉選單，預設顯示與導向「資料庫2」，選單包含「資料庫」與「資料庫2」。
+- Header 的「資料庫」改為下拉選單，預設顯示與導向「資料庫」，選單包含「資料庫」與「資料庫2」。
 - 搬移 `_private/資料庫` 的 13 個 HTML 檔為 app 可開啟頁面，原內容與樣式維持不變；左上標題改為返回按鈕，返回上一個路由。
 - 資料庫2列表沿用資料庫頁的標題列外觀、左右 icon 與功能；點擊標題中間改為開啟對應 HTML 頁。
 - 資料庫2的書籤與完成狀態使用獨立 `databaseV2` 進度命名空間，不混用既有 `database` 進度。
@@ -26,7 +26,7 @@
 
 ### Modified Capabilities
 
-- `app-shell`: Header 資料庫入口改為含「資料庫」與「資料庫2」的下拉選單，預設為資料庫2。
+- `app-shell`: Header 資料庫入口改為含「資料庫」與「資料庫2」的下拉選單，預設為資料庫。
 - `professional-subject-routing`: 專業科目路由新增 /database-v2 並參與 route registry/preload。
 
 ## Impact

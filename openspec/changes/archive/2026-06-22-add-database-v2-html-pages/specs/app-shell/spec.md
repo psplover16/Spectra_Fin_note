@@ -2,7 +2,7 @@
 
 ### Requirement: App shell exposes primary subject routes
 
-The application SHALL provide primary routes for computer principles, networking, digital logic, operating systems, information management, programming, database, database v2, algorithms, system design, English, and Chinese. The route paths SHALL be `/computer-principles`, `/networking`, `/digital-logic`, `/operating-systems`, `/information-management`, `/programming`, `/database`, `/database-v2`, `/algorithms`, `/system-design`, `/english`, and `/chinese`. The header SHALL show a computer-foundation subject control labeled with the active grouped subject or `計概類`, and this control SHALL expose `計概`, `網概`, `數位邏輯`, and `作業系統` as menu options. The header SHALL show a database subject control that defaults to `資料庫2`, exposes `資料庫` and `資料庫2` as menu options, displays `資料庫` while `/database` is active, and displays `資料庫2` while `/database-v2` is active. The header SHALL also show the professional subject controls `資管`, `程式`, `演算法`, and `系統設計`. The AppShell header SHALL NOT render the common subject switcher unless a separate change explicitly enables it.
+The application SHALL provide primary routes for computer principles, networking, digital logic, operating systems, information management, programming, database, database v2, algorithms, system design, English, and Chinese. The route paths SHALL be `/computer-principles`, `/networking`, `/digital-logic`, `/operating-systems`, `/information-management`, `/programming`, `/database`, `/database-v2`, `/algorithms`, `/system-design`, `/english`, and `/chinese`. The header SHALL show a computer-foundation subject control labeled with the active grouped subject or `計概類`, and this control SHALL expose `計概`, `網概`, `數位邏輯`, and `作業系統` as menu options. The header SHALL show a database subject control that defaults to `資料庫`, exposes `資料庫` and `資料庫2` as menu options, displays `資料庫` while `/database` is active, and displays `資料庫2` while `/database-v2` is active. The header SHALL also show the professional subject controls `資管`, `程式`, `演算法`, and `系統設計`. The AppShell header SHALL NOT render the common subject switcher unless a separate change explicitly enables it.
 
 #### Scenario: Root route opens the first professional subject
 
@@ -22,7 +22,7 @@ The application SHALL provide primary routes for computer principles, networking
 #### Scenario: Header navigates through the database grouped subject
 
 - **WHEN** the AppShell header renders outside `/database`
-- **THEN** the database subject control displays `資料庫2`
+- **THEN** the database subject control displays `資料庫`
 - **WHEN** the user opens the database subject menu
 - **THEN** the menu lists `資料庫`
 - **AND** the menu lists `資料庫2`

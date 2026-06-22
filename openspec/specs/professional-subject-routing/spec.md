@@ -3738,3 +3738,97 @@ tests:
   - tests/component/SubjectRoutesSmoke.spec.ts
   - tests/unit/professionalTopics.spec.ts
 -->
+
+---
+### Requirement: Database v2 subject route
+
+The app SHALL expose Database v2 as a professional subject route with stable path `/database-v2`. The route SHALL render a database v2 list page titled `資料庫2`, SHALL use `databaseV2` as its bookmark and completion progress namespace, SHALL participate in the primary route preload registry, and MUST NOT change the existing `/database` route behavior.
+
+#### Scenario: Navigate to database v2 route
+
+- **WHEN** the user opens `/database-v2`
+- **THEN** the app renders the database v2 list page titled `資料庫2`
+- **AND** the page uses the `databaseV2` subject key for bookmark and completion progress
+- **AND** the page test id is `subject-view-database-v2`
+
+#### Scenario: Database v2 participates in primary preload registry
+
+- **WHEN** primary route component preloading is requested
+- **THEN** `/database-v2` is included in the primary route path registry
+- **AND** the preload registry resolves the Database v2 route component without error
+
+#### Scenario: Existing database route remains unchanged
+
+- **WHEN** the user opens `/database`
+- **THEN** the app renders the existing database subject page titled `資料庫`
+- **AND** the page uses the existing `database` subject key for topic progress
+- **AND** the app does not redirect `/database` to `/database-v2`
+
+<!-- @trace
+source: add-database-v2-html-pages
+updated: 2026-06-22
+code:
+  - public/database-v2/國考資料庫_06_SQL三大指令分類.html
+  - src/modules/subjectTopics/types/subjectTopic.ts
+  - _private/原文.txt
+  - _private/計概補充/計算機概論_重點講義_01.md
+  - _private/資料庫/國考資料庫_08_NoSQL.html
+  - _private/資料庫/國考資料庫_03_Key鍵.html
+  - _private/資料庫/國考資料庫_10_ACID交易特性.html
+  - public/database-v2/國考資料庫_02_資料庫優缺點與種類.html
+  - public/database-v2/國考資料庫_10_ACID交易特性.html
+  - _private/資料庫/國考資料庫_01_ANSI-SPARC三層架構.html
+  - _private/資料庫/國考資料庫_07_ACID交易特性.html
+  - src/modules/databaseSubjects/components/DatabaseSubjectSwitcher.vue
+  - _private/資料庫/國考資料庫_04_ERD實體關係圖.html
+  - public/database-v2/國考資料庫_01_ANSI-SPARC三層架構.html
+  - public/database-v2/國考資料庫_09_SQL查詢功能.html
+  - _private/資料庫/國考資料庫_10_SQL查詢功能.html
+  - public/database-v2/國考資料庫_03_Key鍵.html
+  - public/database-v2/國考資料庫_05B_函數相依與阿姆斯壯公理.html
+  - src/modules/databaseV2/data/databaseV2Pages.ts
+  - _private/計概補充/計算機概論_重點講義_02_資料表示.md
+  - _private/整理.txt
+  - src/app/router.ts
+  - public/database-v2/國考資料庫_08_SQL_CRUD語法.html
+  - _private/資料庫/國考資料庫_09_SQL查詢功能.html
+  - _private/計概補充/計算機概論_重點講義_03_數位邏輯.md
+  - public/database-v2/國考資料庫_04_ERD實體關係圖.html
+  - _private/資料庫/國考資料庫_06_SQL三大指令分類.html
+  - src/modules/databaseSubjects/config/databaseSubjectOptions.ts
+  - _private/資料庫/國考資料庫_07_資料定義與資料庫物件.html
+  - _private/資料庫/國考資料庫_05B_函數相依與阿姆斯壯公理.html
+  - public/database-v2/國考資料庫_05_正規化.html
+  - public/database-v2/國考資料庫_05C_正規化逐步練習.html
+  - _private/資料庫/國考資料庫_05_正規化.html
+  - _private/discuss.txt
+  - src/app/routePreload.ts
+  - public/database-v2/國考資料庫_07_資料定義與資料庫物件.html
+  - src/shared/components/RouteTabs.vue
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - src/modules/databaseV2/views/DatabaseV2View.vue
+  - _private/資料庫/國考資料庫_05C_正規化逐步練習.html
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/資料庫/國考資料庫_02_資料庫優缺點與種類.html
+  - _private/資料庫/國考資料庫_08_SQL_CRUD語法.html
+  - public/database-v2/國考資料庫_11_NoSQL.html
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - _private/資料庫/國考資料庫_11_NoSQL.html
+  - _private/資料庫/國考資料庫_09_SQL_CRUD語法.html
+tests:
+  - tests/component/SubjectRoutesSmoke.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/databaseV2Pages.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/e2e/professional-routes-interaction.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+-->

@@ -13,7 +13,7 @@ test('header and route region fit at 375px', async ({ page }) => {
   await expect(page.getByTestId('route-tab-common-subject')).toHaveCount(0);
   await expect(page.getByTestId('subject-view-computer-principles')).toBeVisible();
 
-  await expect(page.getByTestId('route-tab-database')).toContainText('資料庫2');
+  await expect(page.getByTestId('route-tab-database')).toHaveText('資料庫');
   await page.getByTestId('route-tab-database').click();
   await expect(page.getByTestId('database-subject-menu')).toContainText('資料庫');
   await expect(page.getByTestId('database-subject-menu')).toContainText('資料庫2');

@@ -104,7 +104,7 @@ describe('AppShell smoke', () => {
     expect(wrapper.get('[data-testid="app-main"]').text()).toContain('網路概論(v2)');
   });
 
-  it('opens a database menu that defaults to database v2 and preserves database v1 navigation', async () => {
+  it('opens a database menu that defaults to database and preserves database v2 navigation', async () => {
     const router = await createTestRouter();
 
     const wrapper = mount(AppShell, {
@@ -115,7 +115,8 @@ describe('AppShell smoke', () => {
     await flushPromises();
 
     const databaseTrigger = wrapper.get('[data-testid="route-tab-database"]');
-    expect(databaseTrigger.text()).toContain('資料庫2');
+    expect(databaseTrigger.text()).toContain('資料庫');
+    expect(databaseTrigger.text()).not.toContain('資料庫2');
 
     await databaseTrigger.trigger('click');
 

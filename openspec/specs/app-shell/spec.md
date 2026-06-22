@@ -8,7 +8,7 @@ TBD - created by archiving change 'establish-subject-learning-app-shell'. Update
 
 ### Requirement: App shell exposes primary subject routes
 
-The application SHALL provide primary routes for computer principles, networking, digital logic, operating systems, information management, programming, database, algorithms, system design, English, and Chinese. The route paths SHALL be `/computer-principles`, `/networking`, `/digital-logic`, `/operating-systems`, `/information-management`, `/programming`, `/database`, `/algorithms`, `/system-design`, `/english`, and `/chinese`. The header SHALL show a computer-foundation subject control labeled with the active grouped subject or `計概類`, and this control SHALL expose `計概`, `網概`, `數位邏輯`, and `作業系統` as menu options. The header SHALL also show the professional subject controls `資管`, `程式`, `資料庫`, `演算法`, and `系統設計`. The AppShell header SHALL NOT render the common subject switcher unless a separate change explicitly enables it.
+The application SHALL provide primary routes for computer principles, networking, digital logic, operating systems, information management, programming, database, database v2, algorithms, system design, English, and Chinese. The route paths SHALL be `/computer-principles`, `/networking`, `/digital-logic`, `/operating-systems`, `/information-management`, `/programming`, `/database`, `/database-v2`, `/algorithms`, `/system-design`, `/english`, and `/chinese`. The header SHALL show a computer-foundation subject control labeled with the active grouped subject or `計概類`, and this control SHALL expose `計概`, `網概`, `數位邏輯`, and `作業系統` as menu options. The header SHALL show a database subject control that defaults to `資料庫`, exposes `資料庫` and `資料庫2` as menu options, displays `資料庫` while `/database` is active, and displays `資料庫2` while `/database-v2` is active. The header SHALL also show the professional subject controls `資管`, `程式`, `演算法`, and `系統設計`. The AppShell header SHALL NOT render the common subject switcher unless a separate change explicitly enables it.
 
 #### Scenario: Root route opens the first professional subject
 
@@ -25,11 +25,25 @@ The application SHALL provide primary routes for computer principles, networking
 - **THEN** the application navigates to `/digital-logic`
 - **AND** the main route region displays the digital logic subject page
 
-#### Scenario: Header navigates to non-group professional subjects
+#### Scenario: Header navigates through the database grouped subject
 
+- **WHEN** the AppShell header renders outside `/database`
+- **THEN** the database subject control displays `資料庫`
+- **WHEN** the user opens the database subject menu
+- **THEN** the menu lists `資料庫`
+- **AND** the menu lists `資料庫2`
 - **WHEN** the user activates `資料庫`
 - **THEN** the application navigates to `/database`
 - **AND** the main route region displays the database subject page
+- **WHEN** the user opens the database subject menu and activates `資料庫2`
+- **THEN** the application navigates to `/database-v2`
+- **AND** the main route region displays the database v2 list page
+
+#### Scenario: Header navigates to non-group professional subjects
+
+- **WHEN** the user activates `演算法`
+- **THEN** the application navigates to `/algorithms`
+- **AND** the main route region displays the algorithms subject page
 
 #### Scenario: AppShell keeps common subjects hidden
 
@@ -48,69 +62,79 @@ The application SHALL provide primary routes for computer principles, networking
 | `計概類` group | `作業系統` | `/operating-systems` | Operating systems |
 | `資管` | n/a | `/information-management` | Information management |
 | `程式` | n/a | `/programming` | Programming |
-| `資料庫` | n/a | `/database` | Database |
+| `資料庫` group | `資料庫` | `/database` | Database |
+| `資料庫` group | `資料庫2` | `/database-v2` | Database v2 |
 | `演算法` | n/a | `/algorithms` | Algorithms |
 | `系統設計` | n/a | `/system-design` | System design |
 
 
 <!-- @trace
-source: split-computer-principles-routes
-updated: 2026-06-19
+source: add-database-v2-html-pages
+updated: 2026-06-22
 code:
-  - _private/MD/計算機概論/06_記憶體-階層與分類.md
-  - _private/MD/計算機概論/08_進制轉換.md
-  - src/modules/subjectTopics/data/professionalTopics.ts
-  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
-  - src/app/router.ts
-  - src/modules/subjectTopics/data/placeholderTopics.ts
-  - src/modules/computerFoundationSubjects/config/computerFoundationSubjectOptions.ts
-  - src/modules/subjectTopics/storage/subjectTopicProgressStorage.ts
-  - src/shared/components/RouteTabs.vue
-  - src/app/routePreload.ts
-  - _private/MD/計算機概論/07_記憶體-暫存器與Cache.md
-  - _private/MD/計算機概論/04_效能與RISC-CISC.md
-  - _private/MD/計算機概論/11_數碼與文字碼.md
-  - _private/MD/計算機概論/01_架構與計算理論.md
-  - _private/MD/計算機概論/02_機器指令與指令週期.md
-  - src/modules/digitalLogic/views/DigitalLogicView.vue
-  - src/shared/components/RouteSubMenu.vue
-  - src/styles/main.css
-  - _private/MD/計算機概論/00_目錄.md
-  - _private/MD/計算機概論/13_檢查碼-漢明碼與漢明距.md
-  - src/modules/computerFoundationSubjects/components/ComputerFoundationSubjectSwitcher.vue
-  - PROJECT_ARCHITECTURE.md
+  - public/database-v2/國考資料庫_06_SQL三大指令分類.html
   - src/modules/subjectTopics/types/subjectTopic.ts
-  - _private/MD/計算機概論/09_補數轉換.md
-  - src/modules/operatingSystems/views/OperatingSystemsView.vue
-  - src/modules/commonSubjects/components/CommonSubjectSwitcher.vue
+  - _private/原文.txt
+  - _private/計概補充/計算機概論_重點講義_01.md
+  - _private/資料庫/國考資料庫_08_NoSQL.html
+  - _private/資料庫/國考資料庫_03_Key鍵.html
+  - _private/資料庫/國考資料庫_10_ACID交易特性.html
+  - public/database-v2/國考資料庫_02_資料庫優缺點與種類.html
+  - public/database-v2/國考資料庫_10_ACID交易特性.html
+  - _private/資料庫/國考資料庫_01_ANSI-SPARC三層架構.html
+  - _private/資料庫/國考資料庫_07_ACID交易特性.html
+  - src/modules/databaseSubjects/components/DatabaseSubjectSwitcher.vue
+  - _private/資料庫/國考資料庫_04_ERD實體關係圖.html
+  - public/database-v2/國考資料庫_01_ANSI-SPARC三層架構.html
+  - public/database-v2/國考資料庫_09_SQL查詢功能.html
+  - _private/資料庫/國考資料庫_10_SQL查詢功能.html
+  - public/database-v2/國考資料庫_03_Key鍵.html
+  - public/database-v2/國考資料庫_05B_函數相依與阿姆斯壯公理.html
+  - src/modules/databaseV2/data/databaseV2Pages.ts
+  - _private/計概補充/計算機概論_重點講義_02_資料表示.md
+  - _private/整理.txt
+  - src/app/router.ts
+  - public/database-v2/國考資料庫_08_SQL_CRUD語法.html
+  - _private/資料庫/國考資料庫_09_SQL查詢功能.html
+  - _private/計概補充/計算機概論_重點講義_03_數位邏輯.md
+  - public/database-v2/國考資料庫_04_ERD實體關係圖.html
+  - _private/資料庫/國考資料庫_06_SQL三大指令分類.html
+  - src/modules/databaseSubjects/config/databaseSubjectOptions.ts
+  - _private/資料庫/國考資料庫_07_資料定義與資料庫物件.html
+  - _private/資料庫/國考資料庫_05B_函數相依與阿姆斯壯公理.html
+  - public/database-v2/國考資料庫_05_正規化.html
+  - public/database-v2/國考資料庫_05C_正規化逐步練習.html
+  - _private/資料庫/國考資料庫_05_正規化.html
   - _private/discuss.txt
-  - src/modules/computerPrinciplesV2/views/ComputerPrinciplesV2View.vue
-  - _private/MD/計算機概論/12_檢查碼-Parity與CRC.md
-  - _private/MD/計算機概論/03_Pipeline與Hazard.md
-  - _private/MD/計算機概論/10_浮點數轉換.md
-  - _private/MD/計算機概論/05_匯流排與USB.md
-  - _private/MD/計算機概論_基本計概_彙整版.md
+  - src/app/routePreload.ts
+  - public/database-v2/國考資料庫_07_資料定義與資料庫物件.html
+  - src/shared/components/RouteTabs.vue
+  - PROJECT_ARCHITECTURE.md
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - src/modules/databaseV2/views/DatabaseV2View.vue
+  - _private/資料庫/國考資料庫_05C_正規化逐步練習.html
+  - src/modules/subjectTopics/data/professionalTopics.ts
+  - _private/資料庫/國考資料庫_02_資料庫優缺點與種類.html
+  - _private/資料庫/國考資料庫_08_SQL_CRUD語法.html
+  - public/database-v2/國考資料庫_11_NoSQL.html
+  - src/modules/subjectTopics/data/placeholderTopics.ts
+  - _private/資料庫/國考資料庫_11_NoSQL.html
+  - _private/資料庫/國考資料庫_09_SQL_CRUD語法.html
 tests:
-  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
-  - tests/unit/algorithmsRouteWorkflow.spec.ts
-  - tests/e2e/app-shell.smoke.spec.ts
-  - tests/e2e/pwa-offline-shell.spec.ts
-  - tests/unit/routePreload.spec.ts
-  - tests/unit/projectArchitecture.spec.ts
-  - tests/component/ComputerFoundationSubjectSwitcher.spec.ts
-  - tests/unit/informationManagementRouteWorkflow.spec.ts
   - tests/component/SubjectRoutesSmoke.spec.ts
-  - tests/unit/splitComputerPrinciplesRoutes.spec.ts
-  - tests/e2e/app-shell-mobile.spec.ts
-  - tests/component/AppShellSmoke.spec.ts
-  - tests/unit/professionalTopics.spec.ts
-  - tests/unit/subjectTopicProgressStorage.spec.ts
-  - tests/unit/computerPrinciplesRouteWorkflow.spec.ts
-  - tests/unit/placeholderTopics.spec.ts
-  - tests/unit/routeConfig.spec.ts
-  - tests/unit/networkingRouteWorkflow.spec.ts
   - tests/unit/subjectTopics.spec.ts
-  - tests/unit/staleProfessionalContentAudit.spec.ts
+  - tests/unit/subjectTopicProgressStorage.spec.ts
+  - tests/unit/databaseV2Pages.spec.ts
+  - tests/e2e/app-shell-mobile.spec.ts
+  - tests/e2e/pwa-offline-shell.spec.ts
+  - tests/component/AppShellSmoke.spec.ts
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/e2e/professional-routes-interaction.spec.ts
+  - tests/unit/routePreload.spec.ts
+  - tests/unit/routeConfig.spec.ts
+  - tests/e2e/app-shell.smoke.spec.ts
+  - tests/unit/placeholderTopics.spec.ts
+  - tests/unit/professionalTopics.spec.ts
 -->
 
 ---

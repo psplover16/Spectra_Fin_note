@@ -15,7 +15,7 @@ export const databaseSubjectOptions = [
   { value: 'databaseV2', label: '資料庫2', path: '/database-v2', testId: 'database-subject-option-database-v2' }
 ] as const satisfies readonly DatabaseSubjectOption[];
 
-export const defaultDatabaseSubjectOption = databaseSubjectOptions[1];
+export const defaultDatabaseSubjectOption = databaseSubjectOptions[0];
 
 export function findDatabaseSubjectOptionByPath(path: string): DatabaseSubjectOption | undefined {
   return databaseSubjectOptions.find((option) => option.path === path);
