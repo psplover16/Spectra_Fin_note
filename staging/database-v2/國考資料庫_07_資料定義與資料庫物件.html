@@ -105,16 +105,16 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
 
   <section class="block">
     <h2 class="head"><span class="ord">二</span>CREATE TABLE 與資料型別</h2>
-    <p>基本語法：<span class="fd">CREATE TABLE 表名 ( 欄名 型別 [約束], … );</span></p>
+    <p>基本語法：<span class="fd">CREATE TABLE 表名 ( 欄名 型別 [約束1 約束2 ...], … );</span></p>
     <p>每個欄位都要指定<b>資料型別</b>，告訴資料庫這欄放什麼種類的資料：</p>
     <div class="tablewrap">
       <table>
         <thead><tr><th>類別</th><th>型別</th><th>說明</th></tr></thead>
         <tbody>
           <tr><td>整數</td><td><span class="fd">INT</span></td><td>整數，如年齡、數量</td></tr>
-          <tr><td>精確小數</td><td><span class="fd">DECIMAL(p,s)</span></td><td>金額、成績（見講義 08）</td></tr>
-          <tr><td>定長文字</td><td><span class="fd">CHAR(n)</span></td><td>固定 n 個字元</td></tr>
-          <tr><td>變長文字</td><td><span class="fd">VARCHAR(n)</span></td><td>最多 n 字元，實際多長就佔多長</td></tr>
+          <tr><td>精確小數</td><td><span class="fd">DECIMAL(p,s)</span></td><td><b>p</b>＝總位數、<b>s</b>＝小數位數。<br /> <span class="fd">DECIMAL(5,2)</span>＝3 位整數＋2 位小數（最大 999.99）</td></tr>
+          <tr><td>定長文字</td><td><span class="fd">CHAR(n)</span></td><td>固定佔 n 格，不足補空白</td></tr>
+          <tr><td>變長文字</td><td><span class="fd">VARCHAR(n)</span></td><td>最多 n 個字元，存多長就佔多長</td></tr>
           <tr><td>日期／時間</td><td><span class="fd">DATE</span> / <span class="fd">DATETIME</span></td><td>日期 / 日期＋時間</td></tr>
         </tbody>
       </table>
@@ -123,7 +123,14 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
   id    <span class="kw">CHAR</span>(8),
   name  <span class="kw">VARCHAR</span>(20)
 );</div>
-    <div class="note"><span class="lbl">💡 CHAR 還是 VARCHAR？</span><span class="fd">CHAR(10)</span> 存「abc」也固定佔 10 格；<span class="fd">VARCHAR(10)</span> 存「abc」只佔 3。<b>長度固定</b>（如身分證字號）用 CHAR；<b>長度不定</b>（如姓名、地址）用 VARCHAR。</div>
+    <div class="note"><span class="lbl">💡 CHAR vs VARCHAR：固定長度 vs 可變長度</span>兩者差在「佔空間的方式」。<b>CHAR(n)</b> 是<b>固定長度</b>，一律佔 n 格，不足的用空白補滿 —— <span class="fd">CHAR(10)</span> 存「abc」會存成「abc」＋7 個空白、佔滿 10。<b>VARCHAR(n)</b> 是<b>可變長度</b>，存多長就佔多長（再加 1~2 bytes 記錄長度），n 只是上限 —— <span class="fd">VARCHAR(10)</span> 存「abc」大約佔 3＋1 = 4 bytes。</div>
+    <div class="note"><span class="lbl">💡 為什麼不能一律用 VARCHAR</span>VARCHAR 看似「省空間又有彈性」，但有代價，所以<b>長度幾乎固定</b>的欄位仍常用 CHAR：
+      <ul class="ans">
+        <li><b>長度紀錄的額外開銷：</b>每個 VARCHAR 值要多存 1~2 bytes 記自己多長。若資料本來就幾乎固定長度（性別 <span class="fd">M/F</span>、國別碼 <span class="fd">TW/US</span>、郵遞區號），用 VARCHAR 反而多花這 1~2 bytes，比 CHAR 還浪費。</li>
+        <li><b>固定長度讀取較快：</b>CHAR 每列長度固定，資料庫一眼就知道每筆從哪到哪，定位、讀取都快；VARCHAR 長度不一，計算位置較麻煩。</li>
+        <li><b>更新較穩定：</b>CHAR 長度固定，更新成等長的值不必搬動；VARCHAR 改成更長的值可能塞不回原位，造成<b>列遷移（row migration）／碎片化</b>，拖慢效能。</li>
+      </ul>
+      原則：<b>長度固定</b>（身分證、學號、代碼）用 <span class="fd">CHAR</span>；<b>長度不定</b>（姓名、地址、Email）用 <span class="fd">VARCHAR</span>。</div>
   </section>
 
   <section class="block">
@@ -143,6 +150,7 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
       </table>
     </div>
     <div class="note"><span class="lbl">💡 外來鍵到底在做什麼</span>它強制「<b>子表的值必須在父表存在</b>」。例如 enrollment 表的 student_id 必須是 student 表裡真的有的學號 —— 這樣就不會出現「幫一個不存在的學生選課」。父表那筆被刪除時的處理方式：<span class="fd">ON DELETE CASCADE</span>（子表一起刪）、<span class="fd">SET NULL</span>（子表設為空）、<span class="fd">RESTRICT</span>（禁止刪除）。</div>
+    <div class="note"><span class="lbl">💡 約束可以多個嗎？</span>可以。一個欄位可同時套多個約束，例如 <span class="fd">name VARCHAR(20) NOT NULL UNIQUE</span>。</div>
     <div class="note"><span class="lbl">💡 主鍵 vs UNIQUE（必考差異）</span>兩者都保證「不重複」，差別在：<b>主鍵</b>還要「不可空」且「一張表只能一個」；<b>UNIQUE</b> 則「可以空」且「一張表可以有多個」。</div>
   </section>
 
@@ -165,6 +173,18 @@ body.recite .block.revealed .head::after{content:"收合 ▴";}
     <span class="kw">ON DELETE CASCADE</span>                                  <span class="cm">-- 學生被刪，其選課一併刪</span>
 );</div>
     <div class="note"><span class="lbl">💡 怎麼讀這段</span>每一行＝「<b>欄名　型別　約束</b>」。enrollment 最後一行的外來鍵，把 student_id「綁」到 student 表的 id；有了它，資料庫就不准你新增一筆對不到任何學生的選課。</div>
+    <p class="subhead">範例三：所有型別與約束總整理</p>
+    <div class="code"><span class="kw">CREATE TABLE</span> student_profile (
+  profile_id  <span class="kw">INT</span>           <span class="kw">PRIMARY KEY</span>,                              <span class="cm">-- 整數＋主鍵</span>
+  student_id  <span class="kw">CHAR</span>(8)      <span class="kw">NOT NULL</span> <span class="kw">UNIQUE</span>,                      <span class="cm">-- 一欄多約束</span>
+  name        <span class="kw">VARCHAR</span>(20)  <span class="kw">NOT NULL</span>,                             <span class="cm">-- 變長文字＋非空</span>
+  gender      <span class="kw">CHAR</span>(1)      <span class="kw">DEFAULT</span> 'F' <span class="kw">CHECK</span> (gender <span class="kw">IN</span> ('M', 'F')),
+  score       <span class="kw">DECIMAL</span>(5,2) <span class="kw">DEFAULT</span> 0 <span class="kw">CHECK</span> (score <span class="kw">BETWEEN</span> 0 <span class="kw">AND</span> 100),
+  birth_date  <span class="kw">DATE</span>          <span class="kw">NOT NULL</span>,
+  created_at  <span class="kw">DATETIME</span>      <span class="kw">DEFAULT</span> '2026-01-01 09:00:00',
+  <span class="kw">FOREIGN KEY</span> (student_id) <span class="kw">REFERENCES</span> student(id)
+);</div>
+    <div class="note"><span class="lbl">💡 這段看什麼</span>它一次包含本講義的六種型別：<span class="fd">INT</span>、<span class="fd">DECIMAL</span>、<span class="fd">CHAR</span>、<span class="fd">VARCHAR</span>、<span class="fd">DATE</span>、<span class="fd">DATETIME</span>；也包含六種約束：<span class="fd">PRIMARY KEY</span>、<span class="fd">FOREIGN KEY</span>、<span class="fd">NOT NULL</span>、<span class="fd">UNIQUE</span>、<span class="fd">CHECK</span>、<span class="fd">DEFAULT</span>。</div>
   </section>
 
   <section class="block">
