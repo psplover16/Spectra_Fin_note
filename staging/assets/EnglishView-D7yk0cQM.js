@@ -1,1 +1,0 @@
-import{g as s,_ as o}from"./subjectTopics-CzcfgOHf.js";import{d as c,g as i,h as n,o as a}from"./vendor-vue-Bz8G2jgm.js";import"./subjectTopicProgressStorage-w3HkWVNO.js";const e="english",f=c({__name:"EnglishView",setup(p){const t=s(e);return(r,_)=>(a(),i(o,{title:"英文","subject-key":e,"test-id":"subject-view-english",topics:n(t)},null,8,["topics"]))}});export{f as default};
