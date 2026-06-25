@@ -1,4 +1,10 @@
-import type { LessonArticleSection, ProfessionalSubjectTopic } from '@/modules/subjectTopics/types/subjectTopic';
+import type {
+  LessonArticleContentBlock,
+  LessonArticleSection,
+  ProfessionalSubjectTopic,
+  ProfessionalTopicType,
+  TechnicalTerm
+} from '@/modules/subjectTopics/types/subjectTopic';
 
 // Static lessonArticle data generated from _private/MD/計算機概論 source Markdown.
 const supplementalPracticeSections: readonly LessonArticleSection[] = [
@@ -470,6 +476,237 @@ const supplementalDataSections: readonly LessonArticleSection[] = [
   }
 ];
 
+const supplementalDataSourceFile = '_private/計概補充/計算機概論_重點講義_01.md';
+const supplementalCpuSchedulingSourceFile = '_private/計概補充/CPU排班演算法_考試速記版.md';
+
+const supplementalCpuSchedulingQuestions = [
+  '下列哪種排班可得到最小的平均等待時間?\n(A) FCFS　(B) SJF　(C) RR　(D) Priority',
+  'Round Robin 中,時間量子設定非常大時,行為趨近於?\n(A) SJF　(B) SRTF　(C) FCFS　(D) MLFQ',
+  '「護航效應 (Convoy Effect)」最容易發生在?\n(A) FCFS　(B) SJF　(C) RR　(D) Priority',
+  '解決優先權排程的「飢餓 (Starvation)」,通常採用?\n(A) 上下文切換　(B) 老化 (Aging)　(C) 時間量子　(D) 分頁',
+  '下列關於可搶占 (Preemptive) 的敘述,何者正確?\n(A) FCFS 是可搶占　(B) SJF 與 SRTF 完全相同　(C) RR 是可搶占　(D) 可搶占一定較好',
+  '三程序同時到達,Burst 為 P1=6、P2=2、P3=4,採 SJF,平均等待時間?\n(A) 2　(B) 8/3　(C) 4　(D) 10/3',
+  'SRTF 可視為下列何者的可搶占版本?\n(A) FCFS　(B) SJF　(C) RR　(D) Priority',
+  '最適合「分時 / 互動系統」的排班是?\n(A) FCFS　(B) SJF　(C) SRTF　(D) RR',
+  'Round Robin 的時間量子設得太小,最主要的問題是?\n(A) 產生飢餓　(B) 上下文切換過多　(C) 退化成 FCFS　(D) 無法計算',
+  'SJF 可看成下列哪種排班的特例?\n(A) FCFS　(B) RR　(C) Priority　(D) MLQ',
+  '下列哪種排班「不會」造成飢餓?\n(A) SJF　(B) SRTF　(C) Priority　(D) RR',
+  '三程序同時到達,Burst 為 P1=3、P2=5、P3=2,採 FCFS(順序 P1→P2→P3),平均迴轉時間?\n(A) 5　(B) 6　(C) 7　(D) 8',
+  '迴轉時間 (Turnaround Time) 的正確算式為?\n(A) 完成時間 − 到達時間\n(B) 迴轉時間 − 執行時間\n(C) 第一次上 CPU − 到達時間\n(D) 完成時間 − 執行時間',
+  '等待時間 (Waiting Time) 的正確算式為?\n(A) 完成 − 到達　(B) 迴轉 − 執行時間　(C) 完成 − 執行時間　(D) 第一次上 CPU − 到達',
+  '三程序同時到達,Burst 為 P1=4、P2=3、P3=1,採 RR(時間量子=2,佇列順序 P1、P2、P3),平均等待時間?\n(A) 3　(B) 4　(C) 5　(D) 12',
+  '關於 MLQ 與 MLFQ 的差異,何者正確?\n(A) MLQ 程序可在佇列間移動\n(B) MLFQ 程序可在佇列間移動\n(C) 兩者皆不可搶占\n(D) MLFQ 一定比 MLQ 簡單',
+  '在「非先佔式 (Non-preemptive)」排班下,只會在哪些時機做排班決策?\n(A) 執行中→等待中、程序結束\n(B) 等待中→就緒、執行中→就緒\n(C) 任何時刻皆可\n(D) 只有程序剛到達時',
+  '我們討論的 FCFS、SJF、RR 等演算法,屬於作業系統中的哪一層排班?\n(A) 長程排班　(B) 中程排班　(C) 短程排班　(D) 磁碟排班',
+  '下列哪個排班準則 (criteria) 是「數值越大越好」?\n(A) 等待時間　(B) 迴轉時間　(C) 回應時間　(D) CPU 使用率',
+  '關於回應時間 (Response Time) 與等待時間 (Waiting Time),何者正確?\n(A) 兩者永遠相等\n(B) 程序一口氣做完(不被打斷)時,兩者相等\n(C) 回應時間一定大於等待時間\n(D) RR 不影響兩者關係'
+] as const;
+
+const supplementalCpuSchedulingAnswerRows = [
+  ['1', 'B', 'SJF 平均等待時間理論最小。'],
+  ['2', 'C', '量子大到每程序一次做完,即先到先做的 FCFS。'],
+  ['3', 'A', '長程序卡前面拖住後面短程序,FCFS 典型問題。'],
+  ['4', 'B', '等越久優先權越高,確保最終被排到。'],
+  ['5', 'C', 'RR 靠時間量子強制輪替=可搶占;FCFS 不可搶占;SJF 不等於 SRTF。'],
+  ['6', 'B', 'SJF 序 P2(0-2)→P3(2-6)→P1(6-12);等待 0、2、6,平均 8/3。'],
+  ['7', 'B', 'SRTF=可搶占版 SJF,比剩餘時間。'],
+  ['8', 'D', 'RR 回應快、公平,適合互動/分時。'],
+  ['9', 'B', '量子太小會一直換程序,上下文切換成本過高。'],
+  ['10', 'C', 'Burst 越短=優先權越高,即 Priority 的特例。'],
+  ['11', 'D', 'RR 輪流服務;SJF/SRTF/Priority 都可能飢餓。'],
+  ['12', 'C', 'FCFS:P1(0-3)→P2(3-8)→P3(8-10);迴轉 3、8、10,平均 7。'],
+  ['13', 'A', '迴轉=完成−到達。'],
+  ['14', 'B', '等待=迴轉−執行時間(Burst)。'],
+  ['15', 'B', 'RR(q=2)完成 P1=7、P2=8、P3=5;等待 3、5、4,平均 4。'],
+  ['16', 'B', 'MLFQ 可在層間移動(回饋);MLQ 固定不可換層。'],
+  ['17', 'A', '非先佔只在「執行中→等待中」與「程序結束」做決策。'],
+  ['18', 'C', 'CPU 排班=短程排班。'],
+  ['19', 'D', 'CPU 使用率、產能越大越好;等待/迴轉/回應越小越好。'],
+  ['20', 'B', '不被打斷時只乾等一次,第一次被服務=唯一一次,故兩者相等。']
+] as const;
+
+const supplementalCpuSchedulingSections: readonly LessonArticleSection[] = [
+  {
+    heading: 'CPU 排班演算法 — 考試速記版',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '考前衝刺用。先掃比較表,再背名詞、高頻考點與 20 題選擇。'
+      },
+      {
+        kind: 'table',
+        headers: ['演算法', '搶占性', '挑選依據', '會飢餓?', '一句話記重點'],
+        rows: [
+          ['FCFS', '不可搶占', '到達順序', '否', '護航效應'],
+          ['SJF', '不可搶占', '最短 Burst', '會', '平均等待最小(最佳)'],
+          ['SRTF', '可搶占', '最短剩餘時間', '會', 'SJF 的搶占版'],
+          ['Priority', '皆可', '優先權', '會', '老化 (Aging) 解飢餓'],
+          ['RR', '可搶占', '時間量子輪流', '否', '量子設太大就變 FCFS'],
+          ['MLQ', '可搶占', '分層、固定', '會', '程序不能換層'],
+          ['MLFQ', '可搶占', '分層、可移動', '否', '可換層+內建老化']
+        ]
+      },
+      {
+        kind: 'paragraph',
+        text: '各演算法完整英文名稱:'
+      },
+      {
+        kind: 'bulletList',
+        items: [
+          'FCFS（先到先服務）— First-Come, First-Served',
+          'SJF（最短工作優先）— Shortest Job First',
+          'SRTF（最短剩餘時間優先）— Shortest Remaining Time First',
+          'Priority（優先權排班）— Priority Scheduling',
+          'RR（輪轉排班）— Round Robin',
+          'MLQ（多層佇列）— Multilevel Queue',
+          'MLFQ（多層回饋佇列）— Multilevel Feedback Queue'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '三大時間名詞',
+    blocks: [
+      {
+        kind: 'paragraph',
+        text: '先備名詞:到達時間 (Arrival Time) = 程序進就緒佇列的時刻;執行時間 / CPU 分發時間 (Burst Time) = 程序需佔用 CPU 的長度。'
+      },
+      {
+        kind: 'bulletList',
+        items: [
+          '等待時間 (Waiting Time):程序在就緒佇列裡乾等的總時間。公式:等待時間 = 迴轉時間 − 執行時間 (Burst)。',
+          '迴轉時間 (Turnaround Time):從到達到完成的總時間。公式:迴轉時間 = 完成時間 − 到達時間。',
+          '回應時間 (Response Time):從到達到第一次被 CPU 服務的時間。公式:回應時間 = 第一次上 CPU 的時間 − 到達時間。',
+          '等待 vs 回應:回應只算到第一次被服務前;等待是全部乾等的加總。',
+          '越大越好:CPU 使用率、產能 (Throughput)。越小越好:等待、迴轉、回應。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '高頻考點速記',
+    blocks: [
+      {
+        kind: 'bulletList',
+        items: [
+          'SJF → 平均等待時間最小(理論最佳)。',
+          'RR 時間量子設很大 → 退化成 FCFS。',
+          'RR 時間量子設很小 → 上下文切換過多,效率差。',
+          '護航效應 (Convoy Effect) → 出現在 FCFS。',
+          '會飢餓:SJF、SRTF、Priority;不會飢餓:FCFS、RR。',
+          '飢餓的解法 → 老化 (Aging)。',
+          'SJF = Priority 的特例(Burst 越短=優先權越高)。',
+          'SRTF = 可搶占版 SJF,比的是剩餘時間。',
+          '互動 / 分時系統最適合 → RR。',
+          'CPU 排班屬於短程排班 (Short-term),角色叫 CPU 排班器。',
+          '非先佔只在兩種時機排班:執行中→等待中、程序結束。',
+          'MLQ 不能換層;MLFQ 可換層且避免飢餓。',
+          '計算題四步:畫甘特圖 → 讀完成時間 → 迴轉=完成−到達 → 等待=迴轉−Burst。'
+        ]
+      }
+    ]
+  },
+  {
+    heading: '小試身手',
+    blocks: [
+      {
+        kind: 'orderedList',
+        markerStyle: 'decimal',
+        items: supplementalCpuSchedulingQuestions
+      }
+    ]
+  },
+  {
+    heading: '答案與解析',
+    blocks: [
+      {
+        kind: 'table',
+        headers: ['題', '答', '解析'],
+        rows: supplementalCpuSchedulingAnswerRows
+      }
+    ]
+  }
+];
+
+type SplitSupplementalTopicConfig = {
+  id: string;
+  title: string;
+  summary: string;
+  sourceFile: string;
+  sourceSummary: string;
+  lead: readonly string[];
+  sections: readonly LessonArticleSection[];
+  topicType: ProfessionalTopicType;
+  terms: readonly TechnicalTerm[];
+};
+
+const toOrderedSupplementalContentBlock = (block: LessonArticleContentBlock): LessonArticleContentBlock => {
+  if (block.kind === 'bulletList') {
+    return {
+      kind: 'orderedList',
+      markerStyle: 'decimal',
+      items: block.items
+    };
+  }
+
+  if (block.kind === 'indentedGroup') {
+    return {
+      ...block,
+      blocks: block.blocks.map(toOrderedSupplementalContentBlock)
+    };
+  }
+
+  if (block.kind === 'subsection') {
+    return {
+      ...block,
+      blocks: block.blocks.map(toOrderedSupplementalContentBlock)
+    };
+  }
+
+  return block;
+};
+
+const toOrderedSupplementalSections = (sections: readonly LessonArticleSection[]): readonly LessonArticleSection[] =>
+  sections.map((section) => ({
+    ...section,
+    blocks: section.blocks.map(toOrderedSupplementalContentBlock)
+  }));
+
+const createSplitSupplementalTopic = ({
+  id,
+  title,
+  summary,
+  sourceFile,
+  sourceSummary,
+  lead,
+  sections,
+  topicType,
+  terms
+}: SplitSupplementalTopicConfig): ProfessionalSubjectTopic => ({
+  id,
+  subjectKey: 'computerPrinciplesV2',
+  title,
+  summary,
+  sourceBatch: 'computer-principles-v2-route',
+  sourceFiles: [sourceFile],
+  sourceSummary,
+  examOutline: [],
+  memoryPoints: [],
+  understandingNotes: [],
+  difficulty: 'core',
+  topicType,
+  terms,
+  blocks: [
+    {
+      kind: 'lessonArticle',
+      sourceFiles: [sourceFile],
+      sourceSection: sourceSummary,
+      lead,
+      sections: toOrderedSupplementalSections(sections)
+    }
+  ]
+});
+
 export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
   {
     "id": "cpv2-supplemental-practice",
@@ -518,53 +755,166 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
       }
     ]
   },
-  {
-    "id": "cpv2-supplemental-data",
-    "subjectKey": "computerPrinciplesV2",
-    "title": "補充資料",
-    "summary": "整理計算機概論補充講義中的效能、作業系統與資料結構重點。",
-    "sourceBatch": "computer-principles-v2-route",
-    "sourceFiles": [
-      "_private/計概補充/計算機概論_重點講義_01.md"
-    ],
-    "sourceSummary": "計概(v2) / 補充資料",
-    "examOutline": [],
-    "memoryPoints": [],
-    "understandingNotes": [],
-    "difficulty": "core",
-    "topicType": "concept",
-    "terms": [
+  createSplitSupplementalTopic({
+    id: 'cpv2-supplemental-amdahl-law',
+    title: '阿姆達爾定律',
+    summary: '整理阿姆達爾定律、整體加速比公式與上限判斷。',
+    sourceFile: supplementalDataSourceFile,
+    sourceSummary: '計概(v2) / 阿姆達爾定律',
+    lead: ['計算機概論補充講義（一）：阿姆達爾定律。'],
+    sections: supplementalDataSections.slice(0, 1),
+    topicType: 'concept',
+    terms: [
       {
-        "zh": "阿姆達爾定律",
-        "en": "Amdahl's Law"
+        zh: '阿姆達爾定律',
+        en: "Amdahl's Law"
       },
       {
-        "zh": "CPU 排班",
-        "en": "CPU Scheduling"
-      },
-      {
-        "zh": "死結",
-        "en": "Deadlock"
-      },
-      {
-        "zh": "基礎資料結構",
-        "en": "Basic Data Structures"
-      }
-    ],
-    "blocks": [
-      {
-        "kind": "lessonArticle",
-        "sourceFiles": [
-          "_private/計概補充/計算機概論_重點講義_01.md"
-        ],
-        "sourceSection": "計概(v2) / 補充資料",
-        "lead": [
-          "計算機概論補充講義（一）：阿姆達爾定律、排班、死結、分頁分段、OOP 與基礎資料結構。"
-        ],
-        "sections": supplementalDataSections
+        zh: '整體加速比',
+        en: 'Overall Speedup'
       }
     ]
-  },
+  }),
+  createSplitSupplementalTopic({
+    id: 'cpv2-supplemental-cpu-scheduling',
+    title: 'CPU 排班演算法',
+    summary: '整理 CPU 排班演算法比較、時間名詞、高頻考點與 20 題練習。',
+    sourceFile: supplementalCpuSchedulingSourceFile,
+    sourceSummary: '計概(v2) / CPU 排班演算法',
+    lead: ['CPU 排班演算法考試速記版：比較表、名詞、高頻考點與 20 題選擇。'],
+    sections: supplementalCpuSchedulingSections,
+    topicType: 'algorithm',
+    terms: [
+      {
+        zh: '先到先服務',
+        en: 'First-Come, First-Served'
+      },
+      {
+        zh: '最短工作優先',
+        en: 'Shortest Job First'
+      },
+      {
+        zh: '輪轉排班',
+        en: 'Round Robin'
+      },
+      {
+        zh: '多層回饋佇列',
+        en: 'Multilevel Feedback Queue'
+      }
+    ]
+  }),
+  createSplitSupplementalTopic({
+    id: 'cpv2-supplemental-deadlock',
+    title: '死結',
+    summary: '整理死結四個必要條件、處理策略與常見混淆。',
+    sourceFile: supplementalDataSourceFile,
+    sourceSummary: '計概(v2) / 死結',
+    lead: ['計算機概論補充講義（一）：死結。'],
+    sections: supplementalDataSections.slice(2, 3),
+    topicType: 'concept',
+    terms: [
+      {
+        zh: '死結',
+        en: 'Deadlock'
+      },
+      {
+        zh: '循環等待',
+        en: 'Circular Wait'
+      },
+      {
+        zh: '銀行家演算法',
+        en: "Banker's Algorithm"
+      }
+    ]
+  }),
+  createSplitSupplementalTopic({
+    id: 'cpv2-supplemental-paging-segmentation',
+    title: '分頁與分段記憶體管理',
+    summary: '整理 Paging、Segmentation、位址轉換與碎裂差異。',
+    sourceFile: supplementalDataSourceFile,
+    sourceSummary: '計概(v2) / 分頁與分段記憶體管理',
+    lead: ['計算機概論補充講義（一）：分頁與分段記憶體管理。'],
+    sections: supplementalDataSections.slice(3, 4),
+    topicType: 'concept',
+    terms: [
+      {
+        zh: '分頁',
+        en: 'Paging'
+      },
+      {
+        zh: '分段',
+        en: 'Segmentation'
+      },
+      {
+        zh: '內部碎裂',
+        en: 'Internal Fragmentation'
+      },
+      {
+        zh: '外部碎裂',
+        en: 'External Fragmentation'
+      }
+    ]
+  }),
+  createSplitSupplementalTopic({
+    id: 'cpv2-supplemental-oop-characteristics',
+    title: '物件導向特性',
+    summary: '整理物件導向四大特性、類別與物件、覆寫與多載辨析。',
+    sourceFile: supplementalDataSourceFile,
+    sourceSummary: '計概(v2) / 物件導向特性',
+    lead: ['計算機概論補充講義（一）：物件導向特性。'],
+    sections: supplementalDataSections.slice(4, 5),
+    topicType: 'concept',
+    terms: [
+      {
+        zh: '封裝',
+        en: 'Encapsulation'
+      },
+      {
+        zh: '繼承',
+        en: 'Inheritance'
+      },
+      {
+        zh: '多型',
+        en: 'Polymorphism'
+      },
+      {
+        zh: '抽象',
+        en: 'Abstraction'
+      }
+    ]
+  }),
+  createSplitSupplementalTopic({
+    id: 'cpv2-supplemental-basic-data-structures',
+    title: '基礎資料結構',
+    summary: '整理 Array、Linked List、Stack、Queue、Tree 與 Big-O 基礎。',
+    sourceFile: supplementalDataSourceFile,
+    sourceSummary: '計概(v2) / 基礎資料結構',
+    lead: ['計算機概論補充講義（一）：基礎資料結構。'],
+    sections: supplementalDataSections.slice(5, 6),
+    topicType: 'dataStructure',
+    terms: [
+      {
+        zh: '陣列',
+        en: 'Array'
+      },
+      {
+        zh: '鏈結串列',
+        en: 'Linked List'
+      },
+      {
+        zh: '堆疊',
+        en: 'Stack'
+      },
+      {
+        zh: '佇列',
+        en: 'Queue'
+      },
+      {
+        zh: '樹',
+        en: 'Tree'
+      }
+    ]
+  }),
   {
     "id": "cpv2-architecture-computation-theory",
     "subjectKey": "computerPrinciplesV2",

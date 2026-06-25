@@ -585,7 +585,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -1206,7 +1206,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -1830,7 +1830,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -2454,7 +2454,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -3080,7 +3080,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -3699,7 +3699,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -4319,7 +4319,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -4941,7 +4941,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -5569,7 +5569,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -6231,7 +6231,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -6851,7 +6851,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -7523,7 +7523,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -8184,7 +8184,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -8828,7 +8828,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -9482,7 +9482,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -9792,7 +9792,7 @@ code:
   - _private/TMP/networking/data-link-layer.draft.md
   - _private/MD/資料結構與演算法/七、Tree.md
   - _private/TMP/payloads/程式/四、Python 特殊資料型別.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/programming/source-inventory.md
   - _private/TMP/database/待生成主題清單_20260613-105500.md
   - _private/MD/網概/九、傳輸層.md
@@ -10875,7 +10875,7 @@ code:
   - _private/TMP/information-management/im-05-info-ethics-regulations.prompt.md
   - _private/TMP/networking/transport-layer.prompt.md
   - _private/TMP/payloads/系統分析與設計/03-結構化分析與設計.txt
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/database/database-keys.verified.md
   - _private/MD/計概/3a基本計概/done/五、匯流排（Bus）_新手國考教材.md
   - _private/TMP/programming/programming-recursion.prompt.md
@@ -10989,7 +10989,7 @@ code:
   - _private/TMP/payloads/資料庫/06-正規化.md
   - _private/TMP/information-management/待生成主題清單_20260613-114500.md
   - _private/TMP/programming/programming-intermediate.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/MD/演算法/BubbleSort.java
   - _private/MD/計概/3c作業系統/六、Deadlock_新手國考教材.md
   - _private/TMP/computer-principles/20260613-computer-principles-cp-common-units.md
@@ -12146,7 +12146,7 @@ code:
   - _private/TMP/information-management/manual-review.md
   - PROJECT_ARCHITECTURE.md
   - _private/TMP/computer-principles/cp-memory-classification.verified.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/payloads/資料庫/09-NoSQL.md
   - _private/TMP/payloads/資料結構與演算法/陣列（Array）.md
   - _private/MD/計概/3c作業系統/三、硬體保護_新手國考教材.md
@@ -12852,7 +12852,7 @@ code:
   - _private/TMP/information-management/manual-review.md
   - PROJECT_ARCHITECTURE.md
   - _private/TMP/computer-principles/cp-memory-classification.verified.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/payloads/資料庫/09-NoSQL.md
   - _private/TMP/payloads/資料結構與演算法/陣列（Array）.md
   - _private/MD/計概/3c作業系統/三、硬體保護_新手國考教材.md
@@ -13555,7 +13555,7 @@ code:
   - _private/TMP/information-management/manual-review.md
   - PROJECT_ARCHITECTURE.md
   - _private/TMP/computer-principles/cp-memory-classification.verified.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/payloads/資料庫/09-NoSQL.md
   - _private/TMP/payloads/資料結構與演算法/陣列（Array）.md
   - _private/MD/計概/3c作業系統/三、硬體保護_新手國考教材.md
@@ -13987,7 +13987,7 @@ code:
   - _private/TMP/computer-principles/cp-memory-hierarchy.draft.md
   - _private/TMP/database/database-ansi-sparc.verified.md
   - _private/TMP/computer-principles/cp-combinational-sequential-circuits.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/programming/programming-system-analysis-uml-extra-diagrams.draft.md
   - _private/TMP/computer-principles/cp-hazard.draft.md
   - _TMP/source-logs/computer-principles-reading-log.md
@@ -14690,7 +14690,7 @@ code:
   - _private/TMP/computer-principles/cp-memory-hierarchy.draft.md
   - _private/TMP/database/database-ansi-sparc.verified.md
   - _private/TMP/computer-principles/cp-combinational-sequential-circuits.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/programming/programming-system-analysis-uml-extra-diagrams.draft.md
   - _private/TMP/computer-principles/cp-hazard.draft.md
   - _TMP/source-logs/computer-principles-reading-log.md
@@ -15884,7 +15884,7 @@ code:
   - _private/TMP/database/database-ansi-sparc.prompt.md
   - _private/TMP/computer-principles/20260613-054000-computer-principles-cp-performance-formulas.md
   - _private/MD/資料庫/五、ERD.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/computer-principles/cp-hazard.verified.md
   - _private/TMP/programming/programming-basics.verified.md
   - _private/TMP/computer-principles/cp-von-neumann-architecture.draft.md

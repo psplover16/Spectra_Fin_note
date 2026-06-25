@@ -13,6 +13,7 @@ const floatingPointSupplementalReviewPath = '_TMP/reviews/cpv2-floating-point-sp
 const refreshedFloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
 const supplementalPracticeSourceFile = '_private/discuss.txt';
 const supplementalDataSourceFile = '_private/計概補充/計算機概論_重點講義_01.md';
+const supplementalCpuSchedulingSourceFile = '_private/計概補充/CPU排班演算法_考試速記版.md';
 const specialValuesSourceFile = '_private/MD/0621/IEEE754_浮點數特殊值_速記.md';
 const deprecatedFloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 const refreshedFloatingPointSourceFiles = [
@@ -28,10 +29,40 @@ const topicCases = [
     keyword: '指令組成:50% 需 1 週期'
   },
   {
-    id: 'cpv2-supplemental-data',
-    title: '補充資料',
+    id: 'cpv2-supplemental-amdahl-law',
+    title: '阿姆達爾定律',
     source: supplementalDataSourceFile,
     keyword: 'Amdahl'
+  },
+  {
+    id: 'cpv2-supplemental-cpu-scheduling',
+    title: 'CPU 排班演算法',
+    source: supplementalCpuSchedulingSourceFile,
+    keyword: 'Round Robin 中,時間量子設定非常大時,行為趨近於?'
+  },
+  {
+    id: 'cpv2-supplemental-deadlock',
+    title: '死結',
+    source: supplementalDataSourceFile,
+    keyword: '四個必要條件'
+  },
+  {
+    id: 'cpv2-supplemental-paging-segmentation',
+    title: '分頁與分段記憶體管理',
+    source: supplementalDataSourceFile,
+    keyword: 'Paging'
+  },
+  {
+    id: 'cpv2-supplemental-oop-characteristics',
+    title: '物件導向特性',
+    source: supplementalDataSourceFile,
+    keyword: 'OOP Characteristics'
+  },
+  {
+    id: 'cpv2-supplemental-basic-data-structures',
+    title: '基礎資料結構',
+    source: supplementalDataSourceFile,
+    keyword: 'Basic Data Structures'
   },
   {
     id: 'cpv2-architecture-computation-theory',
@@ -225,14 +256,21 @@ describe('computer principles v2 route workflow', () => {
   it('keeps the supplemental practice content as the first route-visible topic card', () => {
     const topics = getSubjectTopics(subjectKey);
     const practiceTopic = topics[0];
-    const supplementalDataTopic = topics[1];
-    const architectureTopic = topics[2];
+    const splitSupplementalTopics = topics.slice(1, 7);
+    const architectureTopic = topics[7];
     const lessonArticle = practiceTopic?.blocks[0];
 
     expect(practiceTopic?.id).toBe('cpv2-supplemental-practice');
     expect(practiceTopic?.title).toBe('加強練習');
-    expect(supplementalDataTopic?.id).toBe('cpv2-supplemental-data');
-    expect(supplementalDataTopic?.title).toBe('補充資料');
+    expect(splitSupplementalTopics.map((topic) => topic.id)).toEqual([
+      'cpv2-supplemental-amdahl-law',
+      'cpv2-supplemental-cpu-scheduling',
+      'cpv2-supplemental-deadlock',
+      'cpv2-supplemental-paging-segmentation',
+      'cpv2-supplemental-oop-characteristics',
+      'cpv2-supplemental-basic-data-structures'
+    ]);
+    expect(topics.some((topic) => topic.id === 'cpv2-supplemental-data' || topic.title === '補充資料')).toBe(false);
     expect(architectureTopic?.id).toBe('cpv2-architecture-computation-theory');
     expect(lessonArticle?.kind).toBe('lessonArticle');
     if (lessonArticle?.kind !== 'lessonArticle') {
@@ -251,65 +289,101 @@ describe('computer principles v2 route workflow', () => {
     expect(serializedPracticeTopic).toContain('資管題目:');
   });
 
-  it('keeps the supplemental data content as the second route-visible topic card', () => {
+  it('keeps split supplemental content as six route-visible topic cards', () => {
     const topics = getSubjectTopics(subjectKey);
-    const supplementalDataTopic = topics[1];
-    const lessonArticle = supplementalDataTopic?.blocks[0];
+    const splitSupplementalTopics = topics.slice(1, 7);
+    const splitProfessionalSupplementalTopics = v2Topics().slice(1, 7);
+    const [
+      amdahlTopic,
+      schedulingTopic,
+      deadlockTopic,
+      pagingSegmentationTopic,
+      oopTopic,
+      dataStructuresTopic
+    ] = splitProfessionalSupplementalTopics;
+    const [
+      routeAmdahlTopic,
+      routeSchedulingTopic,
+      routeDeadlockTopic,
+      routePagingSegmentationTopic,
+      routeOopTopic,
+      routeDataStructuresTopic
+    ] = splitSupplementalTopics;
+    const schedulingLessonArticle = routeSchedulingTopic?.blocks[0];
 
-    expect(supplementalDataTopic?.id).toBe('cpv2-supplemental-data');
-    expect(supplementalDataTopic?.title).toBe('補充資料');
-    expect(lessonArticle?.kind).toBe('lessonArticle');
-    if (lessonArticle?.kind !== 'lessonArticle') {
-      throw new Error('cpv2-supplemental-data should render through lessonArticle');
-    }
-
-    expect(lessonArticle.sourceFiles).toEqual([supplementalDataSourceFile]);
-    expect(lessonArticle.sections.map((section) => section.heading)).toEqual([
-      "一、阿姆達爾定律（Amdahl's Law）",
-      '二、CPU 排班演算法（CPU Scheduling）',
-      '三、死結（Deadlock）',
-      '四、分頁與分段記憶體管理（Paging & Segmentation）',
-      '五、物件導向特性（OOP Characteristics）',
-      '六、基礎資料結構（Basic Data Structures）'
+    expect(splitSupplementalTopics.map((topic) => topic.title)).toEqual([
+      '阿姆達爾定律',
+      'CPU 排班演算法',
+      '死結',
+      '分頁與分段記憶體管理',
+      '物件導向特性',
+      '基礎資料結構'
     ]);
-
-    const serializedSupplementalDataTopic = JSON.stringify(supplementalDataTopic);
-    expect(serializedSupplementalDataTopic).not.toContain('Machine Instruction Cycle');
-    expect(serializedSupplementalDataTopic).not.toContain('Five Functional Units');
-    expect(serializedSupplementalDataTopic).not.toContain('CPU Components');
-    expect(serializedSupplementalDataTopic).not.toContain('Memory Hierarchy');
-    expect(serializedSupplementalDataTopic).not.toContain('PC（程式計數器）');
-    expect(serializedSupplementalDataTopic).toContain('整體加速比');
-    expect(serializedSupplementalDataTopic).toContain('FCFS');
-    expect(serializedSupplementalDataTopic).toContain('四個必要條件');
-    expect(serializedSupplementalDataTopic).toContain('Stack');
-
-    const schedulingSection = lessonArticle.sections.find((section) => section.heading === '二、CPU 排班演算法（CPU Scheduling）');
-    const algorithmIntroIndex = schedulingSection?.blocks.findIndex(
-      (block) => block.kind === 'paragraph' && block.text === '四種常見演算法：'
+    expect([routeAmdahlTopic, routeSchedulingTopic, routeDeadlockTopic, routePagingSegmentationTopic, routeOopTopic, routeDataStructuresTopic].map((topic) => topic?.id)).toEqual(
+      splitProfessionalSupplementalTopics.map((topic) => topic.id)
     );
-    const algorithmListBlock =
-      algorithmIntroIndex === undefined || algorithmIntroIndex < 0 ? undefined : schedulingSection?.blocks[algorithmIntroIndex + 1];
+    expect(amdahlTopic?.sourceFiles).toEqual([supplementalDataSourceFile]);
+    expect(schedulingTopic?.sourceFiles).toEqual([supplementalCpuSchedulingSourceFile]);
+    expect(deadlockTopic?.sourceFiles).toEqual([supplementalDataSourceFile]);
+    expect(pagingSegmentationTopic?.sourceFiles).toEqual([supplementalDataSourceFile]);
+    expect(oopTopic?.sourceFiles).toEqual([supplementalDataSourceFile]);
+    expect(dataStructuresTopic?.sourceFiles).toEqual([supplementalDataSourceFile]);
 
-    expect(algorithmListBlock?.kind).toBe('orderedList');
-    if (algorithmListBlock?.kind !== 'orderedList') {
-      throw new Error('CPU scheduling algorithms should render as an ordered sequence');
+    for (const topic of splitSupplementalTopics) {
+      const lessonArticle = topic?.blocks[0];
+      expect(lessonArticle?.kind, `${topic?.id} should render through lessonArticle`).toBe('lessonArticle');
+      if (lessonArticle?.kind !== 'lessonArticle') {
+        throw new Error(`${topic?.id} should render through lessonArticle`);
+      }
+      const professionalTopic = splitProfessionalSupplementalTopics.find((candidate) => candidate.id === topic?.id);
+      expect(lessonArticle.sourceFiles).toEqual(professionalTopic?.sourceFiles);
+      expect(lessonArticle.sections.length, `${topic?.id} should have sections`).toBeGreaterThan(0);
     }
-    expect(algorithmListBlock.markerStyle).toBe('decimal');
-    expect(algorithmListBlock.items).toHaveLength(4);
-    expect(algorithmListBlock.items[0]).toContain('FCFS 先到先服務');
-    expect(algorithmListBlock.items[0]).toContain('護送效應');
-    expect(algorithmListBlock.items[1]).toContain('SJF 最短工作優先');
-    expect(algorithmListBlock.items[1]).toContain('SRTF');
-    expect(algorithmListBlock.items[2]).toContain('Priority 優先權排班');
-    expect(algorithmListBlock.items[2]).toContain('老化 aging');
-    expect(algorithmListBlock.items[3]).toContain('RR 輪轉');
-    expect(algorithmListBlock.items[3]).toContain('time quantum');
+
+    const serializedSplitSupplementalTopics = JSON.stringify(splitSupplementalTopics);
+    expect(serializedSplitSupplementalTopics).not.toContain('"kind":"bulletList"');
+    expect(serializedSplitSupplementalTopics).toContain('"kind":"orderedList"');
+    expect(serializedSplitSupplementalTopics).not.toContain('Machine Instruction Cycle');
+    expect(serializedSplitSupplementalTopics).not.toContain('Five Functional Units');
+    expect(serializedSplitSupplementalTopics).not.toContain('CPU Components');
+    expect(serializedSplitSupplementalTopics).not.toContain('Memory Hierarchy');
+    expect(serializedSplitSupplementalTopics).not.toContain('PC（程式計數器）');
+    expect(serializedSplitSupplementalTopics).not.toContain('questionText');
+    expect(serializedSplitSupplementalTopics).not.toContain('correctAnswer');
+    expect(serializedSplitSupplementalTopics).not.toContain('backendSyncId');
+    expect(serializedSplitSupplementalTopics).not.toContain('remoteQuestionId');
+    expect(serializedSplitSupplementalTopics).toContain('整體加速比');
+    expect(serializedSplitSupplementalTopics).toContain('FCFS');
+    expect(serializedSplitSupplementalTopics).toContain('四個必要條件');
+    expect(serializedSplitSupplementalTopics).toContain('Stack');
+
+    expect(schedulingLessonArticle?.kind).toBe('lessonArticle');
+    if (schedulingLessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cpv2-supplemental-cpu-scheduling should render through lessonArticle');
+    }
+    const schedulingBlocks = schedulingLessonArticle.sections.flatMap((section) => section.blocks);
+    const comparisonTable = schedulingBlocks.find((block) => block.kind === 'table');
+    const practiceQuestionList = schedulingBlocks.find(
+      (block) =>
+        block.kind === 'orderedList' &&
+        block.items.some((item) => item.includes('Round Robin 中,時間量子設定非常大時,行為趨近於?'))
+    );
+    const answerTable = schedulingBlocks.find(
+      (block) => block.kind === 'table' && block.headers.includes('題') && block.headers.includes('答') && block.headers.includes('解析')
+    );
+
+    expect(comparisonTable?.kind).toBe('table');
+    expect(JSON.stringify(comparisonTable)).toContain('MLFQ');
+    expect(practiceQuestionList?.kind).toBe('orderedList');
+    expect(practiceQuestionList?.kind === 'orderedList' ? practiceQuestionList.items : []).toHaveLength(20);
+    expect(answerTable?.kind).toBe('table');
+    expect(JSON.stringify(answerTable)).toContain('20');
+    expect(JSON.stringify(answerTable)).toContain('B');
   });
 
   it('uses the refreshed v2 floating point source after the supplemental topics', () => {
     const topics = getSubjectTopics(subjectKey);
-    const floatingPointTopic = topics[11];
+    const floatingPointTopic = topics[16];
 
     expect(floatingPointTopic?.id).toBe('cpv2-floating-point-conversion');
     expect(floatingPointTopic?.title).toBe('浮點數轉換');
@@ -326,7 +400,13 @@ describe('computer principles v2 route workflow', () => {
     expect(lessonArticle.sourceFiles).not.toContain(deprecatedFloatingPointSourceFile);
     expect(lessonArticle.sourceFiles).not.toContain(supplementalPracticeSourceFile);
     expect(lessonArticle.sourceFiles).not.toContain(supplementalDataSourceFile);
+    expect(lessonArticle.sourceFiles).not.toContain(supplementalCpuSchedulingSourceFile);
     expect(getSubjectTopics(subjectKey).map((topic) => topic.id)).toEqual(topicCases.map((topicCase) => topicCase.id));
+    expect(topics.map((topic) => topic.id).slice(15, 18)).toEqual([
+      'cpv2-complement-conversion',
+      'cpv2-floating-point-conversion',
+      'cpv2-codes-and-character-sets'
+    ]);
     expect(
       getSubjectTopics(subjectKey).some((topic) =>
         topic.blocks.some(

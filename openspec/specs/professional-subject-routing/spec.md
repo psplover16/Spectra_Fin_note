@@ -591,7 +591,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -1215,7 +1215,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -1839,7 +1839,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md
@@ -2469,7 +2469,7 @@ code:
   - _private/TMP/algorithms/graph-traversal-and-paths.prompt.md
   - _TMP/20260613-054000-computer-principles-cp-memory-classification.md
   - _private/TMP/information-management/im-05-info-ethics-regulations.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/networking/osi-tcpip-models.verified.md
   - _private/TMP/information-management/generate-route-workflow.mjs
   - _private/TMP/networking/data-link-layer.prompt.md

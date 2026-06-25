@@ -63,7 +63,8 @@ test('production PWA shell loads professional routes offline after an online war
 
   await page.goto('/computer-principles-v2');
   await expect(page.getByTestId('subject-view-computer-principles-v2')).toBeVisible();
-  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('補充資料');
+  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('阿姆達爾定律');
+  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('CPU 排班演算法');
   await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('架構與計算理論');
   await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('檢查碼（二）漢明碼與漢明距');
 

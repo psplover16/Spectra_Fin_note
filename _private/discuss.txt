@@ -1,6 +1,13 @@
-幫我在 computer-principles-v2 此路由，新增一個 資料
+幫我在 computer-principles-v2 此路由，新增及刪除 card 
 
-新建一個容器(以下稱為section)，放在加強練習之後、架構與計算理論之前
+把目前 標題為補充資料的 card的內容拆成6個 card，規則如下:
+1. 每個 card 的內容 要用有序序列表示
+2. CPU 排班演算法 的內容使用以下這個MD檔的內容  @/_private/計概補充/CPU排班演算法_考試速記版.md
+連排版也使用MD的排版，MD很完美
+3. 添加的新card，放在補充資料 card 前方
 
-內容為以下md檔
-@/_private/計概補充/計算機概論_重點講義_01.md
+
+最後，再把 補充資料card刪除
+
+
+如果有發現專案內容與過去spec有衝突，以spec為主

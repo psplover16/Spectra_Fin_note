@@ -495,7 +495,7 @@ code:
   - _private/TMP/programming/programming-system-analysis-pdca.prompt.md
   - _private/TMP/algorithms/array-addressing.draft.md
   - _private/TMP/programming/programming-intermediate.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/computer-principles/cp-universal-gates.prompt.md
   - _private/TMP/payloads/資料結構與演算法/排序.md
   - _private/TMP/programming/programming-pointers.draft.md
@@ -1191,7 +1191,7 @@ code:
   - _private/TMP/programming/programming-system-analysis-pdca.prompt.md
   - _private/TMP/algorithms/array-addressing.draft.md
   - _private/TMP/programming/programming-intermediate.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/computer-principles/cp-universal-gates.prompt.md
   - _private/TMP/payloads/資料結構與演算法/排序.md
   - _private/TMP/programming/programming-pointers.draft.md
@@ -1889,7 +1889,7 @@ code:
   - _private/TMP/programming/programming-system-analysis-pdca.prompt.md
   - _private/TMP/algorithms/array-addressing.draft.md
   - _private/TMP/programming/programming-intermediate.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/computer-principles/cp-universal-gates.prompt.md
   - _private/TMP/payloads/資料結構與演算法/排序.md
   - _private/TMP/programming/programming-pointers.draft.md
@@ -2586,7 +2586,7 @@ code:
   - _private/TMP/programming/programming-system-analysis-pdca.prompt.md
   - _private/TMP/algorithms/array-addressing.draft.md
   - _private/TMP/programming/programming-intermediate.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/computer-principles/cp-universal-gates.prompt.md
   - _private/TMP/payloads/資料結構與演算法/排序.md
   - _private/TMP/programming/programming-pointers.draft.md
@@ -3282,7 +3282,7 @@ code:
   - _private/TMP/programming/programming-system-analysis-pdca.prompt.md
   - _private/TMP/algorithms/array-addressing.draft.md
   - _private/TMP/programming/programming-intermediate.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/computer-principles/cp-universal-gates.prompt.md
   - _private/TMP/payloads/資料結構與演算法/排序.md
   - _private/TMP/programming/programming-pointers.draft.md
@@ -3978,7 +3978,7 @@ code:
   - _private/TMP/programming/programming-system-analysis-pdca.prompt.md
   - _private/TMP/algorithms/array-addressing.draft.md
   - _private/TMP/programming/programming-intermediate.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/computer-principles/cp-universal-gates.prompt.md
   - _private/TMP/payloads/資料結構與演算法/排序.md
   - _private/TMP/programming/programming-pointers.draft.md
@@ -4673,7 +4673,7 @@ code:
   - _private/TMP/programming/programming-system-analysis-pdca.prompt.md
   - _private/TMP/algorithms/array-addressing.draft.md
   - _private/TMP/programming/programming-intermediate.draft.md
-  - _privarw/時間複雜度.md
+  - _private/MD/資料結構與演算法/三、時間複雜度.md
   - _private/TMP/computer-principles/cp-universal-gates.prompt.md
   - _private/TMP/payloads/資料結構與演算法/排序.md
   - _private/TMP/programming/programming-pointers.draft.md
