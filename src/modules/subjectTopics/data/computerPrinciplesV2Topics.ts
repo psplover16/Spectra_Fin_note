@@ -36,52 +36,7 @@ const supplementalPracticeSections: readonly LessonArticleSection[] = [
 
 const supplementalDataSections: readonly LessonArticleSection[] = [
   {
-    "heading": "一、機器指令週期（Machine Instruction Cycle）",
-    "blocks": [
-      {
-        "kind": "paragraph",
-        "text": "一句話核心：CPU 是「一道一道」處理指令的——拿來、看懂、做掉，做完再拿下一道，不斷循環直到程式跑完。"
-      },
-      {
-        "kind": "paragraph",
-        "text": "一道「指令（instruction）」就是一個小命令，例如「把記憶體第 100 格的數字搬進 CPU」。程式就是一長串這種指令。CPU 沒辦法一口氣吞下整個程式，它每次只處理一道，每道都走同樣的固定流程："
-      },
-      {
-        "kind": "orderedList",
-        "items": [
-          "擷取 Fetch（拿來）：去記憶體把「下一道指令」搬進 CPU。\n- 流程：PC 說出下一道指令在哪 → 透過 MAR 把這個位址送到記憶體 → 記憶體把該格的指令送回，暫存到 MDR → 再放進 IR → PC 自動 +1（指向再下一道）。\n- （MAR、MDR、IR、PC 都是 CPU 內的小儲存格「暫存器」，第四單元會細講，這裡先知道它們是傳遞位址與指令的中繼站。）",
-          "解碼 Decode（看懂）：控制單元判讀這道指令要做什麼（讀指令裡的「操作碼 opcode」，例如這是加法還是搬移）。",
-          "執行 Execute（做掉）：ALU 真正進行運算，或把資料搬到該去的地方。",
-          "（寫回 Write Back）：把結果存回暫存器或記憶體。"
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "text": "舉一道指令走完全程：假設指令是「把記憶體某格的數加到累加器」——\n擷取（把這道指令抓進 IR）→ 解碼（看懂是「加法」）→ 執行（去記憶體拿那個數，ALU 把它和累加器相加）→ 寫回（結果存回累加器）。做完，PC 已指向下一道，再來一輪。"
-      },
-      {
-        "kind": "paragraph",
-        "text": "兩個關鍵角色，最常考："
-      },
-      {
-        "kind": "bulletList",
-        "items": [
-          "PC（程式計數器）：記「下一道」指令的位址。",
-          "IR（指令暫存器）：放「現在這道」指令。"
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "text": "指令週期 vs 機器週期：一個「指令週期（instruction cycle）」是把一道指令從頭做到尾；它底下可再拆成數個「機器週期（machine cycle）」，每個機器週期通常對應一次記憶體存取（例如擷取就是一個機器週期）。所以「一個指令週期 ⊇ 數個機器週期」。"
-      },
-      {
-        "kind": "paragraph",
-        "text": "⚠️ 國考考點\n- PC 指「下一道」、IR 是「現在這道」——最愛考，千萬別搞反。\n- 擷取階段一定會更新 PC（+1）。\n- 順序固定為「擷取 → 解碼 → 執行」。\n- 一個指令週期由「數個機器週期」組成（別把兩者當同義詞）。"
-      }
-    ]
-  },
-  {
-    "heading": "二、阿姆達爾定律（Amdahl's Law）",
+    "heading": "一、阿姆達爾定律（Amdahl's Law）",
     "blocks": [
       {
         "kind": "paragraph",
@@ -155,193 +110,7 @@ const supplementalDataSections: readonly LessonArticleSection[] = [
     ]
   },
   {
-    "heading": "三、五大單元（Five Functional Units）",
-    "blocks": [
-      {
-        "kind": "paragraph",
-        "text": "一句話核心：一台電腦運作所需的五個基本功能方塊。"
-      },
-      {
-        "kind": "bulletList",
-        "items": [
-          "輸入單元 Input：把外界資料送進電腦（鍵盤、滑鼠、麥克風、掃描器）。",
-          "記憶單元 Memory：存放程式與資料（主記憶體 RAM）。",
-          "控制單元 CU：指揮中心，解讀指令、發號施令協調其他單元。",
-          "算術邏輯單元 ALU：實際做運算（加減乘除 = 算術；AND／OR／比較大小 = 邏輯）。",
-          "輸出單元 Output：把結果送給外界（螢幕、印表機、喇叭）。"
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "text": "資料怎麼流（用按計算機算 3 + 5 想像）："
-      },
-      {
-        "kind": "paragraph",
-        "text": "輸入(按 3+5) → 記憶(暫存數字與指令) → [ CPU：CU 指揮、ALU 算出 8 ] → 輸出(螢幕顯示 8)"
-      },
-      {
-        "kind": "paragraph",
-        "text": "控制單元 + 算術邏輯單元 = CPU（中央處理單元）。CU 負責「指揮」，ALU 負責「動手做」。"
-      },
-      {
-        "kind": "paragraph",
-        "text": "⚠️ 國考考點\n- CPU 只含 CU + ALU；記憶／輸入／輸出單元不算 CPU。\n- CU 是「指揮官」、ALU 是「執行者」，職責別混。\n- 同一個裝置可能身兼輸入與輸出（如觸控螢幕、讀寫硬碟）。"
-      }
-    ]
-  },
-  {
-    "heading": "四、CPU 組成（CPU Components）",
-    "blocks": [
-      {
-        "kind": "paragraph",
-        "text": "一句話核心：把上一單元的「CPU = CU + ALU」再放大細看，裡面還有一群超高速的小儲存「暫存器」。"
-      },
-      {
-        "kind": "paragraph",
-        "text": "CPU 內部三大部分："
-      },
-      {
-        "kind": "bulletList",
-        "items": [
-          "控制單元 CU：解碼指令、發出控制訊號。",
-          "算術邏輯單元 ALU：進行運算。",
-          "暫存器 Registers：CPU 內部的超高速小儲存格，像 CPU 隨手可寫的「便利貼」，放正在處理的資料與位址。因為就在 CPU 裡面，存取最快。"
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "text": "常見暫存器（用第一單元的指令週期串起來記最快）："
-      },
-      {
-        "kind": "bulletList",
-        "items": [
-          "PC 程式計數器 → 下一道指令位址",
-          "IR 指令暫存器 → 當前指令",
-          "MAR 記憶體位址暫存器 → 「我要存取哪一格」的位址（接位址匯流排）",
-          "MDR／MBR 記憶體資料暫存器 → 從記憶體搬進搬出的「資料本身」（接資料匯流排）",
-          "AC 累加器 → 暫存 ALU 的運算元與運算結果",
-          "狀態／旗標暫存器 → 記錄運算後的狀態（有沒有進位、結果是不是 0 等）"
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "text": "記法：MAR 管「位址」、MDR 管「資料」——一個說「去哪拿」，一個放「拿到什麼」。"
-      },
-      {
-        "kind": "paragraph",
-        "text": "暫存器特性：CPU 內最快、最貴、容量最小的儲存。"
-      },
-      {
-        "kind": "paragraph",
-        "text": "⚠️ 國考考點\n- 暫存器在 CPU 內部，不是主記憶體。\n- MAR 對位址、MDR 對資料，配對別錯。\n- 所有儲存中，暫存器速度最快。"
-      }
-    ]
-  },
-  {
-    "heading": "五、記憶體速度比較（Memory Hierarchy）",
-    "blocks": [
-      {
-        "kind": "paragraph",
-        "text": "一句話核心：儲存裝置速度差很多，依「快→慢」排成一座金字塔；越快的越貴、越小。"
-      },
-      {
-        "kind": "paragraph",
-        "text": "為什麼要分層？ 因為快的記憶體太貴、做不大；慢的便宜、能做很大。為了同時兼顧速度與成本，就分成多層——最常用的資料放在快但小的上層，不常用的放在慢但大的下層。（之所以有效，是因為程式有「區域性」：最近用過的東西，待會很可能再用到。）"
-      },
-      {
-        "kind": "paragraph",
-        "text": "速度由快到慢："
-      },
-      {
-        "kind": "paragraph",
-        "text": "暫存器 → 快取 Cache（L1→L2→L3）→ 主記憶體 RAM → SSD → HDD → 光碟／磁帶"
-      },
-      {
-        "kind": "paragraph",
-        "text": "各層的大致速度量級（幫你把「快慢」變具體，數字為約略級距）："
-      },
-      {
-        "kind": "table",
-        "headers": [
-          "層級",
-          "存取時間量級"
-        ],
-        "rows": [
-          [
-            "暫存器",
-            "小於 1 奈秒（ns）"
-          ],
-          [
-            "快取 Cache",
-            "約 1～10 奈秒"
-          ],
-          [
-            "主記憶體 RAM",
-            "約數十～百奈秒"
-          ],
-          [
-            "SSD",
-            "約數十～數百微秒（µs）"
-          ],
-          [
-            "HDD",
-            "約數～十幾毫秒（ms）"
-          ]
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "text": "（單位提醒：1 毫秒 = 一千微秒 = 一百萬奈秒。HDD 比暫存器慢了百萬倍以上。）"
-      },
-      {
-        "kind": "paragraph",
-        "text": "階層「三同向」規律（越往上層）："
-      },
-      {
-        "kind": "table",
-        "headers": [
-          "越往上層（越靠 CPU）",
-          "越往下層"
-        ],
-        "rows": [
-          [
-            "速度越快",
-            "速度越慢"
-          ],
-          [
-            "單位容量越貴",
-            "單位容量越便宜"
-          ],
-          [
-            "容量越小",
-            "容量越大"
-          ]
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "text": "快取的 L1／L2／L3：越靠近 CPU 核心的越小、越快（L1 最小最快，L3 較大較慢）。"
-      },
-      {
-        "kind": "paragraph",
-        "text": "用料差異（常考）："
-      },
-      {
-        "kind": "bulletList",
-        "items": [
-          "SRAM（靜態）：快、貴、不需更新 → 拿來做 Cache。",
-          "DRAM（動態）：慢一些、便宜、密度高、需週期性更新（refresh）才能保住資料 → 拿來做 主記憶體。",
-          "（「動態」就是指它會漏電、得不斷充電刷新；「靜態」則不用，所以叫法由此而來。）"
-        ]
-      },
-      {
-        "kind": "paragraph",
-        "text": "⚠️ 國考考點\n- 順序：暫存器 > 快取 > 主記憶體 > SSD > HDD。\n- 三同向：速度↑、價格↑、容量↓。\n- SRAM 做 Cache、DRAM 做主記憶體；DRAM 需 refresh、SRAM 不用；SSD 比 HDD 快。"
-      }
-    ]
-  },
-  {
-    "heading": "六、CPU 排班演算法（CPU Scheduling）",
+    "heading": "二、CPU 排班演算法（CPU Scheduling）",
     "blocks": [
       {
         "kind": "paragraph",
@@ -354,7 +123,8 @@ const supplementalDataSections: readonly LessonArticleSection[] = [
       {
         "kind": "bulletList",
         "items": [
-          "搶占式 Preemptive：程序執行到一半可被打斷、換別人先做；非搶占式 Non-preemptive：一旦開始就做到完才換人。",
+          "搶占式 Preemptive：程序執行到一半可被打斷、換別人先做；",
+          "非搶占式 Non-preemptive：一旦開始就做到完才換人。",
           "周轉時間 Turnaround＝ 完成時間 − 到達時間（從進到系統到全部做完，總共經過多久）。",
           "等待時間 Waiting＝ 周轉時間 − 執行時間（總共多久是在「乾等」、沒被 CPU 服務）。",
           "回應時間 Response＝ 從到達到「第一次」開始被執行的時間（互動式系統最在意這個）。"
@@ -365,19 +135,13 @@ const supplementalDataSections: readonly LessonArticleSection[] = [
         "text": "四種常見演算法："
       },
       {
-        "kind": "bulletList",
+        "kind": "orderedList",
+        "markerStyle": "decimal",
         "items": [
-          "FCFS 先到先服務（非搶占）：照到達順序做。",
-          "缺點：護送效應（convoy effect）——一個很長的工作排前面，後面一堆短工作全被卡住乾等，平均等待時間被拉長。",
-          "SJF 最短工作優先（非搶占）：先做執行時間最短的。",
-          "優點：平均等待時間最短（理論最佳）。",
-          "缺點：要先知道每個工作的執行時間（現實做不到，只能估）；長工作可能一直被插隊而餓死（starvation）。",
-          "搶占版叫 SRTF（最短剩餘時間優先）：新工作若比正在跑的「剩餘時間」更短，就搶占。",
-          "優先權 Priority：依優先權高低排。",
-          "缺點：低優先權者可能餓死 → 用 老化 aging（等越久、優先權自動慢慢調高）解決。",
-          "輪轉 RR（搶占式）：每個程序輪流用一小段「時間量子 quantum」，用完換下一個，沒做完的排回隊伍尾端。",
-          "特性：最公平、回應快、適合分時系統。",
-          "quantum 太大 → 退化成 FCFS；太小 → 一直在換人，切換（context switch）成本太高。"
+          "FCFS 先到先服務（非搶占）\n規則：照到達順序執行。\n缺點：護送效應（convoy effect），長工作排前面會讓後面短工作全部乾等，平均等待時間被拉長。",
+          "SJF 最短工作優先（非搶占）\n規則：先執行時間最短的工作。\n優點：平均等待時間最短（理論最佳）。\n限制：必須先知道或估計執行時間；長工作可能一直被插隊而餓死（starvation）。\n搶占版：SRTF（最短剩餘時間優先），新工作若比目前工作剩餘時間更短就搶占。",
+          "Priority 優先權排班\n規則：依優先權高低決定執行順序。\n缺點：低優先權工作可能餓死。\n解法：老化 aging，等待越久就逐步提高優先權。",
+          "RR 輪轉（搶占式）\n規則：每個程序輪流使用一小段時間量子（time quantum），用完就換下一個，沒做完的排回隊伍尾端。\n特性：公平、回應快，適合分時系統。\n注意：quantum 太大會退化成 FCFS；太小會讓 context switch 成本太高。"
         ]
       },
       {
@@ -454,7 +218,7 @@ const supplementalDataSections: readonly LessonArticleSection[] = [
     ]
   },
   {
-    "heading": "七、死結（Deadlock）",
+    "heading": "三、死結（Deadlock）",
     "blocks": [
       {
         "kind": "paragraph",
@@ -501,7 +265,7 @@ const supplementalDataSections: readonly LessonArticleSection[] = [
     ]
   },
   {
-    "heading": "八、分頁與分段記憶體管理（Paging & Segmentation）",
+    "heading": "四、分頁與分段記憶體管理（Paging & Segmentation）",
     "blocks": [
       {
         "kind": "paragraph",
@@ -612,7 +376,7 @@ const supplementalDataSections: readonly LessonArticleSection[] = [
     ]
   },
   {
-    "heading": "九、物件導向特性（OOP Characteristics）",
+    "heading": "五、物件導向特性（OOP Characteristics）",
     "blocks": [
       {
         "kind": "paragraph",
@@ -648,7 +412,7 @@ const supplementalDataSections: readonly LessonArticleSection[] = [
     ]
   },
   {
-    "heading": "十、基礎資料結構（Basic Data Structures）",
+    "heading": "六、基礎資料結構（Basic Data Structures）",
     "blocks": [
       {
         "kind": "paragraph",
@@ -758,7 +522,7 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
     "id": "cpv2-supplemental-data",
     "subjectKey": "computerPrinciplesV2",
     "title": "補充資料",
-    "summary": "整理計算機概論補充講義中的指令週期、效能、CPU、記憶體、作業系統與資料結構重點。",
+    "summary": "整理計算機概論補充講義中的效能、作業系統與資料結構重點。",
     "sourceBatch": "computer-principles-v2-route",
     "sourceFiles": [
       "_private/計概補充/計算機概論_重點講義_01.md"
@@ -771,16 +535,8 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
     "topicType": "concept",
     "terms": [
       {
-        "zh": "機器指令週期",
-        "en": "Machine Instruction Cycle"
-      },
-      {
         "zh": "阿姆達爾定律",
         "en": "Amdahl's Law"
-      },
-      {
-        "zh": "記憶體階層",
-        "en": "Memory Hierarchy"
       },
       {
         "zh": "CPU 排班",
@@ -803,7 +559,7 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
         ],
         "sourceSection": "計概(v2) / 補充資料",
         "lead": [
-          "計算機概論補充講義（一）：機器指令週期、阿姆達爾定律、五大單元、CPU、記憶體、排班、死結、分頁分段、OOP 與基礎資料結構。"
+          "計算機概論補充講義（一）：阿姆達爾定律、排班、死結、分頁分段、OOP 與基礎資料結構。"
         ],
         "sections": supplementalDataSections
       }
@@ -2596,6 +2352,10 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
         "en": "Register"
       },
       {
+        "zh": "累加器",
+        "en": "Accumulator, AC"
+      },
+      {
         "zh": "快取記憶體",
         "en": "Cache Memory"
       },
@@ -2628,7 +2388,8 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
                   "Limit Register（界限暫存器）：存放「程式可用區段大小或界限」。常與 Base Register 搭配，檢查存取是否超出允許範圍。白話：「這個程式最多只能用到這麼大的範圍。」",
                   "Flag Register / Status Register（旗標／狀態暫存器）：記錄 CPU 運算結果狀態，例如結果是否為零、是否進位、是否溢位、正負號，以及是否允許中斷。",
                   "MAR（Memory Address Register，記憶體位址暫存器）：存放「要存取的記憶體位址」。",
-                  "MDR / MBR（Memory Data / Buffer Register，記憶體資料／緩衝暫存器）：存放「從記憶體讀出，或準備寫入記憶體的資料」。（MAR 管地址，MDR/MBR 管資料，常一起出現。）"
+                  "MDR / MBR（Memory Data / Buffer Register，記憶體資料／緩衝暫存器）：存放「從記憶體讀出，或準備寫入記憶體的資料」。（MAR 管地址，MDR/MBR 管資料，常一起出現。）",
+                  "AC（Accumulator，累加器）：暫存 ALU 運算的中間結果或最後結果，也常作為下一次運算的輸入。白話：「ALU 算完先放這裡，下一步可直接接著算。」"
                 ]
               }
             ]
@@ -2639,7 +2400,7 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
               {
                 "kind": "orderedList",
                 "items": [
-                  "暫存器名稱與功能配對：PC → 下一個要執行指令的位址；IR → 目前正在解碼或執行的指令；MAR → 記憶體位址；MDR/MBR → 記憶體資料。",
+                  "暫存器名稱與功能配對：PC → 下一個要執行指令的位址；IR → 目前正在解碼或執行的指令；MAR → 記憶體位址；MDR/MBR → 記憶體資料；AC → ALU 運算的中間或累積結果。",
                   "取指令流程：PC 給下一個指令位址、MAR 放要存取的位址、MDR/MBR 放讀回資料、IR 放目前指令。",
                   "記憶體保護：出現 base、limit、relocation、protection、越界檢查 → 想到 Base Register（管起始位址）與 Limit Register（管大小／界限）。",
                   "旗標意義：Zero、Carry、Overflow、Sign、Interrupt Enable → 選 Flag Register / Status Register。"

@@ -297,7 +297,7 @@ describe('subject topic route data helpers', () => {
       throw new Error('cpv2-supplemental-data should expose supplemental lessonArticle content');
     }
     expect(supplementalDataLessonArticle.sourceFiles).toEqual([supplementalCpv2DataSourceFile]);
-    expect(supplementalDataLessonArticle.sections[0]?.heading).toBe('一、機器指令週期（Machine Instruction Cycle）');
+    expect(supplementalDataLessonArticle.sections[0]?.heading).toBe("一、阿姆達爾定律（Amdahl's Law）");
     expect(JSON.stringify(supplementalDataTopic)).toContain("Amdahl's Law");
   });
 

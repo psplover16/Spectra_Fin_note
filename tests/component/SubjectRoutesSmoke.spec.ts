@@ -139,7 +139,10 @@ describe('subject route views', () => {
     await wrapper.get('[data-testid="topic-title-cpv2-supplemental-data"]').trigger('click');
 
     const supplementalDataDetail = wrapper.get('[data-testid="topic-detail-cpv2-supplemental-data"]');
-    expect(supplementalDataDetail.text()).toContain('Machine Instruction Cycle');
+    expect(supplementalDataDetail.text()).not.toContain('Machine Instruction Cycle');
+    expect(supplementalDataDetail.text()).not.toContain('Five Functional Units');
+    expect(supplementalDataDetail.text()).not.toContain('CPU Components');
+    expect(supplementalDataDetail.text()).not.toContain('Memory Hierarchy');
     expect(supplementalDataDetail.text()).toContain("Amdahl's Law");
   });
 

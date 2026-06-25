@@ -17810,7 +17810,11 @@ The `cpv2-supplemental-data` professional topic SHALL trace `_private/計概補�
 #### Scenario: Supplemental data content remains lecture-only
 
 - **WHEN** the supplemental data topic is serialized for inspection
-- **THEN** the serialized topic contains the phrases `Machine Instruction Cycle`, `Amdahl's Law`, `Memory Hierarchy`, `CPU Scheduling`, `Deadlock`, and `Basic Data Structures`
+- **THEN** the serialized topic contains the phrases `Amdahl's Law`, `CPU Scheduling`, `Deadlock`, and `Basic Data Structures`
+- **AND** the serialized topic does not contain `Machine Instruction Cycle`
+- **AND** the serialized topic does not contain `Five Functional Units`
+- **AND** the serialized topic does not contain `CPU Components`
+- **AND** the serialized topic does not contain `Memory Hierarchy`
 - **AND** the serialized topic does not contain `questionText`
 - **AND** the serialized topic does not contain `correctAnswer`
 - **AND** the serialized topic does not contain `backendSyncId`

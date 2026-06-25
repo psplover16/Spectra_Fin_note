@@ -260,7 +260,8 @@ The `computerPrinciplesV2` route SHALL render a route-visible topic card titled 
 - **AND** the practice topic contains the 12 numbered prompts from `_private/discuss.txt`
 - **AND** the practice topic preserves the cache subpoints for `Valid bit`, `Dirty bit`, `Tag`, and the stored data
 - **AND** the supplemental data topic source files include `_private/計概補充/計算機概論_重點講義_01.md`
-- **AND** the supplemental data lessonArticle includes sections for instruction cycle, Amdahl's Law, five functional units, CPU components, memory hierarchy, CPU scheduling, deadlock, paging and segmentation, object-oriented characteristics, and basic data structures
+- **AND** the supplemental data lessonArticle includes sections for Amdahl's Law, CPU scheduling, deadlock, paging and segmentation, object-oriented characteristics, and basic data structures
+- **AND** the supplemental data lessonArticle does not include sections for five functional units, CPU components, or memory hierarchy
 
 #### Scenario: IEEE 754 special values are available directly below the root floating point section
 

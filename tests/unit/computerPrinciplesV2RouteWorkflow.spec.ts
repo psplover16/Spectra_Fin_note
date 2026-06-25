@@ -197,6 +197,31 @@ describe('computer principles v2 route workflow', () => {
     }
   });
 
+  it('introduces the AC accumulator below MDR/MBR in the v2 registers lesson', () => {
+    const registersTopic = getSubjectTopics(subjectKey).find((topic) => topic.id === 'cpv2-registers-cache');
+    const lessonArticle = registersTopic?.blocks[0];
+
+    expect(lessonArticle?.kind).toBe('lessonArticle');
+    if (lessonArticle?.kind !== 'lessonArticle') {
+      throw new Error('cpv2-registers-cache should render through lessonArticle');
+    }
+
+    const registerSection = lessonArticle.sections.find((section) => section.heading === '11. Register（暫存器） / 名詞解釋');
+    const registerListBlock = registerSection?.blocks.find((block) => block.kind === 'bulletList');
+
+    expect(registerListBlock?.kind).toBe('bulletList');
+    if (registerListBlock?.kind !== 'bulletList') {
+      throw new Error('Register term section should expose a bullet list');
+    }
+
+    const mdrIndex = registerListBlock.items.findIndex((item) => item.startsWith('MDR / MBR'));
+    const acIndex = registerListBlock.items.findIndex((item) => item.startsWith('AC（Accumulator，累加器）'));
+
+    expect(acIndex).toBeGreaterThan(mdrIndex);
+    expect(registerListBlock.items[acIndex]).toContain('ALU 運算的中間結果或最後結果');
+    expect(JSON.stringify(registersTopic)).toContain('AC → ALU 運算的中間或累積結果');
+  });
+
   it('keeps the supplemental practice content as the first route-visible topic card', () => {
     const topics = getSubjectTopics(subjectKey);
     const practiceTopic = topics[0];
@@ -240,24 +265,46 @@ describe('computer principles v2 route workflow', () => {
 
     expect(lessonArticle.sourceFiles).toEqual([supplementalDataSourceFile]);
     expect(lessonArticle.sections.map((section) => section.heading)).toEqual([
-      '一、機器指令週期（Machine Instruction Cycle）',
-      "二、阿姆達爾定律（Amdahl's Law）",
-      '三、五大單元（Five Functional Units）',
-      '四、CPU 組成（CPU Components）',
-      '五、記憶體速度比較（Memory Hierarchy）',
-      '六、CPU 排班演算法（CPU Scheduling）',
-      '七、死結（Deadlock）',
-      '八、分頁與分段記憶體管理（Paging & Segmentation）',
-      '九、物件導向特性（OOP Characteristics）',
-      '十、基礎資料結構（Basic Data Structures）'
+      "一、阿姆達爾定律（Amdahl's Law）",
+      '二、CPU 排班演算法（CPU Scheduling）',
+      '三、死結（Deadlock）',
+      '四、分頁與分段記憶體管理（Paging & Segmentation）',
+      '五、物件導向特性（OOP Characteristics）',
+      '六、基礎資料結構（Basic Data Structures）'
     ]);
 
     const serializedSupplementalDataTopic = JSON.stringify(supplementalDataTopic);
-    expect(serializedSupplementalDataTopic).toContain('PC（程式計數器）');
+    expect(serializedSupplementalDataTopic).not.toContain('Machine Instruction Cycle');
+    expect(serializedSupplementalDataTopic).not.toContain('Five Functional Units');
+    expect(serializedSupplementalDataTopic).not.toContain('CPU Components');
+    expect(serializedSupplementalDataTopic).not.toContain('Memory Hierarchy');
+    expect(serializedSupplementalDataTopic).not.toContain('PC（程式計數器）');
     expect(serializedSupplementalDataTopic).toContain('整體加速比');
     expect(serializedSupplementalDataTopic).toContain('FCFS');
     expect(serializedSupplementalDataTopic).toContain('四個必要條件');
     expect(serializedSupplementalDataTopic).toContain('Stack');
+
+    const schedulingSection = lessonArticle.sections.find((section) => section.heading === '二、CPU 排班演算法（CPU Scheduling）');
+    const algorithmIntroIndex = schedulingSection?.blocks.findIndex(
+      (block) => block.kind === 'paragraph' && block.text === '四種常見演算法：'
+    );
+    const algorithmListBlock =
+      algorithmIntroIndex === undefined || algorithmIntroIndex < 0 ? undefined : schedulingSection?.blocks[algorithmIntroIndex + 1];
+
+    expect(algorithmListBlock?.kind).toBe('orderedList');
+    if (algorithmListBlock?.kind !== 'orderedList') {
+      throw new Error('CPU scheduling algorithms should render as an ordered sequence');
+    }
+    expect(algorithmListBlock.markerStyle).toBe('decimal');
+    expect(algorithmListBlock.items).toHaveLength(4);
+    expect(algorithmListBlock.items[0]).toContain('FCFS 先到先服務');
+    expect(algorithmListBlock.items[0]).toContain('護送效應');
+    expect(algorithmListBlock.items[1]).toContain('SJF 最短工作優先');
+    expect(algorithmListBlock.items[1]).toContain('SRTF');
+    expect(algorithmListBlock.items[2]).toContain('Priority 優先權排班');
+    expect(algorithmListBlock.items[2]).toContain('老化 aging');
+    expect(algorithmListBlock.items[3]).toContain('RR 輪轉');
+    expect(algorithmListBlock.items[3]).toContain('time quantum');
   });
 
   it('uses the refreshed v2 floating point source after the supplemental topics', () => {

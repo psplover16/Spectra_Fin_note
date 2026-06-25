@@ -835,19 +835,19 @@ describe('professional topic skeleton data', () => {
     expect(supplementalDataLessonArticle.sourceFiles).toEqual([supplementalCpv2DataSourceFile]);
     expect(supplementalDataLessonArticle.sourceSection).toBe(supplementalDataTopic?.sourceSummary);
     expect(supplementalDataLessonArticle.sections.map((section) => section.heading)).toEqual([
-      '一、機器指令週期（Machine Instruction Cycle）',
-      "二、阿姆達爾定律（Amdahl's Law）",
-      '三、五大單元（Five Functional Units）',
-      '四、CPU 組成（CPU Components）',
-      '五、記憶體速度比較（Memory Hierarchy）',
-      '六、CPU 排班演算法（CPU Scheduling）',
-      '七、死結（Deadlock）',
-      '八、分頁與分段記憶體管理（Paging & Segmentation）',
-      '九、物件導向特性（OOP Characteristics）',
-      '十、基礎資料結構（Basic Data Structures）'
+      "一、阿姆達爾定律（Amdahl's Law）",
+      '二、CPU 排班演算法（CPU Scheduling）',
+      '三、死結（Deadlock）',
+      '四、分頁與分段記憶體管理（Paging & Segmentation）',
+      '五、物件導向特性（OOP Characteristics）',
+      '六、基礎資料結構（Basic Data Structures）'
     ]);
     const serializedSupplementalDataTopic = JSON.stringify(supplementalDataTopic);
-    for (const supplementalDataPhrase of ['Machine Instruction Cycle', "Amdahl's Law", 'Memory Hierarchy', 'CPU Scheduling', 'Deadlock', 'Basic Data Structures']) {
+    expect(serializedSupplementalDataTopic).not.toContain('Machine Instruction Cycle');
+    expect(serializedSupplementalDataTopic).not.toContain('Five Functional Units');
+    expect(serializedSupplementalDataTopic).not.toContain('CPU Components');
+    expect(serializedSupplementalDataTopic).not.toContain('Memory Hierarchy');
+    for (const supplementalDataPhrase of ["Amdahl's Law", 'CPU Scheduling', 'Deadlock', 'Basic Data Structures']) {
       expect(serializedSupplementalDataTopic).toContain(supplementalDataPhrase);
     }
     for (const forbiddenKey of ['questionText', 'correctAnswer', 'backendSyncId', 'remoteQuestionId']) {
