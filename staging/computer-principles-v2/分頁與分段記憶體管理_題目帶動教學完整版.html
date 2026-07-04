@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜分頁與分段記憶體管理</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">Paging / Segmentation</p>
+<h1>分頁與分段記憶體管理 — 題目帶動教學（完整版）</h1>
+<blockquote><p>科目：計算機原理 — 作業系統 · 記憶體管理（重量級必考章）</p><p>用法：<strong>每一段都先丟一題你「現在還不會」的題目，卡住才補觀念，再回頭把題目解完。</strong> 看到題目先別往下捲，先自己動手算。</p><p>本檔由「分頁」與「分段」兩份題目帶動講義合併，<strong>所有計算皆已重新驗算</strong>。</p></blockquote>
+<h2>本檔地圖</h2>
+<p><strong>第一部　分頁 (Paging)</strong></p>
+<ul><li>開場：分頁在解什麼問題</li><li>題型一　拆位址（頁號／偏移 bits、總頁數）</li><li>題型二　邏輯位址 → 實體位址（十進位）</li><li>題型三　二進位轉換（看懂偏移為何照抄）</li><li>題型四　頁表有多大</li><li>延伸　實體記憶體決定框號 bits</li><li>題型五　TLB 與 EMAT</li><li>分頁速查表 · 分頁易錯點</li></ul>
+<p><strong>第二部　分段 (Segmentation)</strong></p>
+<ul><li>開場：分段在解什麼問題（分頁的痛點）</li><li>題型一　段表怎麼查 ＋ 位址位元配置（幾個段／每段多大）</li><li>題型二　位址轉換 ＋ 界限檢查 ＋ 合法位址邊界</li><li>題型三　外部碎裂 ＋ 緊縮</li><li>題型四　分頁 vs 分段終極比較表</li><li>延伸　段頁式</li><li>分段速查表 · 分段易錯點</li></ul>
+<p><strong>附錄</strong>：考前 30 秒總複習</p>
+<hr>
+<h1>第一部　分頁 (Paging)　★【練流程】</h1>
+<blockquote><p>科目：計算機原理 — 作業系統｜重量級必考</p><p>用法：<strong>每一段都先丟一題你「現在還不會」的題目，卡住的地方才補觀念，再回頭把題目解完。</strong> 看到題目先別往下捲，自己動手算，算不出來再看解法。</p><p>（所有計算已用程式重新驗算過。）</p><p>接續你之前學的「邏輯位址 vs 實體位址」那篇，這篇專攻<strong>會考的計算題型</strong>。</p></blockquote>
+<hr>
+<h2>開場：分頁到底在解什麼問題？　【理解】</h2>
+<p>一句話先記著：<strong>分頁 = 把記憶體切成一樣大的小格子，這樣程式不用「整塊連續」塞進去，哪裡有空格就放哪。</strong></p>
+<p>三個名詞，先建立畫面（<strong>定義 → 核心 → 怎麼用</strong>）：</p>
+<ul><li><strong>頁（page）</strong>：把<strong>邏輯記憶體</strong>（程式自己以為的記憶體）切成的固定大小小塊。</li><li><strong>框架（frame，頁框）</strong>：把<strong>實體記憶體</strong>（真正的 RAM）切成的固定大小小塊。</li><li><strong>頁表（page table）</strong>：一張對照表，記「第幾頁 → 放在第幾個框架」。</li></ul>
+<blockquote><p><strong>超關鍵</strong>：<strong>頁大小 = 框架大小</strong>。兩邊格子一樣大，所以「在格子裡的第幾個位元組」搬家前後不會變，只有「在哪一格」需要查表翻譯。這句話是後面所有題目的根。</p></blockquote>
+<blockquote><p><strong>名詞澄清①：「邏輯位址空間」到底是什麼？</strong>（這詞馬上會在 Q1 出現，先搞懂）</p><p></p><p>| 詞 | 意思 | 例 |</p><p>|---|---|---|</p><p>| 邏輯位址 (logical address) | <strong>一個</strong>位址（一個門牌號） | 2500 |</p><p>| 邏輯位址<strong>空間</strong> (logical address space) | <strong>全部</strong>位址的整個範圍／集合 | 0～65535（共 64 KB） |</p><p></p><p>「空間」不是「空的地方」，而是「<strong>位址的範圍</strong>」。記一條換算：<strong>位址 m bits ⟺ 邏輯位址空間 = 2ᵐ bytes</strong>。所以題目寫「邏輯位址空間 = 64 KB = 2¹⁶」，其實是偷偷告訴你「<strong>邏輯位址 = 16 bits</strong>」。</p><p>對照：<strong>邏輯</strong>位址空間＝程式「以為」自己有的範圍（看位址 bit 數）；<strong>實體</strong>位址空間＝真正 RAM 的範圍（看 RAM 大小）。兩者可以不一樣大（延伸題 Q5 就是這情況）。</p></blockquote>
+<hr>
+<h2>題型一：把邏輯位址拆成兩半　★【練流程】</h2>
+<h3>先看題（先別往下看解法）</h3>
+<blockquote><p><strong>Q1.</strong> 某系統頁大小 = <strong>4 KB</strong>，邏輯位址空間 = <strong>64 KB</strong>。請問：</p><p>(a) 頁內偏移 (offset) 佔幾個 bit？</p><p>(b) 頁號 (page number) 佔幾個 bit？</p><p>(c) 總共有幾頁？</p></blockquote>
+<p>——卡住了嗎？卡點通常是「為什麼位址要拆兩半、怎麼決定各佔幾 bit」。先補這個觀念。</p>
+<h3>卡點補帖：邏輯位址被砍成「頁號 + 偏移」</h3>
+<p>CPU 給的邏輯位址，會被硬體 <strong>MMU</strong> 從中間砍一刀，分成高低兩段：</p>
+<pre><code>邏輯位址 = [  頁號 p  |  偏移 d  ]
+              高位        低位</code></pre>
+<ul><li><strong>偏移 d（低位）</strong>：你在「這一頁裡」的第幾個位元組 → <strong>原封不動照抄</strong>到實體位址，不用換。</li><li><strong>頁號 p（高位）</strong>：你在「第幾頁」 → 拿去<strong>查頁表</strong>換成框號 f。</li></ul>
+<p>決定各佔幾 bit 的兩條鐵則（<strong>這就是解題公式</strong>）：</p>
+<div class="tablewrap"><table><thead><tr><th>已知</th><th>推出</th></tr></thead><tbody><tr><td>頁大小 = 2ⁿ bytes</td><td><strong>偏移 d = n bits</strong>（一頁有 2ⁿ 個位元組，要 n 位才編得完號碼）</td></tr>
+<tr><td>邏輯位址空間 = 2ᵐ bytes</td><td><strong>邏輯位址總長 = m bits</strong></td></tr>
+<tr><td>上兩者</td><td><strong>頁號的 bit 數 = m − n</strong>，<strong>總頁數 = 2^(m−n)</strong></td></tr></tbody></table></div>
+<blockquote><p>為什麼「2ⁿ bytes 對應 n bits」？因為要替 <strong>2ⁿ 個格子</strong>各貼一個不重複的二進位門牌，剛好需要 <strong>n 位數</strong>（2 個門牌要 1 位、4 個要 2 位、8 個要 3 位…）。別跟「1 byte = 8 bits」搞混——那是在講一個格子「裝」多少資料，這裡在講「編號」要幾位。</p></blockquote>
+<blockquote><p><strong>名詞澄清②：「頁號 p = (m − n) bits」的 p，是「第幾頁」還是「幾個 bit」？</strong></p><p></p><p>是 <strong>bit 數（頁號這個欄位有幾位）</strong>，<strong>不是</strong>「第幾頁」。「頁號」其實有三層意思，最容易在這裡卡住，分清楚：</p><p></p><p>| 講的是 | 意思 | Q1 的值 |</p><p>|---|---|---|</p><p>| 頁號的 <strong>bit 數（位數）</strong> | 頁號這一欄要用幾個 0/1 來寫 | <strong>4 bits</strong> |</p><p>| 頁號的 <strong>種類數 ＝ 總頁數</strong> | 這些位數能排出幾種不同頁號 | 2⁴ = <strong>16 頁</strong> |</p><p>| <strong>某位址的頁號（第幾頁）</strong> | 拿某個位址算出來的具體值 | （Q2 的 2500 → 第 <strong>2</strong> 頁） |</p><p></p><p>碼表比喻：「<strong>幾位數</strong>」＝ bit 數；「這幾位能排<strong>幾個號碼</strong>」＝ 種類數（總頁數）；「現在<strong>顯示哪個號碼</strong>」＝ 第幾頁。</p><p>所以：<strong>(m − n) 是頁號的「位數」、2^(m−n) 是頁號的「種類數＝總頁數」、第幾頁是某次算出來的「那個號碼」。</strong> 公式裡寫的是前者（位數）。</p></blockquote>
+<h3>回頭解 Q1</h3>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>計算</th></tr></thead><tbody><tr><td>頁大小換成 2 的次方</td><td>4 KB = 4 × 1024 = 4096 = <strong>2¹²</strong> → <strong>offset = 12 bits</strong></td></tr>
+<tr><td>邏輯空間換成 2 的次方</td><td>64 KB = 64 × 1024 = 65536 = <strong>2¹⁶</strong> → 位址總長 = 16 bits</td></tr>
+<tr><td>頁號 bits</td><td>16 − 12 = <strong>4 bits</strong></td></tr>
+<tr><td>總頁數</td><td>2⁴ = <strong>16 頁</strong></td></tr></tbody></table></div>
+<p><strong>驗算</strong>：16 頁 × 4 KB/頁 = 64 KB ✓（剛好等於邏輯空間，對得起來）。</p>
+<blockquote><p>換算速記：<strong>KB=×2¹⁰、MB=×2²⁰、GB=×2³⁰</strong>。先把所有單位拉成「2 的某次方 bytes」，指數就是 bit 數，題目一半就解完了。</p></blockquote>
+<hr>
+<h2>題型二：邏輯位址 → 實體位址（最常考）　★【練流程】</h2>
+<h3>先看題</h3>
+<blockquote><p><strong>Q2.</strong> 頁大小 = <strong>1 KB</strong>。頁表如下：</p><p>| 頁號 | 框號 |</p><p>|---|---|</p><p>| 0 | 5 |</p><p>| 1 | 2 |</p><p>| 2 | 7 |</p><p>| 3 | 1 |</p><p></p><p>邏輯位址 = <strong>2500</strong>（十進位）。求<strong>實體位址</strong>。</p></blockquote>
+<h3>卡點補帖：轉換的三步流程 + 一條公式</h3>
+<p><strong>一句話程序</strong>：拆出頁號與偏移 → 查表把頁號換成框號 → 用「框號 × 框大小 + 偏移」拼出實體位址。</p>
+<pre><code>① 頁號 = 邏輯位址 ÷ 頁大小（取商，去小數）
+② 偏移 = 邏輯位址 ÷ 頁大小（取餘數）
+③ 查頁表：頁號 → 框號
+④ 實體位址 = 框號 × 框大小 + 偏移</code></pre>
+<blockquote><p>為什麼是「框號 × 框大小 + 偏移」？框號 f 代表「第 f 格」，每格大小是框大小，所以這一格的<strong>起點</strong>在 <code>f × 框大小</code>；再往裡走 <code>偏移</code> 個位元組，就是真正位置。</p></blockquote>
+<h3>回頭解 Q2</h3>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>計算</th></tr></thead><tbody><tr><td>① 頁號</td><td>2500 ÷ 1024 = 2 …（2×1024 = 2048，還沒到 3072）→ <strong>頁號 = 2</strong></td></tr>
+<tr><td>② 偏移</td><td>2500 − 2048 = <strong>452</strong></td></tr>
+<tr><td>③ 查表</td><td>頁 2 → <strong>框 7</strong></td></tr>
+<tr><td>④ 實體位址</td><td>7 × 1024 + 452 = 7168 + 452 = <strong>7620</strong></td></tr></tbody></table></div>
+<p><strong>驗算</strong>：7168（框7起點）+ 452（往裡452）= 7620 ✓。偏移 452 &lt; 1024，沒爆出這一頁，合理 ✓。</p>
+<blockquote><p>易錯：第④步<strong>乘的是「框號」、不是「頁號」</strong>。頁號只是用來查表的索引，查完就丟掉，真正參與計算的是查到的框號。</p></blockquote>
+<hr>
+<h2>題型三：用二進位做轉換（看懂「偏移為何照抄」）　★【練流程】</h2>
+<h3>先看題（沿用你學過的 16/256 例子）</h3>
+<blockquote><p><strong>Q3.</strong> 頁大小 = <strong>16 bytes</strong>，邏輯位址空間 = <strong>256 bytes</strong>。頁表中 <strong>頁 5 → 框 11</strong>。</p><p>邏輯位址 = <code>01011010</code>（二進位）。求實體位址（二進位與十進位）。</p></blockquote>
+<h3>卡點補帖：二進位下，砍一刀就分好了</h3>
+<p>先用題型一的鐵則定 bit 數：</p>
+<ul><li>頁大小 16 = 2⁴ → <strong>偏移 = 4 bits</strong></li><li>邏輯空間 256 = 2⁸ → 邏輯位址 = <strong>8 bits</strong></li><li>頁號 = 8 − 4 = <strong>4 bits</strong></li></ul>
+<p>所以 8 位的邏輯位址，<strong>直接從中間切</strong>：高 4 位是頁號、低 4 位是偏移，連除法都不用算。</p>
+<pre><code>邏輯位址  0101 1010
+          ↑↑↑↑ ↑↑↑↑
+          頁號  偏移
+          =5   =10</code></pre>
+<p>轉換時：<strong>頁號那段查表換掉，偏移那段原封照抄、貼回低位。</strong></p>
+<h3>回頭解 Q3</h3>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>二進位</th><th>十進位對照</th></tr></thead><tbody><tr><td>拆邏輯位址</td><td>頁號 <code>0101</code> / 偏移 <code>1010</code></td><td>頁號 5、偏移 10</td></tr>
+<tr><td>查表換框號</td><td>頁 5 → 框 11 = <code>1011</code></td><td>框號 11</td></tr>
+<tr><td>拼實體位址</td><td>框 <code>1011</code> ++ 偏移 <code>1010</code> = <strong><code>10111010</code></strong></td><td>= <strong>186</strong></td></tr></tbody></table></div>
+<p><strong>驗算</strong>（十進位法對照）：11 × 16 + 10 = 176 + 10 = 186 ✓，且 <code>10111010</code>₂ = 128+32+16+8+2 = 186 ✓。</p>
+<blockquote><p>這題的價值：你會「親眼看到」<strong>偏移那 4 位從頭到尾沒動過</strong>，只有頁號 <code>0101</code> 被換成框號 <code>1011</code>。這就是開場那句「<strong>只有在哪一格要翻譯，格子內位置不變</strong>」的具體畫面。考試若給二進位/十六進位，用切 bit 比除法更快更不會錯。</p></blockquote>
+<hr>
+<h2>題型四：頁表有多大？　★【練流程】</h2>
+<h3>先看題</h3>
+<blockquote><p><strong>Q4.</strong> 邏輯位址 = <strong>32 bit</strong>，頁大小 = <strong>4 KB</strong>，頁表每一項（entry）佔 <strong>4 bytes</strong>。</p><p>求 (a) 頁表有幾項？(b) 頁表共多大？</p></blockquote>
+<h3>卡點補帖：頁表項數 = 頁數</h3>
+<p>頁表是「<strong>一頁一項</strong>」的對照表，所以——</p>
+<pre><code>頁表項數 = 總頁數 = 2^(頁號 bits)
+頁表大小 = 項數 × 每項大小</code></pre>
+<h3>回頭解 Q4</h3>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>計算</th></tr></thead><tbody><tr><td>偏移 bits</td><td>4 KB = 2¹² → 12 bits</td></tr>
+<tr><td>頁號 bits</td><td>32 − 12 = <strong>20 bits</strong></td></tr>
+<tr><td>(a) 項數</td><td>2²⁰ = <strong>1,048,576 項（約 1 M 項）</strong></td></tr>
+<tr><td>(b) 頁表大小</td><td>2²⁰ × 4 bytes = <strong>4 MB</strong></td></tr></tbody></table></div>
+<p><strong>驗算</strong>：2²⁰ = 1,048,576；× 4 = 4,194,304 bytes = 4 MB ✓。</p>
+<blockquote><p>弦外之音（考過觀念題）：<strong>一個 process 的頁表就要 4 MB</strong>，跑很多 process 會爆。這就是為什麼要 <strong>多層頁表 (multi-level paging)</strong> ——把頁表本身也切頁、用到才載，省空間。考到「單層頁表缺點」就答這個。</p></blockquote>
+<hr>
+<h2>延伸題：實體記憶體決定「框號幾 bit」　★【練流程】</h2>
+<blockquote><p><strong>Q5.</strong> 實體記憶體 = <strong>1 GB</strong>，頁框大小 = <strong>4 KB</strong>。框號要幾 bit？</p></blockquote>
+<p><strong>程序</strong>：框數 = 實體大小 ÷ 框大小，框號 bits = log₂(框數)。</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>計算</th></tr></thead><tbody><tr><td>框數</td><td>2³⁰ ÷ 2¹² = <strong>2¹⁸ = 262,144 框</strong></td></tr>
+<tr><td>框號 bits</td><td><strong>18 bits</strong></td></tr></tbody></table></div>
+<p><strong>驗算</strong>：262,144 × 4 KB = 1,073,741,824 B = 1 GB ✓。</p>
+<blockquote><p>關鍵分辨：<strong>頁號 bits 由「邏輯空間」決定，框號 bits 由「實體空間」決定</strong>，兩者常常不一樣（邏輯可比實體大，那就是虛擬記憶體）。偏移 bits 由「頁/框大小」決定，兩邊一定相同。</p></blockquote>
+<hr>
+<h2>題型五：TLB 與有效存取時間 (EMAT)　★【練流程】</h2>
+<h3>先看題</h3>
+<blockquote><p><strong>Q6.</strong> 存取一次主記憶體需 <strong>100 ns</strong>，TLB 存取時間可忽略（≈ 0），TLB 命中率 <strong>80%</strong>，採<strong>一層頁表</strong>。求有效記憶體存取時間 (EMAT)。</p></blockquote>
+<h3>卡點補帖：TLB 是什麼？它到底省了什麼？</h3>
+<ul><li><strong>TLB (Translation Lookaside Buffer)</strong>：一塊很快的<strong>硬體快取</strong>，專門存最近用過的「<strong>頁號 → 框號</strong>」對應。</li><li>沒有 TLB 時，每次存取都要「先去主記憶體<strong>查頁表</strong>(1 次) + 再去主記憶體<strong>拿資料</strong>(1 次)」= <strong>2 次</strong>慢速存取，太慢。</li><li><strong>TLB 命中 (hit)</strong>：要的「頁號→框號」剛好在 TLB 裡 → <strong>直接拿到框號</strong>、跳過頁表 → 只剩「拿資料」<strong>1 次</strong>記憶體存取。</li><li><strong>TLB 未命中 (miss)</strong>：TLB 裡沒有 → 只好乖乖「查頁表(1 次) + 拿資料(1 次)」= <strong>2 次</strong>。</li></ul>
+<blockquote><p>⭐ <strong>關鍵精準點（最多人講錯）</strong>：TLB 命中時，你是<strong>直接拿到「框號」</strong>，<strong>不是「拿到頁表」</strong>——命中就<strong>根本不碰頁表</strong>。TLB 省掉的，正是命中時「查頁表那一次記憶體存取」。把「拿到框號」和「拿到頁表」分清楚，這型就不會錯。</p></blockquote>
+<p><strong>通用公式</strong>（記這條，什麼變體都能算）：</p>
+<pre><code>EMAT = 命中率 × (TLB時間 + 記憶體時間 × 命中要幾次)
+     + 未命中率 × (TLB時間 + 記憶體時間 × 未命中要幾次)</code></pre>
+<p>一層頁表：命中要 <strong>1 次</strong>記憶體（拿資料），未命中要 <strong>2 次</strong>（查頁表 + 拿資料）。</p>
+<h3>回頭解 Q6</h3>
+<ul><li>TLB 時間 = 0（可忽略），記憶體 = 100 ns</li><li>命中 (0.8)：0 + 100 × 1 = <strong>100 ns</strong></li><li>未命中 (0.2)：0 + 100 × 2 = <strong>200 ns</strong></li><li>EMAT = 0.8 × 100 + 0.2 × 200 = 80 + 40 = <strong>120 ns</strong> ✓</li></ul>
+<p>用表看 TLB 到底省了什麼：</p>
+<div class="tablewrap"><table><thead><tr><th></th><th>查頁表（記憶體）</th><th>拿資料（記憶體）</th><th>共</th></tr></thead><tbody><tr><td>命中 0.8</td><td><strong>免</strong>（TLB 直接給框號）</td><td>1 次</td><td>100 ns</td></tr>
+<tr><td>未命中 0.2</td><td>1 次</td><td>1 次</td><td>200 ns</td></tr></tbody></table></div>
+<h3>兩個常見變體（掃一眼，考到不慌）</h3>
+<ol><li><strong>TLB 給具體時間</strong>（例：TLB = 20 ns）：命中/未命中都要先花那 20 ns。</li></ol>
+<p>EMAT = 0.8 × (20 + 100) + 0.2 × (20 + 100 + 100) = 0.8 × 120 + 0.2 × 220 = 96 + 44 = <strong>140 ns</strong>。</p>
+<ol><li><strong>兩層頁表</strong>：未命中要查兩層頁表(2 次) + 拿資料(1 次) = <strong>3 次</strong>記憶體 → 未命中成本 300 ns（TLB 忽略時）。</li></ol>
+<hr>
+<h2>分頁 · 公式速查表</h2>
+<div class="tablewrap"><table><thead><tr><th>要求的東西</th><th>公式</th></tr></thead><tbody><tr><td>偏移 d 的 bit 數</td><td>頁大小 = 2ⁿ → <strong>n bits</strong>（這個 n 就是偏移位數）</td></tr>
+<tr><td>頁號 p 的 bit 數</td><td>邏輯空間 = 2ᵐ → <strong>(m − n) bits</strong></td></tr>
+<tr><td>框號 f 的 bit 數</td><td>實體空間 = 2ᵏ → <strong>(k − n) bits</strong></td></tr>
+<tr><td>總頁數（頁號的「種類數」）</td><td><strong>2^(頁號 bits) = 邏輯空間 ÷ 頁大小</strong></td></tr>
+<tr><td>總框數（框號的「種類數」）</td><td><strong>2^(框號 bits) = 實體空間 ÷ 框大小</strong></td></tr>
+<tr><td>頁號（給十進位位址）</td><td><strong>邏輯位址 ÷ 頁大小</strong>（取商）</td></tr>
+<tr><td>偏移（給十進位位址）</td><td><strong>邏輯位址 ÷ 頁大小</strong>（取餘）</td></tr>
+<tr><td>實體位址</td><td><strong>框號 × 框大小 + 偏移</strong></td></tr>
+<tr><td>頁表項數</td><td><strong>= 總頁數 = 2^(頁號 bits)</strong></td></tr>
+<tr><td>頁表大小</td><td><strong>項數 × 每項大小</strong></td></tr>
+<tr><td>EMAT（一層頁表、TLB 可忽略）</td><td><strong>命中率 × 記憶體 + 未命中率 × (2 × 記憶體)</strong></td></tr>
+<tr><td>— 命中要幾次記憶體</td><td><strong>1 次</strong>（TLB 直接給框號、免查頁表）</td></tr>
+<tr><td>— 未命中要幾次記憶體</td><td><strong>2 次</strong>（查頁表 + 拿資料）；兩層頁表 → 3 次</td></tr></tbody></table></div>
+<p><strong>單位換算</strong>：KB = ×2¹⁰、MB = ×2²⁰、GB = ×2³⁰。<strong>先全部化成「2 的某次方 bytes」，指數就是 bit 數。</strong></p>
+<hr>
+<h2>分頁 · 四大易錯點</h2>
+<ol><li><strong>「2ⁿ bytes ↔ n bits」別跟「1 byte = 8 bits」混</strong>。前者是「替 2ⁿ 個格子編號要 n 位」，後者是「一個格子裝 8 位資料」，兩個 bit 講的是不同事。</li><li><strong>算實體位址乘的是「框號」不是「頁號」</strong>。頁號只是查表索引，查完就丟。</li><li><strong>頁號 bits 看邏輯空間、框號 bits 看實體空間，可以不一樣</strong>；只有偏移 bits（= 頁/框大小）兩邊保證相同，且偏移在轉換中<strong>永遠照抄不變</strong>。</li><li><strong>EMAT：TLB 命中是「直接拿到框號」、跳過頁表</strong>。命中只存記憶體 1 次（拿資料），未命中才 2 次（查頁表 + 拿資料）。別把「拿到框號」講成「拿到頁表」。</li></ol>
+<hr>
+<h1>第二部　分段 (Segmentation)　★【練流程】</h1>
+<blockquote><p>科目：計算機原理 — 作業系統｜與分頁成對必考（辨別題大戶）</p><p>用法：<strong>每段先丟一題你「現在還不會」的題目，卡住才補觀念，再回頭解完。</strong> 看到題目先別往下捲。</p><p>（所有計算已重新驗算。）</p><p>接續你剛搞懂的<strong>分頁</strong>：這篇一路對照「分段哪裡跟分頁不一樣」，把辨別點一次釘死。</p></blockquote>
+<hr>
+<h2>開場：分段在解什麼問題？（分頁的痛點）　【理解】</h2>
+<p>分頁把記憶體切成<strong>一律等大</strong>的格子，好處是好管理、無外部碎裂；但它有個「不管程式邏輯」的缺點：</p>
+<ul><li>一個函式（code）可能被硬切成兩頁，中間斷掉；</li><li>想「把整個 code 設成唯讀、整個 stack 設成可讀寫」時，分頁是以「頁」為單位，切得亂七八糟，<strong>共享與保護不好做</strong>；</li><li>還有內部碎裂（最後一頁用不滿）。</li></ul>
+<p><strong>分段的想法</strong>：不要照機器的固定尺寸切，改<strong>照程式的邏輯單位切</strong> —— code 段、data 段、stack 段、heap 段……<strong>每段大小不一</strong>，一個邏輯單位就是一段。</p>
+<p>三個名詞（<strong>定義 → 核心 → 怎麼用</strong>）：</p>
+<ul><li><strong>段（segment）</strong>：依程式邏輯切出的一塊，大小不固定（一個函式、一個陣列、一段堆疊都可以是一段）。</li><li><strong>段表（segment table）</strong>：對照表，記「第 s 段 → 放在實體記憶體哪裡、多長」。</li><li><strong>段號 s ／ 段內偏移 d</strong>：邏輯位址一樣拆成兩半，(s, d)。</li></ul>
+<blockquote><p><strong>名詞澄清①：段表每一項存「兩個」東西 —— base 與 limit（這是它跟頁表最大的差別）</strong></p><p></p><p>| 欄位 | 意思 | 白話 |</p><p>|---|---|---|</p><p>| <strong>base（基底）</strong> | 這一段在<strong>實體記憶體的起點位址</strong> | 「這段從 RAM 的第幾號開始放」 |</p><p>| <strong>limit（界限／長度）</strong> | 這一段有<strong>多長</strong>（幾個位元組） | 「這段有多大，超過就是非法」 |</p><p></p><p>對比：<strong>頁表</strong>每項只存一個<strong>框號</strong>（因為每頁等大，長度不必記）；<strong>段表</strong>每項要存 <strong>base ＋ limit 兩個</strong>（因為每段長度不同，必須記起點也記長度）。這是分頁 vs 分段最愛考的差異。</p></blockquote>
+<blockquote><p><strong>關鍵預告（對照分頁）</strong>：分頁的翻譯是「<strong>框號 × 框大小 ＋ 偏移</strong>，偏移照抄」；分段的翻譯是「<strong>base ＋ 偏移</strong>」——直接相加。<strong>分段沒有「偏移照抄到固定低位」這回事</strong>，因為段大小不一、base 是任意起點。這點等下你會親眼看到。</p></blockquote>
+<hr>
+<h2>題型一：邏輯位址長怎樣？段表怎麼查？　【理解】</h2>
+<h3>先看題（先別往下看解法）</h3>
+<blockquote><p><strong>Q1.</strong> 一支程式有 4 個段：code、data、heap、stack，分別編號段 0～3。</p><p>邏輯位址寫成 <strong>(2, 53)</strong>。請問：這在指哪裡？要怎麼找到它在 RAM 的真正位置？</p></blockquote>
+<p>——卡點通常是「(2, 53) 這兩個數字各代表什麼、段表怎麼把它變成真位址」。先補這個。</p>
+<h3>卡點補帖：(段號, 偏移) → 查段表 → base + 偏移</h3>
+<p>邏輯位址被拆成兩半（跟分頁很像，但意義不同）：</p>
+<pre><code>邏輯位址 = ( 段號 s , 段內偏移 d )
+             哪一段      這段裡第幾個位元組</code></pre>
+<ul><li><strong>段號 s</strong>：拿去<strong>查段表</strong>，取出這段的 <strong>base</strong> 和 <strong>limit</strong>。</li><li><strong>偏移 d</strong>：在這一段裡往裡走幾個位元組。</li></ul>
+<p>翻譯程序（<strong>一句話</strong>）：查段表拿到 base 與 limit → <strong>先檢查 d 有沒有超過 limit</strong> → 沒超過就 <strong>實體位址 = base + d</strong>。</p>
+<h3>回頭解 Q1</h3>
+<p>(2, 53) = 「第 <strong>2</strong> 段（heap）裡的第 <strong>53</strong> 個位元組」。找法：拿段號 2 去查段表得到 base 和 limit，確認 53 沒超過這段長度，再算 base + 53。實際數字下一題就算。</p>
+<blockquote><p>先建立畫面就好：<strong>段號是「查表用的索引」，偏移是「段內位置」</strong>。真正參與加法的是查到的 <strong>base</strong>（不是段號）——這點和分頁「乘的是框號不是頁號」是同一種易錯。</p></blockquote>
+<h3>補充：位址位元配置 —— 「幾個段？每段多大？」　★【練流程】</h3>
+<blockquote><p><strong>Q（考型）.</strong> 邏輯位址共 <strong>24 bits</strong>，採分段，最多可有 <strong>256 個段</strong>。每個段最大可為多少 bytes？</p></blockquote>
+<p>跟分頁一樣，一個邏輯位址被切成<strong>兩個欄位</strong>（不是拿總空間去「除」）：</p>
+<pre><code>邏輯位址 24 bits ＝ [ 段號 s | 段內偏移 d ]
+                      ？bit      ？bit</code></pre>
+<p>拆解：</p>
+<ul><li><strong>段號幾 bit？</strong> 由「幾個段」決定：256 段 = 2⁸ → 段號 <strong>8 bits</strong>。</li><li><strong>剩下全給偏移</strong>：24 − 8 = <strong>16 bits</strong>。</li><li><strong>每段最大 ＝ 偏移能定位的範圍</strong>：2^(偏移 bits) = 2¹⁶ = 65536 = <strong>64 KB</strong> ✓。</li></ul>
+<blockquote><p>⚠️ <strong>別用「總空間 ÷ 段數」</strong>：分段的段<strong>大小不一</strong>，「平均每段」根本沒意義。這算法只在「段數和大小都是 2 的次方、又剛好用滿整個位址」時<strong>巧合算對</strong>（因為除法 = 指數相減）；一遇到「<strong>規定每段最大只有 X</strong>、不讓你用滿位址」的變形題就會錯。正解永遠是<strong>拆欄位</strong>：</p><p>- <strong>「幾個段」→ 決定段號 bits</strong>（前半欄位）</p><p>- <strong>「每段多大」→ 看偏移 bits</strong>（後半欄位），每段最大 = 2^(偏移 bits)</p><p></p><p>這套「<strong>[ 號碼 | 偏移 ] 拆欄位、看位數</strong>」和分頁的 [ 頁號 | 偏移 ] 完全一樣，分頁／分段／段頁式通用。</p></blockquote>
+<hr>
+<h2>題型二：邏輯位址 → 實體位址（★ 核心，含段錯誤）　★【練流程】</h2>
+<h3>先看題</h3>
+<blockquote><p><strong>Q2.</strong> 段表如下（單位：byte）：</p><p></p><p>| 段號 s | base | limit |</p><p>|---|---|---|</p><p>| 0 | 1400 | 1000 |</p><p>| 1 | 6300 | 400 |</p><p>| 2 | 4300 | 400 |</p><p>| 3 | 3200 | 1100 |</p><p></p><p>求下列邏輯位址的實體位址（若非法請指出）：</p><p>(a) (2, 53)　(b) (3, 852)　(c) (1, 500)　(d) (0, 1000)</p></blockquote>
+<h3>卡點補帖：先檢查界限，再相加</h3>
+<p><strong>一句話程序</strong>：</p>
+<pre><code>① 用段號查段表 → 拿到 base、limit
+② 界限檢查：偏移 d 是否 &lt; limit ？
+     • d &lt;  limit → 合法：實體位址 = base + d
+     • d ≥ limit → 非法：段錯誤（Segmentation Fault / trap）</code></pre>
+<blockquote><p>為什麼是 <strong>base + d</strong>？base 是「這段在 RAM 的起點」，往裡走 d 個位元組，就是真正位置——就像「這段從 4300 號開始，第 53 格 = 4300 + 53」。</p><p>為什麼要界限檢查？段表的 limit 就是這段的<strong>合法長度</strong>，偏移只要 ≥ limit 就是踩到別段或空地 → 硬體立刻擋下（這是分段天生的<strong>保護機制</strong>）。</p></blockquote>
+<h3>回頭解 Q2</h3>
+<div class="tablewrap"><table><thead><tr><th>位址</th><th>查表 (base, limit)</th><th>界限檢查 d &lt; limit?</th><th>實體位址</th></tr></thead><tbody><tr><td>(a) (2, 53)</td><td>(4300, 400)</td><td>53 &lt; 400 ✓</td><td>4300 + 53 = <strong>4353</strong></td></tr>
+<tr><td>(b) (3, 852)</td><td>(3200, 1100)</td><td>852 &lt; 1100 ✓</td><td>3200 + 852 = <strong>4052</strong></td></tr>
+<tr><td>(c) (1, 500)</td><td>(6300, 400)</td><td>500 &lt; 400 ✗</td><td><strong>段錯誤（trap）</strong></td></tr>
+<tr><td>(d) (0, 1000)</td><td>(1400, 1000)</td><td>1000 &lt; 1000 ✗</td><td><strong>段錯誤（trap）</strong></td></tr></tbody></table></div>
+<p><strong>驗算 / 說明</strong>：</p>
+<ul><li>(a) 4300 + 53 = 4353，且 4353 落在 [4300, 4700) 段內 ✓。</li><li>(c) 段 1 只有 400 長（合法偏移 0～399），偏移 500 超界 → 擋下 ✓。</li><li>(d) <strong>邊界陷阱</strong>：limit = 1000 代表這段有 1000 格，合法偏移是 <strong>0～999</strong>；偏移剛好 = 1000 已經是<strong>第 1001 格</strong>，超出 → 段錯誤。所以是「<strong>&lt; limit</strong>」不是「≤ limit」。（若題目問「這段最後一個合法位址」= base + limit − 1 = 1400 + 999 = 2399。）</li></ul>
+<blockquote><p><strong>和分頁最大的手感差別</strong>：這裡是 <strong>base + 偏移（相加）</strong>，偏移沒有「照抄到固定低位」，因為每段起點 base 是任意值、長度也不同。分頁能照抄是因為「頁 = 框等大」；分段做不到，所以改用「相加 + 界限檢查」。</p></blockquote>
+<h3>補充：一個段的「合法位址範圍」＋各數值的邊界　【理解】</h3>
+<p>一個段不是一個點，是<strong>一整排連續的合法位址</strong>。以段 3（base = 3200、limit = 1100）為例：</p>
+<pre><code>偏移 d：   0      1     ...    1099  | 1100（超界→段錯誤）
+實體位址：3200  3201    ...    4299  | 4300（下一段的地盤）
+          ↑首                  ↑尾</code></pre>
+<p>看題目問「首／尾／長度」給不同答案（超好用的辨別）：</p>
+<div class="tablewrap"><table><thead><tr><th>問的是</th><th>公式</th><th>段3 的值</th></tr></thead><tbody><tr><td>第一個合法位址（首）</td><td><strong>base</strong></td><td>3200</td></tr>
+<tr><td>最後一個合法位址（尾）</td><td><strong>base + limit − 1</strong></td><td>3200 + 1099 = <strong>4299</strong></td></tr>
+<tr><td>這段有多大（長度）</td><td><strong>limit</strong></td><td>1100</td></tr></tbody></table></div>
+<p>⚠️ 常錯：把「尾」寫成 base + limit = 4300 —— 那是<strong>下一段的起點</strong>、已經超界（少減了 1）。</p>
+<p><strong>各數值的合法邊界（一起記牢）：</strong></p>
+<div class="tablewrap"><table><thead><tr><th>數值</th><th>意義</th><th>最小</th><th>最大</th></tr></thead><tbody><tr><td><strong>base</strong></td><td>段在 RAM 的起點</td><td><strong>0</strong>（位址從 0 號起、無負位址）</td><td><strong>RAM 大小 − limit</strong>（段尾不能超出 RAM）</td></tr>
+<tr><td><strong>偏移 d</strong></td><td>段內第幾格</td><td>0</td><td>limit − 1</td></tr>
+<tr><td><strong>limit</strong></td><td>段的長度</td><td>通常 ≥ 1</td><td>≤ RAM 大小</td></tr></tbody></table></div>
+<p>所以 base 完整範圍：<strong>0 ≤ base ≤（實體記憶體大小 − limit）</strong>。<br>例：RAM = 8 KB（位址 0～8191）、某段 limit = 1000，則 base 最大只能到 8192 − 1000 = <strong>7192</strong>；再往後，段尾就爆出 RAM 外了。</p>
+<hr>
+<h2>題型三：分段的碎裂 —— 外部碎裂 &amp; 緊縮　【理解】</h2>
+<h3>先看題</h3>
+<blockquote><p><strong>Q3.</strong> 實體記憶體目前有 3 塊空洞（不相鄰）：<strong>200K、150K、300K</strong>。</p><p>現在來了一個需要 <strong>350K</strong> 的新段。放得下嗎？空閒總量夠嗎？怎麼救？</p></blockquote>
+<h3>卡點補帖：段要「整塊連續」放，所以會外部碎裂</h3>
+<p>每個段在 RAM 裡是<strong>一整塊連續</strong>擺放（因為 base + 偏移要連續才對）。當空閒空間<strong>散成好幾個小洞</strong>時，就算<strong>加起來夠</strong>，也可能<strong>湊不出一塊夠大的連續空間</strong> → 這叫 <strong>外部碎裂（External Fragmentation）</strong>。<br>救法：<strong>緊縮（Compaction）</strong> —— 把已使用的段全部往一邊挪、擠在一起，讓零散空洞合併成一大塊連續空間。</p>
+<h3>回頭解 Q3</h3>
+<ul><li>空閒總量 = 200 + 150 + 300 = <strong>650K</strong>（夠！）</li><li>但<strong>最大的單一空洞只有 300K &lt; 350K</strong> → <strong>放不下</strong>（這就是外部碎裂：空間夠但不連續）。</li><li><strong>緊縮</strong>後：三塊空洞合併成連續 <strong>650K</strong> ≥ 350K → <strong>放得下</strong>了。</li></ul>
+<blockquote><p><strong>辨別重點（必背，和分頁剛好相反）</strong></p><p>- <strong>分段</strong>：段大小不一、要連續擺 → <strong>有外部碎裂</strong>、<strong>無內部碎裂</strong>。</p><p>- <strong>分頁</strong>：頁一律等大、可散放 → <strong>有內部碎裂</strong>、<strong>無外部碎裂</strong>。</p><p>一句話記反向：<strong>「分段外、分頁內」</strong>。</p></blockquote>
+<h3>補充：緊縮 (Compaction) 到底在做什麼？　【理解】</h3>
+<p><strong>定義</strong>：把散落在記憶體各處、<strong>正在使用</strong>的段，全部搬到記憶體一邊、<strong>緊緊靠在一起</strong>，讓零散小洞<strong>合併成一整塊連續大空間</strong>。<strong>目的：專治外部碎裂</strong>（空間夠但不連續 → 挪一挪擠回一整塊）。</p>
+<p>用 Q3 的場景看：</p>
+<pre><code>【緊縮前】總空閒 650K 夠，但被切碎、350K 放不下
+┌─────┬──────┬─────┬──────┬─────┬──────┐
+│ 段A │ 200K │ 段B │ 150K │ 段C │ 300K │   ← 洞被段夾住、各自為政
+└─────┴──────┴─────┴──────┴─────┴──────┘
+
+        ↓ 緊縮：段 A/B/C 全往左推、擠在一起 ↓
+
+【緊縮後】三洞合併成連續 650K
+┌─────┬─────┬─────┬────────────────────┐
+│ 段A │ 段B │ 段C │   650K 連續 → 放得下 │
+└─────┴─────┴─────┴────────────────────┘</code></pre>
+<p><strong>三個考點</strong>：</p>
+<ol><li><strong>前提是「可重定位」</strong>：段搬家後 <strong>base 會變</strong>，只要把段表該段的 base 更新成新起點，程式（靠 base + 偏移）就能繼續正確存取——所以段能搬。</li><li><strong>成本高</strong>：搬移大量資料很花時間，且進行時系統常需暫停，屬「不得已才用」的手段。</li><li><strong>分頁不需要緊縮</strong>：分頁任何頁可放任何框、不必連續 → 沒有外部碎裂 → <strong>免緊縮</strong>。⭐ 又一組辨別點：<strong>「分段要緊縮、分頁免緊縮」</strong>。</li></ol>
+<p><strong>外部碎裂的三條解法（完整地圖）</strong>：</p>
+<div class="tablewrap"><table><thead><tr><th>路線</th><th>方法</th><th>說明</th></tr></thead><tbody><tr><td>事後救</td><td><strong>緊縮 Compaction</strong></td><td>已碎了，搬家併成連續（本題）</td></tr>
+<tr><td>事前防</td><td>配置演算法 First/Best/Worst-fit</td><td>挑洞挑聰明點，減緩碎裂速度</td></tr>
+<tr><td>根本免除</td><td>改用<strong>分頁／段頁式</strong></td><td>底層分頁 → 不需連續 → 外部碎裂消失</td></tr></tbody></table></div>
+<hr>
+<h2>題型四：分頁 vs 分段 —— 終極比較表（辨別題必背）　【理解】＋【硬背】</h2>
+<blockquote><p><strong>Q4.</strong> 考題最愛問：「下列關於分頁與分段的敘述，何者正確？」——把下表刻進腦子就能秒殺。</p></blockquote>
+<div class="tablewrap"><table><thead><tr><th>比較項</th><th>分頁 Paging</th><th>分段 Segmentation</th></tr></thead><tbody><tr><td>怎麼切</td><td>固定大小、<strong>不管程式邏輯</strong></td><td>依<strong>程式邏輯單位</strong>(code/data/stack)、大小不一</td></tr>
+<tr><td>每塊大小</td><td><strong>一律相等</strong>（頁 = 框）</td><td><strong>可變</strong>、各段不同</td></tr>
+<tr><td>邏輯位址</td><td>(頁號 p, 偏移 d)</td><td>(段號 s, 偏移 d)</td></tr>
+<tr><td>對照表存什麼</td><td>頁表：一欄（<strong>框號</strong>）</td><td>段表：兩欄（<strong>base ＋ limit</strong>）</td></tr>
+<tr><td>翻譯算法</td><td>框號 × 框大小 ＋ 偏移（<strong>偏移照抄</strong>）</td><td><strong>base ＋ 偏移</strong>（相加）</td></tr>
+<tr><td>界限／保護</td><td>靠 valid bit、頁號範圍</td><td><strong>每次比對 d &lt; limit</strong>，超界→段錯誤</td></tr>
+<tr><td>碎裂</td><td><strong>內部</strong>碎裂、<strong>無外部</strong></td><td><strong>外部</strong>碎裂、<strong>無內部</strong></td></tr>
+<tr><td>外部碎裂處理</td><td><strong>不需緊縮</strong>（頁可散放）</td><td><strong>需緊縮 Compaction</strong>（段要連續）</td></tr>
+<tr><td>實體要連續嗎</td><td><strong>不用</strong>，各頁隨意散放</td><td><strong>每個段內部要連續</strong></td></tr>
+<tr><td>對程式設計師</td><td><strong>透明</strong>（看不到、純底層機制）</td><td><strong>可見</strong>（段就是邏輯單位）</td></tr>
+<tr><td>共享／保護</td><td>以「頁」為單位，較不自然</td><td>以「段」為單位，<strong>自然好做</strong>（整個 code 段設唯讀等）</td></tr></tbody></table></div>
+<blockquote><p><strong>一句話總結</strong>：<strong>分頁 = 固定大小、機器角度、內部碎裂、對人透明；分段 = 依邏輯、程式角度、外部碎裂、對人可見。</strong> 碎裂方向與可見性剛好相反，這兩點最常入題。</p></blockquote>
+<hr>
+<h2>延伸：段頁式（Segmentation with Paging）—— 兩者結合　【理解】＋【練流程】</h2>
+<h3>為什麼要結合？</h3>
+<ul><li>分段的優點：<strong>符合邏輯、好共享與保護</strong>；缺點：<strong>外部碎裂</strong>。</li><li>分頁的優點：<strong>無外部碎裂</strong>；缺點：不管邏輯。</li><li><strong>段頁式 = 先分段（保留邏輯性），再把每一段內部拿去分頁（消掉外部碎裂）</strong> —— 取兩者之長。</li></ul>
+<h3>位址結構與翻譯流程</h3>
+<p>邏輯位址拆成<strong>三段</strong>：</p>
+<pre><code>邏輯位址 = ( 段號 s , 頁號 p , 偏移 d )</code></pre>
+<p>翻譯（<strong>一句話</strong>）：段號查「段表」找到這段專屬的<strong>頁表</strong> → 頁號查該「頁表」換成<strong>框號</strong> → <strong>框號 × 框大小 + 偏移</strong>（回到分頁，偏移又照抄了）。</p>
+<h3>小例子</h3>
+<blockquote><p>框大小 = 1 KB（=1024）。邏輯位址 = (段 1, 頁 2, 偏移 100)。段 1 的頁表中「頁 2 → 框 8」。</p></blockquote>
+<ul><li>段 1 → 找到段 1 的頁表</li><li>頁 2 → 查該頁表 → 框 8</li><li>實體位址 = 8 × 1024 + 100 = 8192 + 100 = <strong>8292</strong></li></ul>
+<p><strong>驗算</strong>：8 × 1024 = 8192；+100 = 8292 ✓。</p>
+<blockquote><p>記憶點：段頁式要查<strong>兩張表</strong>（先段表、再頁表），最後一步又變回分頁的「框號 × 框大小 + 偏移」。它<strong>沒有外部碎裂</strong>（因為底層是分頁），是實務上常用的折衷。</p></blockquote>
+<hr>
+<h2>分段 · 公式速查表</h2>
+<div class="tablewrap"><table><thead><tr><th>要求的東西</th><th>公式／要點</th></tr></thead><tbody><tr><td>邏輯位址格式</td><td>分段：<strong>(段號 s, 偏移 d)</strong>；段頁式：<strong>(段號 s, 頁號 p, 偏移 d)</strong></td></tr>
+<tr><td>段表每項存</td><td><strong>base（起點）＋ limit（長度）</strong> 兩個</td></tr>
+<tr><td>界限檢查</td><td><strong>d &lt; limit → 合法</strong>；<strong>d ≥ limit → 段錯誤（trap）</strong></td></tr>
+<tr><td>實體位址（分段）</td><td><strong>base ＋ 偏移 d</strong>（相加；偏移<strong>不</strong>照抄）</td></tr>
+<tr><td>某段最後一個合法位址</td><td><strong>base ＋ limit − 1</strong></td></tr>
+<tr><td>分段碎裂</td><td><strong>有外部碎裂、無內部碎裂</strong>（救法：<strong>緊縮 Compaction</strong>）</td></tr>
+<tr><td>實體位址（段頁式）</td><td>查段表→查頁表得框號 → <strong>框號 × 框大小 + 偏移</strong>（偏移照抄）</td></tr></tbody></table></div>
+<p><strong>與分頁一句話對照</strong>：分頁「框號 × 框大小 + 偏移，偏移照抄」；分段「base + 偏移，要先檢查 d &lt; limit」。</p>
+<hr>
+<h2>分段 · 四大易錯點</h2>
+<ol><li><strong>段表存 base + limit「兩個」，頁表只存「一個」框號</strong>。這是分頁 vs 分段最愛考的差別，別答反。</li><li><strong>分段翻譯是「base + 偏移」相加，不是分頁的「框號 × 框大小 + 偏移」</strong>；分段<strong>沒有「偏移照抄」</strong>，因為段大小不一、base 是任意起點。</li><li><strong>碎裂方向相反</strong>：分段 = <strong>外部</strong>碎裂（無內部）；分頁 = <strong>內部</strong>碎裂（無外部）。口訣「<strong>分段外、分頁內</strong>」。</li><li><strong>界限檢查是「&lt; limit」不是「≤」</strong>：偏移 = limit 就已經超界（合法偏移是 0 ～ limit−1），會觸發<strong>段錯誤</strong>。這是分段的保護機制。</li></ol>
+<hr>
+<h2>附錄：考前 30 秒總複習</h2>
+<p>一次把分頁 vs 分段最會考的辨別點掃過：</p>
+<ol><li><strong>切法</strong>：分頁 = 固定大小、不管邏輯；分段 = 依邏輯單位、大小不一。</li><li><strong>對照表</strong>：頁表存「框號」一欄；段表存「base ＋ limit」兩欄。</li><li><strong>翻譯</strong>：分頁「框號 × 框大小 + 偏移，<strong>偏移照抄</strong>」；分段「<strong>base + 偏移</strong>（相加）、<strong>先檢查 d &lt; limit</strong>」。</li><li><strong>碎裂（反向）</strong>：分頁 = 內部碎裂、免緊縮；分段 = 外部碎裂、需緊縮。口訣「<strong>分段外、分頁內</strong>」。</li><li><strong>可見性</strong>：分頁對程式設計師<strong>透明</strong>；分段<strong>可見</strong>（段就是邏輯單位）。</li><li><strong>位元配置</strong>：一律「<strong>[ 號碼 | 偏移 ] 拆欄位、看位數</strong>」——號碼 bits 由「幾個」決定，最大容量由「偏移 bits」決定（= 2^偏移bits）。</li><li><strong>段頁式</strong>：先查段表 → 再查頁表 → 框號 × 框大小 + 偏移；有分段的邏輯性、又無外部碎裂。</li></ol>
+<footer class="foot">來源：_private/計概補充/分頁與分段記憶體管理_題目帶動教學完整版.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>

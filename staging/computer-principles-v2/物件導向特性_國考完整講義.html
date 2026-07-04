@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜物件導向特性</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">OOP Characteristics</p>
+<h1>物件導向特性 — 國考完整講義</h1>
+<blockquote><p>這份講義假設你<strong>完全沒基礎</strong>。</p><p>順序是「為什麼有物件導向 → 類別與物件 → 四大特性逐一講 → 最愛考的分辨題(覆寫vs多載、抽象類別vs介面) → 考點 → 選擇題」。</p><p>因為國考考<strong>選擇題</strong>,每段最後都有「★ 常考重點」。這個主題是<strong>觀念題</strong>,沒有計算,重點在「定義清楚、分辨乾淨」。</p></blockquote>
+<hr>
+<h2>一、先定位:為什麼有物件導向</h2>
+<p>早期的<strong>程序導向 (Procedural)</strong> 寫法,把「資料」和「處理資料的函式」<strong>分開放</strong>。程式一大就出問題:資料到處被不同函式亂改、難維護、難重用。</p>
+<p><strong>物件導向 (Object-Oriented, OO)</strong> 換個思路:把「<strong>資料 + 操作這些資料的方法</strong>」<strong>綁在一起</strong>,包成一個個「物件」,就像真實世界的東西(一台車有它的屬性,也有它能做的動作)。這樣更好維護、更安全、更能重複利用。</p>
+<p>而「四大特性」就是達成這些好處的手段:<strong>封裝</strong>保護資料、<strong>繼承</strong>重複利用、<strong>多型</strong>增加彈性、<strong>抽象</strong>管理複雜度。</p>
+<p><strong>★ 常考重點</strong>:OO 相對於程序導向,核心差別是「<strong>把資料與方法封裝在物件中</strong>」,以物件為中心。</p>
+<hr>
+<h2>二、最基本:類別 (Class) vs 物件 (Object)</h2>
+<p>這是整個主題的地基,先分清楚。</p>
+<ul><li><strong>類別 (Class)</strong>:<strong>設計藍圖、模子</strong>。它定義「這種東西有哪些屬性、能做哪些動作」,但它本身不是實體。</li><li><strong>物件 (Object)</strong>:用類別<strong>做出來的實體</strong>,也叫<strong>實例 (Instance)</strong>。</li></ul>
+<p>比喻最好懂:</p>
+<blockquote><p><strong>類別 = 餅乾模子</strong>;<strong>物件 = 用模子壓出來的一塊塊餅乾</strong>。一個模子(類別)可以壓出很多餅乾(很多物件),每塊餅乾口味可以不一樣(屬性值不同),但形狀都一樣(都來自同個類別)。</p></blockquote>
+<p>類別裡有兩種東西:</p>
+<ul><li><strong>屬性 (Attribute) / 欄位 (Field)</strong>:物件的「資料」,例如車子的顏色、車速。</li><li><strong>方法 (Method)</strong>:物件能做的「動作」,例如車子的加速、煞車。</li></ul>
+<p><strong>★ 常考重點</strong>:物件是類別的<strong>實例 (instance)</strong>;一個類別可產生多個物件。類別是抽象定義,物件是具體實體。</p>
+<hr>
+<h2>三、四大特性總覽(先記名字)</h2>
+<div class="tablewrap"><table><thead><tr><th>特性</th><th>English</th><th>一句話</th></tr></thead><tbody><tr><td><strong>封裝</strong></td><td>Encapsulation</td><td>把資料包起來、藏細節,只露必要介面</td></tr>
+<tr><td><strong>繼承</strong></td><td>Inheritance</td><td>子類別重用父類別的東西,再加自己的</td></tr>
+<tr><td><strong>多型</strong></td><td>Polymorphism</td><td>同一個方法名,不同物件有不同表現</td></tr>
+<tr><td><strong>抽象</strong></td><td>Abstraction</td><td>抓重點、隱藏細節,只看該看的</td></tr></tbody></table></div>
+<p><strong>★ 超常考的陷阱</strong>:</p>
+<ul><li>講「<strong>三大特性</strong>」時,標準答案是 <strong>封裝、繼承、多型</strong>。</li><li>講「<strong>四大特性</strong>」時,再加上 <strong>抽象</strong>。</li><li>看題目問三大還是四大,別選錯!</li></ul>
+<hr>
+<h2>四、封裝 (Encapsulation)</h2>
+<h3>是什麼</h3>
+<p>封裝做兩件事:(1) 把「資料 + 方法」<strong>包在一起</strong>成為一個類別;(2) 把內部細節<strong>藏起來</strong>,只對外開放必要的操作介面——這第二點就是<strong>資訊隱藏 (Information Hiding)</strong>。</p>
+<p>比喻:</p>
+<blockquote><p><strong>遙控器</strong>。你只會按按鈕(對外的公開方法),完全不需要知道裡面的電路怎麼運作(被隱藏的內部細節)。或想成<strong>藥膠囊</strong>:藥粉包在裡面,你只管吞,不用直接碰。</p></blockquote>
+<h3>怎麼做到:存取修飾子 (Access Modifier)</h3>
+<p>用「存取權限」控制誰能碰:</p>
+<div class="tablewrap"><table><thead><tr><th>修飾子</th><th>可存取範圍</th></tr></thead><tbody><tr><td><strong>public</strong></td><td>任何地方都能存取</td></tr>
+<tr><td><strong>protected</strong></td><td>同類別 + 子類別(+同套件)</td></tr>
+<tr><td>(default)</td><td>同套件</td></tr>
+<tr><td><strong>private</strong></td><td><strong>只有同類別內</strong>能存取</td></tr></tbody></table></div>
+<p>小例子(把餘額藏起來,只能透過方法操作):</p>
+<pre><code>class BankAccount {
+    private int balance;               // 私有:外部不能直接亂改
+    public void deposit(int amount) {  // 公開介面
+        if (amount &gt; 0) balance += amount;   // 方法裡可加檢查
+    }
+    public int getBalance() { return balance; }
+}</code></pre>
+<p><code>balance</code> 設成 private,外面就<strong>不能</strong> <code>account.balance = -999</code> 亂搞,只能呼叫 <code>deposit()</code>,而方法裡能加「金額要 &gt; 0」的檢查保護資料。</p>
+<h3>目的</h3>
+<p>保護資料不被亂改、降低各部分的<strong>耦合</strong>,改內部實作也不影響外部使用者。</p>
+<p><strong>★ 封裝常考重點</strong>:封裝 ≈ <strong>資訊隱藏</strong>;用 <strong>private</strong> 把屬性藏起來,提供 public 方法(getter/setter)存取。目的是<strong>保護資料、降低耦合</strong>。</p>
+<hr>
+<h2>五、繼承 (Inheritance)</h2>
+<h3>是什麼</h3>
+<p>讓一個新類別<strong>直接擁有</strong>既有類別的屬性和方法,不必重寫,還能再加自己的或修改。</p>
+<ul><li>被繼承的叫<strong>父類別 / 超類別 (Superclass / Parent)</strong>。</li><li>繼承的叫<strong>子類別 (Subclass / Child)</strong>。</li></ul>
+<p>比喻:</p>
+<blockquote><p>「<strong>動物 → 狗 → 拉布拉多</strong>」。狗自動擁有動物的共同特徵(會呼吸、會移動),再加自己的(會汪汪叫);拉布拉多又繼承狗的一切,再加自己的。<strong>越下層越特化。</strong></p></blockquote>
+<h3>is-a vs has-a(常考分辨)</h3>
+<ul><li><strong>繼承 = is-a 關係</strong>:「狗<strong>是一種</strong>動物」(Dog is-a Animal)→ 用繼承。</li><li><strong>組合 (Composition) = has-a 關係</strong>:「車<strong>有一個</strong>引擎」(Car has-a Engine)→ 不是繼承,是把引擎物件放進車裡。</li></ul>
+<p>別把「有一個」硬寫成繼承——這是經典觀念題。</p>
+<h3>單一繼承 vs 多重繼承</h3>
+<ul><li><strong>單一繼承</strong>:一個子類別只繼承一個父類別。</li><li><strong>多重繼承</strong>:一個子類別繼承多個父類別。<strong>C++ 支援;Java 不支援(類別)</strong>,Java 改用「實作多個介面」來達到類似效果(後面講)。</li></ul>
+<h3>目的</h3>
+<p><strong>程式碼重用 (Reusability)</strong>,減少重複,好維護好擴充。</p>
+<p><strong>★ 繼承常考重點</strong>:子類別繼承父類別 = <strong>is-a</strong>;has-a 要用<strong>組合</strong>。<strong>Java 不支援類別多重繼承</strong>(用介面替代),C++ 支援。繼承的好處是<strong>重用</strong>。</p>
+<hr>
+<h2>六、多型 (Polymorphism)</h2>
+<h3>是什麼</h3>
+<p>「多型」= 多種型態。<strong>同一個方法名稱(同一個訊息),套在不同物件上,會有不同的行為。</strong></p>
+<p>比喻:</p>
+<blockquote><p>你對不同動物都下同一個命令「<strong>叫</strong>」(<code>sound()</code>):狗回你「汪汪」、貓回你「喵喵」、牛回你「哞哞」。<strong>命令一樣,反應因物件而異</strong>,這就是多型。</p></blockquote>
+<p>它讓你能用「統一的方式」操作一群不同的物件,程式更有彈性、好擴充(新增一種動物,呼叫端不用改)。</p>
+<h3>多型的兩種實現(這裡是重災區)</h3>
+<h4>（一）多載 / 重載 (Overloading)——編譯期多型</h4>
+<p><strong>同一個類別裡</strong>,有多個<strong>同名</strong>方法,靠<strong>參數不同</strong>(個數、型別、順序)來區分:</p>
+<pre><code>class Calculator {
+    int add(int a, int b)          { return a + b; }
+    double add(double a, double b) { return a + b; }
+    int add(int a, int b, int c)   { return a + b + c; }
+}</code></pre>
+<p>三個都叫 <code>add</code>,但參數不同。<strong>編譯時</strong>就能依參數決定呼叫哪一個(靜態繫結)。<strong>跟繼承無關。</strong></p>
+<h4>（二）覆寫 (Overriding)——執行期多型</h4>
+<p><strong>子類別把父類別「已經有」的方法,重新定義一次</strong>(方法簽章<strong>完全相同</strong>),藉此改變繼承來的行為:</p>
+<pre><code>class Animal {
+    void sound() { System.out.println(&quot;某種叫聲&quot;); }
+}
+class Dog extends Animal {
+    void sound() { System.out.println(&quot;汪汪&quot;); }   // 覆寫
+}</code></pre>
+<p><code>Dog</code> 的 <code>sound()</code> 把 <code>Animal</code> 的蓋掉。<strong>執行時</strong>才依物件「實際的型別」決定叫哪個(動態繫結)。<strong>這才是真正實現多型的方式</strong>,需要<strong>繼承</strong>。</p>
+<p><strong>★ 多型常考重點(必考)</strong>:</p>
+<ul><li><strong>多載 (Overload)</strong>:同名、<strong>參數不同</strong>、同類別、<strong>編譯期</strong>、與繼承<strong>無關</strong>。</li><li><strong>覆寫 (Override)</strong>:同名、<strong>參數完全相同</strong>、子類別改父類別、<strong>執行期</strong>、<strong>需要繼承</strong>,是多型的實現。</li><li>一句話分:<strong>「載」看參數(Overload),「寫」看繼承(Override)。</strong></li></ul>
+<hr>
+<h2>七、抽象 (Abstraction)</h2>
+<h3>是什麼</h3>
+<p>只保留「<strong>重要的、共通的特徵</strong>」,把不必要的細節隱藏起來,讓你專注在「該關心的層次」。</p>
+<p>比喻:</p>
+<blockquote><p>你<strong>開車</strong>只要會操作方向盤、油門、煞車(抽象出來的介面),完全不用懂引擎內部燃燒、變速箱齒輪怎麼運作。抽象就是「給你一個簡單好用的介面,把複雜細節藏在後面」。</p></blockquote>
+<h3>怎麼做:抽象類別 vs 介面</h3>
+<p>這是用來「規範共同行為」的兩種工具,差別很常考:</p>
+<ul><li><strong>抽象類別 (Abstract Class)</strong>:</li><li>可以<strong>同時有「已實作的方法」和「抽象方法(只宣告、沒實作)」</strong>。</li><li><strong>不能被實例化</strong>(不能 <code>new</code> 出抽象類別的物件)。</li><li>子類別用 <strong>extends 繼承</strong>,並補上抽象方法的實作。</li><li>一個類別<strong>只能繼承一個</strong>抽象類別(單一繼承)。</li></ul>
+<ul><li><strong>介面 (Interface)</strong>:</li><li>(傳統定義)<strong>只有方法的宣告,沒有實作</strong>,是「純規範」。</li><li>類別用 <strong>implements 實作</strong>它。</li><li>一個類別<strong>可以同時實作多個介面</strong> → 這就是 Java 用來達到「類似多重繼承」的方法。</li><li>(補充:Java 8 後介面可有 default method,但國考多以傳統定義出題。)</li></ul>
+<p><strong>★ 抽象常考重點</strong>:抽象類別<strong>可含已實作方法</strong>、只能<strong>繼承一個</strong>;介面<strong>(傳統)全是宣告</strong>、可<strong>實作多個</strong>。兩者<strong>都不能被實例化</strong>。</p>
+<hr>
+<h2>八、其他重要名詞(眼熟一下)</h2>
+<ul><li><strong>建構子 (Constructor)</strong>:物件被 <code>new</code> 出來時自動執行的特殊方法,用來初始化屬性。名稱通常與類別同名、沒有回傳值。</li><li><strong>訊息傳遞 (Message Passing)</strong>:物件之間透過「呼叫對方的方法」來互動,就叫送訊息。</li><li><strong>多載 vs 覆寫</strong>(上面講過,務必分清)。</li></ul>
+<hr>
+<h2>九、覆寫 vs 多載(超高頻對照表,務必背)</h2>
+<div class="tablewrap"><table><thead><tr><th>比較項</th><th>多載 Overload</th><th>覆寫 Override</th></tr></thead><tbody><tr><td>方法名稱</td><td>相同</td><td>相同</td></tr>
+<tr><td>參數</td><td><strong>不同</strong>(個數/型別/順序)</td><td><strong>完全相同</strong></td></tr>
+<tr><td>發生位置</td><td>同一類別內</td><td>子類別 vs 父類別</td></tr>
+<tr><td>需要繼承?</td><td><strong>不需要</strong></td><td><strong>需要</strong></td></tr>
+<tr><td>繫結時機</td><td>編譯期(靜態)</td><td>執行期(動態)</td></tr>
+<tr><td>對應多型</td><td>編譯期多型</td><td>執行期多型(真多型)</td></tr></tbody></table></div>
+<p><strong>口訣</strong>:<strong>多載比參數、覆寫靠繼承;載在編譯期、寫在執行期。</strong></p>
+<hr>
+<h2>十、抽象類別 vs 介面(高頻對照表)</h2>
+<div class="tablewrap"><table><thead><tr><th>比較項</th><th>抽象類別 Abstract Class</th><th>介面 Interface</th></tr></thead><tbody><tr><td>方法內容</td><td>可含已實作 + 抽象方法</td><td>(傳統)只有宣告,無實作</td></tr>
+<tr><td>能否實例化</td><td><strong>否</strong></td><td><strong>否</strong></td></tr>
+<tr><td>關鍵字</td><td>extends(繼承)</td><td>implements(實作)</td></tr>
+<tr><td>數量</td><td>只能繼承<strong>一個</strong></td><td>可實作<strong>多個</strong></td></tr>
+<tr><td>主要用途</td><td>共用部分實作 + 規範</td><td>純規範行為、達成類似多重繼承</td></tr></tbody></table></div>
+<hr>
+<h2>十一、高頻考點速記(直接背)</h2>
+<ul><li>OO 三大特性:<strong>封裝、繼承、多型</strong>;四大特性再加<strong>抽象</strong>。</li><li><strong>類別 = 藍圖</strong>,<strong>物件 = 實例 (instance)</strong>;一個類別可生多個物件。</li><li>封裝 ≈ <strong>資訊隱藏</strong>;用 <strong>private</strong> 藏資料、public 方法存取,目的是保護資料、降耦合。</li><li>存取權限大小:<strong>public &gt; protected &gt; (default) &gt; private</strong>;private 只限同類別。</li><li>繼承 = <strong>is-a</strong>;has-a 用<strong>組合</strong>。<strong>Java 不支援類別多重繼承</strong>,用介面替代;C++ 支援。</li><li>多型:<strong>多載(Overload)= 同名不同參數、編譯期、不需繼承</strong>;<strong>覆寫(Override)= 同簽章、執行期、需繼承</strong>,是真正的多型。</li><li>抽象類別<strong>可含已實作方法</strong>、<strong>extends</strong>、只能繼承一個;介面<strong>(傳統)全宣告</strong>、<strong>implements</strong>、可實作多個;兩者都<strong>不能實例化</strong>。</li><li>建構子:<code>new</code> 物件時自動執行,負責初始化。</li></ul>
+<hr>
+<h2>十二、小試身手(選擇題)</h2>
+<p><strong>1.</strong> 物件導向程式設計的「三大特性」通常指?<br>(A) 封裝、繼承、多型<br>(B) 封裝、抽象、組合<br>(C) 繼承、多載、覆寫<br>(D) 類別、物件、方法</p>
+<p><strong>2.</strong> 下列關於類別 (Class) 與物件 (Object) 的敘述,何者正確?<br>(A) 物件是設計藍圖,類別是實體<br>(B) 物件是類別的實例 (instance)<br>(C) 一個類別只能產生一個物件<br>(D) 類別是物件的實例</p>
+<p><strong>3.</strong> 「封裝 (Encapsulation)」最主要的目的與下列何者最相關?<br>(A) 程式碼重用　(B) 資訊隱藏、保護資料　(C) 同名不同參數　(D) 多重繼承</p>
+<p><strong>4.</strong> 在 Java 中,若要讓某屬性「只能在同一個類別內被存取」,應使用哪個存取修飾子?<br>(A) public　(B) protected　(C) private　(D) default</p>
+<p><strong>5.</strong> 「狗是一種動物」這種關係,在物件導向中應以何種方式表達?<br>(A) 組合 (Composition)　(B) 繼承 (Inheritance)　(C) 多載　(D) 封裝</p>
+<p><strong>6.</strong> 下列關於「多載 (Overloading)」的敘述,何者正確?<br>(A) 子類別重新定義父類別的方法<br>(B) 同一名稱、參數不同的多個方法<br>(C) 必須在有繼承關係下才能發生<br>(D) 在執行期才決定呼叫哪個方法</p>
+<p><strong>7.</strong> 「覆寫 (Overriding)」具有下列哪項特徵?<br>(A) 同名但參數必須不同<br>(B) 與繼承無關<br>(C) 子類別重新定義父類別的同簽章方法,執行期決定<br>(D) 在編譯期完成繫結</p>
+<p><strong>8.</strong> 下列何者是「執行期多型 (runtime polymorphism)」的實現方式?<br>(A) 多載 Overload　(B) 覆寫 Override　(C) 封裝　(D) 建構子</p>
+<p><strong>9.</strong> 關於 Java 的多重繼承,下列何者正確?<br>(A) Java 支援類別的多重繼承<br>(B) Java 不支援類別多重繼承,可用介面達成類似效果<br>(C) 介面不能被多個類別實作<br>(D) 抽象類別可被同時繼承多個</p>
+<p><strong>10.</strong> 下列關於「抽象類別 (Abstract Class)」的敘述,何者<strong>錯誤</strong>?<br>(A) 不能被實例化<br>(B) 可以同時包含已實作的方法與抽象方法<br>(C) 一個類別可以同時繼承多個抽象類別<br>(D) 子類別需實作其抽象方法</p>
+<p><strong>11.</strong> 關於「介面 (Interface)」的敘述,下列何者正確?<br>(A) 一個類別只能實作一個介面<br>(B) 一個類別可以實作多個介面<br>(C) 介面可以被直接實例化<br>(D) 介面就是抽象類別的別名</p>
+<p><strong>12.</strong> 存取修飾子 protected 的存取範圍,下列何者正確?<br>(A) 只有同一類別內<br>(B) 任何地方<br>(C) 同類別與其子類別<br>(D) 完全不能被存取</p>
+<p><strong>13.</strong> 「車子有一個引擎 (Car has-a Engine)」這種關係,最適合用下列何者表達?<br>(A) 繼承　(B) 組合 (Composition)　(C) 覆寫　(D) 多型</p>
+<p><strong>14.</strong> 下列何者<strong>不是</strong>物件導向四大特性之一?<br>(A) 封裝　(B) 繼承　(C) 編譯　(D) 多型</p>
+<p><strong>15.</strong> 下列關於建構子 (Constructor) 的敘述,何者正確?<br>(A) 用來釋放物件記憶體<br>(B) 物件建立時自動執行,負責初始化<br>(C) 必須有回傳值<br>(D) 一個類別不能有建構子</p>
+<hr>
+<h3>答案與解析</h3>
+<div class="tablewrap"><table><thead><tr><th>題</th><th>答</th><th>解析</th></tr></thead><tbody><tr><td>1</td><td><strong>A</strong></td><td>三大特性=封裝、繼承、多型(加抽象則為四大)。</td></tr>
+<tr><td>2</td><td><strong>B</strong></td><td>物件是類別的實例;類別是藍圖,可產生多個物件。</td></tr>
+<tr><td>3</td><td><strong>B</strong></td><td>封裝核心是資訊隱藏、保護資料。</td></tr>
+<tr><td>4</td><td><strong>C</strong></td><td>private 限同類別內存取。</td></tr>
+<tr><td>5</td><td><strong>B</strong></td><td>「是一種」=is-a=繼承。</td></tr>
+<tr><td>6</td><td><strong>B</strong></td><td>多載=同名不同參數、同類別、編譯期、不需繼承。</td></tr>
+<tr><td>7</td><td><strong>C</strong></td><td>覆寫=子類別重新定義同簽章方法,執行期動態繫結,需繼承。</td></tr>
+<tr><td>8</td><td><strong>B</strong></td><td>執行期多型靠覆寫 (override) 實現。</td></tr>
+<tr><td>9</td><td><strong>B</strong></td><td>Java 不支援類別多重繼承,用「實作多個介面」達成。</td></tr>
+<tr><td>10</td><td><strong>C</strong></td><td>錯在這:類別只能繼承「一個」抽象類別(單一繼承)。</td></tr>
+<tr><td>11</td><td><strong>B</strong></td><td>一個類別可實作多個介面;介面不能實例化、也不等於抽象類別。</td></tr>
+<tr><td>12</td><td><strong>C</strong></td><td>protected=同類別+子類別(+同套件)。</td></tr>
+<tr><td>13</td><td><strong>B</strong></td><td>「有一個」=has-a=組合。</td></tr>
+<tr><td>14</td><td><strong>C</strong></td><td>四大特性是封裝、繼承、多型、抽象;「編譯」不是。</td></tr>
+<tr><td>15</td><td><strong>B</strong></td><td>建構子在 new 物件時自動執行、負責初始化,無回傳值。</td></tr></tbody></table></div>
+<footer class="foot">來源：_private/計概補充/物件導向特性_國考完整講義.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>

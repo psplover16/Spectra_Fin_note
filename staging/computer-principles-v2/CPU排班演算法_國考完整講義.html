@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜CPU 排班演算法</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">CPU Scheduling</p>
+<h1>CPU 排班演算法 — 國考完整講義</h1>
+<blockquote><p>這份講義假設你<strong>完全沒基礎</strong>:連甘特圖是什麼都不知道也沒關係。</p><p>順序是「為什麼需要排班 → 看懂基本名詞 → 學會甘特圖 → 各演算法 → 計算題 → 考點速記 → 選擇題」。</p><p>因為國考考<strong>選擇題</strong>,所以每段最後都有「★ 常考重點」,可以直接記。</p></blockquote>
+<hr>
+<h2>一、先定位:這個主題在哪裡</h2>
+<p>CPU 排班演算法是<strong>作業系統 (Operating System, OS)</strong> 裡「程序管理 (Process Management)」的核心。</p>
+<p>名字雖然有「CPU」,但它<strong>不是硬體題</strong>。CPU 硬體只負責埋頭執行指令;「下一個換誰用 CPU」這個決策,是 OS 在做的。所以這是不折不扣的 OS 題。</p>
+<p>作業系統的排班其實分三層,這本身也常考:</p>
+<div class="tablewrap"><table><thead><tr><th>排班層級</th><th>別名</th><th>在做什麼</th><th>執行頻率</th></tr></thead><tbody><tr><td>長程排班</td><td>工作排班器</td><td>決定哪些工作可進入系統</td><td>最低</td></tr>
+<tr><td>中程排班</td><td>—</td><td>把程序換出/換入記憶體 (swap)</td><td>中</td></tr>
+<tr><td>短程排班</td><td>CPU 排班器</td><td>決定誰下一個用 CPU</td><td>最高</td></tr></tbody></table></div>
+<p><strong>★ 常考重點</strong>:我們整份講義講的演算法,全部屬於<strong>短程排班 (Short-term Scheduling)</strong>,負責的角色叫 <strong>CPU 排班器 (CPU Scheduler)</strong>;它執行最頻繁。</p>
+<hr>
+<h2>二、為什麼需要排班(先有問題意識)</h2>
+<p>想像一間診所,只有<strong>一位醫生</strong>,但候診室坐著一堆病人。醫生一次只能看一個人,「下一個叫誰進來」就得有規則——這個規則就是排班演算法。</p>
+<p>對照到電腦:</p>
+<ul><li><strong>醫生 = CPU</strong>:只有一顆(先假設單核),一次只能跑一個程序。</li><li><strong>病人 = 程序 (Process)</strong>:一堆程序都搶 CPU。</li><li><strong>候診室 = 就緒佇列 (Ready Queue)</strong>:準備好、正在排隊等 CPU 的程序。</li><li><strong>「下一個叫誰」= 排班決策</strong>。</li></ul>
+<p>排班演算法要回答的就一句:<strong>候診室一堆人,醫生下一個該看誰?</strong></p>
+<hr>
+<h2>三、先記住幾個基本名詞(地基)</h2>
+<p>後面全部都用到,先記熟:</p>
+<ul><li><strong>程序 (Process)</strong>:正在執行的程式,想成「一位病人」。</li><li><strong>到達時間 (Arrival Time)</strong>:程序「進候診室」的時間,也就是抽號碼牌那一刻。</li><li><strong>執行時間 / CPU 分發時間 (Burst Time)</strong>:這程序「要佔用 CPU 多久」,也就是這位病人「要看多久」。<strong>這是計算題的核心數字。</strong></li><li><strong>就緒佇列 (Ready Queue)</strong>:已到達、正在等 CPU 的程序排成的隊伍。</li></ul>
+<hr>
+<h2>四、什麼是甘特圖 (Gantt Chart)</h2>
+<p>這是看懂計算題的第一關,先講清楚。</p>
+<p><strong>甘特圖就是一條「時間軸」</strong>:由左到右代表時間流動,上面用一塊一塊標出「每個時間點是誰在用 CPU」。</p>
+<p>舉個最簡單的例子。假設三個程序<strong>同時(時間 0)到達</strong>:</p>
+<div class="tablewrap"><table><thead><tr><th>程序</th><th>Burst</th></tr></thead><tbody><tr><td>P1</td><td>4</td></tr>
+<tr><td>P2</td><td>2</td></tr>
+<tr><td>P3</td><td>1</td></tr></tbody></table></div>
+<p>如果照「誰先排誰先做」、順序 P1 → P2 → P3,甘特圖長這樣:</p>
+<pre><code>┌──────────┬─────┬───┐
+│    P1    │ P2  │P3 │
+└──────────┴─────┴───┘
+0          4     6   7</code></pre>
+<p>怎麼讀:</p>
+<ul><li>第 0～4 單位:CPU 在跑 P1(P1 要 4 單位)。</li><li>第 4～6 單位:換 P2(要 2 單位)。</li><li>第 6～7 單位:換 P3(要 1 單位)。</li><li>整批在第 7 單位全部跑完。</li></ul>
+<p>就這麼簡單。<strong>畫出甘特圖,計算題就解一半</strong>,因為每個程序「幾點開始、幾點做完」全看得出來。</p>
+<p>後面我會用比較省空間的寫法表示同一張圖:<strong>P1(0–4) → P2(4–6) → P3(6–7)</strong>,意思一模一樣。</p>
+<hr>
+<h2>五、評斷好壞的幾把尺(排班準則 / Criteria)</h2>
+<p>不同演算法排出來的甘特圖不一樣,「誰比較好」就用下面幾個指標來比。先記哪些「越大越好」、哪些「越小越好」,這超常考。</p>
+<p><strong>越大越好:</strong></p>
+<ul><li><strong>CPU 使用率 (CPU Utilization)</strong>:CPU 越忙、越不閒置越好。</li><li><strong>產能 (Throughput)</strong>:單位時間內完成的程序數,越多越好。</li></ul>
+<p><strong>越小越好:</strong></p>
+<ul><li><strong>等待時間 (Waiting Time)</strong>:程序在就緒佇列裡「乾等」的<strong>總</strong>時間。</li><li><strong>迴轉時間 (Turnaround Time)</strong>:從「到達」到「完成」的總時間。</li><li><strong>回應時間 (Response Time)</strong>:從「到達」到「第一次被 CPU 服務」的時間。</li></ul>
+<p>三個「越小越好」的公式(背起來):</p>
+<pre><code>迴轉時間 = 完成時間 − 到達時間
+等待時間 = 迴轉時間 − 執行時間 (Burst)
+回應時間 = 第一次上 CPU 的時間 − 到達時間</code></pre>
+<p><strong>等待 vs 回應(常考陷阱):</strong></p>
+<ul><li>回應時間只算「到第一次被服務」之前那一段。</li><li>等待時間是「全部」乾等時間的加總。</li><li>程序若一口氣做完、中途不被打斷,兩者相等;一旦被切成好幾段(像 RR),第一次很快被叫到(回應短),但加總乾等可能很長(等待長),兩者就不一樣。</li></ul>
+<p><strong>★ 常考重點</strong>:互動系統最在乎<strong>回應時間</strong>;批次系統最在乎<strong>迴轉/等待時間</strong>。</p>
+<hr>
+<h2>六、超重要分類:可搶占 vs 不可搶占</h2>
+<p>這條軸幾乎每年考。</p>
+<ul><li><strong>不可搶占 (Non-preemptive)</strong>:醫生一旦開始看你,就一定看到好,中途來更急的也得等。程序一旦拿到 CPU,就跑到自己結束(或自己主動讓出,例如要等 I/O)為止。</li><li><strong>可搶占 (Preemptive)</strong>:醫生看到一半可以喊停,先去處理更急的,之後再回來。程序執行中可能被 OS 強制收回 CPU。</li></ul>
+<p><strong>排班發生的四種時機(常考):</strong> 程序狀態改變時會觸發排班:</p>
+<ol><li>執行中 → 等待中(例如發出 I/O 請求)</li><li>執行中 → 就緒(例如時間到被中斷)</li><li>等待中 → 就緒(例如 I/O 完成)</li><li>程序結束 (terminate)</li></ol>
+<p><strong>★ 常考重點</strong>:只在第 <strong>1、4</strong> 種時機排班 = 不可搶占;第 <strong>2、3</strong> 種也會排班 = 可搶占。</p>
+<hr>
+<h2>七、各演算法逐一攻略</h2>
+<p>講法都一樣:先講「為什麼有它」,再講規則、優缺點、考點。它們是一條<strong>補洞鏈</strong>——每個都在補前一個的缺點。</p>
+<h3>（一）FCFS 先到先服務 (First-Come, First-Served)</h3>
+<ul><li><strong>搶占性</strong>:不可搶占。</li><li><strong>規則</strong>:誰先到就先做,跟一般排隊一樣,用 FIFO 佇列實作。</li><li><strong>優點</strong>:最簡單、最公平。</li><li><strong>缺點——護航效應 (Convoy Effect)</strong>:一個超長的程序排前面,後面一堆短程序都得乾等它,平均等待時間爆高。就像大卡車堵在前面,後面小車全卡住。</li></ul>
+<p><strong>★ 常考重點</strong>:FCFS = 不可搶占、FIFO;招牌缺點是<strong>護航效應</strong>。</p>
+<h3>（二）SJF 最短工作優先 (Shortest Job First)</h3>
+<ul><li><strong>為什麼有它</strong>:解決 FCFS 的護航效應——別讓短的卡在長的後面。</li><li><strong>搶占性</strong>:不可搶占(它的可搶占版是下面的 SRTF)。</li><li><strong>規則</strong>:每次 CPU 空出來時,從「已到達」的程序裡挑 Burst <strong>最短</strong>的先做。</li><li><strong>最大優點(必考)</strong>:在所有排班法中,SJF 給出的<strong>平均等待時間最小(理論最佳值)</strong>,沒有別的方法能更低。</li><li><strong>缺點 1——無法預知</strong>:你事先不知道每個程序要跑多久,只能用過去紀錄「估計」。</li><li><strong>缺點 2——飢餓 (Starvation)</strong>:短程序一直進來,某個長程序可能永遠輪不到。</li></ul>
+<p><strong>★ 常考重點</strong>:</p>
+<ul><li>SJF <strong>平均等待時間最小(最佳)</strong>。← 最高頻</li><li>關鍵難題是「無法事先知道 Burst」。</li><li>會造成<strong>飢餓</strong>。</li></ul>
+<h3>（三）SRTF 最短剩餘時間優先 (Shortest Remaining Time First)</h3>
+<ul><li><strong>為什麼有它</strong>:把 SJF 加上「可搶占」,反應更即時。</li><li><strong>搶占性</strong>:可搶占(SJF 的搶占版)。</li><li><strong>規則</strong>:跟 SJF 一樣挑最短,但只要<strong>新來程序所需時間 &lt; 目前程序的剩餘時間</strong>,就立刻搶占、換新的上。</li><li><strong>優點</strong>:平均等待時間比 SJF 更低。</li><li><strong>缺點</strong>:搶占造成較多上下文切換成本,飢餓問題仍在。</li></ul>
+<p><strong>★ 常考重點</strong>:SRTF = <strong>可搶占版 SJF</strong>;比的是<strong>剩餘</strong>時間,不是總時間。</p>
+<h3>（四）Priority 優先權排程 (Priority Scheduling)</h3>
+<ul><li><strong>搶占性</strong>:可搶占與不可搶占兩種版本都有。</li><li><strong>規則</strong>:每個程序給一個優先權數字,優先權高者先做。(注意:很多系統「數字越小 = 優先權越高」,以題目定義為準。)</li><li><strong>與 SJF 的關係(考點)</strong>:SJF 是 Priority 的特例——把「Burst 越短 = 優先權越高」就是 SJF。</li><li><strong>缺點——飢餓 (Starvation)</strong>:低優先權程序可能一直被插隊,永遠做不到。</li><li><strong>解法——老化 (Aging)</strong>:程序等越久,就慢慢自動「升優先權」,等到夠久一定會被排到。專治飢餓。</li></ul>
+<p><strong>★ 常考重點</strong>:</p>
+<ul><li>飢餓的解法 = <strong>老化 (Aging)</strong>。← 高頻</li><li>SJF 是 <strong>Priority 的特例</strong>。</li></ul>
+<h3>（五）Round Robin 輪轉法 (RR)</h3>
+<ul><li><strong>為什麼有它</strong>:不拚效率,改拚<strong>公平</strong>與<strong>回應速度</strong>,給互動系統用。</li><li><strong>搶占性</strong>:天生可搶占。</li><li><strong>規則</strong>:給每個程序一段固定的<strong>時間量子 (Time Quantum / Time Slice)</strong>。輪到你就做這麼久,沒做完就回到佇列<strong>最後面</strong>重排,換下一個,一圈一圈輪。</li><li><strong>優點</strong>:公平、<strong>沒有飢餓</strong>、回應時間短(每個人很快被叫到)。</li><li><strong>關鍵考點——時間量子的取捨</strong>:</li><li>量子設<strong>太大</strong> → 大到每個程序一次就做完 → 退化成 <strong>FCFS</strong>。</li><li>量子設<strong>太小</strong> → 一直在換程序,<strong>上下文切換 (Context Switch)</strong> 成本爆高,效率變差。</li><li>所以量子要「適中」:遠大於一次切換時間,又不能大到變 FCFS。</li></ul>
+<p><strong>★ 常考重點</strong>:</p>
+<ul><li>RR 適合<strong>分時/互動系統</strong>。</li><li>時間量子很大時,RR 等同 <strong>FCFS</strong>。← 必考</li><li>時間量子太小 → <strong>上下文切換過多</strong>。</li><li>RR <strong>沒有飢餓</strong>。</li></ul>
+<h3>（六）MLQ 多層佇列 (Multilevel Queue)</h3>
+<ul><li><strong>規則</strong>:就緒佇列分成<strong>好幾層</strong>(例如「前景互動」一層、「背景批次」一層),每層用自己的演算法。層與層之間有固定優先權,程序<strong>固定</strong>屬於某一層、<strong>不能跨層</strong>。</li><li><strong>缺點</strong>:低層佇列可能飢餓。</li></ul>
+<h3>（七）MLFQ 多層回饋佇列 (Multilevel Feedback Queue)</h3>
+<ul><li><strong>規則</strong>:跟 MLQ 像,但程序可以<strong>在層與層之間移動</strong>(回饋):用太多 CPU 的被降層,等太久的被升層(內建老化)。</li><li><strong>優點</strong>:最有彈性、最接近真實 OS 的設計,能兼顧短工作與避免飢餓。</li></ul>
+<p><strong>★ 常考重點</strong>:MLQ 程序<strong>不能換層</strong>;MLFQ <strong>可以換層</strong>且能避免飢餓——這個差別是考點。</p>
+<hr>
+<h2>八、計算題完整示範(最重要的實作)</h2>
+<p>計算題就照這<strong>四步</strong>走,套在任何演算法都一樣:</p>
+<blockquote><p><strong>一、畫甘特圖</strong>(演算法決定順序、誰被切開)</p><p><strong>二、讀完成時間</strong>(每個程序「最後一塊」結束的時間)</p><p><strong>三、迴轉 = 完成 − 到達</strong></p><p><strong>四、等待 = 迴轉 − Burst;回應 = 第一次上場 − 到達</strong></p></blockquote>
+<p>用同一組題目,跑三種演算法:</p>
+<div class="tablewrap"><table><thead><tr><th>程序</th><th>到達</th><th>Burst</th></tr></thead><tbody><tr><td>P1</td><td>0</td><td>5</td></tr>
+<tr><td>P2</td><td>1</td><td>3</td></tr>
+<tr><td>P3</td><td>2</td><td>1</td></tr>
+<tr><td>P4</td><td>3</td><td>2</td></tr></tbody></table></div>
+<h3>FCFS</h3>
+<p>照到達順序:<strong>P1(0–5) → P2(5–8) → P3(8–9) → P4(9–11)</strong></p>
+<div class="tablewrap"><table><thead><tr><th>程序</th><th>完成</th><th>迴轉</th><th>等待</th><th>回應</th></tr></thead><tbody><tr><td>P1</td><td>5</td><td>5</td><td>0</td><td>0</td></tr>
+<tr><td>P2</td><td>8</td><td>7</td><td>4</td><td>4</td></tr>
+<tr><td>P3</td><td>9</td><td>7</td><td>6</td><td>6</td></tr>
+<tr><td>P4</td><td>11</td><td>8</td><td>6</td><td>6</td></tr></tbody></table></div>
+<p>平均等待 =(0+4+6+6)/4 = <strong>4</strong>;平均迴轉 = 27/4 = <strong>6.75</strong>。<br>(一口氣做完,所以回應 = 等待。)</p>
+<h3>SJF(不可搶占)</h3>
+<p>每次挑「已到達」中最短的:t=0 只有 P1 → 做 P1(0–5);t=5 時 P2、P3、P4 都到,挑最短 P3(5–6);再挑 P4(6–8);最後 P2(8–11)。</p>
+<p>甘特圖:<strong>P1(0–5) → P3(5–6) → P4(6–8) → P2(8–11)</strong></p>
+<div class="tablewrap"><table><thead><tr><th>程序</th><th>完成</th><th>迴轉</th><th>等待</th><th>回應</th></tr></thead><tbody><tr><td>P1</td><td>5</td><td>5</td><td>0</td><td>0</td></tr>
+<tr><td>P2</td><td>11</td><td>10</td><td>7</td><td>7</td></tr>
+<tr><td>P3</td><td>6</td><td>4</td><td>3</td><td>3</td></tr>
+<tr><td>P4</td><td>8</td><td>5</td><td>3</td><td>3</td></tr></tbody></table></div>
+<p>平均等待 =(0+7+3+3)/4 = <strong>3.25</strong>;平均迴轉 = 24/4 = <strong>6</strong>。</p>
+<p>注意:SJF 的平均等待 3.25 &lt; FCFS 的 4,印證「SJF 平均等待最小」。</p>
+<h3>Round Robin(時間量子 = 2)</h3>
+<p>慣例:同一時刻有人時間到被踢出、又有新人到達,<strong>新到的先排進隊伍</strong>。輪下來:</p>
+<p>甘特圖:<strong>P1(0–2) → P2(2–4) → P3(4–5) → P1(5–7) → P4(7–9) → P2(9–10) → P1(10–11)</strong></p>
+<p>完成時間看「最後一塊」:P1 最後一塊到 11,所以 P1 完成 = 11。</p>
+<div class="tablewrap"><table><thead><tr><th>程序</th><th>完成</th><th>迴轉</th><th>等待</th><th>回應</th></tr></thead><tbody><tr><td>P1</td><td>11</td><td>11</td><td>6</td><td><strong>0</strong></td></tr>
+<tr><td>P2</td><td>10</td><td>9</td><td>6</td><td>1</td></tr>
+<tr><td>P3</td><td>5</td><td>3</td><td>2</td><td>2</td></tr>
+<tr><td>P4</td><td>9</td><td>6</td><td>4</td><td>4</td></tr></tbody></table></div>
+<p>平均等待 =(6+6+2+4)/4 = <strong>4.5</strong>;平均迴轉 = 29/4 = <strong>7.25</strong>;平均回應 = 7/4 = <strong>1.75</strong>。</p>
+<p>看 P1:回應 0 但等待 6,因為被切三段——這就是「回應 ≠ 等待」的典型。</p>
+<h3>三種比一比</h3>
+<div class="tablewrap"><table><thead><tr><th>演算法</th><th>平均迴轉</th><th>平均等待</th><th>平均回應</th></tr></thead><tbody><tr><td>FCFS</td><td>6.75</td><td>4</td><td>4</td></tr>
+<tr><td>SJF</td><td>6</td><td><strong>3.25</strong></td><td>3.25</td></tr>
+<tr><td>RR</td><td>7.25</td><td>4.5</td><td><strong>1.75</strong></td></tr></tbody></table></div>
+<p>SJF 迴轉、等待最小;RR 回應最小但等待最大;FCFS 居中、最簡單。</p>
+<hr>
+<h2>九、總整理比較表(考前掃這張)</h2>
+<div class="tablewrap"><table><thead><tr><th>演算法</th><th>搶占性</th><th>挑選依據</th><th>招牌優點</th><th>招牌缺點</th></tr></thead><tbody><tr><td>FCFS</td><td>不可搶占</td><td>到達順序</td><td>簡單、公平</td><td>護航效應</td></tr>
+<tr><td>SJF</td><td>不可搶占</td><td>最短 Burst</td><td>平均等待最小</td><td>無法預知、飢餓</td></tr>
+<tr><td>SRTF</td><td>可搶占</td><td>最短剩餘時間</td><td>等待更低</td><td>切換多、飢餓</td></tr>
+<tr><td>Priority</td><td>兩種都有</td><td>優先權</td><td>可分輕重緩急</td><td>飢餓(用老化解)</td></tr>
+<tr><td>RR</td><td>可搶占</td><td>輪流(時間量子)</td><td>公平、回應快、無飢餓</td><td>量子難調</td></tr>
+<tr><td>MLQ</td><td>通常可搶占</td><td>分層固定</td><td>不同類分開管</td><td>低層飢餓</td></tr>
+<tr><td>MLFQ</td><td>可搶占</td><td>分層可移動</td><td>最有彈性、避免飢餓</td><td>設計最複雜</td></tr></tbody></table></div>
+<hr>
+<h2>十、高頻考點速記(這些直接背)</h2>
+<ul><li>SJF → <strong>平均等待時間最小(最佳)</strong>。</li><li>RR 時間量子設很大 → 變成 <strong>FCFS</strong>。</li><li>RR 時間量子設很小 → <strong>上下文切換過多</strong>,效率差。</li><li><strong>護航效應 (Convoy Effect)</strong> → 出現在 <strong>FCFS</strong>。</li><li>會造成飢餓的:<strong>SJF、SRTF、Priority</strong>(RR 不會、FCFS 不會)。</li><li>飢餓的解法 → <strong>老化 (Aging)</strong>。</li><li>SJF 是 <strong>Priority 的特例</strong>。</li><li>SRTF = <strong>可搶占版 SJF</strong>,比的是<strong>剩餘</strong>時間。</li><li>互動/分時系統最適合 → <strong>RR</strong>。</li><li>回應 vs 等待:不被打斷時相等;被切段(RR)時回應短、等待可能長。</li><li>越大越好:CPU 使用率、產能;越小越好:等待、迴轉、回應。</li></ul>
+<hr>
+<h2>十一、小試身手(選擇題)</h2>
+<p><strong>1.</strong> 下列哪一種 CPU 排班演算法,可得到最小的平均等待時間?<br>(A) FCFS　(B) SJF　(C) RR　(D) Priority</p>
+<p><strong>2.</strong> Round Robin 中,若時間量子設定得非常大,其行為會趨近於下列何者?<br>(A) SJF　(B) SRTF　(C) FCFS　(D) Priority</p>
+<p><strong>3.</strong> 「護航效應 (Convoy Effect)」最容易發生在下列哪種排班法?<br>(A) FCFS　(B) SJF　(C) RR　(D) MLFQ</p>
+<p><strong>4.</strong> 為了解決優先權排程造成的「飢餓 (Starvation)」,通常採用下列哪種技術?<br>(A) 上下文切換　(B) 老化 Aging　(C) 時間量子　(D) 護航</p>
+<p><strong>5.</strong> 下列關於可搶占 (Preemptive) 排班的敘述,何者正確?<br>(A) FCFS 是可搶占的<br>(B) SJF 與 SRTF 完全相同<br>(C) RR 是可搶占的<br>(D) 可搶占一定比不可搶占好</p>
+<p><strong>6.</strong> 三個程序同時到達,Burst 分別為 P1=6、P2=2、P3=4,採用 SJF,平均等待時間為何?<br>(A) 2　(B) 8/3　(C) 4　(D) 10/3</p>
+<hr>
+<h3>答案與解析</h3>
+<ol><li><strong>(B)</strong>　SJF 的平均等待時間在理論上最小。</li><li><strong>(C)</strong>　量子大到每個程序一次做完,就退化成先到先做的 FCFS。</li><li><strong>(A)</strong>　長程序卡前面,後面短程序全被拖住,是 FCFS 的典型問題。</li><li><strong>(B)</strong>　等越久優先權越高,確保最終會被排到。</li><li><strong>(C)</strong>　RR 靠時間量子強制輪替,是可搶占;FCFS 不可搶占;SJF(不可搶占)與 SRTF(可搶占)不同;可搶占不一定比較好(切換有成本)。</li><li><strong>(B)</strong>　SJF 順序 P2(2)→P3(4)→P1(6),甘特圖 P2(0–2)→P3(2–6)→P1(6–12)。等待:P2=0、P3=2、P1=6,平均 =(0+2+6)/3 = 8/3。</li></ol>
+<footer class="foot">來源：_private/計概補充/CPU排班演算法_國考完整講義.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>
