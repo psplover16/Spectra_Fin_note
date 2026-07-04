@@ -13,7 +13,12 @@ const floatingPointSupplementalReviewPath = '_TMP/reviews/cpv2-floating-point-sp
 const refreshedFloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
 const supplementalPracticeSourceFile = '_private/discuss.txt';
 const supplementalDataSourceFile = '_private/計概補充/計算機概論_重點講義_01.md';
-const supplementalCpuSchedulingSourceFile = '_private/計概補充/CPU排班演算法_考試速記版.md';
+const supplementalCpuSchedulingSourceFile = '_private/計概補充/CPU排班演算法_國考完整講義.md';
+const supplementalDeadlockSourceFile = '_private/計概補充/死結_考試精簡版.md';
+const supplementalPagingSegmentationSourceFile = '_private/計概補充/分頁與分段記憶體管理_題目帶動教學完整版.md';
+const supplementalOopSourceFile = '_private/計概補充/物件導向特性_國考完整講義.md';
+const supplementalComplexityLinearSourceFile = '_private/計概補充/基礎資料結構(上)_複雜度與線性結構.md';
+const supplementalTreesHashSourceFile = '_private/計概補充/基礎資料結構(下)_樹與雜湊表.md';
 const specialValuesSourceFile = '_private/MD/0621/IEEE754_浮點數特殊值_速記.md';
 const deprecatedFloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 const refreshedFloatingPointSourceFiles = [
@@ -38,31 +43,43 @@ const topicCases = [
     id: 'cpv2-supplemental-cpu-scheduling',
     title: 'CPU 排班演算法',
     source: supplementalCpuSchedulingSourceFile,
-    keyword: 'Round Robin 中,時間量子設定非常大時,行為趨近於?'
+    keyword: 'CPU Scheduling',
+    htmlFilename: 'CPU排班演算法_國考完整講義.html'
   },
   {
     id: 'cpv2-supplemental-deadlock',
     title: '死結',
-    source: supplementalDataSourceFile,
-    keyword: '四個必要條件'
+    source: supplementalDeadlockSourceFile,
+    keyword: 'Deadlock',
+    htmlFilename: '死結_考試精簡版.html'
   },
   {
     id: 'cpv2-supplemental-paging-segmentation',
     title: '分頁與分段記憶體管理',
-    source: supplementalDataSourceFile,
-    keyword: 'Paging'
+    source: supplementalPagingSegmentationSourceFile,
+    keyword: 'Paging',
+    htmlFilename: '分頁與分段記憶體管理_題目帶動教學完整版.html'
   },
   {
     id: 'cpv2-supplemental-oop-characteristics',
     title: '物件導向特性',
-    source: supplementalDataSourceFile,
-    keyword: 'OOP Characteristics'
+    source: supplementalOopSourceFile,
+    keyword: 'OOP Characteristics',
+    htmlFilename: '物件導向特性_國考完整講義.html'
   },
   {
-    id: 'cpv2-supplemental-basic-data-structures',
-    title: '基礎資料結構',
-    source: supplementalDataSourceFile,
-    keyword: 'Basic Data Structures'
+    id: 'cpv2-supplemental-complexity-linear-structures',
+    title: '複雜度與線性結構',
+    source: supplementalComplexityLinearSourceFile,
+    keyword: 'Linear Structures',
+    htmlFilename: '基礎資料結構(上)_複雜度與線性結構.html'
+  },
+  {
+    id: 'cpv2-supplemental-trees-hash-tables',
+    title: '樹與雜湊表',
+    source: supplementalTreesHashSourceFile,
+    keyword: 'Hash Table',
+    htmlFilename: '基礎資料結構(下)_樹與雜湊表.html'
   },
   {
     id: 'cpv2-architecture-computation-theory',
@@ -201,7 +218,17 @@ describe('computer principles v2 route workflow', () => {
       expect(topic.sourceSummary).toContain(topicCase.title);
       expect(topic.summary).not.toBe('');
       expect(topic.terms.length, `${topicCase.id} should expose source terms`).toBeGreaterThan(0);
-      expect(topic.blocks).toHaveLength(1);
+      expect(topic.blocks).toHaveLength('htmlFilename' in topicCase ? 0 : 1);
+
+      if ('htmlFilename' in topicCase) {
+        expect((topic as { htmlPage?: { sourceFilename: string; href: string } }).htmlPage).toEqual({
+          sourceFilename: topicCase.htmlFilename,
+          href: `/computer-principles-v2/${topicCase.htmlFilename}`
+        });
+        expect(JSON.stringify(topic)).toContain(topicCase.keyword);
+        expect(JSON.stringify(topic)).not.toContain(catalogSourceFile);
+        continue;
+      }
 
       const lessonArticle = topic.blocks[0];
       expect(lessonArticle?.kind).toBe('lessonArticle');
@@ -256,21 +283,30 @@ describe('computer principles v2 route workflow', () => {
   it('keeps the supplemental practice content as the first route-visible topic card', () => {
     const topics = getSubjectTopics(subjectKey);
     const practiceTopic = topics[0];
-    const splitSupplementalTopics = topics.slice(1, 7);
-    const architectureTopic = topics[7];
+    const supplementalTopics = topics.slice(1, 8);
+    const architectureTopic = topics[8];
     const lessonArticle = practiceTopic?.blocks[0];
 
     expect(practiceTopic?.id).toBe('cpv2-supplemental-practice');
     expect(practiceTopic?.title).toBe('加強練習');
-    expect(splitSupplementalTopics.map((topic) => topic.id)).toEqual([
+    expect(supplementalTopics.map((topic) => topic.id)).toEqual([
       'cpv2-supplemental-amdahl-law',
       'cpv2-supplemental-cpu-scheduling',
       'cpv2-supplemental-deadlock',
       'cpv2-supplemental-paging-segmentation',
       'cpv2-supplemental-oop-characteristics',
-      'cpv2-supplemental-basic-data-structures'
+      'cpv2-supplemental-complexity-linear-structures',
+      'cpv2-supplemental-trees-hash-tables'
     ]);
-    expect(topics.some((topic) => topic.id === 'cpv2-supplemental-data' || topic.title === '補充資料')).toBe(false);
+    expect(
+      topics.some(
+        (topic) =>
+          topic.id === 'cpv2-supplemental-data' ||
+          topic.id === 'cpv2-supplemental-basic-data-structures' ||
+          topic.title === '補充資料' ||
+          topic.title === '基礎資料結構'
+      )
+    ).toBe(false);
     expect(architectureTopic?.id).toBe('cpv2-architecture-computation-theory');
     expect(lessonArticle?.kind).toBe('lessonArticle');
     if (lessonArticle?.kind !== 'lessonArticle') {
@@ -289,60 +325,62 @@ describe('computer principles v2 route workflow', () => {
     expect(serializedPracticeTopic).toContain('資管題目:');
   });
 
-  it('keeps split supplemental content as six route-visible topic cards', () => {
+  it('keeps Amdahl inline and links the six HTML-backed supplemental cards', () => {
     const topics = getSubjectTopics(subjectKey);
-    const splitSupplementalTopics = topics.slice(1, 7);
-    const splitProfessionalSupplementalTopics = v2Topics().slice(1, 7);
+    const inlineAmdahlTopic = topics[1];
+    const htmlSupplementalTopics = topics.slice(2, 8);
+    const htmlProfessionalSupplementalTopics = v2Topics().slice(2, 8);
     const [
-      amdahlTopic,
       schedulingTopic,
       deadlockTopic,
       pagingSegmentationTopic,
       oopTopic,
-      dataStructuresTopic
-    ] = splitProfessionalSupplementalTopics;
+      complexityLinearTopic,
+      treesHashTopic
+    ] = htmlProfessionalSupplementalTopics;
     const [
-      routeAmdahlTopic,
       routeSchedulingTopic,
       routeDeadlockTopic,
       routePagingSegmentationTopic,
       routeOopTopic,
-      routeDataStructuresTopic
-    ] = splitSupplementalTopics;
-    const schedulingLessonArticle = routeSchedulingTopic?.blocks[0];
+      routeComplexityLinearTopic,
+      routeTreesHashTopic
+    ] = htmlSupplementalTopics;
+    const amdahlLessonArticle = inlineAmdahlTopic?.blocks[0];
 
-    expect(splitSupplementalTopics.map((topic) => topic.title)).toEqual([
-      '阿姆達爾定律',
+    expect(inlineAmdahlTopic?.title).toBe('阿姆達爾定律');
+    expect(amdahlLessonArticle?.kind).toBe('lessonArticle');
+    expect((inlineAmdahlTopic as { htmlPage?: unknown } | undefined)?.htmlPage).toBeUndefined();
+    expect(htmlSupplementalTopics.map((topic) => topic.title)).toEqual([
       'CPU 排班演算法',
       '死結',
       '分頁與分段記憶體管理',
       '物件導向特性',
-      '基礎資料結構'
+      '複雜度與線性結構',
+      '樹與雜湊表'
     ]);
-    expect([routeAmdahlTopic, routeSchedulingTopic, routeDeadlockTopic, routePagingSegmentationTopic, routeOopTopic, routeDataStructuresTopic].map((topic) => topic?.id)).toEqual(
-      splitProfessionalSupplementalTopics.map((topic) => topic.id)
+    expect([routeSchedulingTopic, routeDeadlockTopic, routePagingSegmentationTopic, routeOopTopic, routeComplexityLinearTopic, routeTreesHashTopic].map((topic) => topic?.id)).toEqual(
+      htmlProfessionalSupplementalTopics.map((topic) => topic.id)
     );
-    expect(amdahlTopic?.sourceFiles).toEqual([supplementalDataSourceFile]);
     expect(schedulingTopic?.sourceFiles).toEqual([supplementalCpuSchedulingSourceFile]);
-    expect(deadlockTopic?.sourceFiles).toEqual([supplementalDataSourceFile]);
-    expect(pagingSegmentationTopic?.sourceFiles).toEqual([supplementalDataSourceFile]);
-    expect(oopTopic?.sourceFiles).toEqual([supplementalDataSourceFile]);
-    expect(dataStructuresTopic?.sourceFiles).toEqual([supplementalDataSourceFile]);
+    expect(deadlockTopic?.sourceFiles).toEqual([supplementalDeadlockSourceFile]);
+    expect(pagingSegmentationTopic?.sourceFiles).toEqual([supplementalPagingSegmentationSourceFile]);
+    expect(oopTopic?.sourceFiles).toEqual([supplementalOopSourceFile]);
+    expect(complexityLinearTopic?.sourceFiles).toEqual([supplementalComplexityLinearSourceFile]);
+    expect(treesHashTopic?.sourceFiles).toEqual([supplementalTreesHashSourceFile]);
 
-    for (const topic of splitSupplementalTopics) {
-      const lessonArticle = topic?.blocks[0];
-      expect(lessonArticle?.kind, `${topic?.id} should render through lessonArticle`).toBe('lessonArticle');
-      if (lessonArticle?.kind !== 'lessonArticle') {
-        throw new Error(`${topic?.id} should render through lessonArticle`);
-      }
-      const professionalTopic = splitProfessionalSupplementalTopics.find((candidate) => candidate.id === topic?.id);
-      expect(lessonArticle.sourceFiles).toEqual(professionalTopic?.sourceFiles);
-      expect(lessonArticle.sections.length, `${topic?.id} should have sections`).toBeGreaterThan(0);
+    for (const topic of htmlSupplementalTopics) {
+      const professionalTopic = htmlProfessionalSupplementalTopics.find((candidate) => candidate.id === topic?.id);
+      const htmlPage = (topic as { htmlPage?: { sourceFilename: string; href: string } } | undefined)?.htmlPage;
+
+      expect(topic?.blocks, `${topic?.id} should not expose inline lessonArticle blocks`).toEqual([]);
+      expect(htmlPage?.sourceFilename, `${topic?.id} should record a source HTML filename`).toBe(
+        (professionalTopic as { htmlPage?: { sourceFilename: string } } | undefined)?.htmlPage?.sourceFilename
+      );
+      expect(htmlPage?.href, `${topic?.id} should link to the static HTML page`).toBe(`/computer-principles-v2/${htmlPage?.sourceFilename}`);
     }
 
-    const serializedSplitSupplementalTopics = JSON.stringify(splitSupplementalTopics);
-    expect(serializedSplitSupplementalTopics).not.toContain('"kind":"bulletList"');
-    expect(serializedSplitSupplementalTopics).toContain('"kind":"orderedList"');
+    const serializedSplitSupplementalTopics = JSON.stringify([inlineAmdahlTopic, ...htmlSupplementalTopics]);
     expect(serializedSplitSupplementalTopics).not.toContain('Machine Instruction Cycle');
     expect(serializedSplitSupplementalTopics).not.toContain('Five Functional Units');
     expect(serializedSplitSupplementalTopics).not.toContain('CPU Components');
@@ -353,37 +391,15 @@ describe('computer principles v2 route workflow', () => {
     expect(serializedSplitSupplementalTopics).not.toContain('backendSyncId');
     expect(serializedSplitSupplementalTopics).not.toContain('remoteQuestionId');
     expect(serializedSplitSupplementalTopics).toContain('整體加速比');
-    expect(serializedSplitSupplementalTopics).toContain('FCFS');
+    expect(serializedSplitSupplementalTopics).toContain('CPU Scheduling');
     expect(serializedSplitSupplementalTopics).toContain('四個必要條件');
-    expect(serializedSplitSupplementalTopics).toContain('Stack');
-
-    expect(schedulingLessonArticle?.kind).toBe('lessonArticle');
-    if (schedulingLessonArticle?.kind !== 'lessonArticle') {
-      throw new Error('cpv2-supplemental-cpu-scheduling should render through lessonArticle');
-    }
-    const schedulingBlocks = schedulingLessonArticle.sections.flatMap((section) => section.blocks);
-    const comparisonTable = schedulingBlocks.find((block) => block.kind === 'table');
-    const practiceQuestionList = schedulingBlocks.find(
-      (block) =>
-        block.kind === 'orderedList' &&
-        block.items.some((item) => item.includes('Round Robin 中,時間量子設定非常大時,行為趨近於?'))
-    );
-    const answerTable = schedulingBlocks.find(
-      (block) => block.kind === 'table' && block.headers.includes('題') && block.headers.includes('答') && block.headers.includes('解析')
-    );
-
-    expect(comparisonTable?.kind).toBe('table');
-    expect(JSON.stringify(comparisonTable)).toContain('MLFQ');
-    expect(practiceQuestionList?.kind).toBe('orderedList');
-    expect(practiceQuestionList?.kind === 'orderedList' ? practiceQuestionList.items : []).toHaveLength(20);
-    expect(answerTable?.kind).toBe('table');
-    expect(JSON.stringify(answerTable)).toContain('20');
-    expect(JSON.stringify(answerTable)).toContain('B');
+    expect(serializedSplitSupplementalTopics).toContain('Linear Structures');
+    expect(serializedSplitSupplementalTopics).toContain('Hash Table');
   });
 
   it('uses the refreshed v2 floating point source after the supplemental topics', () => {
     const topics = getSubjectTopics(subjectKey);
-    const floatingPointTopic = topics[16];
+    const floatingPointTopic = topics[17];
 
     expect(floatingPointTopic?.id).toBe('cpv2-floating-point-conversion');
     expect(floatingPointTopic?.title).toBe('浮點數轉換');
@@ -402,7 +418,7 @@ describe('computer principles v2 route workflow', () => {
     expect(lessonArticle.sourceFiles).not.toContain(supplementalDataSourceFile);
     expect(lessonArticle.sourceFiles).not.toContain(supplementalCpuSchedulingSourceFile);
     expect(getSubjectTopics(subjectKey).map((topic) => topic.id)).toEqual(topicCases.map((topicCase) => topicCase.id));
-    expect(topics.map((topic) => topic.id).slice(15, 18)).toEqual([
+    expect(topics.map((topic) => topic.id).slice(16, 19)).toEqual([
       'cpv2-complement-conversion',
       'cpv2-floating-point-conversion',
       'cpv2-codes-and-character-sets'

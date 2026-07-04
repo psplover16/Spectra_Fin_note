@@ -21,7 +21,7 @@ const professionalSubjectKeys = [
 
 const expectedCounts = {
   computerPrinciples: 18,
-  computerPrinciplesV2: 20,
+  computerPrinciplesV2: 21,
   networking: 11,
   networkingV2: 12,
   digitalLogic: 5,
@@ -73,7 +73,8 @@ const computerPrinciplesV2TopicIds = [
   'cpv2-supplemental-deadlock',
   'cpv2-supplemental-paging-segmentation',
   'cpv2-supplemental-oop-characteristics',
-  'cpv2-supplemental-basic-data-structures',
+  'cpv2-supplemental-complexity-linear-structures',
+  'cpv2-supplemental-trees-hash-tables',
   'cpv2-architecture-computation-theory',
   'cpv2-machine-instruction-cycle',
   'cpv2-pipeline-hazard',
@@ -91,7 +92,13 @@ const computerPrinciplesV2TopicIds = [
 const refreshedCpv2FloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
 const supplementalCpv2FloatingPointPracticeSourceFile = '_private/discuss.txt';
 const supplementalCpv2DataSourceFile = '_private/計概補充/計算機概論_重點講義_01.md';
-const supplementalCpv2CpuSchedulingSourceFile = '_private/計概補充/CPU排班演算法_考試速記版.md';
+const supplementalCpv2CpuSchedulingSourceFile = '_private/計概補充/CPU排班演算法_國考完整講義.md';
+const deprecatedSupplementalCpv2CpuSchedulingSourceFile = '_private/計概補充/CPU排班演算法_考試速記版.md';
+const supplementalCpv2DeadlockSourceFile = '_private/計概補充/死結_考試精簡版.md';
+const supplementalCpv2PagingSegmentationSourceFile = '_private/計概補充/分頁與分段記憶體管理_題目帶動教學完整版.md';
+const supplementalCpv2OopSourceFile = '_private/計概補充/物件導向特性_國考完整講義.md';
+const supplementalCpv2ComplexityLinearSourceFile = '_private/計概補充/基礎資料結構(上)_複雜度與線性結構.md';
+const supplementalCpv2TreesHashSourceFile = '_private/計概補充/基礎資料結構(下)_樹與雜湊表.md';
 const supplementalCpv2FloatingPointSpecialValuesSourceFile = '_private/MD/0621/IEEE754_浮點數特殊值_速記.md';
 const deprecatedCpv2FloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 const refreshedCpv2FloatingPointSourceFiles = [
@@ -102,10 +109,11 @@ const computerPrinciplesV2TopicSources = [
   supplementalCpv2FloatingPointPracticeSourceFile,
   supplementalCpv2DataSourceFile,
   supplementalCpv2CpuSchedulingSourceFile,
-  supplementalCpv2DataSourceFile,
-  supplementalCpv2DataSourceFile,
-  supplementalCpv2DataSourceFile,
-  supplementalCpv2DataSourceFile,
+  supplementalCpv2DeadlockSourceFile,
+  supplementalCpv2PagingSegmentationSourceFile,
+  supplementalCpv2OopSourceFile,
+  supplementalCpv2ComplexityLinearSourceFile,
+  supplementalCpv2TreesHashSourceFile,
   '_private/MD/計算機概論/01_架構與計算理論.md',
   '_private/MD/計算機概論/02_機器指令與指令週期.md',
   '_private/MD/計算機概論/03_Pipeline與Hazard.md',
@@ -133,41 +141,55 @@ const splitCpv2SupplementalTopicExpectations = [
     id: 'cpv2-supplemental-cpu-scheduling',
     title: 'CPU 排班演算法',
     source: supplementalCpv2CpuSchedulingSourceFile,
-    heading: 'CPU 排班演算法 — 考試速記版',
+    heading: 'CPU 排班演算法',
     topicType: 'algorithm',
-    keywords: ['FCFS', 'MLFQ', 'Round Robin 中,時間量子設定非常大時,行為趨近於?', '答案與解析']
+    keywords: ['CPU Scheduling', 'FCFS'],
+    htmlFilename: 'CPU排班演算法_國考完整講義.html'
   },
   {
     id: 'cpv2-supplemental-deadlock',
     title: '死結',
-    source: supplementalCpv2DataSourceFile,
-    heading: '三、死結（Deadlock）',
+    source: supplementalCpv2DeadlockSourceFile,
+    heading: '死結',
     topicType: 'concept',
-    keywords: ['Deadlock', '四個必要條件']
+    keywords: ['Deadlock'],
+    htmlFilename: '死結_考試精簡版.html'
   },
   {
     id: 'cpv2-supplemental-paging-segmentation',
     title: '分頁與分段記憶體管理',
-    source: supplementalCpv2DataSourceFile,
-    heading: '四、分頁與分段記憶體管理（Paging & Segmentation）',
+    source: supplementalCpv2PagingSegmentationSourceFile,
+    heading: '分頁與分段記憶體管理',
     topicType: 'concept',
-    keywords: ['Paging', 'Segmentation']
+    keywords: ['Paging', 'Segmentation'],
+    htmlFilename: '分頁與分段記憶體管理_題目帶動教學完整版.html'
   },
   {
     id: 'cpv2-supplemental-oop-characteristics',
     title: '物件導向特性',
-    source: supplementalCpv2DataSourceFile,
-    heading: '五、物件導向特性（OOP Characteristics）',
+    source: supplementalCpv2OopSourceFile,
+    heading: '物件導向特性',
     topicType: 'concept',
-    keywords: ['OOP Characteristics', 'Encapsulation']
+    keywords: ['OOP Characteristics', 'Encapsulation'],
+    htmlFilename: '物件導向特性_國考完整講義.html'
   },
   {
-    id: 'cpv2-supplemental-basic-data-structures',
-    title: '基礎資料結構',
-    source: supplementalCpv2DataSourceFile,
-    heading: '六、基礎資料結構（Basic Data Structures）',
+    id: 'cpv2-supplemental-complexity-linear-structures',
+    title: '複雜度與線性結構',
+    source: supplementalCpv2ComplexityLinearSourceFile,
+    heading: '複雜度與線性結構',
     topicType: 'dataStructure',
-    keywords: ['Basic Data Structures', 'Stack']
+    keywords: ['Complexity', 'Linear Structures'],
+    htmlFilename: '基礎資料結構(上)_複雜度與線性結構.html'
+  },
+  {
+    id: 'cpv2-supplemental-trees-hash-tables',
+    title: '樹與雜湊表',
+    source: supplementalCpv2TreesHashSourceFile,
+    heading: '樹與雜湊表',
+    topicType: 'dataStructure',
+    keywords: ['Tree', 'Hash Table'],
+    htmlFilename: '基礎資料結構(下)_樹與雜湊表.html'
   }
 ] as const;
 const markdownBackedComputerPrinciplesTopicIds = [
@@ -753,6 +775,7 @@ describe('professional topic skeleton data', () => {
 
       for (const topic of professionalTopicsBySubject[subjectKey]) {
         const typedTopic: ProfessionalSubjectTopic = topic;
+        const htmlPage = (topic as { htmlPage?: { sourceFilename: string; href: string } }).htmlPage;
         const isFilledTopic = filledTopicIds.has(topic.id);
         const isImportedDatabaseProgrammingSystemDesignTopic = importedDatabaseProgrammingSystemDesignTopicIdSet.has(topic.id);
         const keepsImportedLearningMetadata = isImportedDatabaseProgrammingSystemDesignTopic || subjectKey === 'networkingV2';
@@ -783,6 +806,13 @@ describe('professional topic skeleton data', () => {
         expect(typedTopic.verifiedBy).toBeUndefined();
         expect(typedTopic.verifiedAt).toBeUndefined();
         expect(typedTopic.verifierSummary).toBeUndefined();
+
+        if (htmlPage) {
+          expect(topic.blocks).toEqual([]);
+          expect(htmlPage.sourceFilename.endsWith('.html')).toBe(true);
+          expect(htmlPage.href).toContain(`/computer-principles-v2/${htmlPage.sourceFilename}`);
+          continue;
+        }
 
         if (firstBatchAlgorithmTopicIdSet.has(topic.id)) {
           expect(topic.blocks.length).toBeGreaterThan(1);
@@ -831,6 +861,8 @@ describe('professional topic skeleton data', () => {
 
     expect(topics.map((topic) => topic.id)).toEqual([...computerPrinciplesV2TopicIds]);
     expect(topics.find((topic) => topic.id === 'cpv2-supplemental-data')).toBeUndefined();
+    expect(topics.find((topic) => topic.id === 'cpv2-supplemental-basic-data-structures')).toBeUndefined();
+    expect(topics.find((topic) => topic.title === '基礎資料結構')).toBeUndefined();
     topics.forEach((topic, index) => {
       const expectedSourceFiles =
         topic.id === 'cpv2-floating-point-conversion' ? [...refreshedCpv2FloatingPointSourceFiles] : [computerPrinciplesV2TopicSources[index]];
@@ -894,6 +926,21 @@ describe('professional topic skeleton data', () => {
         difficulty: 'core',
         topicType: expectedTopic.topicType
       });
+      if ('htmlFilename' in expectedTopic) {
+        expect(topic?.blocks, `${expectedTopic.id} should link static HTML instead of rendering inline lessonArticle`).toEqual([]);
+        expect((topic as { htmlPage?: { sourceFilename: string; href: string } } | undefined)?.htmlPage).toEqual({
+          sourceFilename: expectedTopic.htmlFilename,
+          href: `/computer-principles-v2/${expectedTopic.htmlFilename}`
+        });
+
+        const serializedSupplementalTopic = JSON.stringify(topic);
+        for (const keyword of expectedTopic.keywords) {
+          expect(serializedSupplementalTopic, `${expectedTopic.id} should contain ${keyword}`).toContain(keyword);
+        }
+        continue;
+      }
+
+      expect((topic as { htmlPage?: unknown } | undefined)?.htmlPage).toBeUndefined();
       expect(supplementalLessonArticle?.kind, `${expectedTopic.id} should render as lessonArticle`).toBe('lessonArticle');
       if (supplementalLessonArticle?.kind !== 'lessonArticle') {
         throw new Error(`${expectedTopic.id} should render as lessonArticle`);
@@ -919,34 +966,12 @@ describe('professional topic skeleton data', () => {
     expect(serializedSplitSupplementalTopics).not.toContain('Memory Hierarchy');
 
     const cpuSchedulingLessonArticle = cpuSchedulingTopic?.blocks[0];
-    expect(cpuSchedulingLessonArticle?.kind).toBe('lessonArticle');
-    if (cpuSchedulingLessonArticle?.kind !== 'lessonArticle') {
-      throw new Error('cpv2-supplemental-cpu-scheduling should render as lessonArticle');
-    }
-    expect(cpuSchedulingLessonArticle.sourceFiles).toEqual([supplementalCpv2CpuSchedulingSourceFile]);
-    const cpuSchedulingBlocks = cpuSchedulingLessonArticle.sections.flatMap((section) => section.blocks);
-    const comparisonTable = cpuSchedulingBlocks.find(
-      (block) => block.kind === 'table' && block.headers.includes('演算法') && JSON.stringify(block).includes('MLFQ')
+    expect(cpuSchedulingLessonArticle).toBeUndefined();
+    expect(cpuSchedulingTopic?.sourceFiles).toEqual([supplementalCpv2CpuSchedulingSourceFile]);
+    expect(cpuSchedulingTopic?.sourceFiles).not.toContain(deprecatedSupplementalCpv2CpuSchedulingSourceFile);
+    expect((cpuSchedulingTopic as { htmlPage?: { sourceFilename: string } } | undefined)?.htmlPage?.sourceFilename).toBe(
+      'CPU排班演算法_國考完整講義.html'
     );
-    const orderedQuestionList = cpuSchedulingBlocks.find(
-      (block) =>
-        block.kind === 'orderedList' &&
-        block.items.length === 20 &&
-        block.items.some((item) => item.includes('Round Robin 中,時間量子設定非常大時,行為趨近於?'))
-    );
-    const answerTable = cpuSchedulingBlocks.find((block) => block.kind === 'table' && block.headers.join(',') === '題,答,解析');
-
-    expect(comparisonTable).toMatchObject({
-      kind: 'table',
-      headers: ['演算法', '搶占性', '挑選依據', '會飢餓?', '一句話記重點']
-    });
-    expect(orderedQuestionList).toBeDefined();
-    expect(answerTable).toMatchObject({
-      kind: 'table',
-      headers: ['題', '答', '解析']
-    });
-    expect(JSON.stringify(answerTable)).toContain('"20"');
-    expect(JSON.stringify(answerTable)).toContain('"B"');
     for (const forbiddenKey of ['questionText', 'correctAnswer', 'backendSyncId', 'remoteQuestionId']) {
       expect(serializedTopic).not.toContain(forbiddenKey);
       expect(serializedSplitSupplementalTopics).not.toContain(forbiddenKey);

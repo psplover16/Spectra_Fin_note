@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜複雜度與線性結構</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">Complexity / Linear Structures</p>
+<h1>基礎資料結構(上)— 複雜度與線性結構</h1>
+<blockquote><p>這份是「基礎資料結構」上集,涵蓋:Big-O 複雜度、陣列、鏈結串列、堆疊、佇列。</p><p>樹、運算式、雜湊表與<strong>選擇題</strong>在下集。</p><p>零基礎、白話,每段有「★ 常考重點」,計算(二維陣列位址等)一步步示範。</p></blockquote>
+<hr>
+<h2>一、先看懂時間複雜度 Big-O</h2>
+<p>Big-O 在描述「<strong>資料變多時,速度怎麼變</strong>」,是比較演算法快慢的共同語言。先認識常見等級(附白話比喻):</p>
+<div class="tablewrap"><table><thead><tr><th>等級</th><th>名稱</th><th>白話</th></tr></thead><tbody><tr><td><strong>O(1)</strong></td><td>常數</td><td>不管 10 筆還是百萬筆都一樣快(像用書籤直接翻到某頁)</td></tr>
+<tr><td><strong>O(log n)</strong></td><td>對數</td><td>每步把範圍砍一半,資料變兩倍只多一步(像查字典對半翻),成長超慢</td></tr>
+<tr><td><strong>O(n)</strong></td><td>線性</td><td>資料變兩倍、時間約變兩倍(像從第一頁翻到找到為止)</td></tr>
+<tr><td><strong>O(n log n)</strong></td><td>—</td><td>好的排序法(合併、快速平均、堆積)</td></tr>
+<tr><td><strong>O(n²)</strong></td><td>平方</td><td>巢狀迴圈、慢的排序(氣泡、選擇、插入)</td></tr>
+<tr><td><strong>O(2ⁿ)</strong></td><td>指數</td><td>暴力窮舉,資料一大就爆炸</td></tr>
+<tr><td><strong>O(n!)</strong></td><td>階乘</td><td>全排列、旅行推銷員暴力解</td></tr></tbody></table></div>
+<p><strong>成長由慢到快(必背順序)</strong>:</p>
+<pre><code>O(1) &lt; O(log n) &lt; O(n) &lt; O(n log n) &lt; O(n²) &lt; O(2ⁿ) &lt; O(n!)</code></pre>
+<p><strong>★ 常考重點</strong>:</p>
+<ul><li>排序題:氣泡/選擇/插入 = <strong>O(n²)</strong>;合併/堆積 = <strong>O(n log n)</strong>;快速排序平均 O(n log n)、<strong>最壞 O(n²)</strong>。</li><li>Big-O 是「<strong>最壞情況上界</strong>」;另有 Ω(下界)、Θ(緊界)。</li><li>比大小:<strong>log n 成長最慢、n! 最快</strong>。</li></ul>
+<h3>進階:O(n log n)、O(2ⁿ)、O(n!) 三個等級怎麼來(含程式)</h3>
+<p>這三個「成長較快」的等級,用三個經典演算法來認識(排序題、複雜度題常考)。</p>
+<h4>（一)O(n log n) —— 合併排序 (Merge Sort)</h4>
+<p><strong>策略:分而治之。</strong> 核心觀察:排一大堆數字很難,但「把兩段<strong>各自已排好</strong>的合併成一段」很簡單(比開頭、小的先拿)。所以策略是:先<strong>一直對半拆到每段剩 1 個</strong>(單一元素天生有序),再<strong>兩兩合併回去</strong>。</p>
+<pre><code class="language-java">// ① 負責「拆」;left/right 是「圈住陣列哪一段」的索引
+void mergeSort(int[] arr, int left, int right) {
+    if (left &gt;= right) return;            // 只剩 1 個,不用再拆
+    int mid = (left + right) / 2;
+    mergeSort(arr, left, mid);            // 拆左半並排好
+    mergeSort(arr, mid + 1, right);       // 拆右半並排好
+    merge(arr, left, mid, right);         // 左右都排好 → 合併
+}
+// ② 負責「合」:把兩段有序資料併成一段有序
+void merge(int[] arr, int left, int mid, int right) {
+    int[] temp = new int[right - left + 1];
+    int i = left, j = mid + 1, k = 0;
+    while (i &lt;= mid &amp;&amp; j &lt;= right)
+        temp[k++] = (arr[i] &lt;= arr[j]) ? arr[i++] : arr[j++];  // 小的先放
+    while (i &lt;= mid)   temp[k++] = arr[i++];
+    while (j &lt;= right) temp[k++] = arr[j++];
+    for (k = 0; k &lt; temp.length; k++) arr[left + k] = temp[k];  // 寫回原陣列
+}</code></pre>
+<p>呼叫方式:<code>mergeSort(arr, 0, arr.length - 1)</code>(0=第一格、最後一格)。</p>
+<p><strong>跑一遍 [5,2,8,4,7,1,3,6]</strong> —— 先拆(對半到剩 1,共 3 層):</p>
+<pre><code>[5,2,8,4,7,1,3,6]
+   ↙        ↘
+[5,2,8,4]  [7,1,3,6]
+  ↙  ↘       ↙  ↘
+[5,2][8,4] [7,1][3,6]
+ ↙↘  ↙↘     ↙↘  ↙↘
+[5][2][8][4][7][1][3][6]</code></pre>
+<p>再合(兩兩併回去,共 3 層):</p>
+<pre><code>[2,5][4,8][1,7][3,6]
+[2,4,5,8]  [1,3,6,7]
+[1,2,3,4,5,6,7,8]</code></pre>
+<p><strong>為什麼是 O(n log n)</strong>:算「每層 n」時,數的是<strong>搬動次數(放進結果幾個元素)</strong>,不是比較次數——合併出長度 k 的結果,不管比較幾次,一定搬動 k 次。同一層所有 merge 加起來剛好把全部 n 個元素各搬一次 → <strong>每層搬動 = n</strong>;而對半拆有 <strong>log n 層</strong>(8→4→2→1 = 3 層)。相乘 = <strong>n log n</strong>。</p>
+<p><strong>★ 常考</strong>:分割 + 每層走過全部 → O(n log n);合併/堆積/快速(平均)都是;是<strong>比較式排序的最快下限</strong>。</p>
+<h4>（二)O(2ⁿ) —— 費氏遞迴 / 列出所有子集合</h4>
+<p>每個元素「選/不選」兩種,或一次遞迴<strong>叉出兩條</strong> → 2ⁿ。</p>
+<p>樸素費氏(每次叉出兩個呼叫,節點逐層翻倍,故 O(2ⁿ)):</p>
+<pre><code class="language-java">int fib(int n) {
+    if (n &lt;= 1) return n;
+    return fib(n - 1) + fib(n - 2);   // 一次叉出兩個呼叫
+}</code></pre>
+<p>列出所有子集合(對每個元素做「挑/不挑」兩條路):</p>
+<pre><code class="language-java">void subsets(int[] arr, int i, List&lt;Integer&gt; cur) {
+    // i=現在輪到第幾個元素決定;cur=目前已挑進來的元素
+    if (i == arr.length) { print(cur); return; }
+    subsets(arr, i + 1, cur);          // 不挑 arr[i]
+    cur.add(arr[i]);
+    subsets(arr, i + 1, cur);          // 挑 arr[i]
+    cur.remove(cur.size() - 1);        // 還原(回溯)
+}</code></pre>
+<p>呼叫 <code>subsets(arr, 0, new ArrayList&lt;&gt;())</code>。跑 <code>{1,2,3}</code>(每層分兩倍):</p>
+<pre><code>                     {}
+           ┌─────────┴─────────┐
+        不挑1                  挑1→{1}
+      ┌───┴───┐            ┌───┴───┐
+    不挑2    挑2→{2}      不挑2    挑2→{1,2}
+   ┌─┴─┐    ┌─┴─┐        ┌─┴─┐    ┌─┴─┐
+  不3 挑3  不3 挑3       不3 挑3   不3 挑3
+  {} {3}  {2}{2,3}      {1}{1,3} {1,2}{1,2,3}</code></pre>
+<p>1→2→4→8,共 2³ = 8 種子集合 → <strong>O(2ⁿ)</strong>。(<code>cur</code> 裝的內容本身就代表一個子集合,例如 <code>[1,3]</code> 就是 <code>{1,3}</code>。)</p>
+<p><strong>★ 常考</strong>:選/不選、叉兩條 → O(2ⁿ);典型是費氏樸素遞迴、子集窮舉。</p>
+<h4>（三)O(n!) —— 全排列 / 旅行推銷員 (TSP)</h4>
+<p>排列 = 把數字填進一排格子,窮舉所有順序。<code>start</code> = 現在要決定「哪一格」放誰。</p>
+<pre><code class="language-java">void permute(int[] arr, int start) {
+    if (start == arr.length) { print(arr); return; }
+    for (int i = start; i &lt; arr.length; i++) {
+        swap(arr, start, i);        // ①把 arr[i] 搬來坐 start 這格
+        permute(arr, start + 1);    // ②這格定了,排右邊剩下的
+        swap(arr, start, i);        // ③換回來還原(回溯),換下一個候選
+    }
+}
+void swap(int[] a, int x, int y) { int t = a[x]; a[x] = a[y]; a[y] = t; }</code></pre>
+<p>呼叫 <code>permute(arr, 0)</code>。<strong>那個 for 的三行是一組</strong>:①搬候選來坐這格 → ②遞迴排右邊 → ③換回還原(第③步最容易漏,不還原下一圈會亂)。跑 <code>{1,2,3}</code>:第一格 3 種、第二格 2 種、第三格 1 種 → 3×2×1 = 6 種:</p>
+<pre><code>放1 →(剩2,3)→ 123、132
+放2 →(剩1,3)→ 213、231
+放3 →(剩1,2)→ 312、321</code></pre>
+<p><strong>旅行推銷員 (TSP)</strong>:拜訪 n 個城市各一次、回起點求最短路線;暴力解試每一種拜訪順序(n! 種)→ O(n!)。</p>
+<p><strong>★ 常考</strong>:窮舉所有排列/順序 → O(n!);典型是全排列、TSP 暴力解。</p>
+<hr>
+<h2>二、陣列 (Array)</h2>
+<h3>概念</h3>
+<p><strong>連續記憶體、大小固定</strong>的一排格子,用索引 (index) 存取。</p>
+<ul><li><strong>隨機存取 O(1)(快)</strong>:靠索引「直接跳到」第 n 格。</li><li>為什麼快:位址 = <strong>起始位址 + 索引 × 每格大小</strong>,一個算式直接算出位置,不用一格格找。</li><li><strong>中間插入/刪除 O(n)(慢)</strong>:要把後面的元素<strong>整批搬移</strong>空出或補上位置。</li></ul>
+<h3>計算示範①:一維位址(索引不一定從 0 開始)</h3>
+<p>公式:<code>Loc(A[i]) = 起始位址 + (i − L) × 每格大小</code>(L = 起始索引)。</p>
+<p>例:陣列索引<strong>從 1 開始</strong>,起始位址 = 1000,每格 4 bytes,求 <code>A[5]</code>:</p>
+<ul><li>Loc = 1000 + (5 − 1) × 4 = 1000 + 16 = <strong>1016</strong></li></ul>
+<h3>計算示範②:二維位址(國考幾乎必考)</h3>
+<p><strong>為什麼二維要特別算?</strong> 記憶體是<strong>一維的</strong>(一條線,一格接一格),但二維陣列是「R 列 × C 行」的表格。所以得把表格「<strong>攤平</strong>」成一條線塞進記憶體——攤平有兩種方式,就是 row-major 和 column-major 的由來。</p>
+<p>先看 <code>A[3][4]</code>(3 列 4 行,索引從 0)這張表:</p>
+<pre><code>        行0  行1  行2  行3
+列0    A00  A01  A02  A03
+列1    A10  A11  A12  A13
+列2    A20  A21  A22  A23</code></pre>
+<p><strong>以列為主 (Row-major)</strong>:一<strong>列</strong>一列存,存完第 0 列再存第 1 列……(C、C++、Java、Python):</p>
+<pre><code>記憶體:  A00 A01 A02 A03 │ A10 A11 A12 A13 │ A20 A21 A22 A23
+         └─── 第0列 ───┘  └─── 第1列 ───┘  └─── 第2列 ───┘</code></pre>
+<p><strong>以行為主 (Column-major)</strong>:一<strong>行</strong>一行存,存完第 0 行再存第 1 行……(Fortran、MATLAB、R):</p>
+<pre><code>記憶體:  A00 A10 A20 │ A01 A11 A21 │ A02 A12 A22 │ A03 A13 A23
+         └第0行┘      └第1行┘      └第2行┘      └第3行┘</code></pre>
+<p><strong>公式怎麼來(用「前面排了幾個元素」推最好記)</strong></p>
+<p>算 <code>A[i][j]</code> 的位址 = 算出「<strong>它前面總共排了幾個元素</strong>」× 每格大小 d + 起始位址。</p>
+<ul><li><strong>Row-major</strong>:先跳過<strong>前面 i 個完整的列</strong>(每列 C 個)= <code>i × C</code>,再加這一列裡它前面的 <code>j</code> 個 → 前面共 <strong>i×C + j</strong> 個。</li><li><strong><code>Loc(A[i][j]) = 起始 + (i × C + j) × d</code></strong>　(C = 行數 = 每列幾個)</li><li><strong>Column-major</strong>:先跳過<strong>前面 j 個完整的行</strong>(每行 R 個)= <code>j × R</code>,再加這一行裡它前面的 <code>i</code> 個 → 前面共 <strong>j×R + i</strong> 個。</li><li><strong><code>Loc(A[i][j]) = 起始 + (j × R + i) × d</code></strong>　(R = 列數 = 每行幾個)</li></ul>
+<blockquote><p>記法:<strong>row-major 先數「跳幾列」(i × 行數C);column-major 先數「跳幾行」(j × 列數R)。誰 major 就先數誰。</strong></p></blockquote>
+<p><strong>完整範例</strong>:<code>A[3][4]</code>(3 列 4 行),起始 = 1000,每格 4 bytes,求 <code>A[1][2]</code>(索引從 0):</p>
+<ul><li><strong>Row-major</strong>:前面有 1×4 + 2 = <strong>6</strong> 個 → 1000 + 6 × 4 = <strong>1024</strong></li><li><strong>Column-major</strong>:前面有 2×3 + 1 = <strong>7</strong> 個 → 1000 + 7 × 4 = <strong>1028</strong></li></ul>
+<p>(驗證 row-major:對照上面記憶體圖,A12 前面是 A00~A03、A10、A11 共 6 個,正確。)</p>
+<p><strong>進階:索引不是從 0 開始</strong>(有些題目列從 L₁、行從 L₂ 起算)</p>
+<p>先把索引「歸零」再套公式——<code>i</code> 換成 <code>(i − L₁)</code>、<code>j</code> 換成 <code>(j − L₂)</code>:</p>
+<ul><li>Row-major:<code>起始 + ((i − L₁) × C + (j − L₂)) × d</code></li><li>Column-major:<code>起始 + ((j − L₂) × R + (i − L₁)) × d</code></li></ul>
+<p>例:<code>A[1..4][1..5]</code>(4 列 5 行,列與行<strong>都從 1 起算</strong>),起始位址 = 2000,每格 4 bytes,求 <code>A[3][4]</code>(row-major):</p>
+<ul><li>先把索引歸零:<code>i − 1 = 3 − 1 = 2</code>、<code>j − 1 = 4 − 1 = 3</code>;行數 C = 5</li><li>前面有 <code>2 × 5 + 3 = 10 + 3 =</code> <strong>13</strong> 個 → 2000 + 13 × 4 = <strong>2052</strong></li></ul>
+<p>(關鍵就是「先減掉起始索引把它當成從 0 算」,再照原本公式跑。)</p>
+<p><strong>★ 常考重點</strong>:</p>
+<ul><li>陣列 <strong>隨機存取 O(1)</strong>、<strong>插入/刪除 O(n)</strong>、大小固定。</li><li>記憶體是一維,二維陣列要「攤平」:row-major 一列列存、column-major 一行行存。</li><li>Row-major:<code>(i × C + j) × d</code>(C=行數);Column-major:<code>(j × R + i) × d</code>(R=列數)。<strong>誰 major 先數誰</strong>。</li><li>三個最愛設的陷阱:<strong>哪一種擺法</strong>、<strong>索引從 0 還是從 1</strong>、<strong>每格幾 bytes</strong>——看清楚再代入。</li></ul>
+<hr>
+<h2>三、鏈結串列 (Linked List)</h2>
+<h3>概念</h3>
+<p>每個<strong>節點 (node)</strong> 存「<strong>資料 + 指向下一個節點的指標</strong>」;<strong>非連續、可動態增減</strong>。</p>
+<ul><li><strong>插入/刪除(已知位置)O(1)(快)</strong>:只要改指標,不用搬移。</li><li><strong>找第 n 個 O(n)(慢)</strong>:只能從頭沿著指標一個一個走。</li></ul>
+<h3>三種類型(常考分辨)</h3>
+<ul><li><strong>單向 (Singly)</strong>:一個 next 指標,只能往前走。</li><li><strong>雙向 (Doubly)</strong>:有 prev + next,可雙向走訪。</li><li><strong>環狀 (Circular)</strong>:最後一個節點指回第一個,繞成一圈。</li></ul>
+<h3>三種類型的程式範例</h3>
+<p>共通:基本單位是<strong>節點 (Node)</strong> = 資料 + 指標。三種的差別全在「指標」與「最後一個指向誰」。</p>
+<p><strong>(一)單向 (Singly)</strong> — 每個節點一個 <code>next</code>,最後一個指向 <code>null</code>:</p>
+<pre><code>[10|next] → [20|next] → [30|null]</code></pre>
+<pre><code class="language-java">class Node {
+    int data;
+    Node next;               // 指向下一個
+}
+void traverse(Node head) {   // 從頭走到尾
+    Node cur = head;
+    while (cur != null) {     // 走到 null 就停
+        print(cur.data);
+        cur = cur.next;       // 往下一個跳
+    }
+}</code></pre>
+<p>前面只示範「走訪(讀)」,這裡補「<strong>怎麼把節點串起來(建立)與插入</strong>」——這才是根本,沒串好哪來的東西可走。</p>
+<p>節點剛 <code>new</code> 出來時 <code>next</code> 是 null(孤立一個);<strong>串起來 = 把前一個的 <code>next</code> 設成指向後一個</strong>:</p>
+<pre><code class="language-java">// 造三個孤立節點,再手動串成 10 → 20 → 30
+Node n1 = new Node(); n1.data = 10;
+Node n2 = new Node(); n2.data = 20;
+Node n3 = new Node(); n3.data = 30;
+
+n1.next = n2;          // 10 的 next 指向 20  ← 這就是「串起來(賦值)」
+n2.next = n3;          // 20 的 next 指向 30(n3.next 保持 null 當結尾)
+Node head = n1;        // head 記住第一個,整條串列靠它進入</code></pre>
+<p>賦值前後:</p>
+<pre><code>賦值前:  [10|null]  [20|null]  [30|null]   ← 三個各自獨立
+賦值後:  [10|•]→[20|•]→[30|null]           ← 串成一條
+          head</code></pre>
+<p><strong>中間插入</strong>:在 <code>A → C</code> 之間插入新節點 <code>B</code>(就是前面說的「插入 O(1)」那兩條指標):</p>
+<pre><code class="language-java">B.next = A.next;   // ① 先讓 B 指向 C(A 原本的下一個)
+A.next = B;        // ② 再讓 A 改指向 B  →  結果 A → B → C</code></pre>
+<p><strong>順序不可反!</strong> 一定先接 <code>B.next</code>、再改 <code>A.next</code>;若先做 <code>A.next = B</code>,<code>A.next</code> 會被覆蓋,C 就<strong>斷線</strong>找不到了。</p>
+<blockquote><p>一句話:<strong>建立/插入是「寫」——設定 <code>next</code> 指標;走訪是「讀」——沿 <code>next</code> 一個個走。</strong> 另外 <code>head</code> 一定要保留,它是整條串列的入口,弄丟就全找不到。</p></blockquote>
+<p><strong>(二)雙向 (Doubly)</strong> — 每個節點多一個 <code>prev</code>,可往前也往後走(<strong>Java 的 <code>LinkedList</code> 就是這種</strong>):</p>
+<pre><code>null ← [prev|10|next] ⇄ [prev|20|next] ⇄ [prev|30|next] → null</code></pre>
+<pre><code class="language-java">class Node {
+    int data;
+    Node next;               // 下一個
+    Node prev;               // 前一個 ← 比單向多這個
+}
+// 可以從尾端往前走(單向做不到)
+void goBackward(Node tail) {
+    for (Node c = tail; c != null; c = c.prev) print(c.data);
+}</code></pre>
+<p><strong>(三)環狀 (Circular)</strong> — 最後一個節點的 <code>next</code> <strong>指回 head</strong>(沒有 null):</p>
+<pre><code> ┌───────────────────────────┐
+ ↓                           │
+[10|next] → [20|next] → [30|next]</code></pre>
+<pre><code class="language-java">class Node { int data; Node next; }
+void traverse(Node head) {
+    if (head == null) return;
+    Node cur = head;
+    do {
+        print(cur.data);
+        cur = cur.next;
+    } while (cur != head);   // ← 繞回 head 才停(寫成 != null 會無限迴圈!)
+}</code></pre>
+<p>三種一句話差別:</p>
+<div class="tablewrap"><table><thead><tr><th></th><th>單向</th><th>雙向</th><th>環狀</th></tr></thead><tbody><tr><td>節點指標</td><td>next</td><td>next + prev</td><td>next</td></tr>
+<tr><td>尾端指向</td><td><strong>null</strong></td><td>null</td><td><strong>指回 head</strong></td></tr>
+<tr><td>能往回走</td><td>❌</td><td>✅</td><td>❌(但能繞圈)</td></tr>
+<tr><td>走訪停止條件</td><td><code>cur == null</code></td><td><code>cur == null</code></td><td><strong><code>cur == head</code></strong></td></tr></tbody></table></div>
+<p><strong>★ 常考重點</strong>:</p>
+<ul><li>鏈結串列 <strong>插入/刪除 O(1)</strong>、<strong>走訪/存取 O(n)</strong>;與陣列剛好互補(下面對照表)。</li><li>單向=一個 next、尾接 null;雙向=多一個 prev、可雙向走、刪除更方便但較占空間;環狀=尾端指回 head、<strong>沒有 null</strong>。</li><li>環狀走訪要用 <strong><code>cur == head</code></strong> 當停止條件——寫成 <code>!= null</code> 會<strong>無限迴圈</strong>(最常考的坑)。</li></ul>
+<h3>Array、ArrayList、LinkedList 三方對照(重要,易混)</h3>
+<p>先厘清:<strong><code>List</code> 是「介面」</strong>(規定「有順序、可動態增減的清單」),<code>ArrayList</code>(用陣列實作)和 <code>LinkedList</code>(用節點指標實作)<strong>都是 List</strong>。所以要比的是這三個:</p>
+<div class="tablewrap"><table><thead><tr><th>比較項</th><th>陣列 Array (<code>int[]</code>)</th><th>動態陣列 ArrayList</th><th>鏈結串列 LinkedList</th></tr></thead><tbody><tr><td>底層實作</td><td>陣列</td><td>陣列(自動擴充)</td><td>節點 + 指標</td></tr>
+<tr><td>記憶體</td><td>連續</td><td>連續</td><td>非連續</td></tr>
+<tr><td>大小</td><td><strong>固定</strong></td><td>動態可變</td><td>動態可變</td></tr>
+<tr><td>隨機存取(取第 n 個)</td><td><strong>O(1)</strong></td><td><strong>O(1)</strong></td><td>O(n)</td></tr>
+<tr><td>中間插入/刪除</td><td>O(n)</td><td>O(n)</td><td><strong>O(1)</strong>(已知節點)</td></tr>
+<tr><td>是 Java 的 List?</td><td>否</td><td>是</td><td>是</td></tr></tbody></table></div>
+<p>看懂的關鍵是「兩組兄弟」:</p>
+<ul><li><strong>Array 和 ArrayList = 阵列家族</strong>:底層都是連續陣列 → <strong>存取都快 O(1)</strong>、中間增刪都慢 O(n)。差別只在 Array <strong>大小固定</strong>、ArrayList <strong>會自動擴充</strong>。</li><li><strong>ArrayList 和 LinkedList = 都是 List</strong>:都可動態增減。差別在底層——ArrayList 用<strong>陣列</strong>(存取快),LinkedList 用<strong>節點指標</strong>(增刪快、存取慢)。</li></ul>
+<p>一句話:<strong>ArrayList =「會自動變大的 Array」;LinkedList =「用指標串起來的 List」。</strong></p>
+<hr>
+<h2>四、堆疊 (Stack)</h2>
+<h3>概念</h3>
+<p><strong>後進先出 LIFO (Last-In, First-Out)</strong>:像疊盤子,最後放上去的最先被拿走。</p>
+<ul><li>操作:<strong>push</strong>(放上去)、<strong>pop</strong>(拿走最上面),都在同一端(頂端 top)進行,<strong>O(1)</strong>。</li></ul>
+<h3>程式範例</h3>
+<p><strong>(一)基本操作</strong>(用 Java 的 <code>Stack</code>):</p>
+<pre><code class="language-java">Stack&lt;Integer&gt; st = new Stack&lt;&gt;();
+st.push(1);            // 放入 1
+st.push(2);            // 放入 2
+st.push(3);            // 放入 3
+int top = st.peek();   // 偷看最上面(不取出)→ 3
+int a = st.pop();      // 取出最上面 → 3
+int b = st.pop();      // 取出最上面 → 2</code></pre>
+<p>堆疊狀態變化(左=底、右=頂):</p>
+<pre><code>push 1 → [1]
+push 2 → [1, 2]
+push 3 → [1, 2, 3]      ← 頂端是 3
+pop    → 拿走 3,剩 [1, 2]
+pop    → 拿走 2,剩 [1]</code></pre>
+<p>注意:最後放進去的 <strong>3 最先被拿出來</strong>——這就是 LIFO。</p>
+<p><strong>(二)經典應用:括號配對檢查</strong>(考試常見,最能體現為何要用堆疊)</p>
+<p>判斷一串括號是否成對,例如 <code>(())</code> 平衡、<code>(()</code> 不平衡:</p>
+<pre><code class="language-java">boolean isBalanced(String s) {
+    Stack&lt;Character&gt; st = new Stack&lt;&gt;();
+    for (char c : s.toCharArray()) {
+        if (c == &#39;(&#39;) st.push(c);            // 左括號:壓進堆疊
+        else if (c == &#39;)&#39;) {                  // 右括號:
+            if (st.isEmpty()) return false;   //   沒有左括號可配 → 不平衡
+            st.pop();                         //   有 → 配掉一個左括號
+        }
+    }
+    return st.isEmpty();   // 最後堆疊要「空」,才代表全部配對成功
+}</code></pre>
+<p>跑 <code>(())</code>:</p>
+<pre><code>( → push,堆疊 [(]
+( → push,堆疊 [(, (]
+) → pop, 堆疊 [(]
+) → pop, 堆疊 []
+結束:堆疊是空的 → 平衡 ✓</code></pre>
+<p>跑 <code>(()</code>:</p>
+<pre><code>( → push [(]
+( → push [(, (]
+) → pop  [(]
+結束:堆疊還剩 [(] 非空 → 不平衡 ✗</code></pre>
+<p><strong>為什麼用堆疊?</strong> 因為「最近出現、還沒配對的左括號」要<strong>最先被配掉</strong>——遇到右括號時,要對應的正是「最上面(最近)那個左括號」,這正是 LIFO 的用途。</p>
+<h3>應用(常考)</h3>
+<p>函式呼叫的返回位址、瀏覽器「上一頁」、<strong>運算式求值、中序轉後序</strong>、遞迴、回溯 (backtracking)。</p>
+<p><strong>★ 常考重點</strong>:Stack = <strong>LIFO</strong>;招牌應用是<strong>函式呼叫、上一頁、運算式轉換/求值</strong>。</p>
+<hr>
+<h2>五、佇列 (Queue)</h2>
+<h3>概念</h3>
+<p><strong>先進先出 FIFO (First-In, First-Out)</strong>:像排隊,先到的先服務。</p>
+<ul><li>操作:<strong>enqueue</strong>(從尾端 rear 入列)、<strong>dequeue</strong>(從前端 front 出列),<strong>O(1)</strong>。</li></ul>
+<h3>程式範例</h3>
+<p>用 Java 的 <code>Queue</code>(<code>enqueue</code>/<code>dequeue</code> 對應方法 <code>offer</code>/<code>poll</code>):</p>
+<pre><code class="language-java">Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+q.offer(1);            // 入列 1(加到尾端 rear)
+q.offer(2);            // 入列 2
+q.offer(3);            // 入列 3
+int front = q.peek();  // 偷看最前面(不取出)→ 1
+int a = q.poll();      // 出列最前面 → 1
+int b = q.poll();      // 出列最前面 → 2</code></pre>
+<p>佇列狀態變化(左=前端 front、右=尾端 rear):</p>
+<pre><code>enqueue 1 → [1]
+enqueue 2 → [1, 2]
+enqueue 3 → [1, 2, 3]      ← 最前面是 1
+dequeue   → 拿走 1,剩 [2, 3]
+dequeue   → 拿走 2,剩 [3]</code></pre>
+<p>注意:最先放進去的 <strong>1 最先被拿出來</strong>——這就是 FIFO。<strong>跟 Stack 剛好相反</strong>:Stack 拿「最上面(最後進的)」,Queue 拿「最前面(最先進的)」。</p>
+<h3>環狀佇列 (Circular Queue)（必考)</h3>
+<h4>(一) 為什麼需要:線性佇列的「假溢位」</h4>
+<p>一般(線性)佇列用陣列實作時,<code>rear</code> 只會一路往後加。問題是:當 <code>rear</code> 加到<strong>陣列尾端</strong>,即使前面已經 <code>dequeue</code> 空出了位置,<strong>也沒辦法再放</strong>——因為 rear 沒地方去了。明明還有空格卻說「滿了」,這種浪費叫<strong>假溢位 (False Overflow)</strong>。</p>
+<h4>(二) 運作:front / rear + 取餘數繞回</h4>
+<p>環狀佇列用兩個指標:<strong><code>front</code>(指向要出列的最前面)</strong>、<strong><code>rear</code>(指向下一個要放的位置)</strong>。核心技巧是<strong>用取餘數 <code>% size</code> 讓指標繞回開頭</strong>,把陣列想成頭尾相接的圈:</p>
+<pre><code>enqueue: arr[rear] = x;  rear = (rear + 1) % size;   // rear 前進,到底就繞回 0
+dequeue: x = arr[front]; front = (front + 1) % size;  // front 前進,到底就繞回 0</code></pre>
+<p>這樣尾端用完能繞回前面被空出來的格子,空間就循環利用了。</p>
+<h4>(三) 核心考點:怎麼判斷「空」與「滿」(申論/程式最愛考)</h4>
+<p>這是環狀佇列最刁鑽的地方。麻煩在於:<strong>「空」和「滿」時,都可能出現 <code>front == rear</code></strong>(取到空是 front 追上 rear;放到滿是 rear 繞一圈追上 front),光看 <code>front == rear</code> <strong>分不出來</strong>。兩種常見解法:</p>
+<p><strong>方法一:犧牲一格(最常見)</strong> — 故意讓一格永遠空著當緩衝:</p>
+<ul><li><strong>空</strong>:<code>front == rear</code></li><li><strong>滿</strong>:<code>(rear + 1) % size == front</code></li><li>代價:m 格的陣列<strong>只能裝 m − 1 個</strong>元素。</li></ul>
+<p><strong>方法二:額外用計數器 count</strong> — 記錄目前有幾個元素:</p>
+<ul><li><strong>空</strong>:<code>count == 0</code>;<strong>滿</strong>:<code>count == size</code>(enqueue 時 <code>count++</code>、dequeue 時 <code>count--</code>)。</li><li>好處:可以<strong>裝滿全部 m 格</strong>。</li></ul>
+<h4>(四) 程式實作(方法一:犧牲一格)</h4>
+<pre><code class="language-java">class CircularQueue {
+    int[] arr;
+    int front, rear, size;
+
+    CircularQueue(int m) {
+        arr = new int[m];
+        size = m;
+        front = rear = 0;                               // 空:front == rear
+    }
+    boolean isEmpty() { return front == rear; }
+    boolean isFull()  { return (rear + 1) % size == front; }  // 犧牲一格判滿
+
+    void enqueue(int x) {
+        if (isFull()) return;                           // 滿了不能加
+        arr[rear] = x;
+        rear = (rear + 1) % size;                       // rear 前進、繞回
+    }
+    int dequeue() {
+        if (isEmpty()) return -1;                       // 空了不能取
+        int x = arr[front];
+        front = (front + 1) % size;                     // front 前進、繞回
+        return x;
+    }
+}</code></pre>
+<h4>(五) 操作追蹤(size = 5,最多裝 4 個)</h4>
+<pre><code>初始           front=0 rear=0   [ _  _  _  _  _ ]  (空)
+enqueue 10     front=0 rear=1   [10  _  _  _  _ ]
+enqueue 20     front=0 rear=2   [10 20  _  _  _ ]
+enqueue 30     front=0 rear=3   [10 20 30  _  _ ]
+enqueue 40     front=0 rear=4   [10 20 30 40  _ ]  (滿!(4+1)%5=0=front,留一格空)
+dequeue → 10   front=1 rear=4   [ _ 20 30 40  _ ]
+enqueue 50     front=1 rear=0   [ _ 20 30 40 50 ]  ← rear 從 4 繞回 0!</code></pre>
+<p>看最後一步:<code>rear</code> 從 4 用 <code>(4+1)%5 = 0</code> <strong>繞回開頭</strong>,把第 0 格(剛剛 dequeue 空出來的)拿來用——這就是「環狀」重複利用空間的關鍵畫面。</p>
+<h4>(六) 申論題 / 程式題會怎麼考</h4>
+<ul><li><strong>申論題</strong>常問三件事,照這骨架答:</li></ul>
+<ol><li><strong>線性佇列的缺點</strong> → 假溢位(空間浪費),並舉例說明。</li><li><strong>環狀佇列如何改善</strong> → 用 <code>% size</code> 讓 front/rear 繞回,循環利用空間。</li><li><strong>如何判斷空與滿</strong> → 空 <code>front==rear</code>、滿 <code>(rear+1)%size==front</code>(犧牲一格);或用 count(空 count=0、滿 count=size)。這一點最容易被追問,一定要寫。</li></ol>
+<ul><li><strong>程式題</strong>常要求:</li><li>實作 <code>isEmpty()</code>、<code>isFull()</code>、<code>enqueue()</code>、<code>dequeue()</code>(重點就是 <code>% size</code> 和空/滿判斷式)。</li><li>給一串操作序列,<strong>畫出陣列內容與 front / rear 的位置</strong>(像上面追蹤那樣)。</li></ul>
+<p><strong>★ 常考重點</strong>:</p>
+<ul><li>Queue = <strong>FIFO</strong>;應用:工作排程、印表機列印佇列、緩衝區 (buffer)。</li><li>環狀佇列解決線性佇列的<strong>假溢位</strong>,靠 <strong><code>(指標 + 1) % size</code></strong> 繞回。</li><li><strong>空</strong>:<code>front == rear</code>;<strong>滿</strong>:<code>(rear + 1) % size == front</code>(犧牲一格,m 格裝 m−1 個)。或用 <strong>count</strong>(可裝滿 m 格)。</li></ul>
+<h3>Stack vs Queue</h3>
+<div class="tablewrap"><table><thead><tr><th></th><th>堆疊 Stack</th><th>佇列 Queue</th></tr></thead><tbody><tr><td>順序</td><td><strong>LIFO</strong> 後進先出</td><td><strong>FIFO</strong> 先進先出</td></tr>
+<tr><td>進出端</td><td>同一端 (top)</td><td>兩端(rear 進、front 出)</td></tr></tbody></table></div>
+<footer class="foot">來源：_private/計概補充/基礎資料結構(上)_複雜度與線性結構.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>

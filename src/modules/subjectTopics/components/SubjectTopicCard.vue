@@ -22,18 +22,24 @@ const emit = defineEmits<{
   'update:bookmarked': [bookmarked: boolean];
 }>();
 
-const isExpanded = ref(props.defaultExpanded);
+const htmlPageHref = computed(() => props.topic.htmlPage?.href.trim() ?? '');
+const hasHtmlPage = computed(() => htmlPageHref.value.length > 0);
+const isExpanded = ref(!hasHtmlPage.value && props.defaultExpanded);
 const detailId = computed(() => `topic-detail-${props.topic.id}`);
 const titleId = computed(() => `topic-title-${props.topic.id}`);
 
 watch(
   () => props.defaultExpanded,
   (defaultExpanded) => {
-    isExpanded.value = defaultExpanded;
+    isExpanded.value = !hasHtmlPage.value && defaultExpanded;
   }
 );
 
 function toggleExpanded() {
+  if (hasHtmlPage.value) {
+    return;
+  }
+
   isExpanded.value = !isExpanded.value;
 }
 
@@ -78,6 +84,7 @@ function updateCompleted(event: Event) {
       <span v-else class="topic-bookmark-spacer" aria-hidden="true"></span>
 
       <button
+        v-if="!hasHtmlPage"
         :id="titleId"
         type="button"
         :data-testid="`topic-title-${props.topic.id}`"
@@ -88,6 +95,15 @@ function updateCompleted(event: Event) {
       >
         <span class="subject-topic-title">{{ props.topic.title }}</span>
       </button>
+      <a
+        v-else
+        :id="titleId"
+        :data-testid="`topic-title-${props.topic.id}`"
+        class="subject-topic-title-control"
+        :href="htmlPageHref"
+      >
+        <span class="subject-topic-title">{{ props.topic.title }}</span>
+      </a>
 
       <label class="topic-completion-control" :aria-label="`標記 ${props.topic.title} 已學完`">
         <input
@@ -99,7 +115,7 @@ function updateCompleted(event: Event) {
       </label>
     </header>
 
-    <div v-if="isExpanded" :id="detailId" :data-testid="detailId" class="subject-topic-detail" :aria-labelledby="titleId">
+    <div v-if="isExpanded && !hasHtmlPage" :id="detailId" :data-testid="detailId" class="subject-topic-detail" :aria-labelledby="titleId">
       <slot :topic="props.topic" />
     </div>
   </article>

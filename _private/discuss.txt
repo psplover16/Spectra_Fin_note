@@ -1,13 +1,26 @@
-幫我在 computer-principles-v2 此路由，修改 card 內容。
+一.
+利用 @/_private/計概補充 內部全部的md檔的內容及排版，轉換成 html。 (原本的md檔保留)
+也就是 內容與架構 基本與md一致，只是請你轉乘 html而已
+檔案名稱 與 原本對應的md檔相同。
+html放在 @/public/computer-principles-v2
+html的 美術風格 與   @/public/database-v2/國考資料庫_01_ANSI-SPARC三層架構 一致。
+每個 html 的 header 的 左上的 返回 功能與按鈕 也要與  @/public/database-v2/國考資料庫_01_ANSI-SPARC三層架構 一致;新生成的 html不需要右上角的功能。
 
-CPU 排班演算法 這個card的內容，改成使用以下這個MD檔的內容  @/_private/計概補充/死結_考試精簡版.md
-分頁與分段記憶體管理  的內容 改成  @/_private/計概補充/分頁與分段記憶體管理_題目帶動教學完整版.md
-物件導向特性 的內容 改成  @/_private/計概補充/物件導向特性_國考完整講義.md
+二.
+幫我在 computer-principles-v2 此路由，針對 被點名的card 進行修改。
+修改方式都是 與 路由database-v2的 card一致 ，click，會開啟對應的html。
+
+CPU 排班演算法 這個card 應到步驟一利用  @/_private/計概補充/死結_考試精簡版.md 生成的 html。
+分頁與分段記憶體管理 這個card 應到步驟一利用  @/_private/計概補充/分頁與分段記憶體管理_題目帶動教學完整版.md 生成的 html。
+物件導向特性 這個card 應到步驟一利用  @/_private/計概補充/物件導向特性_國考完整講義.md 生成的 html。
+
+然後 基礎資料結構的卡片 移除。
+
+
+然後新生成兩個與上方一樣功能的card
+複雜度與線性結構 這個card 應到步驟一利用  @/_private/計概補充/基礎資料結構(上)_複雜度與線性結構.md 生成的 html。
+樹與雜湊表 這個card 應到步驟一利用  @/_private/計概補充/基礎資料結構(下)_樹與雜湊表.md 生成的 html。
 
 
 連排版也使用MD的排版，MD很完美
-
-
-
-
-如果有發現專案內容與過去spec有衝突，以專案內容為主
+如果有發現專案內容與過去spec有衝突，以專案目前內容為主

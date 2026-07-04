@@ -314,6 +314,50 @@ describe('SubjectTopicPage', () => {
     expect(wrapper.get('[data-testid="topic-title-last-topic"]').attributes('aria-expanded')).toBe('false');
   });
 
+  it('renders htmlPage topics as title links without opening inline detail', async () => {
+    const inlineTopic: SubjectTopic = {
+      id: 'inline-topic',
+      subjectKey: 'computerPrinciplesV2',
+      title: '阿姆達爾定律',
+      summary: 'Inline lesson article topic.',
+      blocks: [{ kind: 'paragraph', text: '整體加速比' }]
+    };
+    const htmlTopic: SubjectTopic = {
+      id: 'html-topic',
+      subjectKey: 'computerPrinciplesV2',
+      title: 'CPU 排班演算法',
+      summary: 'Static HTML topic.',
+      htmlPage: {
+        sourceFilename: 'CPU排班演算法_國考完整講義.html',
+        href: '/computer-principles-v2/CPU排班演算法_國考完整講義.html'
+      },
+      blocks: []
+    };
+
+    const wrapper = mount(SubjectTopicPage, {
+      props: {
+        title: '計概(v2)',
+        subjectKey: 'computerPrinciplesV2',
+        testId: 'subject-view-computer-principles-v2',
+        topics: [inlineTopic, htmlTopic],
+        openLastTopicByDefault: true
+      }
+    });
+
+    const htmlTitleControl = wrapper.get('[data-testid="topic-title-html-topic"]');
+
+    expect(htmlTitleControl.element.tagName).toBe('A');
+    expect(htmlTitleControl.attributes('href')).toBe('/computer-principles-v2/CPU排班演算法_國考完整講義.html');
+    expect(htmlTitleControl.attributes('aria-expanded')).toBeUndefined();
+    expect(htmlTitleControl.attributes('aria-controls')).toBeUndefined();
+    expect(wrapper.find('[data-testid="topic-detail-html-topic"]').exists()).toBe(false);
+
+    await wrapper.get('[data-testid="topic-title-inline-topic"]').trigger('click');
+
+    expect(wrapper.get('[data-testid="topic-detail-inline-topic"]').text()).toContain('整體加速比');
+    expect(wrapper.find('[data-testid="topic-detail-html-topic"]').exists()).toBe(false);
+  });
+
   it('renders actual newline characters as line breaks in learner-facing text', async () => {
     const wrapper = mount(SubjectTopicPage, {
       props: {

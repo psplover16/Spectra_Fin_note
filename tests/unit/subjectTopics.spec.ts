@@ -101,7 +101,12 @@ const computerPrinciplesV2SubjectKey = 'computerPrinciplesV2' as SubjectKey;
 const refreshedCpv2FloatingPointSourceFile = '_private/MD/計算機概論v2/10_浮點數轉換.md';
 const supplementalCpv2FloatingPointPracticeSourceFile = '_private/discuss.txt';
 const supplementalCpv2DataSourceFile = '_private/計概補充/計算機概論_重點講義_01.md';
-const supplementalCpv2CpuSchedulingSourceFile = '_private/計概補充/CPU排班演算法_考試速記版.md';
+const supplementalCpv2CpuSchedulingSourceFile = '_private/計概補充/CPU排班演算法_國考完整講義.md';
+const supplementalCpv2DeadlockSourceFile = '_private/計概補充/死結_考試精簡版.md';
+const supplementalCpv2PagingSegmentationSourceFile = '_private/計概補充/分頁與分段記憶體管理_題目帶動教學完整版.md';
+const supplementalCpv2OopSourceFile = '_private/計概補充/物件導向特性_國考完整講義.md';
+const supplementalCpv2ComplexityLinearSourceFile = '_private/計概補充/基礎資料結構(上)_複雜度與線性結構.md';
+const supplementalCpv2TreesHashSourceFile = '_private/計概補充/基礎資料結構(下)_樹與雜湊表.md';
 const supplementalCpv2FloatingPointSpecialValuesSourceFile = '_private/MD/0621/IEEE754_浮點數特殊值_速記.md';
 const deprecatedCpv2FloatingPointSourceFile = '_private/MD/計算機概論/10_浮點數轉換.md';
 const refreshedCpv2FloatingPointSourceFiles = [
@@ -115,7 +120,8 @@ const expectedComputerPrinciplesV2RouteTopicIds: readonly string[] = [
   'cpv2-supplemental-deadlock',
   'cpv2-supplemental-paging-segmentation',
   'cpv2-supplemental-oop-characteristics',
-  'cpv2-supplemental-basic-data-structures',
+  'cpv2-supplemental-complexity-linear-structures',
+  'cpv2-supplemental-trees-hash-tables',
   'cpv2-architecture-computation-theory',
   'cpv2-machine-instruction-cycle',
   'cpv2-pipeline-hazard',
@@ -137,7 +143,8 @@ const expectedComputerPrinciplesV2RouteTitles: readonly string[] = [
   '死結',
   '分頁與分段記憶體管理',
   '物件導向特性',
-  '基礎資料結構',
+  '複雜度與線性結構',
+  '樹與雜湊表',
   '架構與計算理論',
   '機器指令與指令週期',
   'Pipeline 與 Hazard',
@@ -164,36 +171,49 @@ const splitCpv2SupplementalTopicExpectations = [
     id: 'cpv2-supplemental-cpu-scheduling',
     title: 'CPU 排班演算法',
     source: supplementalCpv2CpuSchedulingSourceFile,
-    heading: 'CPU 排班演算法 — 考試速記版',
-    keyword: 'Round Robin 中,時間量子設定非常大時,行為趨近於?'
+    heading: 'CPU 排班演算法',
+    keyword: 'CPU Scheduling',
+    htmlFilename: 'CPU排班演算法_國考完整講義.html'
   },
   {
     id: 'cpv2-supplemental-deadlock',
     title: '死結',
-    source: supplementalCpv2DataSourceFile,
-    heading: '三、死結（Deadlock）',
-    keyword: '四個必要條件'
+    source: supplementalCpv2DeadlockSourceFile,
+    heading: '死結',
+    keyword: 'Deadlock',
+    htmlFilename: '死結_考試精簡版.html'
   },
   {
     id: 'cpv2-supplemental-paging-segmentation',
     title: '分頁與分段記憶體管理',
-    source: supplementalCpv2DataSourceFile,
-    heading: '四、分頁與分段記憶體管理（Paging & Segmentation）',
-    keyword: 'Paging'
+    source: supplementalCpv2PagingSegmentationSourceFile,
+    heading: '分頁與分段記憶體管理',
+    keyword: 'Paging',
+    htmlFilename: '分頁與分段記憶體管理_題目帶動教學完整版.html'
   },
   {
     id: 'cpv2-supplemental-oop-characteristics',
     title: '物件導向特性',
-    source: supplementalCpv2DataSourceFile,
-    heading: '五、物件導向特性（OOP Characteristics）',
-    keyword: 'OOP Characteristics'
+    source: supplementalCpv2OopSourceFile,
+    heading: '物件導向特性',
+    keyword: 'OOP Characteristics',
+    htmlFilename: '物件導向特性_國考完整講義.html'
   },
   {
-    id: 'cpv2-supplemental-basic-data-structures',
-    title: '基礎資料結構',
-    source: supplementalCpv2DataSourceFile,
-    heading: '六、基礎資料結構（Basic Data Structures）',
-    keyword: 'Stack'
+    id: 'cpv2-supplemental-complexity-linear-structures',
+    title: '複雜度與線性結構',
+    source: supplementalCpv2ComplexityLinearSourceFile,
+    heading: '複雜度與線性結構',
+    keyword: 'Linear Structures',
+    htmlFilename: '基礎資料結構(上)_複雜度與線性結構.html'
+  },
+  {
+    id: 'cpv2-supplemental-trees-hash-tables',
+    title: '樹與雜湊表',
+    source: supplementalCpv2TreesHashSourceFile,
+    heading: '樹與雜湊表',
+    keyword: 'Hash Table',
+    htmlFilename: '基礎資料結構(下)_樹與雜湊表.html'
   }
 ] as const;
 
@@ -216,6 +236,30 @@ describe('subject topic route data helpers', () => {
     };
 
     expect(hasSubjectTopicContent(topic)).toBe(false);
+  });
+
+  it('treats a non-empty htmlPage href as route-visible content without inline blocks', () => {
+    const linkedTopic = {
+      id: 'html-topic-fixture',
+      subjectKey: 'computerPrinciplesV2',
+      title: 'HTML topic',
+      summary: 'Static supplemental lesson',
+      blocks: [],
+      htmlPage: {
+        sourceFilename: 'fixture.html',
+        href: '/computer-principles-v2/fixture.html'
+      }
+    } as SubjectTopic & { htmlPage: { sourceFilename: string; href: string } };
+    const emptyLinkedTopic = {
+      ...linkedTopic,
+      htmlPage: {
+        sourceFilename: 'fixture.html',
+        href: ''
+      }
+    };
+
+    expect(hasSubjectTopicContent(linkedTopic)).toBe(true);
+    expect(hasSubjectTopicContent(emptyLinkedTopic)).toBe(false);
   });
 
   it('keeps only route topics with actual learner-facing content', () => {
@@ -324,7 +368,9 @@ describe('subject topic route data helpers', () => {
     expect(topicIds).toEqual(expectedComputerPrinciplesV2RouteTopicIds);
     expect(topicTitles).toEqual(expectedComputerPrinciplesV2RouteTitles);
     expect(topicIds).not.toContain('cpv2-supplemental-data');
+    expect(topicIds).not.toContain('cpv2-supplemental-basic-data-structures');
     expect(topicTitles).not.toContain('補充資料');
+    expect(topicTitles).not.toContain('基礎資料結構');
     expect(topicTitles.some((title) => title.includes('00_目錄') || title.startsWith('基本計概'))).toBe(false);
     expect(getSubjectTopics('computerPrinciples').map((topic) => topic.id)).not.toEqual(
       expect.arrayContaining([...expectedComputerPrinciplesV2RouteTopicIds])
@@ -353,14 +399,25 @@ describe('subject topic route data helpers', () => {
       const topic = topics.find((routeTopic) => routeTopic.id === expectedTopic.id);
       const lessonArticle = topic?.blocks[0];
       const sourceFiles = (topic as { sourceFiles?: readonly string[] } | undefined)?.sourceFiles;
+      const htmlPage = (topic as { htmlPage?: { sourceFilename: string; href: string } } | undefined)?.htmlPage;
 
       expect(topic?.title).toBe(expectedTopic.title);
       expect(sourceFiles).toEqual([expectedTopic.source]);
+      if ('htmlFilename' in expectedTopic) {
+        expect(topic?.blocks, `${expectedTopic.id} should use the static HTML lesson instead of inline blocks`).toEqual([]);
+        expect(htmlPage).toEqual({
+          sourceFilename: expectedTopic.htmlFilename,
+          href: `/computer-principles-v2/${expectedTopic.htmlFilename}`
+        });
+        expect(JSON.stringify(topic)).toContain(expectedTopic.keyword);
+        continue;
+      }
+
+      expect(htmlPage).toBeUndefined();
       expect(lessonArticle?.kind, `${expectedTopic.id} should expose supplemental lessonArticle content`).toBe('lessonArticle');
       if (lessonArticle?.kind !== 'lessonArticle') {
         throw new Error(`${expectedTopic.id} should expose supplemental lessonArticle content`);
       }
-
       expect(lessonArticle.sourceFiles).toEqual([expectedTopic.source]);
       expect(lessonArticle.sections[0]?.heading).toBe(expectedTopic.heading);
       expect(JSON.stringify(topic)).toContain(expectedTopic.keyword);
@@ -369,8 +426,9 @@ describe('subject topic route data helpers', () => {
     expect((cpuSchedulingTopic as { sourceFiles?: readonly string[] } | undefined)?.sourceFiles).toEqual([
       supplementalCpv2CpuSchedulingSourceFile
     ]);
-    expect(JSON.stringify(cpuSchedulingTopic)).toContain('MLFQ');
-    expect(JSON.stringify(cpuSchedulingTopic)).toContain('答案與解析');
+    expect((cpuSchedulingTopic as { htmlPage?: { sourceFilename: string } } | undefined)?.htmlPage?.sourceFilename).toBe(
+      'CPU排班演算法_國考完整講義.html'
+    );
     for (const forbiddenKey of ['questionText', 'correctAnswer', 'backendSyncId', 'remoteQuestionId']) {
       expect(JSON.stringify(cpuSchedulingTopic)).not.toContain(forbiddenKey);
     }

@@ -133,7 +133,13 @@ export interface SubjectTopic {
   subjectKey: SubjectKey;
   title: string;
   summary: string;
+  htmlPage?: SubjectTopicHtmlPage;
   blocks: readonly SubjectTopicBlock[];
+}
+
+export interface SubjectTopicHtmlPage {
+  sourceFilename: string;
+  href: string;
 }
 
 export type ProfessionalTopicDifficulty = 'intro' | 'core' | 'advanced';

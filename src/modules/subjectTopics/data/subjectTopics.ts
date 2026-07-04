@@ -73,7 +73,7 @@ function hasTopicBlockContent(block: SubjectTopicBlock): boolean {
 }
 
 export function hasSubjectTopicContent(topic: SubjectTopic): boolean {
-  return topic.blocks.some(hasTopicBlockContent);
+  return hasVisibleText(topic.htmlPage?.href ?? '') || topic.blocks.some(hasTopicBlockContent);
 }
 
 export function getSubjectTopics(subjectKey: SubjectKey): readonly SubjectTopic[] {

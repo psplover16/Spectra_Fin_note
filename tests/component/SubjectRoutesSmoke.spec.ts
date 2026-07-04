@@ -108,59 +108,64 @@ describe('subject route views', () => {
     expect(algorithmsWrapper.text()).not.toContain('正式內容會保留複雜度');
   });
 
-  it('renders split Computer Principles v2 supplemental cards after practice and before catalog topics', async () => {
+  it('renders inline and HTML-linked Computer Principles v2 supplemental cards after practice and before catalog topics', async () => {
     const wrapper = mount(ComputerPrinciplesV2View);
     const unfinishedSection = wrapper.get('[data-testid="subject-topic-unfinished-computerPrinciplesV2"]');
     const practiceCard = wrapper.get('[data-testid="subject-topic-card-cpv2-supplemental-practice"]');
-    const splitSupplementalCardIds = [
-      'cpv2-supplemental-amdahl-law',
+    const amdahlCard = wrapper.get('[data-testid="subject-topic-card-cpv2-supplemental-amdahl-law"]');
+    const htmlSupplementalCardIds = [
       'cpv2-supplemental-cpu-scheduling',
       'cpv2-supplemental-deadlock',
       'cpv2-supplemental-paging-segmentation',
       'cpv2-supplemental-oop-characteristics',
-      'cpv2-supplemental-basic-data-structures'
+      'cpv2-supplemental-complexity-linear-structures',
+      'cpv2-supplemental-trees-hash-tables'
     ];
-    const splitSupplementalCards = splitSupplementalCardIds.map((topicId) =>
+    const htmlSupplementalCards = htmlSupplementalCardIds.map((topicId) =>
       wrapper.get(`[data-testid="subject-topic-card-${topicId}"]`)
     );
-    const firstSplitSupplementalCard = splitSupplementalCards[0];
-    const lastSplitSupplementalCard = splitSupplementalCards.at(-1);
+    const firstHtmlSupplementalCard = htmlSupplementalCards[0];
+    const lastHtmlSupplementalCard = htmlSupplementalCards.at(-1);
     const architectureCard = wrapper.get('[data-testid="subject-topic-card-cpv2-architecture-computation-theory"]');
 
-    if (!firstSplitSupplementalCard || !lastSplitSupplementalCard) {
-      throw new Error('Computer Principles v2 split supplemental cards should exist');
+    if (!firstHtmlSupplementalCard || !lastHtmlSupplementalCard) {
+      throw new Error('Computer Principles v2 HTML-linked supplemental cards should exist');
     }
 
     expect(wrapper.find('[data-testid="subject-route-sections-computerPrinciplesV2"]').exists()).toBe(false);
     expect(unfinishedSection.element.contains(practiceCard.element)).toBe(true);
-    for (const splitSupplementalCard of splitSupplementalCards) {
-      expect(unfinishedSection.element.contains(splitSupplementalCard.element)).toBe(true);
-      expect(splitSupplementalCard.classes()).toContain('subject-topic-card');
+    expect(unfinishedSection.element.contains(amdahlCard.element)).toBe(true);
+    for (const htmlSupplementalCard of htmlSupplementalCards) {
+      expect(unfinishedSection.element.contains(htmlSupplementalCard.element)).toBe(true);
+      expect(htmlSupplementalCard.classes()).toContain('subject-topic-card');
     }
     expect(practiceCard.classes()).toContain('subject-topic-card');
     expect(practiceCard.text()).toContain('加強練習');
-    expect(splitSupplementalCards.map((card) => card.text())).toEqual([
-      expect.stringContaining('阿姆達爾定律'),
+    expect(amdahlCard.text()).toContain('阿姆達爾定律');
+    expect(htmlSupplementalCards.map((card) => card.text())).toEqual([
       expect.stringContaining('CPU 排班演算法'),
       expect.stringContaining('死結'),
       expect.stringContaining('分頁與分段記憶體管理'),
       expect.stringContaining('物件導向特性'),
-      expect.stringContaining('基礎資料結構')
+      expect.stringContaining('複雜度與線性結構'),
+      expect.stringContaining('樹與雜湊表')
     ]);
     expect(wrapper.find('[data-testid="subject-topic-card-cpv2-supplemental-data"]').exists()).toBe(false);
-    expect(practiceCard.element.compareDocumentPosition(firstSplitSupplementalCard.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    for (let index = 0; index < splitSupplementalCards.length - 1; index += 1) {
-      const currentCard = splitSupplementalCards[index];
-      const nextCard = splitSupplementalCards[index + 1];
+    expect(wrapper.find('[data-testid="subject-topic-card-cpv2-supplemental-basic-data-structures"]').exists()).toBe(false);
+    expect(practiceCard.element.compareDocumentPosition(amdahlCard.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(amdahlCard.element.compareDocumentPosition(firstHtmlSupplementalCard.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    for (let index = 0; index < htmlSupplementalCards.length - 1; index += 1) {
+      const currentCard = htmlSupplementalCards[index];
+      const nextCard = htmlSupplementalCards[index + 1];
 
       if (!currentCard || !nextCard) {
-        throw new Error('Computer Principles v2 split supplemental card order should be complete');
+        throw new Error('Computer Principles v2 HTML supplemental card order should be complete');
       }
 
       expect(currentCard.element.compareDocumentPosition(nextCard.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     }
     expect(
-      lastSplitSupplementalCard.element.compareDocumentPosition(architectureCard.element) & Node.DOCUMENT_POSITION_FOLLOWING
+      lastHtmlSupplementalCard.element.compareDocumentPosition(architectureCard.element) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
     expect(practiceCard.element.compareDocumentPosition(architectureCard.element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(wrapper.find('[data-testid="topic-detail-cpv2-supplemental-practice"]').exists()).toBe(false);
@@ -180,16 +185,22 @@ describe('subject route views', () => {
     expect(amdahlDetail.text()).toContain("Amdahl's Law");
     expect(amdahlDetail.text()).toContain('整體加速比');
 
-    await wrapper.get('[data-testid="topic-title-cpv2-supplemental-cpu-scheduling"]').trigger('click');
-
-    const cpuSchedulingDetail = wrapper.get('[data-testid="topic-detail-cpv2-supplemental-cpu-scheduling"]');
-    expect(cpuSchedulingDetail.text()).toContain('Round Robin 中,時間量子設定非常大時,行為趨近於?');
-    expect(cpuSchedulingDetail.text()).toContain('MLFQ');
-    expect(cpuSchedulingDetail.text()).toContain('答案與解析');
-    expect(cpuSchedulingDetail.text()).not.toContain('Machine Instruction Cycle');
-    expect(cpuSchedulingDetail.text()).not.toContain('Five Functional Units');
-    expect(cpuSchedulingDetail.text()).not.toContain('CPU Components');
-    expect(cpuSchedulingDetail.text()).not.toContain('Memory Hierarchy');
+    expect(wrapper.get('[data-testid="topic-title-cpv2-supplemental-cpu-scheduling"]').element.tagName).toBe('A');
+    expect(wrapper.get('[data-testid="topic-title-cpv2-supplemental-cpu-scheduling"]').attributes('href')).toBe(
+      '/computer-principles-v2/CPU排班演算法_國考完整講義.html'
+    );
+    expect(wrapper.get('[data-testid="topic-title-cpv2-supplemental-deadlock"]').attributes('href')).toBe(
+      '/computer-principles-v2/死結_考試精簡版.html'
+    );
+    expect(wrapper.get('[data-testid="topic-title-cpv2-supplemental-complexity-linear-structures"]').attributes('href')).toBe(
+      '/computer-principles-v2/基礎資料結構(上)_複雜度與線性結構.html'
+    );
+    expect(wrapper.get('[data-testid="topic-title-cpv2-supplemental-trees-hash-tables"]').attributes('href')).toBe(
+      '/computer-principles-v2/基礎資料結構(下)_樹與雜湊表.html'
+    );
+    for (const htmlSupplementalCardId of htmlSupplementalCardIds) {
+      expect(wrapper.find(`[data-testid="topic-detail-${htmlSupplementalCardId}"]`).exists()).toBe(false);
+    }
     expect(wrapper.find('[data-testid="topic-detail-cpv2-supplemental-data"]').exists()).toBe(false);
   });
 

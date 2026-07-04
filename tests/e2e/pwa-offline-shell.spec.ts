@@ -65,8 +65,20 @@ test('production PWA shell loads professional routes offline after an online war
   await expect(page.getByTestId('subject-view-computer-principles-v2')).toBeVisible();
   await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('阿姆達爾定律');
   await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('CPU 排班演算法');
+  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('複雜度與線性結構');
+  await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('樹與雜湊表');
   await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('架構與計算理論');
   await expect(page.getByTestId('subject-topic-list-computerPrinciplesV2')).toContainText('檢查碼（二）漢明碼與漢明距');
+
+  const cpuSchedulingHtmlPath = '/computer-principles-v2/CPU排班演算法_國考完整講義.html';
+  const cpuSchedulingHtmlResponse = await request.get(cpuSchedulingHtmlPath);
+  expect(cpuSchedulingHtmlResponse.ok()).toBe(true);
+  expect(await cpuSchedulingHtmlResponse.text()).toContain('CPU Scheduling');
+
+  await page.goto(cpuSchedulingHtmlPath);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-Hant');
+  await expect(page.locator('body')).toContainText('CPU Scheduling');
+  await expect(page.locator('body')).toContainText('返回計概(v2)');
 
   await page.goto('/networking-v2');
   await expect(page.getByTestId('subject-view-networking-v2')).toBeVisible();
@@ -80,6 +92,10 @@ test('production PWA shell loads professional routes offline after an online war
   await expect(page.getByTestId('subject-view-networking-v2')).toBeVisible();
   await expect(page.getByTestId('topic-title-networking-v2-osi-tcpip')).toBeVisible();
   await expect(page.getByTestId('topic-title-networking-v2-defense-attacks')).toBeVisible();
+
+  await page.goto(cpuSchedulingHtmlPath, { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('body')).toContainText('CPU Scheduling');
+  await expect(page.locator('body')).toContainText('返回計概(v2)');
 
   await context.setOffline(false);
 });
