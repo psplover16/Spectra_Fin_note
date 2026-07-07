@@ -534,10 +534,11 @@ const firstBatchAlgorithmTopicIds = [
   'greatest-common-divisor',
   'binary-search',
   'insertion-sort',
-  'bucket-sort'
+  'bucket-sort',
+  'heap-sort'
 ] as const;
 const firstBatchAlgorithmTopicIdSet = new Set<string>(firstBatchAlgorithmTopicIds);
-const unfilledAlgorithmTopicIds = ['merge-sort', 'heap-sort', 'shell-sort'] as const;
+const unfilledAlgorithmTopicIds = ['merge-sort', 'shell-sort'] as const;
 const expectedAlgorithmTopicIdsAfterImportedTopics = [
   'algorithms-study-strategy',
   'algorithm-definition-and-properties',
@@ -551,7 +552,6 @@ const expectedAlgorithmTopicIdsAfterImportedTopics = [
   'advanced-balanced-trees',
   'hashing-and-collision-handling',
   'merge-sort',
-  'heap-sort',
   'shell-sort'
 ] as const;
 const expectedAlgorithmTopicIdsAfterDataStructureTopics = [
@@ -694,7 +694,8 @@ const algorithmCodeMethodNames = {
   'binary-search': ['binarySearchRecursive', 'binarySearchIterative'],
   'selection-sort': ['selectionSortRecursive', 'selectionSortIterative'],
   'insertion-sort': ['insertionSortRecursive', 'insertionSortIterative'],
-  'bucket-sort': ['bucketSortRecursive', 'bucketSortIterative']
+  'bucket-sort': ['bucketSortRecursive', 'bucketSortIterative'],
+  'heap-sort': ['heapSort', 'siftDown']
 } as const satisfies Record<(typeof firstBatchAlgorithmTopicIds)[number], readonly string[]>;
 const algorithmWorstTimes = {
   'bubble-sort': 'O(n²)',
@@ -704,7 +705,8 @@ const algorithmWorstTimes = {
   'binary-search': 'O(log n)',
   'selection-sort': 'O(n²)',
   'insertion-sort': 'O(n²)',
-  'bucket-sort': 'O(n log n)'
+  'bucket-sort': 'O(n log n)',
+  'heap-sort': 'O(n log n)'
 } as const satisfies Record<(typeof firstBatchAlgorithmTopicIds)[number], string>;
 const algorithmExpectedSources = {
   'bubble-sort': [algorithmSource],
@@ -714,7 +716,8 @@ const algorithmExpectedSources = {
   'greatest-common-divisor': [algorithmSource],
   'binary-search': [algorithmSource],
   'insertion-sort': [algorithmSource],
-  'bucket-sort': [bucketSortSource]
+  'bucket-sort': [bucketSortSource],
+  'heap-sort': ['_private/資料結構與演算法.txt']
 } as const satisfies Record<(typeof firstBatchAlgorithmTopicIds)[number], readonly string[]>;
 const filledTopicIds = new Set([
   commonUnitsTopicId,

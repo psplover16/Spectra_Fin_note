@@ -249,11 +249,12 @@ describe('algorithms route-scoped content workflow', () => {
     for (const row of manifestRows) {
       const topic = formalTopics.find((formalTopic) => formalTopic.id === row.id);
       const isCommonAlgorithmTopic = row.manifestId?.startsWith('common-') ?? false;
+      const hasFormalContent = isCommonAlgorithmTopic || row.id === 'heap-sort';
 
       expect(topic).toBeDefined();
       expect(topic?.sourceFiles).toEqual(expect.arrayContaining([row.formalSourceFile]));
       expect(topic?.blocks[0]).toEqual(expect.objectContaining({ kind: 'lessonArticle' }));
-      if (isCommonAlgorithmTopic && topic?.blocks[0]?.kind === 'lessonArticle') {
+      if (hasFormalContent && topic?.blocks[0]?.kind === 'lessonArticle') {
         expect(topic.blocks[0].lead.length).toBeGreaterThan(0);
         expect(topic.blocks[0].sections.length).toBeGreaterThan(0);
         expect(topic.blocks.some((block) => block.kind === 'teachingCode')).toBe(true);

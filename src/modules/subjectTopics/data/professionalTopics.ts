@@ -4343,6 +4343,167 @@ public static void bucketSortIterative(double[] arr) {
 }`
       }
     ]
+  },
+  'heap-sort': {
+    summary:
+      '用最大堆「根一定是最大值」的特性，反覆把根換到尾端、縮小範圍再往下沉修復，完成由小到大排序；含遞迴與非遞迴 Java 寫法，時間複雜度穩定 O(n log n)。',
+    terms: [
+      { zh: '堆積排序法', en: 'Heap Sort' },
+      { zh: '最大堆', en: 'Max-Heap' },
+      { zh: '往下沉', en: 'Sift-Down' },
+      { zh: '建堆', en: 'Build Max-Heap' }
+    ],
+    lead: [
+      '堆積排序法(Heap Sort)借用最大堆(max-heap)「根一定是最大值」的特性來排序。',
+      '先把整個陣列整理成 max-heap，再反覆把根(最大值)換到尾端、縮小 heap、往下沉修復，最後就會由小到大。'
+    ],
+    sections: [
+      {
+        heading: '演算法概念',
+        blocks: [
+          {
+            kind: 'paragraph',
+            text:
+              '最大堆是一棵完整二元樹，且每個父節點都大於等於子節點，所以根一定是整個範圍的最大值。堆積排序就是一直把根挖走放到尾端：挖 n 次後，最大的先被放到最後、次大的到倒數第二，從左看回來自然由小到大。'
+          },
+          {
+            kind: 'paragraph',
+            text:
+              '整個過程只依賴一個動作「往下沉(sift-down)」：當某個節點比子節點小時，就跟較大的子節點對調，一路往下換，直到父節點大於等於子節點或沉到底，heap 就修回合法。'
+          }
+        ]
+      },
+      {
+        heading: '核心規則',
+        blocks: [
+          {
+            kind: 'orderedList',
+            markerStyle: 'decimal',
+            items: [
+              '建最大堆：從最後一個有子節點的節點(0-based 為 n/2 - 1)往前，對每個節點做一次往下沉，把最大值頂到根。',
+              '取出根：把根(最大值)和目前 heap 的最後一格對調，最大值就此鎖定在尾端。',
+              '縮小範圍：把剛換到尾端的格子踢出 heap，之後不再更動。',
+              '往下沉修復：對換上來的新根做一次往下沉，讓剩下的部分重新變回合法 max-heap，接著重複取出根，直到只剩一個。'
+            ]
+          }
+        ]
+      },
+      {
+        heading: '最壞時間複雜度',
+        blocks: [
+          {
+            kind: 'table',
+            headers: ['版本', '最壞時間複雜度', '推導重點'],
+            rows: [
+              ['遞迴版本', 'O(n log n)', '取出 n 次根，每次往下沉修復最多走樹高 log n 層；不論輸入好壞都一樣。'],
+              ['非遞迴版本', 'O(n log n)', '把往下沉改成迴圈，次數與遞迴相同，仍是 n 次取根乘上 log n 修復。']
+            ]
+          }
+        ]
+      }
+    ],
+    codeBlocks: [
+      {
+        title: '堆積排序法遞迴版本',
+        description:
+          '往下沉(siftDown)用遞迴實作：和較大的子節點對調後，遞迴處理沉下去的新位置。以 {4,10,3,5,1} 排序，結果為 [1, 3, 4, 5, 10]。',
+        code: `public static void heapSort(int[] a) {
+    int n = a.length;
+
+    // 第一步：建最大堆。從最後一個有子節點的節點往前，逐一往下沉。
+    // 0-based 陣列，最後一個非葉節點 = n/2 - 1。
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        siftDown(a, n, i);
+    }
+
+    // 第二步：反覆取出根(最大值)放到尾端。
+    for (int end = n - 1; end > 0; end--) {
+        swap(a, 0, end);       // 根換到尾端，鎖定最大值。
+        siftDown(a, end, 0);   // 縮小範圍成 end，再對新根往下沉修復。
+    }
+}
+
+// 往下沉(遞迴版)：把 index i 和較大的子節點對調，再遞迴處理沉下去的位置。
+// n 是目前 heap 的有效大小，尾端已排序區不算。
+private static void siftDown(int[] a, int n, int i) {
+    int largest = i;          // 先假設自己最大。
+    int left = 2 * i + 1;     // 0-based 左子節點。
+    int right = 2 * i + 2;    // 0-based 右子節點。
+
+    // 「< n」確認子節點存在且不在尾端已排序區，才能比較。
+    if (left < n && a[left] > a[largest]) {
+        largest = left;
+    }
+    if (right < n && a[right] > a[largest]) {
+        largest = right;
+    }
+
+    // 父節點已比兩個子節點都大，合法，結束遞迴。
+    if (largest == i) {
+        return;
+    }
+
+    swap(a, i, largest);      // 和較大的子節點對調。
+    siftDown(a, n, largest);  // 遞迴往下沉到新位置。
+}
+
+private static void swap(int[] a, int i, int j) {
+    int temp = a[i];
+    a[i] = a[j];
+    a[j] = temp;
+}`
+      },
+      {
+        title: '堆積排序法非遞迴版本',
+        description:
+          '往下沉(siftDown)改用 while 迴圈，一路和較大的子節點對調直到定位。heapSort 的兩個迴圈分別是建堆與反覆取根。',
+        code: `public static void heapSort(int[] a) {
+    int n = a.length;
+
+    // 第一步：建最大堆，把最大值頂到根。
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        siftDown(a, n, i);
+    }
+
+    // 第二步：反覆取出根(最大值)放到尾端。
+    for (int end = n - 1; end > 0; end--) {
+        swap(a, 0, end);       // 根換到尾端，鎖定。
+        siftDown(a, end, 0);   // 縮小範圍成 end，再往下沉修復。
+    }
+}
+
+// 往下沉(非遞迴版)：用 while 迴圈一路和較大的子節點對調。
+private static void siftDown(int[] a, int n, int i) {
+    while (true) {
+        int largest = i;          // 先假設自己最大。
+        int left = 2 * i + 1;     // 0-based 左子節點。
+        int right = 2 * i + 2;    // 0-based 右子節點。
+
+        // 「< n」確認子節點存在且不在尾端已排序區。
+        if (left < n && a[left] > a[largest]) {
+            largest = left;
+        }
+        if (right < n && a[right] > a[largest]) {
+            largest = right;
+        }
+
+        // 父節點已比兩個子節點都大，合法，停止往下沉。
+        if (largest == i) {
+            break;
+        }
+
+        swap(a, i, largest);      // 和較大的子節點對調。
+        i = largest;              // 位置下移，繼續往下沉。
+    }
+}
+
+private static void swap(int[] a, int i, int j) {
+    int temp = a[i];
+    a[i] = a[j];
+    a[j] = temp;
+}`
+      }
+    ]
   }
 } as const;
 
@@ -4357,7 +4518,8 @@ const algorithmExampleTopicOrder = [
   'greatest-common-divisor',
   'binary-search',
   'insertion-sort',
-  'bucket-sort'
+  'bucket-sort',
+  'heap-sort'
 ] as const satisfies readonly AlgorithmExampleTopicId[];
 
 const getAlgorithmExampleTopicRank = (id: string): number => {

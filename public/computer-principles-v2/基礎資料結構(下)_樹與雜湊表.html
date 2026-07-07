@@ -319,8 +319,11 @@ D   E</code></pre>
             int left  = 2 * i + 1;     // 0-based 左小孩
             int right = 2 * i + 2;     // 0-based 右小孩
 
-            if (left  &lt; n &amp;&amp; a[left]  &gt; a[largest]) largest = left;
-            if (right &lt; n &amp;&amp; a[right] &gt; a[largest]) largest = right;
+            // 「&lt; n」是邊界檢查:確認這個小孩「存在且可碰」才去比較,擋住兩件事——
+            //   ① 索引越界:葉節點的 2i+1 會超過陣列 → 讀到不存在的小孩會當掉
+            //   ② 誤碰已排序區:n 是 heap 目前大小,index &gt;= n 是尾端排好的值,不能換回來
+            if (left  &lt; n &amp;&amp; a[left]  &gt; a[largest]) largest = left;   // 左小孩比目前最大還大?
+            if (right &lt; n &amp;&amp; a[right] &gt; a[largest]) largest = right;  // 右小孩比目前最大還大?
 
             if (largest == i) break;   // 父已比兩個小孩都大 → 合法,停
 
@@ -342,24 +345,325 @@ D   E</code></pre>
 }</code></pre>
 <p>對照前面的圖:<code>heapSort</code> 裡第一個迴圈就是<strong>第一步(建堆)</strong>、第二個迴圈就是<strong>第二步(反覆取根)</strong>;而 <code>siftDown</code> 正是那個「一路和較大的小孩對調」的<strong>往下沉</strong>動作 —— 三處都對得上。</p>
 <blockquote><p><strong>小提醒:</strong>圖用 <strong>1-based</strong>(根在索引 1、小孩 = 2i、2i+1)方便講解;程式用 <strong>0-based</strong>(根在索引 0、小孩 = <strong>2i+1、2i+2</strong>、最後一個非葉節點 = <strong>n/2 − 1</strong>)。兩者只是編號起點不同,邏輯完全一樣。實務上若只是要用 heap(不是自己排序),也可以直接用 <code>java.util.PriorityQueue</code>(預設是 min-heap)。</p></blockquote>
+<p><strong>為什麼完整的 heapSort 是 O(n log n)?</strong> 拆成兩步看,「取根」那步主導整體:</p>
+<ul><li><strong>地基:一次 sift-down = O(log n)</strong>。往下沉最多從根換到葉,走過的層數 = 樹高;n 個節點的完整二元樹高度約 <strong>log₂n</strong>(n=100 萬 → 樹高才約 20),所以一次修復最多 O(log n)。</li><li><strong>第二步 反覆取根 = O(n log n)(主角)</strong>:迴圈跑 <strong>n−1 次</strong>,每圈 <code>swap</code> 是 O(1)、<code>siftDown</code> 是 O(log n) → (n−1) × O(log n) = <strong>O(n log n)</strong>。</li><li><strong>第一步 建堆(配角)</strong>:約 n/2 次 sift-down,用寬鬆上界 O(n log n) 就足以下結論;其實有更緊的分析是 <strong>O(n)</strong>(越底層的節點越多、但能往下沉的高度越矮,加權總和收斂成 O(n),考試常直接記「建堆 = O(n)」)。</li></ul>
+<pre><code>T(n) =   O(n)      +   O(n log n)     =   O(n log n)
+         ↑建堆           ↑取 n 次根          ↑取兩者中成長較快的那項</code></pre>
+<p>而且<strong>最好、平均、最壞都是 O(n log n)</strong>:不管資料原本長怎樣,樹高永遠是 log n、取根一定取 n 次,<strong>沒有「運氣好變快、運氣壞變慢」</strong>——這正是 heap sort 比快速排序(最壞 O(n²))穩定的地方。</p>
 <h3>平衡樹 (Balanced Tree,AVL / 紅黑樹)</h3>
-<p>前面提到 <strong>BST 最壞會退化成歪斜樹</strong>(資料按順序插入時,像一條鏈結串列),搜尋就從 O(log n) 掉到 <strong>O(n)</strong>。<strong>平衡樹</strong>就是為了防止這件事:它是一種會<strong>自動維持左右高度平衡</strong>的 BST,靠<strong>旋轉 (Rotation)</strong> 這個動作在插入/刪除後把樹「喬正」,讓高度永遠維持在 <strong>O(log n)</strong>,因而<strong>保證</strong>搜尋/插入/刪除都是 <strong>O(log n)</strong>(不再有 BST 那種退化的最壞情況)。</p>
-<pre><code>按序插入 1,2,3 到普通 BST         平衡樹(旋轉後)
-    1                                2
-     \            ── 旋轉 ──>       / \
-      2                            1   3
+<blockquote><p><strong>本文高度定義(先講清楚,避免計算歧義):</strong></p><ul><li>空子樹高度 = <strong>0</strong>,單一節點高度 = <strong>1</strong>,節點高度 = <code>1 + max(左高, 右高)</code>。</li><li><strong>平衡因子 BF = 左子樹高 − 右子樹高</strong>。</li><li>樹畫法:越上面越接近根,<code>/</code> 接左子、<code>\</code> 接右子。</li></ul></blockquote>
+<h4>前言:為什麼需要「平衡」?【理解】</h4>
+<p><strong>名詞定義</strong>:二元搜尋樹(BST)是「左子 &lt; 自己 &lt; 右子」的樹,搜尋像查字典一樣一路往下砍一半。</p>
+<p><strong>核心觀念</strong>:BST 的搜尋速度取決於<strong>樹高</strong>。理想情況是 O(log n),但如果資料剛好照順序進來,樹會退化成一條「鏈」,變成 O(n),跟用陣列一個一個找沒兩樣。</p>
+<p><strong>具體例子</strong>:依序插入 <code>1, 2, 3, 4, 5</code> 到普通 BST:</p>
+<pre><code>1
+ \
+  2
+   \
+    3
+     \
+      4
        \
-        3   ← 退化成歪斜(高度 3)   高度 2、左右平衡 ✓</code></pre>
-<p>兩種最常考的平衡樹:</p>
-<ul><li><strong>AVL 樹</strong>:最早的平衡樹。規定<strong>每個節點的左右子樹高度差(平衡因子 Balance Factor)不得超過 1</strong>(只能是 −1、0、+1)。一旦插入/刪除後超出,就用<strong>旋轉(LL、RR、LR、RL 四種)</strong>調整回來。特點:<strong>平衡得最嚴格</strong> → 樹最矮、<strong>查詢最快</strong>;但代價是插入/刪除時可能要<strong>頻繁旋轉</strong>。</li><li><strong>紅黑樹 (Red-Black Tree)</strong>:每個節點染成<strong>紅或黑</strong>,靠幾條顏色規則(如「根為黑」「紅節點的子節點必為黑(紅色不相鄰)」「任一節點到各葉的路徑黑節點數相同」)維持<strong>大致平衡</strong>(最長路徑不超過最短路徑的 2 倍)。特點:平衡<strong>比 AVL 寬鬆</strong> → 查詢略慢一點點,但<strong>插入/刪除時旋轉次數更少、整體更快</strong>,所以<strong>實務上更常用</strong>。</li></ul>
-<blockquote><p><strong>怎麼選(常考觀念)</strong>:<strong>查詢多、很少改</strong> → 選 <strong>AVL</strong>(平衡嚴格、查最快);<strong>插入刪除頻繁</strong> → 選 <strong>紅黑樹</strong>(維護成本低)。C++ 的 <code>map</code>/<code>set</code>、Java 的 <code>TreeMap</code>/<code>TreeSet</code>、Linux 排程器等,底層用的都是<strong>紅黑樹</strong>。</p></blockquote>
-<div class="tablewrap"><table><thead><tr><th>比較</th><th>AVL 樹</th><th>紅黑樹</th></tr></thead><tbody><tr><td>平衡嚴格度</td><td><strong>嚴格</strong>(高度差 ≤ 1)</td><td>寬鬆(最長 ≤ 2×最短)</td></tr>
-<tr><td>樹高</td><td>較矮</td><td>較高一點</td></tr>
-<tr><td>查詢</td><td><strong>較快</strong></td><td>略慢</td></tr>
-<tr><td>插入/刪除</td><td>旋轉較多、較慢</td><td><strong>旋轉少、較快</strong></td></tr>
-<tr><td>複雜度</td><td colspan="2" style="text-align:center">兩者搜尋/插入/刪除皆<strong>保證 O(log n)</strong></td></tr>
-<tr><td>適用</td><td>查多改少</td><td>改動頻繁(實務常用)</td></tr></tbody></table></div>
-<p><strong>★ 平衡樹重點</strong>:平衡樹是<strong>會自我平衡的 BST</strong>,靠<strong>旋轉</strong>維持 O(log n),解決 BST 退化問題;<strong>AVL 平衡最嚴格、查最快</strong>,<strong>紅黑樹平衡較寬鬆、增刪較快(更常用)</strong>。</p>
+        5</code></pre>
+<p>樹高變成 5(= n),搜尋 5 要走 5 步。<strong>平衡樹</strong>的任務就是:不管資料怎麼進來,都用「旋轉」把樹壓矮,強制維持 O(log n)。AVL 與紅黑樹是兩種最經典的做法,差別在於「平衡要求的嚴格程度」。</p>
+<h4>第一部分:AVL 樹</h4>
+<h5>1-1 定義與平衡因子【理解】</h5>
+<p><strong>名詞定義</strong>:AVL 樹是一種 BST,額外要求<strong>每一個節點</strong>的平衡因子 <code>|BF| ≤ 1</code>(也就是 BF 只能是 −1、0、+1)。</p>
+<p><strong>核心觀念</strong>:只要有任何一個節點的左右子樹高度差超過 1,就算「失衡」,必須立刻旋轉修正。這是很<strong>嚴格</strong>的要求 → 樹會壓得很矮 → 查詢很快,但每次改動都要花力氣維持。</p>
+<p><strong>怎麼用</strong>:插入節點後,從「新節點」往「根」的方向回溯,計算沿路每個祖先的 BF,找到<strong>最低(最靠近新節點)的失衡節點</strong>,對它做旋轉。</p>
+<pre><code>      A          ← A 的 BF = 左高(2) − 右高(0) = +2 → 失衡
+     /
+    B            ← 左子樹一路往下共 2 層(B 再接 C),右邊是空的
+   /
+  C</code></pre>
+<h5>1-2 四種旋轉:LL / RR / LR / RL【練流程】＋判斷口訣【硬背】</h5>
+<p><strong>用途</strong>:把失衡節點旋轉回 <code>|BF| ≤ 1</code>。</p>
+<p><strong>一句話流程</strong>:先找到<strong>最低失衡節點 X</strong>,再看「<strong>X → 較高的那個子節點 → 再往下一層的方向</strong>」這條路徑,前兩步的方向連起來就是旋轉類型。</p>
+<p><strong>判斷口訣(硬背)</strong>:</p>
+<ul><li>路徑往「左、左」→ <strong>LL</strong>(右旋一次)</li><li>路徑往「右、右」→ <strong>RR</strong>(左旋一次)</li><li>路徑往「左、右」→ <strong>LR</strong>(先左旋、再右旋)</li><li>路徑往「右、左」→ <strong>RL</strong>(先右旋、再左旋)</li></ul>
+<blockquote><p>名字看「失衡點下方兩層往哪走」;<strong>單邊(LL/RR)轉一次,交叉(LR/RL)轉兩次</strong>。</p></blockquote>
+<p>以下四個最小範例,<strong>起點都不同、但修好後長得一模一樣</strong>(20 當根、10 與 30 當子),可以體會四種情況殊途同歸。</p>
+<p><strong>① LL:插入 30 → 20 → 10</strong></p>
+<pre><code>插入後(失衡)          於 30 右旋            修正完成
+    30(BF=+2)
+   /              ──右旋(30)──►         20
+  20(BF=+1)                            /  \
+ /                                   10    30
+10</code></pre>
+<p>30 失衡(+2),左子 20 也是左重(+1)→ <strong>LL</strong>,對 30 做<strong>右旋</strong>:20 升上來當根,30 掉到右邊。</p>
+<p><strong>② RR:插入 10 → 20 → 30</strong></p>
+<pre><code>插入後(失衡)          於 10 左旋            修正完成
+10(BF=−2)
+  \              ──左旋(10)──►         20
+   20(BF=−1)                          /  \
+     \                              10    30
+      30</code></pre>
+<p>10 失衡(−2),右子 20 也是右重(−1)→ <strong>RR</strong>,對 10 做<strong>左旋</strong>:20 升上來,10 掉到左邊。</p>
+<p><strong>③ LR:插入 30 → 10 → 20(交叉,轉兩次)</strong></p>
+<pre><code>插入後(失衡)      步驟1:對10左旋      步驟2:對30右旋
+   30(BF=+2)          30
+  /                  /                20
+10(BF=−1)          20        ──►      /  \
+  \               /                 10    30
+   20           10</code></pre>
+<p>30 失衡(+2)但左子 10 是<strong>右重</strong>(−1)→ <strong>LR</strong>。先把下面那對「掰直」(對 10 左旋變成 LL 形狀),再對 30 右旋。</p>
+<p><strong>④ RL:插入 10 → 30 → 20(交叉,轉兩次)</strong></p>
+<pre><code>插入後(失衡)      步驟1:對30右旋      步驟2:對10左旋
+10(BF=−2)         10
+  \                \                  20
+   30(BF=+1)        20       ──►     /  \
+   /                 \             10    30
+  20                  30</code></pre>
+<p>10 失衡(−2)但右子 30 是<strong>左重</strong>(+1)→ <strong>RL</strong>。先對 30 右旋掰直,再對 10 左旋。</p>
+<p><strong>判斷表(考場速查)【硬背】</strong></p>
+<div class="tablewrap"><table><thead><tr><th>失衡節點 BF</th><th>較高子節點 BF</th><th>類型</th><th>旋轉動作</th><th>旋轉次數</th></tr></thead><tbody>
+<tr><td>+2</td><td>+1(或 0)</td><td><strong>LL</strong></td><td>對失衡節點右旋</td><td>1</td></tr>
+<tr><td>−2</td><td>−1(或 0)</td><td><strong>RR</strong></td><td>對失衡節點左旋</td><td>1</td></tr>
+<tr><td>+2</td><td>−1</td><td><strong>LR</strong></td><td>先對左子左旋,再對失衡節點右旋</td><td>2</td></tr>
+<tr><td>−2</td><td>+1</td><td><strong>RL</strong></td><td>先對右子右旋,再對失衡節點左旋</td><td>2</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>易錯提醒</strong>:判斷 LR/RL 要看「較高子節點」的 BF 正負號是否和失衡節點<strong>相反</strong>(一個 +2 一個 −1,或一個 −2 一個 +1),相反才是交叉、要轉兩次。</p></blockquote>
+<h5>1-3 綜合插入範例(連續觸發四種旋轉)【練流程】</h5>
+<p><strong>用途</strong>:把上面四招放進同一棵樹裡連續演練。<strong>插入順序</strong>:<code>30, 20, 10, 25, 40, 50, 45, 5, 7</code></p>
+<p><strong>插入 30、20</strong>(尚未失衡)</p>
+<pre><code>  30
+ /
+20</code></pre>
+<p><strong>插入 10</strong> → 30 失衡(BF=+2,左子 20 為 +1)→ <strong>LL</strong>,對 30 右旋</p>
+<pre><code>插入後              右旋(30) 後
+    30                20
+   /        ──►      /  \
+  20               10    30
+ /
+10</code></pre>
+<p><strong>插入 25</strong>(進到 30 左子,平衡)</p>
+<pre><code>   20
+  /  \
+ 10   30
+     /
+    25</code></pre>
+<p><strong>插入 40</strong>(進到 30 右子,平衡)</p>
+<pre><code>   20
+  /  \
+ 10   30
+     /  \
+    25   40</code></pre>
+<p><strong>插入 50</strong> → 回溯發現<strong>最低失衡節點是根 20</strong>(BF = 左高1 − 右高3 = −2),右子 30 為右重(−1)→ <strong>RR</strong>,對 20 左旋</p>
+<pre><code>插入後(20失衡)            左旋(20) 後
+   20(BF=−2)               30
+  /  \                    /  \
+ 10   30         ──►    20    40
+     /  \              /  \     \
+    25   40          10   25    50
+          \
+          50</code></pre>
+<blockquote><p><strong>這裡是最容易算錯的一步</strong>:失衡點是<strong>根 20</strong> 不是 30。30 的 BF 只有 −1(沒失衡)。務必從最低節點往上逐一算 BF,找到<strong>第一個</strong>超標的。</p></blockquote>
+<p><strong>插入 45</strong> → 40 失衡(BF=−2),右子 50 為左重(+1)→ <strong>RL</strong>,先對 50 右旋、再對 40 左旋</p>
+<pre><code>插入後(40失衡)      RL 修正後(局部)         全樹
+     40(−2)            45              30
+       \             /  \            /   \
+       50(+1)  ──► 40    50   ──►   20    45
+       /                            /  \  /  \
+      45                          10  25 40  50</code></pre>
+<p><strong>插入 5</strong>(進到最左邊,平衡)</p>
+<pre><code>        30
+       /   \
+      20    45
+     /  \   /  \
+   10   25 40   50
+   /
+  5</code></pre>
+<p><strong>插入 7</strong> → 10 失衡(BF=+2),左子 5 為右重(−1)→ <strong>LR</strong>,先對 5 左旋、再對 10 右旋</p>
+<pre><code>插入後(10失衡)     LR 修正後(局部)          最終全樹
+   10(+2)            7               30
+   /               / \             /   \
+  5(−1)          5   10    ──►    20    45
+   \                             /  \   /  \
+    7                           7   25 40   50
+                               / \
+                              5   10</code></pre>
+<p><strong>狀態總表</strong></p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>插入值</th><th>是否失衡</th><th>失衡節點(BF)</th><th>較高子(BF)</th><th>旋轉類型</th></tr></thead><tbody>
+<tr><td>1</td><td>30</td><td>否</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>2</td><td>20</td><td>否</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>3</td><td>10</td><td>是</td><td>30 (+2)</td><td>20 (+1)</td><td><strong>LL</strong></td></tr>
+<tr><td>4</td><td>25</td><td>否</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>5</td><td>40</td><td>否</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>6</td><td>50</td><td>是</td><td><strong>20 (−2)</strong></td><td>30 (−1)</td><td><strong>RR</strong></td></tr>
+<tr><td>7</td><td>45</td><td>是</td><td>40 (−2)</td><td>50 (+1)</td><td><strong>RL</strong></td></tr>
+<tr><td>8</td><td>5</td><td>否</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>9</td><td>7</td><td>是</td><td>10 (+2)</td><td>5 (−1)</td><td><strong>LR</strong></td></tr>
+</tbody></table></div>
+<h5>1-4 刪除範例(後繼節點替換 ＋ 再平衡)【練流程】</h5>
+<p><strong>用途</strong>:AVL 刪除比插入麻煩,因為刪除<strong>有兩個小孩的節點</strong>要先找「接班人」,而且旋轉可能<strong>連鎖往上發生</strong>。</p>
+<p><strong>一句話流程</strong>:① 若刪的節點有兩個小孩,用<strong>中序後繼</strong>(右子樹中最小者)的值蓋掉它,改刪那個後繼;② 從實際被移除的位置往根回溯,逐層檢查 BF、需要就旋轉。</p>
+<p><strong>起始樹</strong>:</p>
+<pre><code>              50
+            /    \
+          25      75
+         /  \    /  \
+       15   35  60   85
+      /  \      \
+    10   20     65</code></pre>
+<p><strong>目標:刪除 25</strong>(它有兩個小孩 15 與 35)</p>
+<p><strong>步驟 1｜找中序後繼</strong>:25 右子樹中最小者 = <strong>35</strong>(35 沒有左子)。把 35 的值搬到 25 的位置,再把原本的 35(葉節點)移除。</p>
+<pre><code>搬值後
+              50
+            /    \
+          35      75      ← 原 25 的位置改放 35
+         /       /  \
+       15       60   85
+      /  \      \
+    10   20     65</code></pre>
+<p><strong>步驟 2｜從移除點往上回溯算 BF</strong>(從下往上逐層檢查):</p>
+<ul><li>節點 15:左子 10(h=1)、右子 20(h=1)→ <strong>BF = 0,平衡</strong>(跳過)</li><li><strong>節點 35(原 25 的位置)</strong>:左子 15(h=2)、右子 空(h=0)→ <strong>BF = +2,失衡!</strong><ul><li>較高子 15 的 BF = 0 → 對照判斷表屬 <strong>LL</strong>(較高子 BF=0 仍歸單旋)→ 對 35 <strong>右旋</strong></li></ul></li></ul>
+<p><strong>步驟 3｜對 35 右旋</strong>:</p>
+<pre><code>右旋(35) 後
+              50
+            /    \
+          15      75
+         /  \    /  \
+       10    35  60  85
+             /     \
+            20      65</code></pre>
+<p><strong>驗證全樹</strong>:15(左高1、右高2 → BF=−1)、50(左高2、右高2 → BF=0)… 全部 <code>|BF|≤1</code>,平衡完成。本例一次旋轉就修好。</p>
+<blockquote><p><strong>插入 vs 刪除的關鍵差異(超高頻考點)【理解】</strong></p><ul><li><strong>插入</strong>:修好<strong>最低失衡節點</strong>後,整棵樹就平衡了 → 最多旋轉 <strong>1 次</strong>(單旋或雙旋)。</li><li><strong>刪除</strong>:一次旋轉可能讓<strong>該子樹高度再減 1</strong>,導致<strong>更上層</strong>的祖先跟著失衡,必須繼續往上修 → 最壞情況要旋轉 <strong>O(log n) 次</strong>(連鎖旋轉)。</li><li>判斷「要不要繼續往上」:旋轉後若子樹高度<strong>沒變</strong>就可停手;若高度<strong>變矮了</strong>,就得往上再檢查父節點。</li></ul></blockquote>
+<h4>第二部分:紅黑樹 (Red-Black Tree)</h4>
+<h5>2-1 五大性質【硬背】</h5>
+<p><strong>名詞定義</strong>:紅黑樹是每個節點多帶一個「顏色」(紅或黑)的 BST,用五條規則間接保證平衡。所有 <code>NULL</code>(空指標)都視為一個<strong>黑色的葉哨兵(NIL)</strong>。</p>
+<p><strong>五大性質(務必背熟)</strong>:</p>
+<ol><li>每個節點不是<strong>紅</strong>就是<strong>黑</strong>。</li><li><strong>根</strong>一定是<strong>黑</strong>。</li><li>每個葉節點(NIL)都是<strong>黑</strong>。</li><li><strong>紅節點的兩個小孩都必須是黑</strong>(＝不能有「紅接紅」,紅色不能連續)。</li><li>從任一節點出發,到其下方<strong>每一個 NIL</strong> 的路徑,經過的<strong>黑色節點數目都相同</strong>(此數目稱為該節點的<strong>黑高 black-height</strong>)。</li></ol>
+<p><strong>核心觀念</strong>:性質 4 管「不能太紅」、性質 5 管「黑色要均勻」。兩者合起來 → 最長路徑最多是最短路徑的 2 倍 → 樹高被壓在 <code>2·log₂(n+1)</code> 以內。比 AVL <strong>寬鬆</strong>,所以改動時要旋轉的次數更少。</p>
+<p><strong>黑高怎麼算(例)</strong>:</p>
+<pre><code>        20(黑)
+       /   \
+     10(黑) 30(黑)</code></pre>
+<p>從 20 到任一 NIL 都經過「1 個黑內部節點 + 1 個黑 NIL」,黑色數目一致 → 合法。</p>
+<h5>2-2 插入修正的三種情況【練流程】＋判斷【硬背】</h5>
+<p><strong>用途</strong>:新節點插入後可能出現「紅接紅」(違反性質 4),用<strong>變色</strong>或<strong>旋轉</strong>修好。</p>
+<p><strong>先記兩個鐵則</strong>:</p>
+<ul><li><strong>新插入的節點一律塗紅</strong>。<em>為什麼?</em>【理解】塗紅只可能違反性質 4(紅接紅),這是<strong>局部</strong>問題、好修;塗黑則一定破壞性質 5(某條路徑硬生生多一個黑),是<strong>全域</strong>問題、難修。</li><li>修正只看三個角色:新節點的<strong>父 P</strong>、<strong>祖父 G</strong>、以及<strong>叔叔 U</strong>(父的兄弟＝祖父的另一個小孩)。</li></ul>
+<p><strong>一句話流程</strong>:只有在「<strong>P 是紅</strong>」時才需要修(父黑就沒事)。此時看<strong>叔叔 U 的顏色</strong>決定用哪一招。</p>
+<p><strong>情況一:叔叔 U 是「紅」→ 純變色(不旋轉)</strong></p>
+<p><strong>動作</strong>:把 <strong>P 塗黑、U 塗黑、G 塗紅</strong>,然後把「問題節點」上移到 G,繼續往上檢查(若 G 變成根就塗回黑)。</p>
+<pre><code>修正前(z、P 皆紅、U 也紅)         變色後
+        G(黑)                      G(紅) ← 問題上移到這,繼續往上看
+       /    \                     /    \
+     P(紅)  U(紅)      ──►      P(黑)  U(黑)
+     /                          /
+   z(紅)                      z(紅)</code></pre>
+<p><strong>情況二:叔叔 U 是「黑(或 NIL)」且 z 在「內側」(三角形)→ 先旋轉「掰直」</strong></p>
+<p><strong>判斷</strong>:z 是 P 的右子、而 P 是 G 的左子(或左右相反)＝ 折線／三角形。<strong>動作</strong>:先對 <strong>P 旋轉</strong>,把折線拉成直線,轉化成情況三。</p>
+<p><strong>情況三:叔叔 U 是「黑(或 NIL)」且 z 在「外側」(直線)→ 旋轉 ＋ 變色</strong></p>
+<p><strong>判斷</strong>:z、P、G 三代同一邊(左左 或 右右)＝ 直線。<strong>動作</strong>:對 <strong>G 旋轉</strong>(往反方向),並<strong>交換 P 與 G 的顏色</strong>(P 塗黑、G 塗紅)。</p>
+<p><strong>情況二＋三合併示範</strong>:合法起始樹如下,插入 15。</p>
+<pre><code>起始(合法)             插入15後(10紅、15紅、叔叔=NIL黑、三角形)
+      30(黑)                 30(黑)
+     /    \                 /    \
+   20(黑) 40(黑)          20(黑) 40(黑)
+   /                      /
+ 10(紅)                 10(紅)
+                           \
+                           15(紅)   ← 情況二(三角形)</code></pre>
+<p>情況二:對 P(10)<strong>左旋</strong> → 變成直線(情況三):</p>
+<pre><code>      30(黑)
+     /    \
+   20(黑) 40(黑)
+   /
+ 15(紅)
+ /
+10(紅)      ← 現在是「左左」直線</code></pre>
+<p>情況三:對 G(20)<strong>右旋</strong> ＋ 交換 15、20 顏色(15→黑、20→紅):</p>
+<pre><code>      30(黑)
+     /    \
+   15(黑) 40(黑)
+   /  \
+ 10(紅) 20(紅)   ← 修正完成,紅接紅消失、黑高不變</code></pre>
+<p><strong>判斷表(考場速查)【硬背】</strong></p>
+<div class="tablewrap"><table><thead><tr><th>父 P</th><th>叔叔 U</th><th>z 位置</th><th>情況</th><th>動作</th></tr></thead><tbody>
+<tr><td>黑</td><td>—</td><td>—</td><td>無違反</td><td>不用修</td></tr>
+<tr><td>紅</td><td><strong>紅</strong></td><td>任意</td><td>情況一</td><td>P、U 塗黑,G 塗紅,問題上移到 G</td></tr>
+<tr><td>紅</td><td><strong>黑/NIL</strong></td><td>內側(三角)</td><td>情況二</td><td>對 P 旋轉掰直 → 轉情況三</td></tr>
+<tr><td>紅</td><td><strong>黑/NIL</strong></td><td>外側(直線)</td><td>情況三</td><td>對 G 反向旋轉 ＋ 交換 P、G 顏色</td></tr>
+</tbody></table></div>
+<h5>2-3 綜合插入範例【練流程】</h5>
+<p><strong>用途</strong>:連續插入、觀察紅黑樹如何靠「變色 ＋ 旋轉」自我壓平。<strong>插入順序</strong>:<code>10, 20, 30, 40, 50, 60, 70</code>(故意照順序,看它怎麼避免退化成鏈)。</p>
+<p><strong>插入 10</strong> → 根,塗黑</p>
+<pre><code>10(黑)</code></pre>
+<p><strong>插入 20</strong> → 10 的右子,塗紅;父黑,無事</p>
+<pre><code>10(黑)
+   \
+   20(紅)</code></pre>
+<p><strong>插入 30</strong> → 20 的右子,塗紅。20紅-30紅違反;叔叔 = NIL(黑),右右<strong>直線</strong> → <strong>情況三</strong>:對 G(10) 左旋 ＋ 交換 10、20 顏色</p>
+<pre><code>修正後
+   20(黑)
+  /   \
+10(紅) 30(紅)</code></pre>
+<p><strong>插入 40</strong> → 30 的右子,塗紅。30紅-40紅違反;叔叔 = 10(紅) → <strong>情況一</strong>:30、10 塗黑,20 塗紅;問題上移到根 20 → 塗回黑</p>
+<pre><code>   20(黑)
+  /   \
+10(黑) 30(黑)
+          \
+          40(紅)</code></pre>
+<p><strong>插入 50</strong> → 40 的右子,塗紅。40紅-50紅違反;叔叔 = NIL(黑),右右<strong>直線</strong> → <strong>情況三</strong>:對 G(30) 左旋 ＋ 交換 30、40 顏色</p>
+<pre><code>   20(黑)
+  /   \
+10(黑) 40(黑)
+       /  \
+     30(紅) 50(紅)</code></pre>
+<p><strong>插入 60</strong> → 50 的右子,塗紅。50紅-60紅違反;叔叔 = 30(紅) → <strong>情況一</strong>:50、30 塗黑,40 塗紅;問題上移到 40,其父 20 為黑 → 停</p>
+<pre><code>     20(黑)
+    /   \
+  10(黑) 40(紅)
+         /  \
+       30(黑) 50(黑)
+               \
+               60(紅)</code></pre>
+<p><strong>插入 70</strong> → 60 的右子,塗紅。60紅-70紅違反;叔叔 = NIL(黑),右右<strong>直線</strong> → <strong>情況三</strong>:對 G(50) 左旋 ＋ 交換 50、60 顏色</p>
+<pre><code>最終樹
+     20(黑)
+    /   \
+  10(黑) 40(紅)
+         /  \
+       30(黑) 60(黑)
+             /  \
+           50(紅) 70(紅)</code></pre>
+<p><strong>驗證</strong>:根黑 ✔;無紅接紅 ✔;從根到每個 NIL 都恰好經過 <strong>3 個黑節點</strong>(含 NIL)✔。7 個節點照順序插入,樹高只有 4,成功避免退化。</p>
+<p><strong>狀態總表</strong></p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>插入值</th><th>父顏色</th><th>是否違反</th><th>叔叔</th><th>情況</th><th>動作</th></tr></thead><tbody>
+<tr><td>1</td><td>10</td><td>—</td><td>—</td><td>—</td><td>—</td><td>根塗黑</td></tr>
+<tr><td>2</td><td>20</td><td>黑</td><td>否</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>3</td><td>30</td><td>紅</td><td>是</td><td>NIL(黑)</td><td>情況三</td><td>左旋(10)＋換色</td></tr>
+<tr><td>4</td><td>40</td><td>黑</td><td>是</td><td>10(紅)</td><td>情況一</td><td>變色上移</td></tr>
+<tr><td>5</td><td>50</td><td>紅</td><td>是</td><td>NIL(黑)</td><td>情況三</td><td>左旋(30)＋換色</td></tr>
+<tr><td>6</td><td>60</td><td>黑</td><td>是</td><td>30(紅)</td><td>情況一</td><td>變色上移</td></tr>
+<tr><td>7</td><td>70</td><td>紅</td><td>是</td><td>NIL(黑)</td><td>情況三</td><td>左旋(50)＋換色</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>關於刪除</strong>:紅黑樹的刪除會牽涉「雙黑(double black)」節點,情況比插入多很多、也更繁瑣,屬於<strong>低 CP 值</strong>考點(考卷通常只考插入與性質判斷)。建議先把「五大性質 + 插入三情況」練到滾瓜爛熟,刪除只需知道「最多旋轉 3 次、複雜度仍是 O(log n)」即可。</p></blockquote>
+<h4>第三部分:AVL vs 紅黑樹 全面比較【理解】＋數據【硬背】</h4>
+<div class="tablewrap"><table><thead><tr><th>比較項目</th><th>AVL 樹</th><th>紅黑樹</th></tr></thead><tbody>
+<tr><td>平衡條件</td><td>每個節點 |BF| ≤ 1(<strong>嚴格</strong>)</td><td>五大性質(<strong>寬鬆</strong>)</td></tr>
+<tr><td>高度上界</td><td>≈ <strong>1.44 log₂n</strong></td><td>≤ <strong>2 log₂(n+1)</strong></td></tr>
+<tr><td>平衡程度</td><td>樹<strong>較矮、較平衡</strong></td><td>樹<strong>較高、較不平衡</strong></td></tr>
+<tr><td>查詢(搜尋)</td><td><strong>較快</strong>(樹矮)</td><td>稍慢</td></tr>
+<tr><td>插入旋轉次數</td><td>最多 <strong>1 組</strong>(單旋 1 次,或雙旋 2 次基本旋轉)</td><td>最多 <strong>2 次</strong></td></tr>
+<tr><td>刪除旋轉次數</td><td>最多 <strong>O(log n) 次</strong>(可能連鎖)</td><td>最多 <strong>3 次</strong></td></tr>
+<tr><td>每節點額外空間</td><td>存高度或 BF(約需一個整數)</td><td>只需 <strong>1 bit 顏色</strong></td></tr>
+<tr><td>適用情境</td><td><strong>查詢多、改動少</strong></td><td><strong>插入／刪除頻繁</strong></td></tr>
+<tr><td>實際應用</td><td>資料庫索引、記憶體索引(查詢密集場合)</td><td>C++ <code>std::map</code>/<code>set</code>、Java <code>TreeMap</code>/<code>TreeSet</code>、Linux 核心</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>三種基本操作(搜尋／插入／刪除)在兩者都是 O(log n)</strong>,差別在<strong>常數項</strong>與<strong>旋轉次數</strong>。</p></blockquote>
+<p><strong>一句話選用建議【理解】</strong></p>
+<ul><li><strong>查詢遠多於修改</strong> → 選 <strong>AVL</strong>(樹更矮,搜尋更快)。</li><li><strong>插入／刪除很頻繁</strong> → 選 <strong>紅黑樹</strong>(維持平衡的成本更低,這也是各大標準函式庫預設用它的原因)。</li></ul>
+<h4>附錄:常見考點與陷阱</h4>
+<p><strong>A. AVL 旋轉類型判斷(速記)</strong></p>
+<ol><li>從<strong>新節點往根</strong>回溯,找<strong>第一個</strong> <code>|BF|≥2</code> 的節點(最低失衡點)。</li><li>看它與「較高子節點」的 BF 正負號:<strong>同號→單旋(LL/RR)</strong>、<strong>異號→雙旋(LR/RL)</strong>。</li><li>記住方向由「失衡點下方兩層走向」決定。</li></ol>
+<p><strong>B. BF 計算最常錯的地方</strong></p>
+<ul><li>高度定義要<strong>全程一致</strong>(本文用「空=0、葉=1」)。</li><li>找失衡點要從<strong>最低</strong>開始,別一看到根就下手(1-3 步驟 6 就是陷阱題)。</li><li>雙旋不要只轉一次;LR/RL 一定是<strong>兩次</strong>旋轉。</li></ul>
+<p><strong>C. 紅黑樹黑高計算</strong></p>
+<ul><li>算黑高時 <strong>NIL 也算一個黑節點</strong>。</li><li>檢查性質 5:列出「根 → 每個 NIL」各條路徑的黑節點數,全部相等才合法。</li><li>新節點塗紅<strong>不會</strong>改變黑高,這是「插入塗紅」設計的關鍵好處。</li></ul>
+<p><strong>D. 兩者共同的高頻是非題</strong></p>
+<ul><li>「AVL 一定比紅黑樹快」→ 錯。只有<strong>查詢</strong>通常較快;插入／刪除因旋轉多,紅黑樹反而划算。</li><li>「紅黑樹保證是完全平衡」→ 錯。它只保證高度 ≤ 2log₂(n+1),並非最矮。</li><li>「插入一定要旋轉」→ 錯。AVL 沒失衡就不轉;紅黑樹情況一只變色不旋轉。</li></ul>
 <p><strong>★ 樹常考重點</strong>:</p>
 <ul><li>n 個節點 → <strong>n − 1 條邊</strong>;完美二元樹 h 層 → <strong>2ʰ − 1 個節點</strong>;第 i 層最多 <strong>2^(i-1)</strong> 個。</li><li><strong>葉節點數 = 分支度 2 的節點數 + 1(n₀ = n₂ + 1)</strong>。</li><li>三種走訪差別只在「根」的位置:前序=根在前、中序=根在中、後序=根在後;層序用<strong>佇列 (BFS)</strong>。</li><li><strong>重建樹</strong>:前序/後序找根 + 中序切左右;<strong>「前序+後序」無法唯一決定</strong>。</li><li><strong>陣列表示</strong>:節點 i → 左子 <strong>2i</strong>、右子 <strong>2i+1</strong>、父 <strong>⌊i/2⌋</strong>。</li><li><strong>BST 中序走訪 = 由小到大排序</strong>;平均 O(log n)、<strong>最壞 O(n)</strong>(退化,用<strong>平衡樹/AVL</strong> 解)。</li><li><strong>Heap</strong> = 完整二元樹 + 父子大小關係(max-heap 根最大);只管父子、不管兄弟。</li></ul>
 <hr>
@@ -375,50 +679,129 @@ D   E</code></pre>
     A   B</code></pre>
 <ul><li><strong>前序(prefix)</strong>:<code>* + A B C</code></li><li><strong>中序(infix)</strong>:<code>A + B * C</code>(注意:中序會丟失括號,需靠優先權或括號還原)</li><li><strong>後序(postfix)</strong>:<code>A B + C *</code></li></ul>
 <p>電腦用<strong>堆疊 (Stack)</strong> 來做「中序轉後序」與「後序求值」。</p>
+<h3>用三題實戰前中後序</h3>
+<p>下面三題各打一個考點,建議先自己算,再對詳解。</p>
+<h4>題目一(考點:中序 → 後序 + 前序)</h4>
+<p>把下面這個中序運算式,分別轉成<strong>後序</strong>和<strong>前序</strong>:</p>
+<pre><code>A × B + C × ( D − E )</code></pre>
+<p><strong>詳解</strong>:先認優先權 —— <strong>× 高於 +</strong>,而括號 <code>( )</code> 最先算。把式子拆成「一定要先算」的小塊,再依序合併。</p>
+<p><strong>轉後序(運算子放到兩個運算元「後面」)</strong>:</p>
+<ol><li><code>A × B</code> → <code>A B ×</code></li><li><code>D − E</code>(括號先算)→ <code>D E −</code></li><li><code>C × (D−E)</code> → <code>C</code> 接上一步結果,再放 × → <code>C D E − ×</code></li><li>最後的 <code>+</code> 把「①的結果 <code>A B ×</code>」和「③的結果 <code>C D E − ×</code>」串起來,+ 放最後 → 完成。</li></ol>
+<blockquote><p><strong>後序答案</strong>:<code>A B × C D E − × +</code></p></blockquote>
+<p><strong>轉前序(運算子放到兩個運算元「前面」)</strong>:</p>
+<ol><li><code>A × B</code> → <code>× A B</code></li><li><code>D − E</code> → <code>− D E</code></li><li><code>C × (D−E)</code> → <code>× C − D E</code></li><li>最後的 <code>+</code> 把「①的結果 <code>× A B</code>」和「③的結果 <code>× C − D E</code>」串起來,+ 放最前 → 完成。</li></ol>
+<blockquote><p><strong>前序答案</strong>:<code>+ × A B × C − D E</code></p></blockquote>
+<p>其實兩者就是<strong>同一棵運算式樹</strong>的後序 / 前序走訪(根是最後才做的 <code>+</code>):</p>
+<pre><code>          +
+        /   \
+       ×     ×
+      / \   / \
+     A   B C   −
+              / \
+             D   E</code></pre>
+<h4>題目二(考點:後序用堆疊求值)</h4>
+<p>用<strong>堆疊</strong>算出下面這個後序運算式的值,並寫出每一步的堆疊狀態:</p>
+<pre><code>6 2 3 + × 8 4 / −</code></pre>
+<p><strong>詳解</strong>:規則很簡單 —— <strong>遇到數字就 push;遇到運算子就 pop 兩個出來算,先 pop 的當右運算元、後 pop 的當左運算元,算完把結果 push 回去</strong>。</p>
+<div class="tablewrap"><table><thead><tr><th>讀到</th><th>動作</th><th>堆疊(左→右,右端為頂)</th></tr></thead><tbody>
+<tr><td>6</td><td>push 6</td><td>6</td></tr>
+<tr><td>2</td><td>push 2</td><td>6, 2</td></tr>
+<tr><td>3</td><td>push 3</td><td>6, 2, 3</td></tr>
+<tr><td><strong>+</strong></td><td>pop 3、pop 2 → 2 + 3 = <strong>5</strong>,push 5</td><td>6, 5</td></tr>
+<tr><td><strong>×</strong></td><td>pop 5、pop 6 → 6 × 5 = <strong>30</strong>,push 30</td><td>30</td></tr>
+<tr><td>8</td><td>push 8</td><td>30, 8</td></tr>
+<tr><td>4</td><td>push 4</td><td>30, 8, 4</td></tr>
+<tr><td><strong>/</strong></td><td>pop 4、pop 8 → 8 / 4 = <strong>2</strong>,push 2</td><td>30, 2</td></tr>
+<tr><td><strong>−</strong></td><td>pop 2、pop 30 → 30 − 2 = <strong>28</strong>,push 28</td><td><strong>28</strong></td></tr>
+</tbody></table></div>
+<blockquote><p><strong>答案 = 28</strong>。特別注意 <code>−</code> 和 <code>/</code> 這種<strong>不可交換</strong>的運算:是「<strong>後 pop − 先 pop</strong>」(左 − 右、左 / 右),千萬別算反成 <code>2 − 30</code>。</p></blockquote>
+<h4>題目三(考點:運算式樹 → 三種走訪)</h4>
+<p>寫出下面這棵運算式樹的<strong>前序、中序(記得該加括號)、後序</strong>:</p>
+<pre><code>        ×
+       / \
+      +   −
+     / \ / \
+    A  B C  D</code></pre>
+<p><strong>詳解</strong>:三種走訪只差在「<strong>根(節點自己)什麼時候輸出</strong>」——前序=根→左→右;中序=左→根→右;後序=左→右→根。這棵樹的根是 <code>×</code>,左子樹是 <code>A + B</code>,右子樹是 <code>C − D</code>:</p>
+<ol><li><strong>前序</strong>(根先):× →(+ A B)→(− C D)= <code>× + A B − C D</code></li><li><strong>中序</strong>(根在中):(A + B)→ × →(C − D)。因為 <code>×</code> 優先權比 <code>+</code>、<code>−</code> 高,<strong>不加括號會變成 A + B × C − D、意思整個跑掉</strong>,所以左右都要括起來。</li><li><strong>後序</strong>(根最後):(A B +)→(C D −)→ × = <code>A B + C D − ×</code></li></ol>
+<blockquote><p><strong>答案</strong>:<br>前序 <code>× + A B − C D</code><br>中序 <code>(A + B) × (C − D)</code>(<strong>必須加括號</strong>)<br>後序 <code>A B + C D − ×</code></p></blockquote>
 <p><strong>★ 常考重點</strong>:前/中/後序 = 運算子在前/中/後;對應運算式樹的前/中/後序走訪。轉換與求值用<strong>堆疊</strong>。</p>
 <hr>
 <h2>八、雜湊表 (Hash Table)</h2>
-<h3>概念:它想解決什麼</h3>
-<p>陣列靠<strong>索引</strong>能 O(1) 直接取值,但前提是「你得先知道索引」。那如果我想用一個<strong>有意義的 key</strong>(例如學號、姓名、身分證字號)直接找到資料呢?</p>
-<p>雜湊表的做法:用一個<strong>雜湊函數 (Hash Function)</strong> 把 key「算成」一個陣列索引,再存到那一格。查的時候同樣把 key 算一次就知道位置 → <strong>不用一格格找,直接命中 O(1)</strong>。</p>
-<p>比喻:圖書館不用一本本翻,靠書的<strong>索書號</strong>直接算出它在哪個書架;雜湊函數就是那個「key → 位置」的換算規則。</p>
-<h3>雜湊函數 (Hash Function)</h3>
-<p>把 key 轉成「桌子(陣列)裡的位置」的函數。最常見、最常考的是<strong>除法雜湊法 (Division Method)</strong>:</p>
-<pre><code>h(k) = k mod m       (m = 雜湊表大小)</code></pre>
-<p>例:表大小 m = 10,key = 25 → h(25) = 25 mod 10 = <strong>5</strong>,存到第 5 格。</p>
-<p>(m 通常取<strong>質數</strong>,能讓 key 分布更均勻、減少碰撞。)</p>
-<h3>碰撞 (Collision)</h3>
-<p>不同的 key <strong>算到同一個位置</strong>,就叫碰撞。例如 h(15)=5、h(25)=5,兩個都想住第 5 格。</p>
-<p>碰撞<strong>無法完全避免</strong>(key 可能無限多、格子有限,鴿籠原理),所以雜湊表的重點就是「<strong>碰撞了怎麼辦</strong>」——這是最核心的考點。</p>
-<h3>碰撞處理:兩大方法</h3>
-<p><strong>(一)鏈結法 (Chaining,分離鏈結)</strong></p>
-<p>每一格不是只放一個,而是接一條<strong>鏈結串列</strong>;碰撞的 key 就<strong>掛在同一格的串列後面</strong>。</p>
-<pre><code>第5格 → [15] → [25] → [35]      (三個都 hash 到 5,串起來)</code></pre>
-<ul><li>優點:實作簡單、桌子不會「滿」。</li><li>缺點:碰撞多時串列變長,查詢退化成走訪。</li></ul>
-<p><strong>(二)開放定址法 (Open Addressing)</strong></p>
-<p>不另接串列,而是<strong>在桌子裡找下一個空格</strong>塞進去。找法有三種:</p>
-<ul><li><strong>線性探測 (Linear Probing)</strong>:被占了就找<strong>下一格</strong>:h(k)、h(k)+1、h(k)+2…</li><li>缺點:資料容易擠成一坨 → <strong>主要群聚 (Primary Clustering)</strong>。</li><li><strong>二次探測 (Quadratic Probing)</strong>:跳的間距是平方:h(k)+1²、h(k)+2²、h(k)+3²…</li><li>改善主要群聚,但仍有<strong>次要群聚 (Secondary Clustering)</strong>。</li><li><strong>雙重雜湊 (Double Hashing)</strong>:用<strong>第二個雜湊函數</strong>決定每次跳多遠,最能打散、群聚最少。</li></ul>
-<h3>具體範例</h3>
-<p>表大小 m = 10,依序插入 key:<strong>15、25、35、22</strong>,用 h(k) = k mod 10:</p>
-<ul><li>h(15)=5、h(25)=5、h(35)=5(三個都撞在第 5 格)、h(22)=2。</li></ul>
-<p><strong>用鏈結法</strong>:</p>
-<pre><code>第2格 → [22]
-第5格 → [15] → [25] → [35]</code></pre>
-<p><strong>用線性探測</strong>(撞了就往下一格找空的):</p>
-<pre><code>15 → 第5格(空)→ 放第5格
-25 → 第5格(占)→ 第6格(空)→ 放第6格
-35 → 第5格(占)→ 第6格(占)→ 第7格(空)→ 放第7格
-22 → 第2格(空)→ 放第2格
-結果:第2格=22、第5格=15、第6格=25、第7格=35</code></pre>
-<h3>載入因子 (Load Factor)</h3>
-<pre><code>載入因子 α = n / m    (n = 已放入的元素數,m = 桌子大小)</code></pre>
-<ul><li>α 越大代表越擠,碰撞越多、越慢。</li><li>α 太高時要<strong>重新雜湊 (Rehashing)</strong>:換一張更大的桌子,把資料重算位置搬過去。</li></ul>
-<h3>複雜度</h3>
-<ul><li><strong>平均</strong>:搜尋 / 插入 / 刪除都是 <strong>O(1)</strong>(雜湊函數一算就到)。</li><li><strong>最壞</strong>:<strong>O(n)</strong>——當所有 key 都撞在同一格(全擠進同一條串列),就退化成從頭找。</li></ul>
-<h3>應用</h3>
-<p>字典 / Map、快取 (cache)、資料庫索引、編譯器的符號表 (symbol table)、資料去重。</p>
-<p><strong>★ 常考重點</strong>:</p>
-<ul><li>雜湊表用<strong>雜湊函數</strong>把 key 換成位置,平均 <strong>O(1)</strong>、<strong>最壞 O(n)</strong>(全部碰撞)。</li><li>除法雜湊法 <strong>h(k) = k mod m</strong>,m 常取質數。</li><li>碰撞處理兩大類:<strong>鏈結法</strong>(掛串列)、<strong>開放定址法</strong>(找空格);開放定址又分<strong>線性探測、二次探測、雙重雜湊</strong>。</li><li>線性探測 → <strong>主要群聚</strong>;二次探測 → <strong>次要群聚</strong>;雙重雜湊最能避免群聚。</li><li><strong>載入因子 α = n / m</strong>,太高要<strong>重新雜湊 (Rehashing)</strong>。</li></ul>
+<h3>一、核心觀念與時間複雜度</h3>
+<p>雜湊表透過<strong>雜湊函數 (Hash Function)</strong> 將資料的鍵值 (Key) 轉換為陣列的索引值 (Index),達成極快速的資料存取。</p>
+<ul><li><strong>Key(鍵):</strong>尋找資料的唯一識別碼(如:學號、身分證字號)。</li><li><strong>Hash Function(雜湊函數):</strong>負責將 Key 轉換成 Index 的數學公式。</li><li><strong>Bucket / Slot(儲存格):</strong>雜湊表陣列中的位置。</li></ul>
+<h4>🌟 必考:時間複雜度 (Time Complexity)</h4>
+<div class="tablewrap"><table><thead><tr><th>運作情形</th><th>搜尋 (Search)</th><th>插入 (Insert)</th><th>刪除 (Delete)</th></tr></thead><tbody>
+<tr><td><strong>平均情況 (Average)</strong></td><td>O(1)</td><td>O(1)</td><td>O(1)</td></tr>
+<tr><td><strong>最差情況 (Worst)</strong></td><td>O(n)</td><td>O(n)</td><td>O(n)</td></tr></tbody></table></div>
+<blockquote><p><strong>最差情況成因:</strong>當所有 Key 經過計算都對應到同一個 Index(嚴重碰撞),雜湊表會退化成單向鏈結串列,必須從頭遍歷到尾。</p></blockquote>
+<h3>二、常見雜湊函數設計法(附詳細推導範例)</h3>
+<p>好的雜湊函數必須計算快速,且能將資料均勻分布以減少碰撞。</p>
+<h4>1. 除算法 (Division Method) 🌟 出題率最高</h4>
+<ul><li><strong>公式:</strong>h(k) = k mod m</li><li><strong>重要考點:</strong>表格大小 m 務必選擇<strong>質數(Prime Number)</strong>,避免接近 2 的次方。</li><li><strong>範例:</strong>設 m = 11, k = 35。計算:h(35) = 35 mod 11 = <strong>2</strong>。放入 Index 2。</li></ul>
+<h4>2. 乘算法 (Multiplication Method)</h4>
+<ul><li><strong>公式:</strong>h(k) = ⌊ m · (k · A mod 1) ⌋</li><li><strong>重要考點:</strong>此方法對 m 較不敏感,通常 m 可選用 2 的次方。常數 A 通常取 0 &lt; A &lt; 1(著名學者 Knuth 建議使用黃金比例的小數部分,約 0.618)。</li></ul>
+<p><strong>📝 具體推導範例:</strong>設雜湊表大小 m = 1000,常數 A = 0.618,給定關鍵字 k = 12345。</p>
+<ul><li>步驟 1(乘上常數):12345 · 0.618 = 7629.21。</li><li>步驟 2(取小數部分):提取小數部分 0.21。</li><li>步驟 3(乘上表大並向下取整):⌊ 1000 · 0.21 ⌋ = ⌊ 210 ⌋ = 210。</li><li><strong>結果:</strong>該資料將放入 Index <strong>210</strong>。</li></ul>
+<h4>3. 平方取中法 (Mid-Square Method)</h4>
+<ul><li><strong>作法:</strong>將 Key <strong>平方</strong>,擷取中間位數作為 Index。</li><li><strong>範例:</strong>設 m = 100 (需兩位數 Index),k = 45。計算:45² = 2025 → 取中間兩位數 <code>02</code>。放入 Index 2。</li></ul>
+<h4>4. 摺疊法 (Folding Method)</h4>
+<ul><li><strong>作法:</strong>將極長的 Key 分割成數個等長區段,再相加求 Index(超出表大則取餘數)。</li><li><strong>範例:</strong>設 m = 1000 (需三位數),k = 12345678。計算:12 + 345 + 678 = 1035 → 1035 mod 1000 = <strong>35</strong>。放入 Index 35。</li></ul>
+<h3>三、🌟 核心考區:載入因子與重新雜湊 (Rehashing)</h3>
+<p>當雜湊表不斷塞入資料,可用空間會越來越少,碰撞發生的機率會急遽上升。為了解決這個問題,我們需要了解「載入因子」與「重新雜湊」的運作機制。</p>
+<h4>1. 載入因子 (Load Factor, α)</h4>
+<p>這是用來評估雜湊表「有多擠」的指標。</p>
+<ul><li><strong>公式:</strong>α = n / m (n 為目前儲存的資料總數,m 為雜湊表的總格數)。</li><li><strong>物理意義:</strong>如果 α = 0.75,代表表格已經有 75% 被填滿了。</li><li><strong>國考重點(容忍度差異):</strong><ul><li><strong>開放定址法:</strong>α 絕對不能大於 1。通常當 α 超過 <strong>0.5 ~ 0.7</strong> 時,效能就會大幅滑落,必須進行擴充。</li><li><strong>鏈結法:</strong>α 可以大於 1(因為格子裡塞的是指標)。但 α 過高意味著 Linked List 變得很長,搜尋時間一樣會退化。</li></ul></li></ul>
+<h4>2. 重新雜湊 (Rehashing)</h4>
+<p>當 α 超過系統設定的危險閾值時,雜湊表必須進行「大搬家」,這個過程稱為 Rehashing。</p>
+<p><strong>運作步驟(極重要,不可直接把舊資料搬過去):</strong></p>
+<ol><li><strong>擴大表格:</strong>建立一個新的陣列,大小通常是原表格的<strong>兩倍大並尋找下一個質數</strong>(例如原本 m = 7,新表格可能是 m新 = 17)。</li><li><strong>改變雜湊函數:</strong>因為 m 變了,雜湊函數必須更新為 h新(k) = k mod 17。</li><li><strong>重新計算與搬移:</strong>走訪舊表格中的每一筆資料,用「新的雜湊函數」重新計算它們在新表格中的 Index,並一筆一筆插入。</li></ol>
+<p><strong>時間複雜度:</strong>因為要把 n 筆資料全部重新算過並搬移,所以 Rehashing 的時間複雜度為 <strong>O(n)</strong>。雖然是一項極度昂貴的操作,但因為不常發生(平攤分析 Amortized Analysis),整體而言平均搜尋時間仍能維持在 <strong>O(1)</strong>。</p>
+<h3>四、碰撞解決機制 (Collision Resolution)</h3>
+<p>當兩個不同的 Key 算出相同的 Index,即發生<strong>碰撞(Collision)</strong>。</p>
+<h4>陣營 A:開放定址法 (Open Addressing)</h4>
+<p>碰撞時,依據探測規則在表內尋找下一個空位。</p>
+<ol><li><strong>線性探測法 (Linear Probing)</strong><ul><li><strong>公式:</strong>hᵢ(k) = (h(k) + i) mod m</li><li><strong>缺點:</strong>易產生<strong>主要聚集 (Primary Clustering)</strong>,資料容易卡成一大塊。</li></ul></li><li><strong>二次探測法 (Quadratic Probing)</strong><ul><li><strong>公式:</strong>hᵢ(k) = (h(k) + i²) mod m</li><li><strong>缺點:</strong>解決主要聚集,但會產生<strong>次要聚集 (Secondary Clustering)</strong>。</li></ul></li><li><strong>雙重雜湊法 (Double Hashing)</strong><ul><li><strong>公式:</strong>hᵢ(k) = (h₁(k) + i · h₂(k)) mod m</li><li><strong>重點:</strong>效果最好。h₂(k) 絕對不能為 0,且必須與 m 互質。</li></ul></li></ol>
+<h4>陣營 B:鏈結法 (Chaining)</h4>
+<p>碰撞時,將資料串接在同一個儲存格的鏈結串列(Linked List)上。不會有「找不到空位」的問題。</p>
+<h3>五、高階觀念:雜湊表的陣列到底裝什麼?</h3>
+<h4>1. 鏈結法(陣列 = 指標集合庫)</h4>
+<ul><li><strong>儲存型態:</strong>陣列中的每一格,存放的都是一個<strong>指標(Pointer)</strong>,指向 Linked List 的開頭。</li><li><strong>C語言虛擬碼概念:</strong><code>Node* HashTable[100];</code></li></ul>
+<h4>2. 開放定址法(陣列 = 實體資料集合庫)</h4>
+<ul><li><strong>儲存型態:</strong>陣列的格子是直接用來存放「真實資料」或「結構體」,沒有任何指標。</li><li><strong>C語言虛擬碼概念:</strong><code>Data HashTable[100];</code></li></ul>
+<h3>六、開放定址法 vs. 鏈結法 終極比較表</h3>
+<div class="tablewrap"><table><thead><tr><th>比較項目</th><th>開放定址法 (Open Addressing)</th><th>鏈結法 (Chaining)</th></tr></thead><tbody>
+<tr><td><strong>陣列內容物</strong></td><td>實體資料 (Data)</td><td>指標 (Pointer)</td></tr>
+<tr><td><strong>空間使用</strong></td><td>只使用表格本身。</td><td>需額外的動態記憶體配置 (Nodes)。</td></tr>
+<tr><td><strong>載入因子 α</strong></td><td>必須 ≤ 1</td><td>可 &gt; 1</td></tr>
+<tr><td><strong>刪除操作</strong></td><td>困難,需標記為「已刪除 (Tombstone)」,不可直接清空。</td><td>簡單,直接移除 Linked List 中的節點。</td></tr>
+<tr><td><strong>聚集問題</strong></td><td>易發生 Primary/Secondary Clustering</td><td>絕對不會發生聚集問題</td></tr>
+<tr><td><strong>適用場景</strong></td><td>資料量固定、記憶體空間極度受限時。</td><td>資料量不可測、經常需要增刪資料時。</td></tr></tbody></table></div>
+<h3>七、歷屆經典考題實戰演練</h3>
+<h4>題目 1:除算法 ＋ 線性探測法</h4>
+<p><strong>條件:</strong>大小 m = 7,索引 0~6。h(k) = k mod 7。依序插入:<code>15, 22, 8, 29, 10</code>。</p>
+<p><strong>最終狀態:</strong></p>
+<div class="tablewrap"><table><thead><tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>
+<tr><td>空</td><td><strong>15</strong></td><td><strong>22</strong></td><td><strong>8</strong></td><td><strong>29</strong></td><td><strong>10</strong></td><td>空</td></tr></tbody></table></div>
+<h4>題目 2:除算法 ＋ 二次探測法</h4>
+<p><strong>條件:</strong>大小 m = 7。h(k) = k mod 7。探測 hᵢ(k) = (h(k) + i²) mod 7。依序插入:<code>15, 22, 8</code>。</p>
+<p><strong>最終狀態:</strong></p>
+<div class="tablewrap"><table><thead><tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>
+<tr><td>空</td><td><strong>15</strong></td><td><strong>22</strong></td><td>空</td><td>空</td><td><strong>8</strong></td><td>空</td></tr></tbody></table></div>
+<h4>題目 3:雙重雜湊法</h4>
+<p><strong>條件:</strong>大小 m = 7。h₁(k) = k mod 7。h₂(k) = 1 + (k mod 5)。依序插入:<code>8, 15</code>。</p>
+<p><strong>過程:</strong></p>
+<ul><li>8:8 mod 7 = 1 (放 Slot 1)。</li><li>15:15 mod 7 = 1 (碰撞) → h₂(15) = 1 + (15 mod 5) = 1 → (1 + 1 · 1) mod 7 = 2 (放 Slot 2)。</li></ul>
+<h4>題目 4:除算法 ＋ 鏈結法</h4>
+<p><strong>條件:</strong>大小 m = 5。h(k) = k mod 5。依序插入:<code>5, 12, 10, 22, 7</code>。(新節點插入前端)</p>
+<p><strong>結構圖:</strong></p>
+<pre><code>[Index]
+  0  ---> [ 10 ] ---> [ 5 ] ---> NULL
+  1  ---> NULL
+  2  ---> [ 7 ] ---> [ 22 ] ---> [ 12 ] ---> NULL
+  3  ---> NULL
+  4  ---> NULL</code></pre>
 <hr>
 <h2>九、複雜度總表(考前掃這張)</h2>
 <div class="tablewrap"><table><thead><tr><th>結構</th><th>隨機存取</th><th>搜尋</th><th>插入/刪除(已知位置)</th></tr></thead><tbody><tr><td>陣列 Array</td><td><strong>O(1)</strong></td><td>O(n)</td><td>O(n)</td></tr>
