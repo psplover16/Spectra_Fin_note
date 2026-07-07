@@ -217,8 +217,18 @@ D   E</code></pre>
     40  60 75  80
 
 ③ 85 再和新的父節點 90 比:85 < 90 → 停,插入完成。</code></pre>
-<p><strong>堆積排序 (Heap Sort) 圖形範例</strong>(O(n log n)):概念是「<strong>先把資料堆成 max-heap → 反覆取出根(最大值)放到尾端</strong>」。要排序 <code>4 10 3 5 1</code>(由小到大):</p>
-<p><strong>第一步:建最大堆 (Build Max-Heap)</strong>——把原始資料先當成一棵完整二元樹,再從下往上調整成 max-heap:</p>
+<h4>堆積排序 (Heap Sort)</h4>
+<p><strong>功能與目的</strong>:Heap Sort 是一種<strong>比較式排序法</strong>,把一堆亂序的數字排成由小到大。它的三個特點:</p>
+<ul><li><strong>穩定的 O(n log n)</strong>:不論資料長什麼樣,最好、平均、最壞<strong>都是 O(n log n)</strong>(不像快速排序最壞會退化成 O(n²))。</li><li><strong>原地排序 (in-place)</strong>:直接在原陣列上換位置,<strong>幾乎不用額外記憶體</strong>(O(1) 額外空間)。</li><li>缺點:它<strong>不是穩定排序</strong>(相同值的前後順序可能被打亂),實務上的常數也比快排大一些。</li></ul>
+<p><strong>核心構想</strong>:借用 <strong>max-heap「根一定是最大值」</strong>這個特性 ——<strong>一直把根(最大值)挖走、放到陣列尾端</strong>,挖 n 次,最大的先被推到最後、次大的推到倒數第二…… 從左看回來自然就由小到大。所以整個演算法只需要兩件事:<strong>①把資料整理成 max-heap;②反覆取出根並修復。</strong></p>
+<p><strong>你只需要學會一個動作:往下沉 (sift-down)</strong>。當某個節點比它的小孩小(違反 max-heap)時,就<strong>把它跟「比較大的那個小孩」對調,一路往下換,直到它比小孩大或沉到底</strong>,heap 就修回合法:</p>
+<pre><code>根 1 比小孩小            1 跟較大的 5 對調         1 沉到底、沒小孩 → 停
+      1                        5                        5
+     / \    ──換 5──>         / \    ──到底──>         / \
+    5   3                    1   3                    1   3
+效果:根從 1 變回 5,新的最大值又浮回根</code></pre>
+<p>下面用 <code>4 10 3 5 1</code> 走一遍完整流程(目標:由小到大)。<strong>先記住:圖裡的「樹」和「陣列」是同一份資料的兩種畫法</strong> —— 陣列由上到下、由左到右對應樹的節點,排序時其實一直都在動同一個陣列。</p>
+<p><strong>第一步:建最大堆 (Build Max-Heap)</strong>——先把原始 <code>4 10 3 5 1</code> 照陣列順序塞成一棵完整二元樹(此時<strong>還不是 heap</strong>),再把它調整成 max-heap。<strong>先看「前 → 後」概觀,詳細步驟在下面一步步拆:</strong></p>
 <pre><code>原始資料當成完整二元樹        調整後的最大堆
         4                          10
        / \                        /  \
@@ -227,7 +237,34 @@ D   E</code></pre>
     5   1                      4   1
 
 陣列: [4,10,3,5,1]           陣列: [10,5,3,4,1]  ← 根 10 是最大</code></pre>
-<p><strong>第二步:反覆「取出根、換到尾端、縮小 heap、再往下沉 (sift-down) 修復」</strong>:</p>
+<p><strong>詳細步驟</strong>——先把節點按陣列位置編號(索引 i 的小孩 = 2i、2i+1):</p>
+<pre><code>索引: 1  2  3  4  5
+值:   4  10 3  5  1
+
+          4  ←索引1
+         / \
+   索引2 10   3 索引3
+       / \
+索引4 5   1 索引5</code></pre>
+<p><strong>規則:從「最後一個有小孩的節點」開始,由後往前,對每個節點做一次 sift-down(往下沉)</strong>;葉節點(沒有小孩)直接跳過。這裡 n=5,索引 3、4、5 都是葉節點,<strong>最後一個有小孩的是索引 2</strong>,所以處理順序是 <strong>索引 2 → 索引 1</strong>:</p>
+<pre><code>【處理 索引2 = 10】小孩是 5、1
+   10 已經 ≥ 5、也 ≥ 1  →  已合法,不用動 ✔
+
+【處理 索引1 = 4】小孩是 10、3  →  4 比小孩小,跟「較大的小孩 10」對調,然後 4 繼續往下沉:
+
+      4                10                10
+     / \    ─換 10→   / \    ─換 5→     / \
+   10   3            4   3             5   3
+   / \              / \               / \
+  5   1            5   1             4   1
+              4 沉到索引2,        4 又比小孩 5 小,
+              小孩剩 5、1          再換 → 沉到底、停
+
+   陣列:[4,10,3,5,1]  →  [10,4,3,5,1]  →  [10,5,3,4,1]</code></pre>
+<p><strong>建堆完成</strong>,得到合法 max-heap <code>[10,5,3,4,1]</code>。逐一驗證「父 ≥ 子」:10≥5、10≥3、5≥4、5≥1 全部成立 → <strong>最大值 10 已坐上根</strong>,「隨手取最大」的舞台架好了,接著進入第二步反覆取出根。</p>
+<p><strong>第二步:反覆取出最大值</strong>。重複下面三個動作,直到 heap 只剩 1 個。<strong>每做一輪,就有一個數字被永久鎖定在尾端:</strong></p>
+<ul><li><strong>① 對調</strong>:把<strong>根(目前最大)和 heap 的最後一格對調</strong> → 最大值被丟到尾端。</li><li><strong>② 縮小</strong>:把剛丟到尾端的那格<strong>踢出 heap 範圍</strong>(它已排好,之後不再碰),圖裡用 <code>|</code> 這條線的右邊表示「已排序區」。</li><li><strong>③ 往下沉修復</strong>:剛換上來當根的是個小數字,對它做一次 <strong>sift-down</strong>,讓剩下的部分變回合法 max-heap,新的最大值又浮到根,準備下一輪。</li></ul>
+<p>看圖時抓住兩件事:<strong>每一小格(①②③…)左邊是「對調前」、右邊是「往下沉修復後」;那條 <code>|</code> 分隔線會一輪一輪往左移,右邊的已排序區逐漸長大。</strong></p>
 <pre><code>① 根 10 (最大) 與尾端 1 對調 → 10 歸位到最後,剩前 4 個重整:
       10 ⇄ 1                        5
       / \                          / \
@@ -249,7 +286,62 @@ D   E</code></pre>
    陣列: [1 | 3,4,5,10]
 
 ⑤ 只剩 1 個,結束。最終:[1,3,4,5,10] ✓(由小到大)</code></pre>
-<blockquote><p><strong>重點:</strong>每次「取出根(最大)放尾端」就確定一個最終位置,取 n 次;每次往下沉修復是 O(log n) → 合計 <strong>O(n log n)</strong>。用 <strong>max-heap 排出「由小到大」</strong>(最大的先被丟到最後面)。</p></blockquote>
+<p><strong>逐輪看「圖案怎麼變」</strong>(<code>|</code> 右邊 = 已鎖定的已排序區):</p>
+<ul><li><strong>① 取出 10</strong>:根 10 ⇄ 尾端 1,10 鎖進尾端;前 4 格 <code>[1,5,3,4]</code> 對新根 1 做 sift-down → <code>[5,4,3,1]</code>,5 浮上來當根。結果 <code>[5,4,3,1 | 10]</code>。</li><li><strong>② 取出 5</strong>:根 5 ⇄ 尾端,5 鎖進尾端;前 3 格修復 → 4 當根。結果 <code>[4,1,3 | 5,10]</code>。</li><li><strong>③ 取出 4</strong>:根 4 ⇄ 尾端 3,4 鎖進尾端;剩 <code>[3,1]</code> 本來就 3≥1 合法,不用動。結果 <code>[3,1 | 4,5,10]</code>。</li><li><strong>④ 取出 3</strong>:根 3 ⇄ 尾端 1,3 鎖進尾端。結果 <code>[1 | 3,4,5,10]</code>。</li><li><strong>⑤ 只剩 1 個</strong> → 結束。最終 <code>[1,3,4,5,10]</code> ✓ 由小到大。</li></ul>
+<p>可以看到<strong>已排序區的數字是 10 → 5 → 4 → 3 一路「由大到小」從右往左填進去的</strong>,填滿之後,整個陣列剛好就變成由小到大。</p>
+<blockquote><p><strong>重點:</strong>Heap Sort = <strong>建 max-heap(架好「隨時取最大」的舞台)+ 反覆「取根 → 丟尾端 → 縮小 → 往下沉修復」</strong>。取 n 次、每次修復 O(log n) → 合計 <strong>O(n log n)</strong>,而且是<strong>原地排序</strong>。用 <strong>max-heap 會排出「由小到大」</strong>(因為最大的先被丟到最後面)。</p></blockquote>
+<p><strong>Java 實作範例</strong>——把上面兩步驟(建堆 + 反覆取根)直接寫成程式,用同一組資料 <code>{4,10,3,5,1}</code> 驗證:</p>
+<pre><code>public class HeapSort {
+
+    // 對外:把整個陣列排成「由小到大」
+    public static void heapSort(int[] a) {
+        int n = a.length;
+
+        // 【第一步】建最大堆:從最後一個「有小孩的節點」往前,逐一往下沉
+        // 註:程式是 0-based,最後一個非葉節點 = n/2 - 1
+        //     (對應圖上 1-based 的索引 2,這裡就是 index 1)
+        for (int i = n / 2 - 1; i &gt;= 0; i--) {
+            siftDown(a, n, i);
+        }
+
+        // 【第二步】反覆取出根(最大值)放到尾端
+        for (int end = n - 1; end &gt; 0; end--) {
+            swap(a, 0, end);       // ① 根(最大)換到目前尾端 → 鎖定
+            siftDown(a, end, 0);   // ② 縮小範圍成 end + ③ 對新根往下沉修復
+        }
+    }
+
+    // 往下沉:把 index i 一路和「較大的小孩」對調,直到「父 ≥ 子」或到底
+    // n = 目前 heap 的有效大小(尾端已排序區不算在內)
+    private static void siftDown(int[] a, int n, int i) {
+        while (true) {
+            int largest = i;           // 先假設自己最大
+            int left  = 2 * i + 1;     // 0-based 左小孩
+            int right = 2 * i + 2;     // 0-based 右小孩
+
+            if (left  &lt; n &amp;&amp; a[left]  &gt; a[largest]) largest = left;
+            if (right &lt; n &amp;&amp; a[right] &gt; a[largest]) largest = right;
+
+            if (largest == i) break;   // 父已比兩個小孩都大 → 合法,停
+
+            swap(a, i, largest);       // 和較大的小孩對調
+            i = largest;               // 位置下移,繼續往下沉
+        }
+    }
+
+    private static void swap(int[] a, int i, int j) {
+        int t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+
+    public static void main(String[] args) {
+        int[] a = {4, 10, 3, 5, 1};
+        heapSort(a);
+        System.out.println(java.util.Arrays.toString(a));
+        // 輸出:[1, 3, 4, 5, 10]
+    }
+}</code></pre>
+<p>對照前面的圖:<code>heapSort</code> 裡第一個迴圈就是<strong>第一步(建堆)</strong>、第二個迴圈就是<strong>第二步(反覆取根)</strong>;而 <code>siftDown</code> 正是那個「一路和較大的小孩對調」的<strong>往下沉</strong>動作 —— 三處都對得上。</p>
+<blockquote><p><strong>小提醒:</strong>圖用 <strong>1-based</strong>(根在索引 1、小孩 = 2i、2i+1)方便講解;程式用 <strong>0-based</strong>(根在索引 0、小孩 = <strong>2i+1、2i+2</strong>、最後一個非葉節點 = <strong>n/2 − 1</strong>)。兩者只是編號起點不同,邏輯完全一樣。實務上若只是要用 heap(不是自己排序),也可以直接用 <code>java.util.PriorityQueue</code>(預設是 min-heap)。</p></blockquote>
 <h3>平衡樹 (Balanced Tree,AVL / 紅黑樹)</h3>
 <p>前面提到 <strong>BST 最壞會退化成歪斜樹</strong>(資料按順序插入時,像一條鏈結串列),搜尋就從 O(log n) 掉到 <strong>O(n)</strong>。<strong>平衡樹</strong>就是為了防止這件事:它是一種會<strong>自動維持左右高度平衡</strong>的 BST,靠<strong>旋轉 (Rotation)</strong> 這個動作在插入/刪除後把樹「喬正」,讓高度永遠維持在 <strong>O(log n)</strong>,因而<strong>保證</strong>搜尋/插入/刪除都是 <strong>O(log n)</strong>(不再有 BST 那種退化的最壞情況)。</p>
 <pre><code>按序插入 1,2,3 到普通 BST         平衡樹(旋轉後)
