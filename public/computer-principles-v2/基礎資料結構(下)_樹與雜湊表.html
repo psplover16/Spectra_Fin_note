@@ -83,7 +83,13 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
 <tr><td>後序</td><td>左右根</td><td><strong>D E B C A</strong></td></tr>
 <tr><td>層序</td><td>一層層</td><td><strong>A B C D E</strong></td></tr></tbody></table></div>
 <p>(推導前序:先根 A → 進左子樹 B(B→D→E)→ 再右子樹 C → A B D E C。其餘同理,差別只在「根」放在左、中、右哪個位置念。)</p>
-<p><strong>走訪的遞迴程式</strong>(三種幾乎一樣,差別只在 <code>print</code> 擺哪個位置):</p>
+<p><strong>走訪的遞迴程式</strong>(三種幾乎一樣,差別只在 <code>print</code> 擺哪個位置)。先定義節點 <code>Node</code> 的資料格式——每個節點存一個資料 <code>data</code>,再加兩個指標 <code>left</code>、<code>right</code> 指向左、右子節點(沒有小孩時為 <code>null</code>):</p>
+<pre><code class="language-java">class Node {
+    int  data;    // 節點存的資料(這裡以整數為例)
+    Node left;    // 指向左子節點,沒有則為 null
+    Node right;   // 指向右子節點,沒有則為 null
+}</code></pre>
+<p>有了這個節點格式,三種走訪就能對 <code>n.data</code>、<code>n.left</code>、<code>n.right</code> 進行遞迴:</p>
 <pre><code class="language-java">void preorder(Node n) {   // 根左右
     if (n == null) return;
     print(n.data);            // ← 印在最前(根)
@@ -143,10 +149,125 @@ D   E</code></pre>
 <ul><li><strong>平均搜尋 O(log n)</strong>(因為左小右大、每次砍一半)。</li><li><strong>最壞 O(n)</strong>:當資料按順序插入,BST 退化成<strong>歪斜樹</strong>(像一條鏈結串列),就失去砍半的優勢。</li><li><strong>關鍵考題</strong>:對 BST 做<strong>中序走訪 (Inorder)</strong>,會得到<strong>由小到大排序</strong>的結果。</li><li><strong>改善退化</strong>:<strong>平衡樹(如 AVL、紅黑樹)</strong> 會透過旋轉維持左右高度平衡,避免退化成歪斜樹,<strong>保證 O(log n)</strong>。</li></ul>
 <p><strong>BST 的插入與刪除</strong>:</p>
 <ul><li><strong>插入</strong>:從根開始比大小,<strong>比目前節點小往左、大往右</strong>,一路走到空位就掛上去。</li><li><strong>刪除</strong>分三種情況:</li></ul>
-<ol><li><strong>葉節點</strong>(沒有子節點):直接刪掉。</li><li><strong>只有一個子節點</strong>:用那個子節點頂上來取代它。</li><li><strong>有兩個子節點</strong>:找<strong>中序後繼</strong>(右子樹的最小值)或<strong>中序前驅</strong>(左子樹的最大值)來取代,再刪掉那個後繼/前驅——這樣才能維持 BST 的排序性質。(<strong>這是申論常客。</strong>)</li></ol>
+<ol><li><strong>葉節點</strong>(沒有子節點):直接刪掉。</li><li><strong>只有一個子節點</strong>:用那個子節點頂上來取代它。</li><li><strong>有兩個子節點</strong>:不能直接刪(刪了兩個小孩不知掛誰),要找一個「大小最接近它、且不會破壞左小右大規則」的節點<strong>頂上來取代</strong>,再回頭刪掉那個被搬走的節點。這個替身有兩個選擇——<strong>中序後繼</strong>(右子樹的最小值)或<strong>中序前驅</strong>(左子樹的最大值),兩者擇一即可。(<strong>這是申論常客。</strong>)</li></ol>
+<p><strong>為什麼是「右子樹最小」或「左子樹最大」?</strong> 因為對 BST 做中序走訪會由小到大排,要刪的節點在這串排序裡,<strong>緊接在它後面的(後繼)就是右子樹最小值、緊接在它前面的(前驅)就是左子樹最大值</strong>。用這兩個「鄰居」之一來頂替,排序順序幾乎不變,才不會破壞「左小右大」。</p>
+<p><strong>用例子走一遍(刪除有兩個小孩的節點 50)</strong>:</p>
+<pre><code>            50            ← 要刪的節點(有左、右兩個小孩)
+          /    \
+        30      70
+       /  \    /  \
+      20  40  60   80
+                \
+                 65</code></pre>
+<p><strong>做法一:用「中序後繼」= 右子樹的最小值</strong></p>
+<ul><li>到 50 的<strong>右子樹</strong>(根為 70),一路<strong>往左走到底</strong>找最小 → 70 → 60,60 沒有左小孩 → <strong>後繼 = 60</strong>。</li><li>把 <strong>60 的值搬去頂替 50</strong>,再刪掉原本的 60。60 只有一個右小孩 65,依「只有一個子節點」的規則讓 65 頂上來。</li></ul>
+<pre><code>            60            ← 60 頂替了 50
+          /    \
+        30      70
+       /  \    /  \
+      20  40  65   80     ← 原本的 60 被刪,其右小孩 65 補上</code></pre>
+<p><strong>做法二:用「中序前驅」= 左子樹的最大值</strong></p>
+<ul><li>到 50 的<strong>左子樹</strong>(根為 30),一路<strong>往右走到底</strong>找最大 → 30 → 40,40 沒有右小孩 → <strong>前驅 = 40</strong>。</li><li>把 <strong>40 搬去頂替 50</strong>,再刪掉原本的 40(它是葉節點,直接刪)。</li></ul>
+<pre><code>            40            ← 40 頂替了 50
+          /    \
+        30      70
+       /       /  \
+      20      60   80
+                \
+                 65</code></pre>
+<p>兩種做法都對,得到的樹雖然長得不同,但<strong>都仍是合法的 BST(中序走訪一樣是 20 30 40 60 65 70 80,只少了 50)</strong>。這就是「找後繼/前驅取代」能維持排序性質的原因。</p>
 <h3>堆積 (Heap)</h3>
 <p><strong>heap 是一棵「完整二元樹」</strong>,再加上父子大小規則:</p>
 <ul><li><strong>最大堆 (Max-Heap)</strong>:每個節點都 <strong>≥ 它的子節點</strong> → <strong>根最大</strong>。</li><li><strong>最小堆 (Min-Heap)</strong>:每個節點都 <strong>≤ 它的子節點</strong> → <strong>根最小</strong>。</li><li>注意:heap 只規定「<strong>父子</strong>」的大小關係,<strong>兄弟之間、左右子樹之間沒有順序</strong>(這點跟 BST 不同,別搞混)。</li><li>常用<strong>陣列表示</strong>(就是上面那套 2i、2i+1);用途:<strong>優先佇列 (Priority Queue)</strong>、<strong>堆積排序 (Heap Sort,O(n log n))</strong>。</li></ul>
+<p><strong>圖形範例:最大堆 vs 最小堆</strong>(注意兩者都只要求「父 ≥ 子」或「父 ≤ 子」,兄弟大小不管):</p>
+<pre><code>   最大堆 Max-Heap（根最大）        最小堆 Min-Heap（根最小）
+          90                              10
+         /  \                            /  \
+       70    80                        30    20
+      /  \   /                        /  \   /
+    40  60 75                       50  40 25
+
+  每個父節點都 ≥ 兩個小孩 ✓        每個父節點都 ≤ 兩個小孩 ✓</code></pre>
+<p>看最大堆:90≥70、90≥80;70≥40、70≥60;80≥75 → 全部「父≥子」成立,所以<strong>根 90 是最大值</strong>。注意 <strong>70 和 80 是兄弟卻沒有規定誰大</strong>(70&lt;80 也 OK),左子樹的 60 甚至比右子樹的 75 小 → <strong>heap 不管兄弟、不管左右子樹之間的大小</strong>(這正是跟 BST 最大的差別)。</p>
+<p><strong>陣列存法</strong>(根放索引 1,左子=2i、右子=2i+1):上面那個最大堆存成——</p>
+<pre><code>陣列: [ _, 90, 70, 80, 40, 60, 75 ]
+索引:   0   1   2   3   4   5   6
+
+  90(1) 的左子=2×1=2 → 70、右子=2×1+1=3 → 80 ✓
+  70(2) 的左子=2×2=4 → 40、右子=5 → 60 ✓</code></pre>
+<p><strong>反例(這不是 heap)</strong>:</p>
+<pre><code>        50
+       /  \
+     80    30      ← 80 > 50,父比子小,違反 max-heap
+</code></pre>
+<p>因為 80 比它的父 50 大,破壞了「父 ≥ 子」,所以這棵<strong>不是</strong>最大堆(要成立就得把 80 換到根)。</p>
+<p><strong>插入示範(往最大堆插入 85)——「先放尾端,再往上浮 (sift-up)」</strong>:</p>
+<pre><code>① 先把 85 放到「完整二元樹的下一個空位」(60 的右邊):
+          90
+         /  \
+       70    80
+      /  \   / \
+    40  60 75  85   ← 新來的 85 暫放尾端
+
+② 85 和父節點 80 比:85 > 80 → 互換(往上浮一層):
+          90
+         /  \
+       70    85      ← 85 浮上來、80 沉下去
+      /  \   / \
+    40  60 75  80
+
+③ 85 再和新的父節點 90 比:85 < 90 → 停,插入完成。</code></pre>
+<p><strong>堆積排序 (Heap Sort) 圖形範例</strong>(O(n log n)):概念是「<strong>先把資料堆成 max-heap → 反覆取出根(最大值)放到尾端</strong>」。要排序 <code>4 10 3 5 1</code>(由小到大):</p>
+<p><strong>第一步:建最大堆 (Build Max-Heap)</strong>——把原始資料先當成一棵完整二元樹,再從下往上調整成 max-heap:</p>
+<pre><code>原始資料當成完整二元樹        調整後的最大堆
+        4                          10
+       / \                        /  \
+     10   3         ──>          5    3
+     / \                        / \
+    5   1                      4   1
+
+陣列: [4,10,3,5,1]           陣列: [10,5,3,4,1]  ← 根 10 是最大</code></pre>
+<p><strong>第二步:反覆「取出根、換到尾端、縮小 heap、再往下沉 (sift-down) 修復」</strong>:</p>
+<pre><code>① 根 10 (最大) 與尾端 1 對調 → 10 歸位到最後,剩前 4 個重整:
+      10 ⇄ 1                        5
+      / \                          / \
+     5   3       取出10後          4   3      已排序區:[10]
+    / \          往下沉修復        /
+   4  (1)→尾                     1
+   陣列: [1,5,3,4 | 10]          陣列: [5,4,3,1 | 10]
+
+② 根 5 與尾端 1 對調 → 5 歸位,剩前 3 個重整:
+   取出 5 → 往下沉修復              4
+                                  / \
+                                 1   3       已排序區:[5,10]
+   陣列: [3,4,1 | 5,10]          陣列: [4,1,3 | 5,10]
+
+③ 根 4 與尾端 3 對調 → 4 歸位,剩前 2 個重整:
+   陣列: [3,1 | 4,5,10]  → 修復 → 陣列: [3,1 | 4,5,10]（3≥1 已合法)
+
+④ 根 3 與尾端 1 對調 → 3 歸位:
+   陣列: [1 | 3,4,5,10]
+
+⑤ 只剩 1 個,結束。最終:[1,3,4,5,10] ✓(由小到大)</code></pre>
+<blockquote><p><strong>重點:</strong>每次「取出根(最大)放尾端」就確定一個最終位置,取 n 次;每次往下沉修復是 O(log n) → 合計 <strong>O(n log n)</strong>。用 <strong>max-heap 排出「由小到大」</strong>(最大的先被丟到最後面)。</p></blockquote>
+<h3>平衡樹 (Balanced Tree,AVL / 紅黑樹)</h3>
+<p>前面提到 <strong>BST 最壞會退化成歪斜樹</strong>(資料按順序插入時,像一條鏈結串列),搜尋就從 O(log n) 掉到 <strong>O(n)</strong>。<strong>平衡樹</strong>就是為了防止這件事:它是一種會<strong>自動維持左右高度平衡</strong>的 BST,靠<strong>旋轉 (Rotation)</strong> 這個動作在插入/刪除後把樹「喬正」,讓高度永遠維持在 <strong>O(log n)</strong>,因而<strong>保證</strong>搜尋/插入/刪除都是 <strong>O(log n)</strong>(不再有 BST 那種退化的最壞情況)。</p>
+<pre><code>按序插入 1,2,3 到普通 BST         平衡樹(旋轉後)
+    1                                2
+     \            ── 旋轉 ──>       / \
+      2                            1   3
+       \
+        3   ← 退化成歪斜(高度 3)   高度 2、左右平衡 ✓</code></pre>
+<p>兩種最常考的平衡樹:</p>
+<ul><li><strong>AVL 樹</strong>:最早的平衡樹。規定<strong>每個節點的左右子樹高度差(平衡因子 Balance Factor)不得超過 1</strong>(只能是 −1、0、+1)。一旦插入/刪除後超出,就用<strong>旋轉(LL、RR、LR、RL 四種)</strong>調整回來。特點:<strong>平衡得最嚴格</strong> → 樹最矮、<strong>查詢最快</strong>;但代價是插入/刪除時可能要<strong>頻繁旋轉</strong>。</li><li><strong>紅黑樹 (Red-Black Tree)</strong>:每個節點染成<strong>紅或黑</strong>,靠幾條顏色規則(如「根為黑」「紅節點的子節點必為黑(紅色不相鄰)」「任一節點到各葉的路徑黑節點數相同」)維持<strong>大致平衡</strong>(最長路徑不超過最短路徑的 2 倍)。特點:平衡<strong>比 AVL 寬鬆</strong> → 查詢略慢一點點,但<strong>插入/刪除時旋轉次數更少、整體更快</strong>,所以<strong>實務上更常用</strong>。</li></ul>
+<blockquote><p><strong>怎麼選(常考觀念)</strong>:<strong>查詢多、很少改</strong> → 選 <strong>AVL</strong>(平衡嚴格、查最快);<strong>插入刪除頻繁</strong> → 選 <strong>紅黑樹</strong>(維護成本低)。C++ 的 <code>map</code>/<code>set</code>、Java 的 <code>TreeMap</code>/<code>TreeSet</code>、Linux 排程器等,底層用的都是<strong>紅黑樹</strong>。</p></blockquote>
+<div class="tablewrap"><table><thead><tr><th>比較</th><th>AVL 樹</th><th>紅黑樹</th></tr></thead><tbody><tr><td>平衡嚴格度</td><td><strong>嚴格</strong>(高度差 ≤ 1)</td><td>寬鬆(最長 ≤ 2×最短)</td></tr>
+<tr><td>樹高</td><td>較矮</td><td>較高一點</td></tr>
+<tr><td>查詢</td><td><strong>較快</strong></td><td>略慢</td></tr>
+<tr><td>插入/刪除</td><td>旋轉較多、較慢</td><td><strong>旋轉少、較快</strong></td></tr>
+<tr><td>複雜度</td><td colspan="2" style="text-align:center">兩者搜尋/插入/刪除皆<strong>保證 O(log n)</strong></td></tr>
+<tr><td>適用</td><td>查多改少</td><td>改動頻繁(實務常用)</td></tr></tbody></table></div>
+<p><strong>★ 平衡樹重點</strong>:平衡樹是<strong>會自我平衡的 BST</strong>,靠<strong>旋轉</strong>維持 O(log n),解決 BST 退化問題;<strong>AVL 平衡最嚴格、查最快</strong>,<strong>紅黑樹平衡較寬鬆、增刪較快(更常用)</strong>。</p>
 <p><strong>★ 樹常考重點</strong>:</p>
 <ul><li>n 個節點 → <strong>n − 1 條邊</strong>;完美二元樹 h 層 → <strong>2ʰ − 1 個節點</strong>;第 i 層最多 <strong>2^(i-1)</strong> 個。</li><li><strong>葉節點數 = 分支度 2 的節點數 + 1(n₀ = n₂ + 1)</strong>。</li><li>三種走訪差別只在「根」的位置:前序=根在前、中序=根在中、後序=根在後;層序用<strong>佇列 (BFS)</strong>。</li><li><strong>重建樹</strong>:前序/後序找根 + 中序切左右;<strong>「前序+後序」無法唯一決定</strong>。</li><li><strong>陣列表示</strong>:節點 i → 左子 <strong>2i</strong>、右子 <strong>2i+1</strong>、父 <strong>⌊i/2⌋</strong>。</li><li><strong>BST 中序走訪 = 由小到大排序</strong>;平均 O(log n)、<strong>最壞 O(n)</strong>(退化,用<strong>平衡樹/AVL</strong> 解)。</li><li><strong>Heap</strong> = 完整二元樹 + 父子大小關係(max-heap 根最大);只管父子、不管兄弟。</li></ul>
 <hr>
