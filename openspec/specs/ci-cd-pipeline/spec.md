@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'establish-subject-learning-app-shell'. Update Purpose after archive.
+本規格定義 CI/CD 流程契約：CI 於 PR 執行 lint、typecheck、單元與 e2e 測試等品質關卡；CD 於 `dev`/`main` 推送分別發布 staging/production 至 `gh-pages`，並涵蓋部署佈局、幂等性與靜態託管產物。
 
 ## Requirements
 
@@ -690,6 +690,26 @@ The repository SHALL include a CD workflow that runs on pushes to `dev` and `mai
 - **THEN** CD builds with `VITE_APP_BASE_PATH=/Spectra_Fin_note/`
 - **AND** CD builds with `VITE_APP_START_URL=/Spectra_Fin_note/`
 - **AND** CD publishes the output as the production target on `gh-pages`
+
+#### Scenario: Publish layout places production at root and staging in a subdirectory
+
+- **WHEN** CD publishes to `gh-pages`
+- **THEN** production output is written at the branch root
+- **AND** staging output is written under the `staging/` subdirectory
+- **AND** publishing production empties the root but preserves the `.git` directory and the `staging/` subdirectory
+
+#### Scenario: Static hosting artifacts are added to the publish output
+
+- **WHEN** CD prepares the publish output
+- **THEN** a `.nojekyll` file is written to disable Jekyll processing
+- **AND** when `dist/404.html` exists it is copied to the publish root as the SPA fallback
+- **AND** a staging publish writes a root `index.html` that redirects to `staging/` when the root has no `index.html`
+
+#### Scenario: Concurrent deployments do not cancel each other
+
+- **WHEN** more than one CD run targets the same branch
+- **THEN** the workflow serializes them with a `pages-<ref>` concurrency group
+- **AND** an in-progress deployment is not cancelled
 
 
 <!-- @trace

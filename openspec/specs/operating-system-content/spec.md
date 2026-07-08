@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'fill-operating-system-content'. Update Purpose after archive.
+本規格定義作業系統科目的內容契約：將來源 Markdown 依章節順序匯入為路由主題、以 `lessonArticle` 保留原始結構與可追溯來源，並維持既有頁面行為不變。
 
 ## Requirements
 

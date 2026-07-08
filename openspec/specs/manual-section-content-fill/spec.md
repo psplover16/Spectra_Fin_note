@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'fill-von-neumann-architecture-content'. Update Purpose after archive.
+本規格定義手動逐段內容填充的契約：以使用者提供內容為邊界、於 `lessonArticle` 段落以 `sourceLabel` 標記來源（對讀者隱藏來源 metadata）、新手友善的術語呈現，並以有序清單陳述定義。
 
 ## Requirements
 

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'add-database-v2-html-pages'. Update Purpose after archive.
+本規格定義資料庫 v2（`/database-v2`）的內容契約：列出匯入的 13 份國考資料庫 HTML 講義、列表行保留書籤與完成控制，複製的 HTML 頁保留原始排版並提供返回控制。
 
 ## Requirements
 

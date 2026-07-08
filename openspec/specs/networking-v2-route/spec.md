@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'networking-v2-route'. Update Purpose after archive.
+本規格定義網路概論 v2（`/networking-v2`）路由的主題契約：共 12 個主題、每個主題以單一 `lessonArticle` 呈現，標題與順序遵循來源 manifest 並保留作者結構。
 
 ## Requirements
 

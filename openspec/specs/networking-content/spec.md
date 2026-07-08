@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'fill-networking-content'. Update Purpose after archive.
+本規格定義網路概論科目的內容契約：將來源 Markdown（各章節）匯入為路由主題、以 `lessonArticle` 保留原始結構與可追溯來源，並維持既有頁面行為不變。
 
 ## Requirements
 

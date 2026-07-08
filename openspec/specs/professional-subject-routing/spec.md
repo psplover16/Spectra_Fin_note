@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'ingest-professional-subject-content'. Update Purpose after archive.
+本規格定義專業科目的路由與進度歸屬契約：資料庫/演算法/系統設計等路由的導覽可達性與 preload、進度狀態支援新科目與拆分科目 key 的歸屬，以及匯入 Markdown 主題的排序。
 
 ## Requirements
 

@@ -2,13 +2,13 @@
 
 ## Purpose
 
-TBD - created by archiving change 'establish-subject-learning-app-shell'. Update Purpose after archive.
+本規格定義應用骨架（AppShell）的行為契約：header 的計概類與資料庫科目切換器、`資管`/`程式`/`演算法`/`系統設計` 分頁、全部主要科目路由與 lazy-load 保留，以及共同科目不在 header 曝露的規則。
 
 ## Requirements
 
 ### Requirement: App shell exposes primary subject routes
 
-The application SHALL provide primary routes for computer principles, networking, digital logic, operating systems, information management, programming, database, database v2, algorithms, system design, English, and Chinese. The route paths SHALL be `/computer-principles`, `/networking`, `/digital-logic`, `/operating-systems`, `/information-management`, `/programming`, `/database`, `/database-v2`, `/algorithms`, `/system-design`, `/english`, and `/chinese`. The header SHALL show a computer-foundation subject control labeled with the active grouped subject or `計概類`, and this control SHALL expose `計概`, `網概`, `數位邏輯`, and `作業系統` as menu options. The header SHALL show a database subject control that defaults to `資料庫`, exposes `資料庫` and `資料庫2` as menu options, displays `資料庫` while `/database` is active, and displays `資料庫2` while `/database-v2` is active. The header SHALL also show the professional subject controls `資管`, `程式`, `演算法`, and `系統設計`. The AppShell header SHALL NOT render the common subject switcher unless a separate change explicitly enables it.
+The application SHALL provide primary routes for computer principles, computer principles v2, networking, networking v2, digital logic, operating systems, information management, programming, database, database v2, algorithms, system design, English, and Chinese. The route paths SHALL be `/computer-principles`, `/computer-principles-v2`, `/networking`, `/networking-v2`, `/digital-logic`, `/operating-systems`, `/information-management`, `/programming`, `/database`, `/database-v2`, `/algorithms`, `/system-design`, `/english`, and `/chinese`. The header SHALL show a computer-foundation subject control labeled with the active grouped subject or `計概類`, and this control SHALL expose `計概`, `計概(v2)`, `網概`, `網路概論(v2)`, `數位邏輯`, and `作業系統` as menu options. The header SHALL show a database subject control that defaults to `資料庫`, exposes `資料庫` and `資料庫2` as menu options, displays `資料庫` while `/database` is active, and displays `資料庫2` while `/database-v2` is active. The header SHALL also show the professional subject controls `資管`, `程式`, `演算法`, and `系統設計`. The AppShell header SHALL NOT render the common subject switcher unless a separate change explicitly enables it.
 
 #### Scenario: Root route opens the first professional subject
 
@@ -20,7 +20,7 @@ The application SHALL provide primary routes for computer principles, networking
 #### Scenario: Header navigates to computer-foundation grouped subjects
 
 - **WHEN** the user opens the computer-foundation subject menu
-- **THEN** the menu lists `計概`, `網概`, `數位邏輯`, and `作業系統`
+- **THEN** the menu lists `計概`, `計概(v2)`, `網概`, `網路概論(v2)`, `數位邏輯`, and `作業系統`
 - **WHEN** the user activates `數位邏輯`
 - **THEN** the application navigates to `/digital-logic`
 - **AND** the main route region displays the digital logic subject page
@@ -57,7 +57,9 @@ The application SHALL provide primary routes for computer principles, networking
 | Header control | Menu label | Route path | Subject |
 | ----- | ----- | ----- | ----- |
 | `計概類` group | `計概` | `/computer-principles` | Computer principles |
+| `計概類` group | `計概(v2)` | `/computer-principles-v2` | Computer principles v2 |
 | `計概類` group | `網概` | `/networking` | Networking |
+| `計概類` group | `網路概論(v2)` | `/networking-v2` | Networking v2 |
 | `計概類` group | `數位邏輯` | `/digital-logic` | Digital logic |
 | `計概類` group | `作業系統` | `/operating-systems` | Operating systems |
 | `資管` | n/a | `/information-management` | Information management |
@@ -138,21 +140,21 @@ tests:
 -->
 
 ---
-### Requirement: Common subject control switches between English and Chinese
+### Requirement: Common subject routes exist without a header control
 
-The application SHALL provide a common subject control in the header. The control SHALL default to English, SHALL show a menu containing English and Chinese, and SHALL update its visible label to match the selected common subject.
+The application SHALL register the `/english` and `/chinese` common subject routes so their subject pages render when navigated to directly. The AppShell header SHALL NOT expose a common subject control to reach them. A `CommonSubjectSwitcher` component exists in the codebase but is not mounted in the shell header unless a separate change explicitly enables it.
 
-#### Scenario: Default common subject is English
+#### Scenario: Common subject routes render when navigated directly
 
-- **WHEN** the user opens the application for the first time
-- **THEN** the common subject control shows `英文`
-- **AND** activating the control opens a menu containing `英文` and `國文`
+- **WHEN** the user navigates directly to `/chinese`
+- **THEN** the main route region displays the Chinese subject page
+- **AND** the AppShell header does not show a common subject control
 
-#### Scenario: Selecting Chinese updates route and label
+#### Scenario: Header exposes no English or Chinese control
 
-- **WHEN** the user opens the common subject menu and selects `國文`
-- **THEN** the application navigates to `/chinese`
-- **AND** the common subject control shows `國文`
+- **WHEN** the AppShell header renders
+- **THEN** the header does not show a common subject control
+- **AND** the header does not list `英文` or `國文` as menu options
 
 
 <!-- @trace

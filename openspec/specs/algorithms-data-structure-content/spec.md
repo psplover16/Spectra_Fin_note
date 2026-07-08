@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'fill-algorithms-data-structure-content'. Update Purpose after archive.
+本規格定義 Algorithms 科目資料結構主題的內容契約：將 9 個資料結構 Markdown 主題（複雜度、陣列與鏈結串列、堆疊佇列、樹、圖、排序總覽、雜湊等）以 `lessonArticle` 匯入、保留章節順序與可追溯來源，並排在範例演算法主題之前。
 
 ## Requirements
 

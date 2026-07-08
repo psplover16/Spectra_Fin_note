@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'establish-subject-learning-app-shell'. Update Purpose after archive.
+本規格定義科目主題頁的 UI 行為與進度持久化契約：主題分區與完成後移入已完成區、每科一個書籤、可折疊 `lessonArticle` 區段與可揭示表格欄位，以及以 localStorage 儲存進度（含拆分科目的進度遷移與讀取失敗容錯）。
 
 ## Requirements
 
@@ -2021,6 +2021,13 @@ The application SHALL persist subject topic progress in localStorage under the k
 - **GIVEN** networking has one completed topic and one bookmark
 - **WHEN** progress is written to localStorage
 - **THEN** the stored JSON contains `version=1`, `subjects.networking.completedTopicIds=["osi-model"]`, and `subjects.networking.bookmarkedTopicId="tcp-ip-basics"`
+
+#### Scenario: Legacy computer principles progress migrates to the split subjects
+
+- **WHEN** stored progress is read and the `computerPrinciples` subject still holds completed topic ids or a bookmark that now belong to digital logic or operating systems
+- **THEN** those completed topic ids move to the `digitalLogic` or `operatingSystems` subject records
+- **AND** a migrated bookmark moves to the matching subject only when that subject has no bookmark yet, and is cleared from `computerPrinciples`
+- **AND** completed topic ids that still belong to `computerPrinciples` remain unchanged
 
 
 <!-- @trace

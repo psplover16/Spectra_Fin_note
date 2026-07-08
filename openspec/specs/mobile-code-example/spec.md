@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'establish-subject-learning-app-shell'. Update Purpose after archive.
+本規格定義 Java 程式碼範例以 `TeachingCodeBlock` 呈現的契約：標題與說明、學習導向、375px 手機可讀、空狀態顯示提示，以及不支援語言回退為純文字。
 
 ## Requirements
 

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'ingest-professional-subject-content'. Update Purpose after archive.
+本規格定義 Algorithms 科目範例演算法主題的內容契約：Java 遞迴與非遞迴版本、只呈現最壞時間複雜度、範例主題接在資料結構主題之後的排序，以及 Java 範例需解釋考官視角並經 verifier 阻擋不安全內容。
 
 ## Requirements
 
@@ -1244,26 +1244,26 @@ tests:
 -->
 
 ---
-### Requirement: Sorting complexity table follows the approved baseline
+### Requirement: Sorting complexity table follows the approved worst-case baseline
 
-Sorting topics SHALL use the approved first-version complexity and stability baseline for Bubble Sort, Selection Sort, Insertion Sort, Merge Sort, Quick Sort, Heap Sort, and Shell Sort.
+Sorting topics SHALL present worst-case time complexity as the approved baseline for the sorting example topics (Bubble Sort, Selection Sort, Insertion Sort, Quick Sort, Bucket Sort, and Heap Sort). The formal route content SHALL NOT present best-case time, average-case time, or stability columns.
 
 #### Scenario: Sorting baseline is rendered
 
 - **WHEN** sorting learning content is rendered
-- **THEN** the complexity table contains best time, average time, worst time, stability, and notes for each required sorting algorithm
+- **THEN** the complexity table lists each version with its worst-case time complexity and a derivation focus
+- **AND** the table does not present best-case time, average-case time, or stability columns
 
-##### Example: Approved sorting baseline
+##### Example: rendered sorting complexity columns
 
-| Algorithm | Best | Average | Worst | Stability | Notes |
-| ----- | ----- | ----- | ----- | ----- | ----- |
-| Bubble Sort | O(n) | O(n^2) | O(n^2) | Stable | Early stop allows O(n) best case |
-| Selection Sort | O(n^2) | O(n^2) | O(n^2) | Usually unstable | Low swap count |
-| Insertion Sort | O(n) | O(n^2) | O(n^2) | Stable | Good for small or nearly sorted data |
-| Merge Sort | O(n log n) | O(n log n) | O(n log n) | Stable | Requires extra space |
-| Quick Sort | O(n log n) | O(n log n) | O(n^2) | Unstable | Poor pivot choice degenerates |
-| Heap Sort | O(n log n) | O(n log n) | O(n log n) | Unstable | In-place sorting with heap |
-| Shell Sort | gap-dependent | gap-dependent | up to O(n^2) | Unstable | Improved insertion sort |
+| Column | Expected state |
+| ----- | ----- |
+| Version (`版本`) | present |
+| Worst-case time complexity (`最壞時間複雜度`) | present |
+| Derivation focus (`推導重點`) | present |
+| Best-case time complexity | absent |
+| Average-case time complexity | absent |
+| Stability | absent |
 
 
 <!-- @trace
@@ -1875,21 +1875,15 @@ tests:
 -->
 
 ---
-### Requirement: Sorting topics provide recursive and iterative Java versions with Shell Sort exception
+### Requirement: Sorting topics provide recursive and non-recursive Java versions
 
-Sorting topics SHALL provide both recursive and iterative Java versions for Bubble Sort, Selection Sort, Insertion Sort, Merge Sort, Quick Sort, and Heap Sort. Shell Sort SHALL provide the standard iterative Java version and SHALL NOT present a recursive version as a primary exam pattern.
+Sorting example topics SHALL provide both a recursive (`遞迴版本`) and a non-recursive (`非遞迴版本`) Java version for Bubble Sort, Selection Sort, Insertion Sort, Quick Sort, Bucket Sort, and Heap Sort.
 
 #### Scenario: Bubble Sort code variants are rendered
 
 - **WHEN** the Bubble Sort topic is rendered
-- **THEN** it includes an iterative Java example
-- **THEN** it includes a recursive teaching Java example marked as non-mainstream for exam writing
-
-#### Scenario: Shell Sort code variants are rendered
-
-- **WHEN** the Shell Sort topic is rendered
-- **THEN** it includes the standard iterative Java example
-- **THEN** it does not present recursive Shell Sort as the primary exam writing pattern
+- **THEN** it includes a non-recursive (`非遞迴版本`) Java example
+- **AND** it includes a recursive (`遞迴版本`) teaching Java example
 
 
 <!-- @trace
@@ -6490,27 +6484,30 @@ tests:
 -->
 
 ---
-### Requirement: Imported first-batch algorithm topics appear first
+### Requirement: Data-structure topics precede the example algorithm topics
 
-The Algorithms subject formal topic list SHALL place the imported first-batch algorithm topics before the remaining Algorithms subject topics. The imported first-batch topic order SHALL be Bubble Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Selection Sort, and Insertion Sort.
+The Algorithms subject formal topic list SHALL place the nine imported data-structure topics before the example algorithm topics. The example algorithm topics SHALL follow immediately after the data-structure topics in the order Bubble Sort, Selection Sort, Quick Sort, Fibonacci sequence, greatest common divisor, binary search, Insertion Sort, Bucket Sort, and Heap Sort.
 
-#### Scenario: Imported algorithm topics are listed at the top
+#### Scenario: Example algorithm topics follow the data-structure topics
 
 - **WHEN** the Algorithms subject formal topic list is loaded
-- **THEN** the first seven topic ids are `bubble-sort`, `quick-sort`, `fibonacci-sequence`, `greatest-common-divisor`, `binary-search`, `selection-sort`, and `insertion-sort`
-- **AND** the remaining Algorithms subject topics keep their existing relative order after those seven imported topics
+- **THEN** the first nine topics are the imported data-structure topics
+- **AND** the example algorithm segment begins at the tenth topic
+- **AND** the example topic ids in order are `bubble-sort`, `selection-sort`, `quick-sort`, `fibonacci-sequence`, `greatest-common-divisor`, `binary-search`, `insertion-sort`, `bucket-sort`, and `heap-sort`
 
-##### Example: first seven algorithm route topic ids
+##### Example: example algorithm topic order (after the nine data-structure topics)
 
-| Position | Topic id |
-| ----- | --------------- |
-| 1 | `bubble-sort` |
-| 2 | `quick-sort` |
-| 3 | `fibonacci-sequence` |
-| 4 | `greatest-common-divisor` |
-| 5 | `binary-search` |
-| 6 | `selection-sort` |
-| 7 | `insertion-sort` |
+| Example order | Overall position | Topic id |
+| ----- | ----- | --------------- |
+| 1 | 10 | `bubble-sort` |
+| 2 | 11 | `selection-sort` |
+| 3 | 12 | `quick-sort` |
+| 4 | 13 | `fibonacci-sequence` |
+| 5 | 14 | `greatest-common-divisor` |
+| 6 | 15 | `binary-search` |
+| 7 | 16 | `insertion-sort` |
+| 8 | 17 | `bucket-sort` |
+| 9 | 18 | `heap-sort` |
 
 <!-- @trace
 source: fill-algorithm-code-content
