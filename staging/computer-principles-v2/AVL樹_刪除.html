@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜AVL樹 刪除</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;overflow-wrap:anywhere;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}th code{background:transparent;color:inherit;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">AVL Tree — Deletion</p>
+<h1>AVL樹_刪除</h1>
+<blockquote><p>這份是 AVL 樹刪除的實戰筆記:先背刪除 SOP,再用兩個雙旋連鎖範例(LR / RL)與兩題練習詳解把流程練熟。</p></blockquote>
+<hr>
+<blockquote><p><strong>高度約定</strong>:<code>h(null) = 0</code>、<code>h(葉) = 1</code>、<code>h(x) = 1 + max(h(左), h(右))</code><br><strong>平衡因子</strong>:<code>BF(x) = h(左) − h(右)</code><br><code>★</code> = 失衡點　<code>◆</code> = 較高子</p></blockquote>
+<hr>
+<h3>刪除 SOP(先背這個)</h3>
+<h4>第一步|找出「真正要刪的節點」</h4>
+<p>設 <code>D</code> = 你要刪的那個值所在的節點。</p>
+<div class="tablewrap"><table><thead><tr><th><code>D</code> 的小孩數</th><th>做什麼</th></tr></thead><tbody>
+<tr><td><strong>0</strong></td><td>移除 <code>D</code></td></tr>
+<tr><td><strong>1</strong></td><td>把那個小孩接到 <code>D</code> 原本的位置</td></tr>
+<tr><td><strong>2</strong></td><td>從 <code>D.right</code> 一路往<strong>左</strong>走到底,得到 <code>S</code>。把 <code>S</code> 的值抄進 <code>D</code>。<strong>改成去刪 <code>S</code></strong>(<code>S</code> 一定只有 0 或 1 個小孩,套上面兩列)</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>被移除節點的父親 = 你的起點。</strong></p></blockquote>
+<h4>第二步|從起點往上,一路做到根</h4>
+<p>對路徑上的<strong>每一個</strong>節點,依序做四件事:</p>
+<p><strong>① 重算高度</strong>　<code>h = 1 + max( h(左小孩), h(右小孩) )</code><br>左右小孩的高度<strong>直接讀</strong>,不用重算。空的算 <code>0</code>。</p>
+<p><strong>② 算 BF</strong>　<code>BF = h(左小孩) − h(右小孩)</code></p>
+<p><strong>③ 判斷</strong></p>
+<ul><li><code>|BF| ≤ 1</code> → <strong>不動</strong>,跳到 ④</li><li><code>|BF| = 2</code> → 看<strong>較高的那個小孩</strong>的 BF,查表旋轉:</li></ul>
+<div class="tablewrap"><table><thead><tr><th>這個節點 BF</th><th>較高子 BF</th><th>做什麼</th></tr></thead><tbody>
+<tr><td><strong>+2</strong></td><td><code>+1</code> 或 <code>0</code></td><td>對這個節點<strong>右旋</strong></td></tr>
+<tr><td><strong>+2</strong></td><td><code>−1</code></td><td>先對<strong>左小孩左旋</strong>,再對這個節點<strong>右旋</strong></td></tr>
+<tr><td><strong>−2</strong></td><td><code>−1</code> 或 <code>0</code></td><td>對這個節點<strong>左旋</strong></td></tr>
+<tr><td><strong>−2</strong></td><td><code>+1</code></td><td>先對<strong>右小孩右旋</strong>,再對這個節點<strong>左旋</strong></td></tr>
+</tbody></table></div>
+<p><strong>④ 往上一層,回到 ①</strong>　直到處理完根節點。</p>
+<h4>旋轉怎麼畫</h4>
+<p><strong>右旋 <code>P</code></strong>　<code>L = P.left</code>;<code>b = L.right</code> 搬到 <code>P.left</code></p>
+<pre><code>   P                L
+  / \              / \
+ L   c    ──►     a   P
+/ \                  / \
+a   b               b   c</code></pre>
+<p><strong>左旋 <code>P</code></strong>　<code>R = P.right</code>;<code>b = R.left</code> 搬到 <code>P.right</code></p>
+<pre><code>   P                R
+  / \              / \
+ a   R    ──►     P   c
+    / \          / \
+   b   c        a   b</code></pre>
+<p><strong>檢查</strong>:唸一次中序,順序沒變就對了。</p>
+<h4>(選配)提早停手</h4>
+<p>不做也不會錯,只是多算幾層。考卷問「連鎖到哪一層」時才需要:</p>
+<div class="tablewrap"><table><thead><tr><th>這一層發生了什麼</th><th>子樹高度</th><th>可以停?</th></tr></thead><tbody>
+<tr><td>沒失衡,<code>h</code> 沒變</td><td>不變</td><td><strong>停</strong></td></tr>
+<tr><td>沒失衡,<code>h</code> 少 1</td><td>矮 1</td><td>往上</td></tr>
+<tr><td><strong>單旋</strong>,較高子 BF = <code>±1</code></td><td>矮 1</td><td>往上</td></tr>
+<tr><td><strong>單旋</strong>,較高子 BF = <strong><code>0</code></strong></td><td>不變</td><td><strong>停</strong></td></tr>
+<tr><td><strong>雙旋</strong>(LR / RL)</td><td>矮 1</td><td>往上</td></tr>
+</tbody></table></div>
+<hr>
+<h2>範例 A｜二 → 零　＋　LR 雙旋　＋　連鎖</h2>
+<p><strong>特徵</strong>:後繼是葉節點、第一次是雙旋、旋轉後矮 1 層 → 連鎖到根。</p>
+<h3>起始樹(12 節點,高度 5)</h3>
+<p>這是<strong>高度 5 的最少節點 AVL 樹</strong>(<code>N(5) = 12</code>),每個節點都在臨界值,一碰就倒。</p>
+<pre><code>                 50
+             /        \
+           30           70
+         /    \        /   \
+       20      40    60     80
+      /  \    /        \
+    10    25 35         65
+    /
+   5</code></pre>
+<p><strong>合法性驗證</strong></p>
+<div class="tablewrap"><table><thead><tr><th>節點</th><th><code>h</code></th><th>BF</th><th></th><th>節點</th><th><code>h</code></th><th>BF</th></tr></thead><tbody>
+<tr><td><code>5</code> <code>25</code> <code>35</code> <code>65</code> <code>80</code></td><td>1</td><td>0</td><td></td><td><code>60</code></td><td>2</td><td><strong>−1</strong></td></tr>
+<tr><td><code>10</code></td><td>2</td><td>+1</td><td></td><td><code>70</code></td><td>3</td><td>+1</td></tr>
+<tr><td><code>20</code></td><td>3</td><td>+1</td><td></td><td><code>30</code></td><td>4</td><td>+1</td></tr>
+<tr><td><code>40</code></td><td>2</td><td>+1</td><td></td><td><code>50</code></td><td>5</td><td>+1</td></tr>
+</tbody></table></div>
+<p>全部 <code>|BF| ≤ 1</code> ✔</p>
+<hr>
+<h3>目標:刪除 <code>D = 70</code></h3>
+<hr>
+<h4>階段一|化簡:二換牌 → 降級成「零」</h4>
+<p><code>D = 70</code> 有兩個小孩(<code>60</code>、<code>80</code>)→ <strong>二換牌</strong></p>
+<p><strong>找 <code>S</code></strong>:從 <code>D.right = 80</code> 出發,一路往左 → <code>80.left == null</code> → <strong><code>S = 80</code></strong>(右小孩自己就是最左者)</p>
+<ol><li>把 <code>80</code> 的 key 抄到 <code>70</code> 這顆節點 → 名牌變 <code>80</code></li><li>改成去刪 <code>S = 80</code> —— 它是<strong>葉節點</strong> → <strong>零直接</strong> → 直接移除</li></ol>
+<blockquote><p>⚠️ 全程有「<strong>兩個 80</strong>」。以下把<strong>換過名牌的那顆節點</strong>寫成 <strong><code>[80]</code></strong>(它的本體是原本的 <code>70</code>),跟<strong>被移除的葉節點 <code>80</code></strong> 區分開。</p></blockquote>
+<pre><code>                 50
+             /        \
+           30          [80]      ← 名牌 80,本體是原本的 70
+         /    \        /    ✗    ← 葉節點 80 從這裡消失了
+       20      40    60
+      /  \    /        \
+    10    25 35         65
+    /
+   5</code></pre>
+<hr>
+<h4>階段二|回家:第一站 = <code>[80]</code></h4>
+<p><strong>先確認路徑</strong>:真正被移除的是<strong>葉節點 <code>80</code></strong>,它的父親是 <strong><code>[80]</code></strong>。</p>
+<blockquote><p><strong>回溯路徑 = <code>[80]</code> → <code>50</code>。只有兩站。</strong><br><code>60</code>、<code>30</code>、<code>20</code>… 都<strong>不在路徑上</strong>,高度沒被動過。</p></blockquote>
+<p><strong>站在 <code>[80]</code>,伸出兩隻手:</strong></p>
+<pre><code>        [80]  ← 你站在這裡
+        /   \
+      60     null
+      ↑        ↑
+   沒動過      剛被刪掉
+   直接讀      這裡空了</code></pre>
+<div class="tablewrap"><table><thead><tr><th>手</th><th>拿什麼</th><th>怎麼得到</th></tr></thead><tbody>
+<tr><td>左手</td><td><code>h(60) = 2</code></td><td><code>60</code> 沒動過 → <strong>直接讀它存的 <code>height</code></strong></td></tr>
+<tr><td>右手</td><td><code>h(null) = 0</code></td><td>葉節點 <code>80</code> 被刪了</td></tr>
+</tbody></table></div>
+<pre><code>h([80])  = 1 + max(2, 0) = 3
+BF([80]) = 2 − 0 = +2        ← 失衡!★</code></pre>
+<p><strong>接著查表,需要較高子 <code>◆</code> 的 BF</strong></p>
+<p>較高子是 <code>60</code>(左邊比較高)。<strong>額外算一次</strong>(這跟回溯無關,只是為了查表):</p>
+<pre><code>BF(60) = h(60.left) − h(60.right) = h(null) − h(65) = 0 − 1 = −1</code></pre>
+<blockquote><p><strong>⚠️ 全題最狠的地方</strong></p><p>看到 <code>+2</code>(左邊太高)就直接右旋 → <strong>錯</strong>。<br>較高子 <code>◆60</code> 是<strong>右重</strong>(<code>−1</code>)→ <code>+2</code> / <code>−1</code> <strong>異號 → 雙旋</strong><br>路徑走向:<code>★[80]</code> → <strong>左</strong>(到 <code>60</code>)→ <strong>右</strong>(到 <code>65</code>)→ <strong>LR</strong></p></blockquote>
+<hr>
+<h4>階段三|LR 雙旋</h4>
+<p><strong>步驟 1:對 <code>◆60</code> 左旋(橋直)</strong>　<code>P = 60</code>、<code>R = 65</code>、<code>b = R.left = null</code></p>
+<pre><code>   [80]            [80]
+   /               /
+  60      ──►     65
+    \             /
+     65         60</code></pre>
+<p><code>65</code> 升上來、<code>60</code> 掉下去、<code>b</code>(空的)換邊到 <code>60</code> 的右邊。<br>現在 <code>★[80]</code> 的左子樹是<strong>左左直線</strong>。</p>
+<p><strong>步驟 2:對 <code>★[80]</code> 右旋</strong>　<code>P = [80]</code>、<code>L = 65</code>、<code>b = L.right = null</code></p>
+<pre><code>   [80]              65
+   /                 /  \
+  65      ──►      60   [80]
+  /
+60</code></pre>
+<blockquote><p>旋轉完之後,<code>[80]</code> 只是一顆值為 <code>80</code> 的普通節點了。以下恢復寫成 <code>80</code>。</p></blockquote>
+<hr>
+<h4>階段四|矮了嗎?</h4>
+<div class="tablewrap"><table><thead><tr><th></th><th>子樹的根</th><th><code>h</code></th></tr></thead><tbody>
+<tr><td>旋轉<strong>前</strong></td><td><code>[80]</code></td><td><strong>3</strong></td></tr>
+<tr><td>旋轉<strong>後</strong></td><td><code>65</code></td><td><strong>2</strong></td></tr>
+</tbody></table></div>
+<p><strong>矮 1 層</strong>(查表:雙旋一定矮 1)→ <strong>必須往上,走到第 2 站 <code>50</code></strong></p>
+<pre><code>                 50
+             /        \
+           30           65
+         /    \        /   \
+       20      40    60     80
+      /  \    /
+    10    25 35
+    /
+   5</code></pre>
+<hr>
+<h4>階段五|回家:第二站 = <code>50</code>(連鎖)</h4>
+<p><strong>站在 <code>50</code>,伸出兩隻手:</strong></p>
+<div class="tablewrap"><table><thead><tr><th>手</th><th>拿什麼</th><th>怎麼得到</th></tr></thead><tbody>
+<tr><td>左手</td><td><code>h(30) = 4</code></td><td><code>30</code> <strong>不在路徑上</strong>,沒動過 → 直接讀</td></tr>
+<tr><td>右手</td><td><code>h(65) = 2</code></td><td>剛剛旋轉完,現算的</td></tr>
+</tbody></table></div>
+<pre><code>BF(50) = 4 − 2 = +2        ← 失衡!★</code></pre>
+<p><strong>查表,需要較高子 <code>◆</code> 的 BF</strong></p>
+<p>較高子是 <code>30</code>。額外算一次(它一樣不在路徑上,只是借用):</p>
+<pre><code>BF(30) = h(20) − h(40) = 3 − 2 = +1</code></pre>
+<p><code>+2</code> / <code>+1</code> <strong>同號 → 單旋 → LL</strong> → 對 <code>★50</code> <strong>右旋</strong></p>
+<p><code>P = 50</code>、<code>L = 30</code>、<strong><code>b = L.right = 40 那一整包</code></strong>(含 <code>35</code>)</p>
+<ul><li><code>30</code> 升上來當根</li><li><code>50</code> 掉下去當 <code>30</code> 的右小孩</li><li><strong><code>40</code> 那一包換邊 → <code>50</code> 的左邊</strong>(因為 <code>30 &lt; 40 &lt; 50</code>)</li></ul>
+<p><code>50</code> 是根 → <strong>收工</strong>。</p>
+<hr>
+<h4>最終樹</h4>
+<pre><code>            30
+        /        \
+      20          50
+     /  \        /   \
+   10    25     40    65
+   /            /    /  \
+  5           35   60    80</code></pre>
+<h4>驗證</h4>
+<p><strong>① BF</strong></p>
+<div class="tablewrap"><table><thead><tr><th>節點</th><th><code>h</code></th><th>BF</th><th></th><th>節點</th><th><code>h</code></th><th>BF</th></tr></thead><tbody>
+<tr><td><code>5</code> <code>25</code> <code>35</code> <code>60</code> <code>80</code></td><td>1</td><td>0</td><td></td><td><code>65</code></td><td>2</td><td>0</td></tr>
+<tr><td><code>10</code></td><td>2</td><td>+1</td><td></td><td><code>50</code></td><td>3</td><td>0</td></tr>
+<tr><td><code>40</code></td><td>2</td><td>+1</td><td></td><td><code>30</code></td><td>4</td><td>0</td></tr>
+<tr><td><code>20</code></td><td>3</td><td>+1</td><td></td><td></td><td></td><td></td></tr>
+</tbody></table></div>
+<p>✔ 全部合法</p>
+<p><strong>② 中序</strong></p>
+<pre><code>刪除前: 5, 10, 20, 25, 30, 35, 40, 50, 60, 65, 70, 80
+刪除後: 5, 10, 20, 25, 30, 35, 40, 50, 60, 65,     80
+                                                ↑ 只少了 70</code></pre>
+<p>✔</p>
+<p><strong>③ 統計</strong></p>
+<div class="tablewrap"><table><thead><tr><th>項目</th><th>值</th></tr></thead><tbody>
+<tr><td>旋轉組數</td><td><strong>2 組</strong>(LR + LL)</td></tr>
+<tr><td>基本旋轉次數</td><td><strong>3 次</strong></td></tr>
+<tr><td>樹高</td><td><code>5 → 4</code></td></tr>
+<tr><td>根節點</td><td><code>50 → 30</code></td></tr>
+</tbody></table></div>
+<h4>這題的四個考點</h4>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>考點</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>二換牌只搬 <code>key</code></strong> —— 節點 <code>70</code> 沒被移除,消失的是葉節點 <code>80</code></td></tr>
+<tr><td>2</td><td><strong><code>+2</code> ≠ 一定右旋</strong> —— 要先看 <code>◆</code> 的 BF,異號得先橋直</td></tr>
+<tr><td>3</td><td><strong>雙旋一定矮 1 層 → 一定要往上</strong> —— 這就是連鎖的成因</td></tr>
+<tr><td>4</td><td><strong><code>b</code> 兩次形態不同</strong> —— 第一次 <code>b = null</code>(看不見),第二次 <code>b = 40 整包</code>(整包搬)</td></tr>
+</tbody></table></div>
+<hr>
+<h2>範例 B｜二 → 一　＋　RL 雙旋　＋　收工</h2>
+<p><strong>特徵</strong>:後繼有右小孩、第一次是 RL、旋轉後矮 1 層但上層沒失衡 → 立刻收工。</p>
+<h3>起始樹(15 節點,高度 5)</h3>
+<pre><code>                    50
+             /              \
+           30                60
+         /    \            /     \
+       20      40        55       68
+      /  \    /            \     /  \
+    10    25 35            57   66    75
+    /                           /
+   5                          64</code></pre>
+<p><strong>合法性驗證</strong></p>
+<div class="tablewrap"><table><thead><tr><th>節點</th><th><code>h</code></th><th>BF</th><th></th><th>節點</th><th><code>h</code></th><th>BF</th></tr></thead><tbody>
+<tr><td><code>5</code> <code>25</code> <code>35</code> <code>57</code> <code>64</code> <code>75</code></td><td>1</td><td>0</td><td></td><td><code>55</code></td><td>2</td><td><strong>−1</strong></td></tr>
+<tr><td><code>10</code></td><td>2</td><td>+1</td><td></td><td><code>66</code></td><td>2</td><td>+1</td></tr>
+<tr><td><code>20</code></td><td>3</td><td>+1</td><td></td><td><code>68</code></td><td>3</td><td>+1</td></tr>
+<tr><td><code>40</code></td><td>2</td><td>+1</td><td></td><td><code>60</code></td><td>4</td><td><strong>−1</strong></td></tr>
+<tr><td><code>30</code></td><td>4</td><td>+1</td><td></td><td><code>50</code></td><td>5</td><td><strong>0</strong></td></tr>
+</tbody></table></div>
+<p>全部 <code>|BF| ≤ 1</code> ✔</p>
+<hr>
+<h3>目標:刪除 <code>D = 50</code>(根)</h3>
+<hr>
+<h4>階段一|化簡:二換牌 → 降級成「一」</h4>
+<p><code>D = 50</code> 有兩個小孩 → <strong>二換牌</strong></p>
+<p><strong>找 <code>S</code></strong>:從 <code>D.right = 60</code> 出發,一路往左</p>
+<div class="tablewrap"><table><thead><tr><th>步</th><th>目前</th><th><code>left</code> 存在?</th><th>動作</th></tr></thead><tbody>
+<tr><td>①</td><td><code>60</code></td><td>✔ <code>55</code></td><td>往左</td></tr>
+<tr><td>②</td><td><code>55</code></td><td>✘ <code>null</code></td><td><strong>停 → <code>S = 55</code></strong></td></tr>
+</tbody></table></div>
+<p>中序驗證:<code>… 40, 50, 55, 57 …</code> → <code>55</code> 確實是 <code>50</code> 的下一個 ✔</p>
+<ol><li>把 <code>55</code> 的 key 抄到根(根這顆節點沒動,只改名牌)</li><li>改成去刪 <code>S = 55</code> —— 它有 <strong>1 個小孩(右子 <code>57</code>)</strong> → <strong>一頂替</strong> → <code>57</code> 接上來</li></ol>
+<pre><code>                    55          ← 名牌 55(本體是原本的 50)
+             /              \
+           30                60
+         /    \            /     \
+       20      40        57       68     ← 57 頂替了 55
+      /  \    /                  /  \
+    10    25 35                66    75
+    /                          /
+   5                         64</code></pre>
+<blockquote><p>✅ <strong>降級機的另一半</strong>:這次「二」降級成「一」,不是「零」。</p></blockquote>
+<hr>
+<h4>階段二|回家:第一站 = <code>60</code></h4>
+<p><strong>先確認路徑</strong>:真正被移除的是節點 <code>55</code>,它的父親是 <strong><code>60</code></strong>。</p>
+<blockquote><p><strong>回溯路徑 = <code>60</code> → <code>[55]</code>(根)。只有兩站。</strong><br>(<code>57</code> 只是<strong>頂替</strong>上來的小孩,它自己的子樹沒變、高度還是 <code>1</code>,不需要重算。)</p></blockquote>
+<pre><code>                    [55]        ← 第 2 站(名牌 55,本體是原本的 50)
+             /              \
+           30                60      ← 第 1 站
+         /    \            /     \
+       20      40        57       68
+                          ↑
+                    頂替上來的,h 仍是 1</code></pre>
+<p><strong>站在 <code>60</code>,伸出兩隻手:</strong></p>
+<div class="tablewrap"><table><thead><tr><th>手</th><th>拿什麼</th><th>怎麼得到</th></tr></thead><tbody>
+<tr><td>左手</td><td><code>h(57) = 1</code></td><td>剛剛頂替上來的那一邊</td></tr>
+<tr><td>右手</td><td><code>h(68) = 3</code></td><td><code>68</code> <strong>不在路徑上</strong>,沒動過 → 直接讀</td></tr>
+</tbody></table></div>
+<pre><code>h(60)  = 1 + max(1, 3) = 4
+BF(60) = 1 − 3 = −2        ← 失衡!★(右邊太高)</code></pre>
+<p><strong>查表,需要較高子 <code>◆</code> 的 BF</strong></p>
+<p>較高子是 <code>68</code>(右邊比較高)。額外算一次:</p>
+<pre><code>BF(68) = h(66) − h(75) = 2 − 1 = +1</code></pre>
+<blockquote><p>⚠️ 看到 <code>−2</code> 就直接左旋 → <strong>錯</strong>。<br><code>◆68</code> 是<strong>左重</strong>(<code>+1</code>)→ <code>−2</code> / <code>+1</code> <strong>異號 → 雙旋</strong><br>路徑走向:<code>★60</code> → <strong>右</strong>(到 <code>68</code>)→ <strong>左</strong>(到 <code>66</code>)→ <strong>RL</strong></p></blockquote>
+<hr>
+<h4>階段三|RL 雙旋</h4>
+<p><strong>步驟 1:對 <code>◆68</code> 右旋(橋直)</strong>　<code>P = 68</code>、<code>L = 66</code>、<code>b = L.right = null</code></p>
+<pre><code>     68                66
+    /  \              /  \
+  66    75   ──►    64    68
+  /                         \
+64                          75</code></pre>
+<p>現在 <code>★60</code> 的右子樹是<strong>右右直線</strong>。</p>
+<p><strong>步驟 2:對 <code>★60</code> 左旋</strong>　<code>P = 60</code>、<code>R = 66</code>、<strong><code>b = R.left = 64</code></strong> ← 這次 <code>b</code> 不是空的!</p>
+<pre><code>        60                       66
+       /  \                    /    \
+     57    66       ──►      60      68
+          /  \              /  \       \
+        64    68          57    64      75
+                \
+                75</code></pre>
+<ul><li><code>66</code> 升上來</li><li><code>60</code> 掉下去當 <code>66</code> 的<strong>左</strong>小孩</li><li><strong><code>64</code> 換邊 → <code>60</code> 的右邊</strong>(因為 <code>60 &lt; 64 &lt; 66</code>)</li></ul>
+<blockquote><p>左旋是鏡像:換邊的是 <code>R</code> 的<strong>左</strong>子樹(<code>R.left</code>),搬到 <code>P</code> 的<strong>右</strong>邊。</p></blockquote>
+<hr>
+<h4>階段四|矮了嗎?</h4>
+<div class="tablewrap"><table><thead><tr><th></th><th>子樹的根</th><th><code>h</code></th></tr></thead><tbody>
+<tr><td>旋轉<strong>前</strong></td><td><code>60</code></td><td><strong>4</strong></td></tr>
+<tr><td>旋轉<strong>後</strong></td><td><code>66</code></td><td><strong>3</strong></td></tr>
+</tbody></table></div>
+<p><strong>矮 1 層</strong> → <strong>往上</strong></p>
+<pre><code>                    55
+             /              \
+           30                66
+         /    \            /     \
+       20      40        60       68
+      /  \    /         /  \        \
+    10    25 35       57    64       75
+    /
+   5</code></pre>
+<hr>
+<h4>階段五|回家:第二站 = 根(收工)</h4>
+<p><strong>站在根(名牌 <code>55</code>),伸出兩隻手:</strong></p>
+<div class="tablewrap"><table><thead><tr><th>手</th><th>拿什麼</th><th>怎麼得到</th></tr></thead><tbody>
+<tr><td>左手</td><td><code>h(30) = 4</code></td><td><code>30</code> <strong>不在路徑上</strong>,沒動過 → 直接讀</td></tr>
+<tr><td>右手</td><td><code>h(66) = 3</code></td><td>剛剛旋轉完,現算的</td></tr>
+</tbody></table></div>
+<pre><code>h(根)  = 1 + max(4, 3) = 5
+BF(根) = 4 − 3 = +1        ← 沒失衡 ✔</code></pre>
+<p>刪除前 <code>h(根) = 5</code>,現在還是 <strong>5</strong> → <strong>高度沒矮 → 收工。</strong></p>
+<hr>
+<h4>最終樹</h4>
+<pre><code>                    55
+             /              \
+           30                66
+         /    \            /     \
+       20      40        60       68
+      /  \    /         /  \        \
+    10    25 35       57    64       75
+    /
+   5</code></pre>
+<h4>驗證</h4>
+<p><strong>① BF</strong></p>
+<div class="tablewrap"><table><thead><tr><th>節點</th><th><code>h</code></th><th>BF</th><th></th><th>節點</th><th><code>h</code></th><th>BF</th></tr></thead><tbody>
+<tr><td><code>5</code> <code>25</code> <code>35</code> <code>57</code> <code>64</code> <code>75</code></td><td>1</td><td>0</td><td></td><td><code>60</code></td><td>2</td><td>0</td></tr>
+<tr><td><code>10</code></td><td>2</td><td>+1</td><td></td><td><code>68</code></td><td>2</td><td>−1</td></tr>
+<tr><td><code>20</code></td><td>3</td><td>+1</td><td></td><td><code>66</code></td><td>3</td><td>0</td></tr>
+<tr><td><code>40</code></td><td>2</td><td>+1</td><td></td><td><code>55</code></td><td>5</td><td>+1</td></tr>
+<tr><td><code>30</code></td><td>4</td><td>+1</td><td></td><td></td><td></td><td></td></tr>
+</tbody></table></div>
+<p>✔ 全部合法</p>
+<p><strong>② 中序</strong></p>
+<pre><code>刪除前: 5,10,20,25,30,35,40,50,55,57,60,64,66,68,75
+刪除後: 5,10,20,25,30,35,40,   55,57,60,64,66,68,75
+                             ↑ 只少了 50</code></pre>
+<p>✔</p>
+<p><strong>③ 統計</strong></p>
+<div class="tablewrap"><table><thead><tr><th>項目</th><th>值</th></tr></thead><tbody>
+<tr><td>旋轉組數</td><td><strong>1 組</strong>(RL)</td></tr>
+<tr><td>基本旋轉次數</td><td><strong>2 次</strong></td></tr>
+<tr><td>樹高</td><td><code>5 → 5</code>(在根就收工)</td></tr>
+<tr><td>根節點</td><td><code>50 → 55</code></td></tr>
+</tbody></table></div>
+<h4>這題的四個考點</h4>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>考點</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>「二」降級成「一」</strong> —— <code>S = 55</code> 有右小孩 <code>57</code>,所以刪 <code>S</code> 走「一頂替」</td></tr>
+<tr><td>2</td><td><strong>失衡點不在根</strong> —— <code>★</code> 是 <code>60</code>,要從最低往上找</td></tr>
+<tr><td>3</td><td><strong><code>−2</code> ≠ 一定左旋</strong> —— <code>◆</code> 是 <code>+1</code>,異號,必須先橋直(RL)</td></tr>
+<tr><td>4</td><td><strong><code>b</code> 真的會搬</strong> —— 第二步 <code>b = 64</code>,從 <code>66</code> 的左邊搬到 <code>60</code> 的右邊</td></tr>
+</tbody></table></div>
+<hr>
+<h2>兩題對照</h2>
+<div class="tablewrap"><table><thead><tr><th></th><th><strong>範例 A</strong></th><th><strong>範例 B</strong></th></tr></thead><tbody>
+<tr><td><code>D</code></td><td><code>70</code>(內部節點)</td><td><code>50</code>(根)</td></tr>
+<tr><td><code>S</code></td><td><code>80</code>(葉)</td><td><code>55</code>(有右小孩)</td></tr>
+<tr><td>降級成</td><td><strong>零直接</strong></td><td><strong>一頂替</strong></td></tr>
+<tr><td>第一次旋轉</td><td><strong>LR</strong>(<code>★+2</code> / <code>◆−1</code>)</td><td><strong>RL</strong>(<code>★−2</code> / <code>◆+1</code>)</td></tr>
+<tr><td>旋轉後</td><td>矮 1 → <strong>連鎖</strong></td><td>矮 1 → 上層沒失衡 → <strong>收工</strong></td></tr>
+<tr><td>第二次旋轉</td><td><strong>LL</strong>(單旋)</td><td>—</td></tr>
+<tr><td>旋轉組數</td><td>2 組 / 3 次</td><td>1 組 / 2 次</td></tr>
+<tr><td>樹高</td><td><code>5 → 4</code></td><td><code>5 → 5</code></td></tr>
+</tbody></table></div>
+<blockquote><p><strong>「矮 1 層」只代表「必須往上檢查」,不代表「上層一定失衡」。</strong> 範例 B 就是往上檢查後發現沒事。</p></blockquote>
+<hr>
+<h2>練習題</h2>
+<p>先自己動手畫完,再看詳解。</p>
+<hr>
+<h3>Q1｜零直接 + 單旋 + 沒矮就停</h3>
+<p>用<strong>範例 A 的最終樹</strong>:</p>
+<pre><code>            30
+        /        \
+      20          50
+     /  \        /   \
+   10    25     40    65
+   /            /    /  \
+  5           35   60    80</code></pre>
+<p><strong>刪除 <code>25</code>。</strong> 需要旋轉幾次?最後停在哪一層?</p>
+<hr>
+<h3>Q2｜較高子 BF = 0 的特殊情況</h3>
+<pre><code>                 100
+             /         \
+           50           150
+         /     \       /    \
+       30       70   130     200
+      /  \     /             /  \
+    20    40  60          190    210
+   / \   / \
+  10 25 35  45</code></pre>
+<p><strong>刪除 <code>60</code>。</strong> 這題會考「單旋 + 較高子 BF = 0」的停止規則。</p>
+<hr>
+<h2>詳解</h2>
+<h3>Q1 詳解</h3>
+<h4>化簡</h4>
+<p><code>D = 25</code>,<strong>沒有小孩</strong> → <strong>零直接</strong> → 直接移除。</p>
+<pre><code>            30
+        /        \
+      20          50
+     /           /   \
+   10           40    65
+   /            /    /  \
+  5           35   60    80</code></pre>
+<h4>回家:第一站</h4>
+<div class="tablewrap"><table><thead><tr><th>節點</th><th>左子 <code>h</code></th><th>右子 <code>h</code></th><th><code>h</code></th><th>BF</th><th>判斷</th></tr></thead><tbody>
+<tr><td><strong><code>20</code></strong></td><td><strong>2</strong> (<code>10</code>)</td><td><strong>0</strong></td><td>3</td><td><strong>+2</strong></td><td>✗ <strong>失衡 ★</strong></td></tr>
+</tbody></table></div>
+<ul><li><code>★20</code> = <code>+2</code></li><li><code>◆10</code> = <code>h(5) − h(null)</code> = <code>1 − 0</code> = <strong><code>+1</code></strong> → <strong>同號 → 單旋 → LL</strong> → 對 <code>★20</code> <strong>右旋</strong></li></ul>
+<p><code>P = 20</code>、<code>L = 10</code>、<code>b = L.right = null</code></p>
+<pre><code>     20              10
+    /       ──►     /  \
+  10                5    20
+  /
+ 5</code></pre>
+<p><strong>高度檢查</strong>:旋轉前 <code>h(20) = 3</code>,旋轉後 <code>h(10) = 2</code> → <strong>矮 1 層</strong>(單旋、<code>◆</code> 的 BF = <code>+1</code>)→ <strong>往上</strong></p>
+<h4>回家:第二站</h4>
+<div class="tablewrap"><table><thead><tr><th>節點</th><th>左子 <code>h</code></th><th>右子 <code>h</code></th><th><code>h</code></th><th>BF</th><th>判斷</th></tr></thead><tbody>
+<tr><td><code>30</code>(根)</td><td>2 (<code>10</code>)</td><td>3 (<code>50</code>)</td><td><strong>4</strong></td><td><strong>−1</strong></td><td>✔ 沒失衡</td></tr>
+</tbody></table></div>
+<p>刪除前 <code>h(30) = 4</code>,現在還是 <strong>4</strong> → <strong>高度沒變 → 收工。</strong></p>
+<h4>答案</h4>
+<pre><code>            30
+        /        \
+      10          50
+     /  \        /   \
+    5    20     40    65
+                /    /  \
+              35   60    80</code></pre>
+<div class="tablewrap"><table><thead><tr><th>項目</th><th>值</th></tr></thead><tbody>
+<tr><td>旋轉組數</td><td><strong>1 組</strong>(LL)</td></tr>
+<tr><td>基本旋轉次數</td><td><strong>1 次</strong></td></tr>
+<tr><td>停在</td><td><strong>根 <code>30</code></strong>(檢查後發現沒失衡、高度也沒變)</td></tr>
+<tr><td>樹高</td><td><code>4 → 4</code></td></tr>
+</tbody></table></div>
+<p><strong>驗證</strong>:<code>5</code>,<code>20</code> 的 BF = 0;<code>10</code> 的 BF = 0;<code>35</code> h1;<code>40</code> BF = +1;<code>60</code>,<code>80</code> h1;<code>65</code> BF = 0;<code>50</code> BF = 0;<code>30</code> BF = <code>2 − 3</code> = <strong>−1</strong> ✔</p>
+<p><strong>中序</strong>:<code>5, 10, 20, 30, 35, 40, 50, 60, 65, 80</code>(原本多一個 <code>25</code>)✔</p>
+<blockquote><p><strong>這題的重點</strong>:旋轉之後子樹<strong>矮了 1 層,所以必須往上檢查</strong> —— 但檢查結果是「沒失衡」。<br><strong>「矮了往上」和「往上一定要轉」是兩回事。</strong></p></blockquote>
+<hr>
+<h3>Q2 詳解</h3>
+<h4>起始樹合法性</h4>
+<div class="tablewrap"><table><thead><tr><th>節點</th><th><code>h</code></th><th>BF</th><th></th><th>節點</th><th><code>h</code></th><th>BF</th></tr></thead><tbody>
+<tr><td><code>10</code> <code>25</code> <code>35</code> <code>45</code> <code>60</code> <code>130</code> <code>190</code> <code>210</code></td><td>1</td><td>0</td><td></td><td><code>70</code></td><td>2</td><td><strong>+1</strong></td></tr>
+<tr><td><code>20</code></td><td>2</td><td>0</td><td></td><td><code>50</code></td><td>4</td><td>+1</td></tr>
+<tr><td><code>40</code></td><td>2</td><td>0</td><td></td><td><code>200</code></td><td>2</td><td>0</td></tr>
+<tr><td><code>30</code></td><td>3</td><td><strong>0</strong></td><td></td><td><code>150</code></td><td>3</td><td>−1</td></tr>
+<tr><td></td><td></td><td></td><td></td><td><code>100</code></td><td>5</td><td>+1</td></tr>
+</tbody></table></div>
+<p>✔ 全部合法</p>
+<h4>化簡</h4>
+<p><code>D = 60</code>,<strong>葉節點</strong> → <strong>零直接</strong> → 直接移除。</p>
+<h4>回家:第一站</h4>
+<div class="tablewrap"><table><thead><tr><th>節點</th><th>左子 <code>h</code></th><th>右子 <code>h</code></th><th><code>h</code></th><th>BF</th><th>判斷</th></tr></thead><tbody>
+<tr><td><code>70</code></td><td>0</td><td>0</td><td>1</td><td>0</td><td>✔</td></tr>
+<tr><td><strong><code>50</code></strong></td><td><strong>3</strong> (<code>30</code>)</td><td><strong>1</strong> (<code>70</code>)</td><td>4</td><td><strong>+2</strong></td><td>✗ <strong>失衡 ★</strong></td></tr>
+</tbody></table></div>
+<ul><li><code>★50</code> = <code>+2</code></li><li><code>◆30</code> = <code>h(20) − h(40)</code> = <code>2 − 2</code> = <strong><code>0</code></strong> ← <strong>關鍵!</strong></li></ul>
+<blockquote><p><strong>較高子 BF = 0</strong> → 查表 ③ 仍然歸 <strong>單旋 → LL</strong> → 對 <code>★50</code> <strong>右旋</strong><br>(這種情況<strong>只會在刪除時出現</strong>,插入永遠不會)</p></blockquote>
+<p><code>P = 50</code>、<code>L = 30</code>、<strong><code>b = L.right = 40 那一整包</code></strong>(含 <code>35</code>、<code>45</code>)</p>
+<pre><code>        50                    30
+      /    \                /    \
+    30      70    ──►     20      50
+   /  \                  / \     /   \
+  20   40               10  25  40    70
+ / \   / \                      / \
+10 25 35  45                  35   45</code></pre>
+<p><code>40</code> 那一包換邊,接到 <code>50</code> 的左邊(因為 <code>30 &lt; 40 &lt; 50</code>)。</p>
+<h4>回家:高度檢查 → 停!</h4>
+<div class="tablewrap"><table><thead><tr><th></th><th>子樹的根</th><th><code>h</code></th></tr></thead><tbody>
+<tr><td>旋轉<strong>前</strong></td><td><code>50</code></td><td><strong>4</strong></td></tr>
+<tr><td>旋轉<strong>後</strong></td><td><code>30</code></td><td><strong>4</strong></td></tr>
+</tbody></table></div>
+<p><strong>高度不變!</strong> 查停止條件表:</p>
+<blockquote><p><strong>單旋 + 較高子 BF = <code>0</code> → 子樹高度不變 → 停。</strong></p></blockquote>
+<p>所以 <strong><code>100</code> 完全不用檢查</strong>,直接收工。</p>
+<h4>答案</h4>
+<pre><code>                 100
+             /         \
+           30           150
+         /     \       /    \
+       20       50   130     200
+      /  \     /  \          /  \
+    10    25  40    70    190    210
+             /  \
+           35    45</code></pre>
+<div class="tablewrap"><table><thead><tr><th>項目</th><th>值</th></tr></thead><tbody>
+<tr><td>旋轉組數</td><td><strong>1 組</strong>(LL)</td></tr>
+<tr><td>基本旋轉次數</td><td><strong>1 次</strong></td></tr>
+<tr><td>停在</td><td><strong><code>50</code> 這一層</strong>(高度沒變,不必往上)</td></tr>
+<tr><td>樹高</td><td><code>5 → 5</code></td></tr>
+</tbody></table></div>
+<p><strong>驗證</strong>:<code>20</code> BF=0;<code>40</code> BF=0;<code>70</code> h1;<code>50</code> = <code>2 − 1</code> = <strong>+1</strong> ✔;<code>30</code> = <code>2 − 3</code> = <strong>−1</strong> ✔;<code>150</code> = −1;<code>100</code> = <code>4 − 3</code> = <strong>+1</strong> ✔</p>
+<p><strong>中序</strong>:<code>10,20,25,30,35,40,45,50,70,100,130,150,190,200,210</code>(原本 <code>50</code> 後面多一個 <code>60</code>)✔</p>
+<blockquote><p><strong>這題的重點</strong>:<code>◆</code> 的 BF = <code>0</code> 是一個<strong>強訊號</strong>。<br>它不只告訴你「歸單旋」,還直接宣告「<strong>旋轉後高度不變,連鎖到此為止</strong>」。<br>不知道這條規則的人,會一路往上重算到根 —— 浪費時間,而且容易算錯。</p></blockquote>
+<hr>
+<h2>四種組合覆蓋表</h2>
+<div class="tablewrap"><table><thead><tr><th></th><th>二 → 零</th><th>二 → 一</th></tr></thead><tbody>
+<tr><td><strong>單旋</strong></td><td>Q1(零直接 + LL)</td><td><em>(留給你自己出題)</em></td></tr>
+<tr><td><strong>雙旋</strong></td><td><strong>範例 A</strong>(LR + 連鎖)</td><td><strong>範例 B</strong>(RL + 收工)</td></tr>
+</tbody></table></div>
+<p>加上 <strong>Q2</strong> 補了「單旋 + <code>◆</code> BF = 0 → 停」這個特例。</p>
+<blockquote><p>剩下那一格(二 → 一 + 單旋)你可以自己造:<br>把範例 B 的 <code>66</code> 改成沒有左小孩 <code>64</code>,<code>★60</code> 的較高子就變成 <code>+1</code>(同號)→ 單旋 RR。試試看。</p></blockquote>
+<footer class="foot">來源：_private/20260708/AVL樹_刪除專練.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>

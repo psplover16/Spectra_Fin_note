@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜運算式表示法</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;overflow-wrap:anywhere;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}th code{background:transparent;color:inherit;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">Expression Notation</p>
+<h1>運算式表示法</h1>
+<blockquote><p>同一個運算式依運算子擺放的位置,可寫成中序(Infix)、前序(Prefix)、後序(Postfix)三種形式,並與運算式樹的走訪一一對應。</p></blockquote>
+<hr>
+<h2>運算式表示法(中序 / 前序 / 後序)</h2>
+<p>同一個運算式有三種寫法,差別在<strong>運算子擺哪裡</strong>:</p>
+<ul><li><strong>中序 Infix</strong>:<code>A + B</code>(運算子在中間,一般數學式,人類看的)。</li><li><strong>前序 Prefix</strong>:<code>+ A B</code>(運算子在前,又叫波蘭表示法)。</li><li><strong>後序 Postfix</strong>:<code>A B +</code>(運算子在後,又叫逆波蘭 RPN,電腦最好算)。</li></ul>
+<p><strong>和樹走訪的漂亮連結</strong>:把運算式畫成「運算式樹」,那麼——<strong>前序走訪 = 前序式、中序走訪 = 中序式、後序走訪 = 後序式</strong>。</p>
+<p>例:<code>(A + B) * C</code> 的運算式樹:</p>
+<pre><code>        *
+       / \
+      +   C
+     / \
+    A   B</code></pre>
+<ul><li><strong>前序(prefix)</strong>:<code>* + A B C</code></li><li><strong>中序(infix)</strong>:<code>A + B * C</code>(注意:中序會丟失括號,需靠優先權或括號還原)</li><li><strong>後序(postfix)</strong>:<code>A B + C *</code></li></ul>
+<p>電腦用<strong>堆疊 (Stack)</strong> 來做「中序轉後序」與「後序求值」。</p>
+<h3>用三題實戰前中後序</h3>
+<p>下面三題各打一個考點,建議先自己算,再對詳解。</p>
+<h4>題目一(考點:中序 → 後序 + 前序)</h4>
+<p>把下面這個中序運算式,分別轉成<strong>後序</strong>和<strong>前序</strong>:</p>
+<pre><code>A × B + C × ( D − E )</code></pre>
+<p><strong>詳解</strong>:先認優先權 —— <strong>× 高於 +</strong>,而括號 <code>( )</code> 最先算。把式子拆成「一定要先算」的小塊,再依序合併。</p>
+<p><strong>轉後序(運算子放到兩個運算元「後面」)</strong>:</p>
+<ol><li><code>A × B</code> → <code>A B ×</code></li><li><code>D − E</code>(括號先算)→ <code>D E −</code></li><li><code>C × (D−E)</code> → <code>C</code> 接上一步結果,再放 × → <code>C D E − ×</code></li><li>最後的 <code>+</code> 把「①的結果 <code>A B ×</code>」和「③的結果 <code>C D E − ×</code>」串起來,+ 放最後 → 完成。</li></ol>
+<blockquote><p><strong>後序答案</strong>:<code>A B × C D E − × +</code></p></blockquote>
+<p><strong>轉前序(運算子放到兩個運算元「前面」)</strong>:</p>
+<ol><li><code>A × B</code> → <code>× A B</code></li><li><code>D − E</code> → <code>− D E</code></li><li><code>C × (D−E)</code> → <code>× C − D E</code></li><li>最後的 <code>+</code> 把「①的結果 <code>× A B</code>」和「③的結果 <code>× C − D E</code>」串起來,+ 放最前 → 完成。</li></ol>
+<blockquote><p><strong>前序答案</strong>:<code>+ × A B × C − D E</code></p></blockquote>
+<p>其實兩者就是<strong>同一棵運算式樹</strong>的後序 / 前序走訪(根是最後才做的 <code>+</code>):</p>
+<pre><code>          +
+        /   \
+       ×     ×
+      / \   / \
+     A   B C   −
+              / \
+             D   E</code></pre>
+<h4>題目二(考點:後序用堆疊求值)</h4>
+<p>用<strong>堆疊</strong>算出下面這個後序運算式的值,並寫出每一步的堆疊狀態:</p>
+<pre><code>6 2 3 + × 8 4 / −</code></pre>
+<p><strong>詳解</strong>:規則很簡單 —— <strong>遇到數字就 push;遇到運算子就 pop 兩個出來算,先 pop 的當右運算元、後 pop 的當左運算元,算完把結果 push 回去</strong>。</p>
+<div class="tablewrap"><table><thead><tr><th>讀到</th><th>動作</th><th>堆疊(左→右,右端為頂)</th></tr></thead><tbody>
+<tr><td>6</td><td>push 6</td><td>6</td></tr>
+<tr><td>2</td><td>push 2</td><td>6, 2</td></tr>
+<tr><td>3</td><td>push 3</td><td>6, 2, 3</td></tr>
+<tr><td><strong>+</strong></td><td>pop 3、pop 2 → 2 + 3 = <strong>5</strong>,push 5</td><td>6, 5</td></tr>
+<tr><td><strong>×</strong></td><td>pop 5、pop 6 → 6 × 5 = <strong>30</strong>,push 30</td><td>30</td></tr>
+<tr><td>8</td><td>push 8</td><td>30, 8</td></tr>
+<tr><td>4</td><td>push 4</td><td>30, 8, 4</td></tr>
+<tr><td><strong>/</strong></td><td>pop 4、pop 8 → 8 / 4 = <strong>2</strong>,push 2</td><td>30, 2</td></tr>
+<tr><td><strong>−</strong></td><td>pop 2、pop 30 → 30 − 2 = <strong>28</strong>,push 28</td><td><strong>28</strong></td></tr>
+</tbody></table></div>
+<blockquote><p><strong>答案 = 28</strong>。特別注意 <code>−</code> 和 <code>/</code> 這種<strong>不可交換</strong>的運算:是「<strong>後 pop − 先 pop</strong>」(左 − 右、左 / 右),千萬別算反成 <code>2 − 30</code>。</p></blockquote>
+<h4>題目三(考點:運算式樹 → 三種走訪)</h4>
+<p>寫出下面這棵運算式樹的<strong>前序、中序(記得該加括號)、後序</strong>:</p>
+<pre><code>        ×
+       / \
+      +   −
+     / \ / \
+    A  B C  D</code></pre>
+<p><strong>詳解</strong>:三種走訪只差在「<strong>根(節點自己)什麼時候輸出</strong>」——前序=根→左→右;中序=左→根→右;後序=左→右→根。這棵樹的根是 <code>×</code>,左子樹是 <code>A + B</code>,右子樹是 <code>C − D</code>:</p>
+<ol><li><strong>前序</strong>(根先):× →(+ A B)→(− C D)= <code>× + A B − C D</code></li><li><strong>中序</strong>(根在中):(A + B)→ × →(C − D)。因為 <code>×</code> 優先權比 <code>+</code>、<code>−</code> 高,<strong>不加括號會變成 A + B × C − D、意思整個跑掉</strong>,所以左右都要括起來。</li><li><strong>後序</strong>(根最後):(A B +)→(C D −)→ × = <code>A B + C D − ×</code></li></ol>
+<blockquote><p><strong>答案</strong>:<br>前序 <code>× + A B − C D</code><br>中序 <code>(A + B) × (C − D)</code>(<strong>必須加括號</strong>)<br>後序 <code>A B + C D − ×</code></p></blockquote>
+<p><strong>★ 常考重點</strong>:前/中/後序 = 運算子在前/中/後;對應運算式樹的前/中/後序走訪。轉換與求值用<strong>堆疊</strong>。</p>
+<footer class="foot">來源：_private/計概補充/基礎資料結構(下)_樹與雜湊表.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>

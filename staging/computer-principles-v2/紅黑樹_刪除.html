@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜紅黑樹 刪除</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;overflow-wrap:anywhere;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}th code{background:transparent;color:inherit;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">Red-Black Tree — Deletion</p>
+<h1>紅黑樹_刪除</h1>
+<blockquote><p>紅黑樹刪除的完整 SOP,加上走遍每一條修復分支的 16 道實戰題與詳解。</p></blockquote>
+<hr>
+
+<blockquote><p>記號:<code>(B)</code> 黑、<code>(R)</code> 紅、<code>x</code> = 雙黑節點、<code>w</code> = <code>x</code> 的兄弟、<code>P</code> = 父親</p>
+<p><strong>刪除 SOP</strong>(照著跑)　→　<strong>附錄:為什麼</strong>(可跳過)　→　<strong>16 題</strong>(走遍每一條分支)　→　<strong>覆蓋矩陣</strong></p>
+<p>題目裡的「情況 1 / 2 / 3 / 4」= SOP 裡的 <strong>Case 1 / 2 / 3 / 4</strong>。</p></blockquote>
+
+<h2>刪除 SOP</h2>
+
+<h3>前置作業:刪除與判斷</h3>
+
+<h4>1. 照常刪除</h4>
+<div class="tablewrap"><table><thead><tr><th><code>D</code>(你要刪的節點)有幾個小孩</th><th>做什麼</th></tr></thead><tbody>
+<tr><td><strong>0 個</strong></td><td>直接砍掉</td></tr>
+<tr><td><strong>1 個</strong></td><td>那個小孩頂替它的位置</td></tr>
+<tr><td><strong>2 個</strong></td><td>找「<strong>右子樹最小值</strong>」當替身,把替身的 key 抄進來,<strong>然後刪除那個替身</strong></td></tr>
+</tbody></table></div>
+
+<p><strong>兩個代號</strong>(後面 16 題都用它們)</p>
+<div class="tablewrap"><table><thead><tr><th></th><th>意思</th></tr></thead><tbody>
+<tr><td><strong><code>y</code></strong></td><td><strong>真正被刪掉或移走的節點</strong>(是 <code>D</code>,或是替身)</td></tr>
+<tr><td><strong><code>x</code></strong></td><td><strong>頂替 <code>y</code> 位置的節點</strong>(可能是 NIL)</td></tr>
+</tbody></table></div>
+
+<blockquote><p><code>y</code> 永遠只有 0 或 1 個小孩(替身是「一路往左到底」找到的,不可能有左小孩)。</p></blockquote>
+
+<h4>2. 看顏色</h4>
+<div class="tablewrap"><table><thead><tr><th></th><th>條件</th><th>動作</th></tr></thead><tbody>
+<tr><td><strong>出口①</strong></td><td><strong><code>y</code> 是紅色</strong></td><td><strong>SOP 結束,不用做事</strong></td></tr>
+<tr><td><strong>出口②</strong></td><td><code>y</code> 黑,但 <strong><code>x</code> 是紅色</strong></td><td><strong>把 <code>x</code> 塗黑,SOP 結束</strong></td></tr>
+<tr><td>—</td><td><code>y</code> 黑,<code>x</code> 也黑(含 NIL)</td><td><strong>產生「雙黑」</strong>,進入下方修復 SOP</td></tr>
+</tbody></table></div>
+
+<blockquote><p><strong>「雙黑」= <code>x</code> 多背一個黑。</strong></p>
+<p><code>x</code> 本來是紅 → 紅 + 黑 = 黑 → 直接塗黑就還清了(出口②)。</p>
+<p><code>x</code> 本來是黑 → 黑 + 黑 = <strong>雙黑</strong> → 賴帳,要進四大情境。</p></blockquote>
+
+<h4><code>y</code> 只有三種長相(所以不用擔心漏掉組合)</h4>
+<div class="tablewrap"><table><thead><tr><th><code>y</code> 的顏色</th><th><code>y</code> 的小孩數</th><th><code>x</code></th><th>走哪</th></tr></thead><tbody>
+<tr><td><strong>紅</strong></td><td><strong>必定 0 個</strong>(葉)</td><td>NIL</td><td>出口①</td></tr>
+<tr><td><strong>黑</strong></td><td><strong>1 個(必定是紅葉)</strong></td><td>那個紅葉</td><td>出口②</td></tr>
+<tr><td><strong>黑</strong></td><td>0 個</td><td>NIL</td><td><strong>雙黑 → 四大情境</strong></td></tr>
+</tbody></table></div>
+
+<blockquote><p>性質 5 鎖死了組合:<strong>紅節點不可能只有一個小孩;黑節點若只有一個小孩,那個小孩必定是紅葉。</strong></p></blockquote>
+
+<h3>必背 SOP:雙黑修復四大情境</h3>
+
+<p><strong>前提假設</strong>:雙黑節點在「<strong>左邊</strong>」。(如果在右邊,把口訣裡的左 / 右互換即可)</p>
+<p><strong>觀察重點</strong>:只看「<strong>兄弟</strong>」和「<strong>姪子</strong>(兄弟的小孩)」的顏色。</p>
+
+<p><strong>請按照順序,從上往下套用這張表:</strong></p>
+<div class="tablewrap"><table><thead><tr><th>情境</th><th>看到這個盤面…</th><th>請執行這個 SOP 動作</th><th>接下來…</th></tr></thead><tbody>
+<tr><td><strong>Case 1</strong></td><td><strong>兄弟是紅色</strong></td><td>1. 兄弟變黑,爸爸變紅<br>2. 對爸爸做 <strong>左旋轉</strong></td><td>轉變成下方 Case 2, 3, 4</td></tr>
+<tr><td><strong>Case 2</strong></td><td><strong>兄弟是黑色</strong><br>且 <strong>兩個姪子都黑色</strong></td><td>1. 兄弟變紅<br>2. <strong>雙黑推給爸爸</strong></td><td>見下方「Case 2 的三個結局」</td></tr>
+<tr><td><strong>Case 3</strong></td><td><strong>兄弟是黑色</strong><br>且 <strong>近姪子(左)是紅色</strong><br>且 <strong>遠姪子(右)是黑色</strong></td><td>1. 兄弟變紅,近姪子變黑<br>2. 對兄弟做 <strong>右旋轉</strong></td><td>必定轉變成 Case 4</td></tr>
+<tr><td><strong>Case 4</strong></td><td><strong>兄弟是黑色</strong><br>且 <strong>遠姪子(右)是紅色</strong></td><td>1. 兄弟塗成爸爸原來的顏色<br>2. 爸爸變黑,遠姪子變黑<br>3. 對爸爸做 <strong>左旋轉</strong></td><td><strong>完美破關,SOP 結束!</strong></td></tr>
+</tbody></table></div>
+
+<h4>⚠️ Case 3 的「遠姪子是黑色」不能省</h4>
+<p>若<strong>兩個姪子都是紅色</strong>,正解是<strong>直接跳 Case 4</strong>(只轉 1 次)。<br>漏掉這個條件會先撞到 Case 3 → 變成 <code>Case 3 → Case 4</code>,<strong>多轉一次</strong>。</p>
+<blockquote><p>記法:<strong>先看遠姪子。遠姪子紅 → 直接 Case 4。遠姪子黑、近姪子紅 → 才是 Case 3。</strong></p></blockquote>
+
+<h4>Case 2 的三個結局</h4>
+<p>雙黑推給爸爸之後:</p>
+<div class="tablewrap"><table><thead><tr><th>爸爸的顏色</th><th>動作</th></tr></thead><tbody>
+<tr><td><strong>紅</strong></td><td><strong>爸爸塗黑,SOP 結束</strong></td></tr>
+<tr><td><strong>黑</strong></td><td>爸爸變成新的雙黑 → <strong>重新套用此表</strong></td></tr>
+<tr><td><strong>是根</strong></td><td><strong>SOP 結束</strong>(全樹黑高一起 −1,一視同仁)</td></tr>
+</tbody></table></div>
+
+<blockquote><p><strong>Case 2 是四個情境裡唯一會迴圈的,而且一次都不旋轉。</strong></p></blockquote>
+
+<blockquote><p><strong>💡 考試小提示(名詞解釋)</strong></p>
+<p><strong>兄弟</strong>:雙黑在<strong>左</strong> → 兄弟 = 爸爸的<strong>右</strong>小孩;雙黑在<strong>右</strong> → 兄弟 = 爸爸的<strong>左</strong>小孩</p>
+<p><strong>近姪子</strong>:靠近雙黑節點的那個姪子(雙黑在左,近姪子就是<strong>左</strong>邊的)</p>
+<p><strong>遠姪子</strong>:遠離雙黑節點的那個姪子(雙黑在左,遠姪子就是<strong>右</strong>邊的)</p></blockquote>
+
+<pre><code>雙黑在左(標準)                    雙黑在右(鏡像)
+
+        爸爸                              爸爸
+       /    \                            /    \
+    雙黑     兄弟                     兄弟      雙黑
+            /    \                   /    \
+        近姪子   遠姪子           遠姪子   近姪子</code></pre>
+
+<blockquote><p><strong>鏡像時所有「左 / 右」對調,判斷邏輯一字不改。</strong></p></blockquote>
+
+<h3>考前速記口訣</h3>
+<div class="tablewrap"><table><thead><tr><th>盤面</th><th>口訣</th><th>白話</th></tr></thead><tbody>
+<tr><td><strong>兄弟紅</strong></td><td><strong>兄黑爸紅,爸左旋</strong></td><td>轉黑兄弟</td></tr>
+<tr><td><strong>姪全黑</strong></td><td><strong>兄變紅,黑給爸</strong></td><td>大家窮,找爸爸</td></tr>
+<tr><td><strong>近姪紅</strong></td><td><strong>兄紅姪黑,兄右旋</strong></td><td>轉遠姪紅</td></tr>
+<tr><td><strong>遠姪紅</strong></td><td><strong>兄同爸,爸姪黑,爸左旋</strong></td><td>借紅姪,收工</td></tr>
+</tbody></table></div>
+
+<blockquote><p>⚠️ <strong>順序</strong>:先看兄弟紅不紅 → 再看<strong>遠</strong>姪子紅不紅 → 再看<strong>近</strong>姪子紅不紅 → 都黑才是「姪全黑」。</p></blockquote>
+
+<h3>三個必記上界</h3>
+<div class="tablewrap"><table><tbody>
+<tr><td><strong>旋轉 ≤ 3 次</strong></td><td>最壞路徑:<code>Case 1 → Case 3 → Case 4</code></td></tr>
+<tr><td><strong>變色 O(log n) 次</strong></td><td>Case 2 沿路上移</td></tr>
+<tr><td><strong>時間 O(log n)</strong></td><td>找節點 + 找替身 + 修復</td></tr>
+</tbody></table></div>
+
+<h3>驗算(每次刪完都要跑)</h3>
+<pre><code>① 根是黑?  ② 有沒有紅接紅?  ③ 逐條路徑數黑色(含 NIL),每條一樣多?</code></pre>
+
+<hr>
+
+<h2>附錄|(可跳過)為什麼</h2>
+
+<blockquote><p><strong>這一節不用背。</strong> 但看懂之後,四個 Case 就不需要背了。</p></blockquote>
+
+<h3>一、換個看法:紅色 = 餘額,黑色 = 本金</h3>
+
+<blockquote><p><strong>黑節點 = 本金(計入黑高)</strong></p>
+<p><strong>紅節點 = 餘額(不計入黑高,是「額外的」)</strong></p></blockquote>
+
+<div class="tablewrap"><table><thead><tr><th>性質</th><th>翻譯</th></tr></thead><tbody>
+<tr><td><strong>性質 5</strong>(黑高處處相同)</td><td>每條路徑的<strong>本金</strong>必須一樣多</td></tr>
+<tr><td><strong>性質 4</strong>(不能紅接紅)</td><td><strong>餘額不能疊</strong></td></tr>
+</tbody></table></div>
+
+<p><strong>紅色就是可動用的錢。看到紅色,就是看到錢。</strong></p>
+
+<h3>二、刪除的每一條規則,都是同一句話</h3>
+<div class="tablewrap"><table><thead><tr><th>規則</th><th>用「餘額 / 本金」翻譯</th></tr></thead><tbody>
+<tr><td><strong><code>y</code> 是紅 → 什麼都不用做</strong></td><td>你拿走的是<strong>餘額</strong>,本金沒動</td></tr>
+<tr><td><strong><code>x</code> 是紅 → 塗黑就結束</strong></td><td><code>x</code> <strong>自己有餘額</strong> → 轉成本金,補上缺口</td></tr>
+<tr><td><strong>雙黑</strong></td><td>這條路的<strong>本金少一塊</strong>,而且身邊沒餘額可以轉</td></tr>
+<tr><td><strong>Case 2 之後爸爸是紅 → 塗黑結束</strong></td><td><strong>爸爸有餘額</strong> → 直接拿來抵</td></tr>
+<tr><td><strong>推到根 → 結束</strong></td><td>全樹本金一起少一塊,<strong>誰都沒吃虧</strong></td></tr>
+</tbody></table></div>
+
+<h3>三、四個 Case,只是在問「錢在哪」</h3>
+
+<h4>先問:兄弟家有錢嗎?</h4>
+<blockquote><p><strong>看兩個姪子。有紅的 = 兄弟家有餘額。</strong></p></blockquote>
+<p>因為紅小孩<strong>不佔黑高</strong> —— 它就是掛在兄弟身上的<strong>額外</strong>資產。</p>
+<div class="tablewrap"><table><thead><tr><th>兄弟</th><th>姪子</th><th>意思</th></tr></thead><tbody>
+<tr><td>黑</td><td><strong>有紅的</strong></td><td>有餘額,<strong>借得到</strong> → Case 3 / 4</td></tr>
+<tr><td>黑</td><td>兩個都黑</td><td>兄弟身上只有自己那塊<strong>本金</strong>,借了它自己就垮 → <strong>借不到</strong> → Case 2</td></tr>
+</tbody></table></div>
+
+<h4>Case 2|兄弟家也窮 → 兩家一起減,虧空上報</h4>
+<p>沒錢可借,那就<strong>大家一起少一塊本金</strong>(兄弟塗紅 = 本金變餘額)。</p>
+<p>兩邊一樣窮 → 對爸爸來說公平 → <strong>把「少一塊」的帳報給爸爸</strong>。</p>
+<div class="tablewrap"><table><thead><tr><th>爸爸</th><th>結果</th></tr></thead><tbody>
+<tr><td><strong>紅</strong>(有餘額)</td><td>拿來抵 → <strong>結清</strong></td></tr>
+<tr><td><strong>黑</strong></td><td>爸爸成了新的雙黑 → <strong>繼續往上報</strong></td></tr>
+<tr><td><strong>是根</strong></td><td>全樹一起少一塊,誰都沒吃虧 → <strong>結清</strong></td></tr>
+</tbody></table></div>
+<blockquote><p><strong>只有 Case 2 會往上傳:合併之後虧空還在,只是換人扛。</strong></p></blockquote>
+
+<h4>Case 4|錢在遠端 → 直接借,收工</h4>
+<p>旋轉時,兄弟 <code>w</code> 會從<strong>遠姪子頭上走掉</strong> → 遠姪子那條路少一塊本金。</p>
+<blockquote><p><strong>只有遠姪子本身是紅的(有餘額),才能把它塗黑補回來。</strong><br>它本來就是黑的話,塗了等於沒塗。</p></blockquote>
+<p><strong>那近姪子呢?</strong> 旋轉時它<strong>換邊搬到爸爸底下</strong>,而爸爸剛好塗黑 —— 一進一出打平,幫不上忙。</p>
+
+<h4>Case 3|錢在近端 → 先挪到遠端</h4>
+<p>近端的紅色是有錢,但<strong>位置不對,遞不過來</strong>。</p>
+<p>先對兄弟轉一次,<strong>把紅色挪到遠端</strong> → 變成 Case 4 → 借。</p>
+
+<h4>Case 1|你認錯人了</h4>
+<p><strong>這是最容易誤解的一個。它根本不是解法。</strong></p>
+<pre><code>      P(B)                     x 的「binary 兄弟」是 w
+     /    \                    但 w 是紅的 ——
+   x(BB)   w(R)                它其實跟 P 是「同一個節點」的一部分
+          /    \
+        wl(B)  wr(B)           ⇒ x 真正的兄弟是 wl,不是 w</code></pre>
+<p>Case 1 旋轉之後:</p>
+<pre><code>      w(B)
+     /    \
+   P(R)   wr(B)                x 的兄弟終於變成 wl 了
+   /  \
+  x(BB) wl(B)</code></pre>
+<blockquote><p><strong>Case 1 只是把畫法翻了一面,好讓 <code>x</code> 的「真兄弟」站到兄弟的位置上。</strong><br>雙黑一點都沒解決 —— 但你現在看得到真正的兄弟了。</p></blockquote>
+<p>(為什麼 <code>w</code> 跟 <code>P</code> 是「同一個節點」?看第四節。)</p>
+
+<h3>四、再深一層:紅黑樹其實是 2-3-4 樹</h3>
+
+<h4>對應規則</h4>
+<blockquote><p><strong>一個黑節點,加上它的紅小孩,合起來是 B 樹裡的「同一個節點」。</strong></p></blockquote>
+<div class="tablewrap"><table><thead><tr><th>黑節點的紅小孩數</th><th>合起來是</th><th>幾個 key</th></tr></thead><tbody>
+<tr><td>0</td><td><strong>2-node</strong></td><td>1</td></tr>
+<tr><td>1</td><td><strong>3-node</strong></td><td>2</td></tr>
+<tr><td>2</td><td><strong>4-node</strong></td><td>3</td></tr>
+</tbody></table></div>
+<p><strong>紅色不是顏色,是一根「我跟我爸是同一個節點」的標記。</strong></p>
+
+<h4>四個 Case 的 B 樹意義</h4>
+<div class="tablewrap"><table><thead><tr><th>Case</th><th>RB 動作</th><th>在 2-3-4 樹裡</th><th>旋轉</th></tr></thead><tbody>
+<tr><td><strong>1</strong></td><td>兄弟紅 → 旋轉換色</td><td><strong>換畫法</strong>。B 樹一點都沒變,只是把 <code>x</code> 的真兄弟叫出來</td><td>1</td></tr>
+<tr><td><strong>2</strong></td><td>兩姪子黑 → 兄弟塗紅,往上推</td><td>兄弟是 <strong>2-node</strong>,沒有多的 key 可借 → <strong>合併</strong> → 爸爸下溢 → 往上</td><td><strong>0</strong></td></tr>
+<tr><td><strong>3</strong></td><td>近姪子紅 → 旋轉換色</td><td><strong>換畫法</strong>。B 樹沒變,只是把要借的 key 挪到能借的位置</td><td>1</td></tr>
+<tr><td><strong>4</strong></td><td>遠姪子紅 → 旋轉換色</td><td>兄弟是 <strong>3-node / 4-node</strong>,有多的 key → <strong>借一個 key</strong> → 結束</td><td>1</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>只有 Case 2(合併)和 Case 4(借)在做真正的事。</strong></p>
+<p><strong>Case 1 和 Case 3 都只是「換畫法」。</strong></p></blockquote>
+<p>「兄弟家有沒有紅姪子」= <strong>「兄弟這個 B 樹節點是不是 2-node」</strong>。<br>2-node 借不出去(借了自己就垮)→ 只能合併。這跟 B 樹刪除的邏輯<strong>一字不差</strong>。</p>
+
+<h4>這樣「旋轉 ≤ 3」就是廢話了</h4>
+<pre><code>換畫法(Case 1)  1 轉
+換畫法(Case 3)  1 轉
+借  (Case 4)    1 轉
+合併(Case 2)    0 轉 —— 只是記帳,不動樹
+                ─────
+                最多 3 轉</code></pre>
+<p><strong>Case 1 不可能出現兩次</strong>(換完畫法,真兄弟就站好了)。<br><strong>Case 3 不可能出現兩次</strong>(挪完錢,直接就借)。</p>
+
+<h3>五、記憶結構:只有三個問題</h3>
+<pre><code>① 兄弟是紅的?    → 你認錯人了,先把真兄弟叫出來      (Case 1)
+② 遠端有紅?      → 借,收工                          (Case 4)
+③ 近端有紅?      → 先把錢挪到遠端,再借              (Case 3 → 4)
+   都沒有         → 兩家一起窮,虧空報給爸爸          (Case 2)</code></pre>
+
+<h3>六、順帶把插入也解釋了</h3>
+<div class="tablewrap"><table><thead><tr><th>RB 插入</th><th>在 2-3-4 樹裡</th><th>旋轉</th></tr></thead><tbody>
+<tr><td>父親是黑 → 結束</td><td>key 塞進 <strong>2-node</strong> → 變 3-node</td><td>0</td></tr>
+<tr><td><strong>情況三</strong>(叔叔黑,直線)</td><td>key 塞進 <strong>3-node</strong> → 變 4-node</td><td>1</td></tr>
+<tr><td><strong>情況二</strong>(叔叔黑,折線)</td><td><strong>換畫法</strong></td><td>1</td></tr>
+<tr><td><strong>情況一</strong>(叔叔紅)</td><td>節點是 <strong>4-node,塞不下了</strong> → <strong>分裂</strong>,中間的 key 往上推 → 爸爸可能又溢位 → 往上</td><td><strong>0</strong></td></tr>
+</tbody></table></div>
+<p><strong>插入旋轉 ≤ 2</strong> = 換畫法(1)+ 完成(1)。分裂不旋轉。</p>
+
+<h4>新節點為什麼一律塗紅?</h4>
+<blockquote><p>紅是<strong>餘額</strong>,不動本金 → 黑高不變 → <strong>性質 5 永遠安全</strong>。<br>塗黑就是<strong>憑空多印一塊本金</strong> → 全樹的帳立刻對不上。</p></blockquote>
+<p><strong>先放餘額,不動本金。這是紅黑樹所有操作的第一原則。</strong></p>
+
+<hr>
+
+<h2>題目</h2>
+
+<h3>Q1|<code>y</code> 是紅色 → 直接結束</h3>
+<pre><code>      20(B)
+     /    \
+   10(R)  30(R)</code></pre>
+<p><strong>刪除 <code>10</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>D = 10</code>,0 個小孩 → <code>y = 10</code>,<code>x = NIL</code></td></tr>
+<tr><td>出口</td><td><strong><code>y</code> 是紅</strong> → <strong>結束</strong></td></tr>
+</tbody></table></div>
+<pre><code>   20(B)
+      \
+      30(R)</code></pre>
+<p><strong>驗證</strong>:<code>20→NIL(左)</code> = 1 黑;<code>20→30(R)→NIL</code> = 1 黑 ✔</p>
+<p><strong>旋轉 0 次,變色 0 次。</strong></p>
+<blockquote><p>拿掉紅節點,所有路徑的黑數完全沒變。</p></blockquote>
+
+<h3>Q2|<code>y</code> 黑、<code>x</code> 紅 → 把 <code>x</code> 染黑</h3>
+<pre><code>      20(B)
+     /    \
+   10(B)  30(B)
+      \
+      15(R)</code></pre>
+<p><strong>刪除 <code>10</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>D = 10</code>,<strong>1 個小孩</strong>(<code>15</code>)→ <code>y = 10</code>,<code>x = 15</code></td></tr>
+<tr><td>出口①</td><td><code>y</code> 是<strong>黑</strong> → 往下</td></tr>
+<tr><td>出口②</td><td><strong><code>x = 15</code> 是紅</strong> → <strong>染黑,結束</strong></td></tr>
+</tbody></table></div>
+<pre><code>      20(B)
+     /    \
+   15(B)  30(B)</code></pre>
+<p><strong>驗證</strong>:兩條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 0 次。</strong></p>
+<blockquote><p><code>y</code> 黑被拿掉 → 少一個黑;<code>x</code> 原本紅 → 染黑剛好補回來。<strong>帳平了。</strong></p></blockquote>
+
+<h3>Q3|情況 2 → 撞到根結束</h3>
+<pre><code>      20(B)
+     /    \
+   10(B)  30(B)</code></pre>
+<p><strong>刪除 <code>10</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 10</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>出口</td><td><code>y</code> 黑、<code>x</code> 黑 → <strong><code>x</code> 背雙黑</strong></td></tr>
+<tr><td>fixup</td><td><code>x</code> 在左,<code>w = 30(B)</code>,兩子皆 NIL(黑)→ <strong>情況 2</strong></td></tr>
+</tbody></table></div>
+<p><strong>情況 2</strong>:<code>w(30)</code> → 紅;<code>x</code> 上移到 <code>P(20)</code><br><code>20</code> 是<strong>根</strong> → 直接丟掉多出來的黑 → <strong>結束</strong></p>
+<pre><code>   20(B)
+      \
+      30(R)</code></pre>
+<p><strong>驗證</strong>:<code>20→NIL(左)</code> = 1;<code>20→30(R)→NIL</code> = 1 ✔</p>
+<p><strong>旋轉 0 次。</strong></p>
+
+<h3>Q4|情況 4 → 一刀結束</h3>
+<pre><code>        30(B)
+       /    \
+    20(B)   40(B)
+            /   \
+         35(R)  50(R)</code></pre>
+<p><strong>刪除 <code>20</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:三條路徑黑數都是 2 ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 20</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>出口</td><td>都黑 → <code>x</code> 雙黑</td></tr>
+<tr><td>fixup</td><td><code>x</code> 在左,<code>w = 40(B)</code>。<strong>遠</strong> = <code>w.right = 50(R)</code> <strong>紅</strong> → <strong>情況 4</strong></td></tr>
+</tbody></table></div>
+<p><strong>情況 4</strong>(<code>x</code> 在左 → 左旋 <code>P</code>):</p>
+<ol>
+<li>對 <code>P(30)</code> <strong>左旋</strong> → <code>40</code> 上去,<code>30</code> 變 <code>40</code> 的左子,<code>35</code> 換邊到 <code>30</code> 的右邊</li>
+<li><code>w(40)</code> 接手 <code>P</code> 的顏色 → <strong>黑</strong></li>
+<li><code>P(30)</code> → <strong>黑</strong></li>
+<li><strong>遠</strong>小孩 <code>50</code> → <strong>黑</strong></li>
+</ol>
+<pre><code>        40(B)
+       /    \
+    30(B)   50(B)
+       \
+       35(R)</code></pre>
+<p><strong>驗證</strong>:根黑 ✔;<code>35(R)</code> 父 <code>30(B)</code> ✔;三條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 1 次。</strong></p>
+
+<h3>Q5|情況 3 → 情況 4</h3>
+<pre><code>        30(B)
+       /    \
+    20(B)   40(B)
+            /
+         35(R)</code></pre>
+<p><strong>刪除 <code>20</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:三條路徑黑數都是 2 ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 20</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>fixup</td><td><code>x</code> 在左,<code>w = 40(B)</code>。<strong>遠</strong> = <code>w.right = NIL(黑)</code>;<strong>近</strong> = <code>w.left = 35(R)</code> → <strong>情況 3</strong></td></tr>
+</tbody></table></div>
+<p><strong>① 情況 3</strong>(<code>x</code> 在左 → 右旋 <code>w</code>):對 <code>w(40)</code> <strong>右旋</strong>;<code>40</code> ↔ <code>35</code> 換色</p>
+<pre><code>        30(B)
+       /    \
+      x     35(B)
+               \
+               40(R)</code></pre>
+<p>新 <code>w = 35(B)</code>,<strong>遠</strong> = <code>w.right = 40(R)</code> 紅 → <strong>情況 4</strong></p>
+<p><strong>② 情況 4</strong>:對 <code>P(30)</code> <strong>左旋</strong>;<code>w(35)</code> 接手 <code>30</code> 的顏色(黑);<code>30</code>→黑;<code>40</code>→黑</p>
+<pre><code>        35(B)
+       /    \
+    30(B)   40(B)</code></pre>
+<p><strong>驗證</strong>:兩條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 2 次。</strong></p>
+
+<h3>Q6|情況 1 → 情況 4</h3>
+<pre><code>        30(B)
+       /    \
+    20(B)   40(R)
+            /   \
+         35(B)  50(B)
+           \
+           37(R)</code></pre>
+<p><strong>刪除 <code>20</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:四條路徑黑數都是 2 ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 20</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>fixup</td><td><code>x</code> 在左,<strong><code>w = 40(R)</code> 是紅</strong> → <strong>情況 1</strong></td></tr>
+</tbody></table></div>
+<p><strong>① 情況 1</strong>:對 <code>P(30)</code> <strong>左旋</strong>;<code>w(40)</code>→黑;<code>P(30)</code>→紅</p>
+<pre><code>        40(B)
+       /    \
+    30(R)   50(B)
+    /   \
+   x    35(B)
+          \
+          37(R)</code></pre>
+<p>新 <code>w = 35(B)</code>。<strong>遠</strong> = <code>w.right = 37(R)</code> <strong>紅</strong> → <strong>情況 4</strong></p>
+<p><strong>② 情況 4</strong>:對 <code>P(30)</code> <strong>左旋</strong>;<code>w(35)</code> 接手 <code>30</code> 的顏色(<strong>紅</strong>);<code>30</code>→黑;遠 <code>37</code>→黑</p>
+<pre><code>        40(B)
+       /    \
+    35(R)   50(B)
+    /   \
+  30(B) 37(B)</code></pre>
+<p><strong>驗證</strong>:根黑 ✔;<code>35(R)</code> 父 <code>40(B)</code>、小孩皆黑 ✔;三條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 2 次。</strong></p>
+
+<h3>Q7|情況 1 → 3 → 4(<strong>上界:3 次旋轉</strong>)</h3>
+<pre><code>        30(B)
+       /    \
+    20(B)   40(R)
+            /   \
+         35(B)  50(B)
+         /
+      33(R)</code></pre>
+<p><strong>刪除 <code>20</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:四條路徑黑數都是 2 ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 20</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>fixup</td><td><code>x</code> 在左,<strong><code>w = 40(R)</code> 是紅</strong> → <strong>情況 1</strong></td></tr>
+</tbody></table></div>
+<p><strong>① 情況 1</strong>:對 <code>P(30)</code> <strong>左旋</strong>;<code>w(40)</code>→黑;<code>P(30)</code>→紅</p>
+<pre><code>        40(B)
+       /    \
+    30(R)   50(B)
+    /   \
+   x    35(B)
+         /
+       33(R)</code></pre>
+<p>新 <code>w = 35(B)</code>。<strong>遠</strong> = <code>NIL(黑)</code>;<strong>近</strong> = <code>33(R)</code> → <strong>情況 3</strong></p>
+<p><strong>② 情況 3</strong>:對 <code>w(35)</code> <strong>右旋</strong>;<code>35</code> ↔ <code>33</code> 換色(<code>33</code>→黑、<code>35</code>→紅)</p>
+<pre><code>        40(B)
+       /    \
+    30(R)   50(B)
+    /   \
+   x    33(B)
+           \
+           35(R)</code></pre>
+<p>新 <code>w = 33(B)</code>。<strong>遠</strong> = <code>35(R)</code> 紅 → <strong>情況 4</strong></p>
+<p><strong>③ 情況 4</strong>:對 <code>P(30)</code> <strong>左旋</strong>;<code>w(33)</code> 接手 <code>30</code> 的顏色(<strong>紅</strong>);<code>30</code>→黑;遠 <code>35</code>→黑</p>
+<pre><code>        40(B)
+       /    \
+    33(R)   50(B)
+    /   \
+  30(B) 35(B)</code></pre>
+<p><strong>驗證</strong>:根黑 ✔;<code>33(R)</code> 父 <code>40(B)</code>、小孩 <code>30(B)</code>/<code>35(B)</code> ✔;三條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 3 次 —— 這就是刪除的理論上界。</strong></p>
+<blockquote><p><strong>這一題的形狀值得記:<code>w</code> 紅、<code>w</code> 的近孫紅、遠孫黑。</strong> 只有這個組合能打滿 3 次。</p></blockquote>
+
+<h3>Q8|情況 2 連跑兩輪(迴圈)</h3>
+<pre><code>              50(B)
+           /        \
+        25(B)       75(B)
+        /   \       /    \
+     15(B) 35(B) 65(B)  85(B)</code></pre>
+<p><strong>刪除 <code>15</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹</strong>:7 個節點全黑的完美樹,每條路徑黑數 3 ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 15</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>fixup</td><td><code>x</code> 在左,<code>w = 35(B)</code>,兩子皆 NIL(黑)→ <strong>情況 2</strong></td></tr>
+</tbody></table></div>
+<p><strong>① 情況 2</strong>:<code>w(35)</code> → 紅;<code>x</code> <strong>上移到 <code>P(25)</code></strong></p>
+<pre><code>              50(B)
+           /        \
+        25(B)       75(B)      ← 25 現在是雙黑
+           \        /    \
+          35(R)  65(B)  85(B)</code></pre>
+<p><code>P(25)</code> 是<strong>黑</strong>,而且<strong>不是根</strong> → <strong>回到第三步,繼續</strong></p>
+<hr>
+<p>新的 <code>x = 25</code>,在 <code>50</code> 的<strong>左</strong>邊。<code>w = 75(B)</code>,兩子 <code>65(B)</code>、<code>85(B)</code> 都黑 → <strong>又是情況 2</strong></p>
+<p><strong>② 情況 2</strong>:<code>w(75)</code> → 紅;<code>x</code> 上移到 <code>P(50)</code><br><code>50</code> 是<strong>根</strong> → 丟掉多出來的黑 → <strong>結束</strong></p>
+<pre><code>              50(B)
+           /        \
+        25(B)       75(R)
+           \        /    \
+          35(R)  65(B)  85(B)</code></pre>
+<p><strong>驗證</strong>:</p>
+<ul>
+<li>根黑 ✔</li>
+<li>紅接紅:<code>35(R)</code> 父 <code>25(B)</code> ✔;<code>75(R)</code> 父 <code>50(B)</code>、小孩皆黑 ✔</li>
+<li>四條路徑黑數都是 <strong>2</strong> ✔(整棵樹黑高從 3 降到 2)</li>
+</ul>
+<p><strong>旋轉 0 次,情況 2 跑了兩輪。</strong></p>
+<blockquote><p><strong>情況 2 是唯一會迴圈的,而且一次都不轉。</strong> 每輪 <code>x</code> 往上一層。</p></blockquote>
+
+<h3>Q9|兩個小孩 + 後繼是紅葉 → 直接結束</h3>
+<pre><code>          30(B)
+        /      \
+     20(B)     40(B)
+                /  \
+             35(R) 50(R)</code></pre>
+<p><strong>刪除 <code>40</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>D = 40</code> 有<strong>兩個小孩</strong> → <code>S = D.right = 50</code>,<code>50</code> 沒有左小孩 → <strong><code>S = 50</code></strong></td></tr>
+<tr><td></td><td>把 <code>50</code> 的 key 抄進 <code>40</code> 這顆節點(名牌變 <code>50</code>,顏色不變),<strong>改成去刪 <code>S = 50</code></strong></td></tr>
+<tr><td></td><td><code>S = 50</code> 是<strong>紅葉</strong> → <code>y = 50</code>,<code>x = NIL</code></td></tr>
+<tr><td>出口①</td><td><strong><code>y</code> 是紅</strong> → <strong>結束</strong></td></tr>
+</tbody></table></div>
+<pre><code>          30(B)
+        /      \
+     20(B)     50(B)        ← 名牌 50,本體是原本的 40
+                /
+             35(R)</code></pre>
+<p><strong>驗證</strong>:三條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 0 次。</strong></p>
+<blockquote><p>⚠️ <strong>只搬 key,節點沒搬。</strong> 真正消失的是原本那顆值為 <code>50</code> 的紅葉。</p></blockquote>
+
+<h3>Q10|兩個小孩 + <strong>鏡像</strong>情況 4</h3>
+<pre><code>       20(B)
+      /    \
+   10(R)   27(B)
+   /   \    /    \
+ 5(B) 15(B) 25(R) 30(R)
+ /
+1(R)</code></pre>
+<p><strong>刪除 <code>10</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:四條路徑黑數都是 2 ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>D = 10</code> 有<strong>兩個小孩</strong> → <code>S = D.right = 15</code>,沒有左小孩 → <strong><code>S = 15</code></strong></td></tr>
+<tr><td></td><td>把 <code>15</code> 抄進 <code>10</code>(名牌變 <code>15</code>,<strong>顏色仍是紅</strong>),改成去刪 <code>S = 15</code></td></tr>
+<tr><td></td><td><code>S = 15</code> 是<strong>黑葉</strong> → <code>y = 15</code>,<code>x = NIL</code></td></tr>
+<tr><td>出口</td><td>都黑 → <code>x</code> 雙黑,<code>x</code> 在 <code>[15]</code> 的<strong>右</strong>邊 → <strong>鏡像</strong></td></tr>
+</tbody></table></div>
+<pre><code>搬 key 後
+       20(B)
+      /    \
+   15(R)   27(B)          ← 名牌 15,本體是原本的 10
+   /   \    /    \
+ 5(B)  [x] 25(R) 30(R)
+ /
+1(R)</code></pre>
+<p><strong>fixup</strong>(<code>x</code> 在右 → 全部鏡像):</p>
+<ul>
+<li><code>w = P.left = 5(B)</code></li>
+<li><strong>遠</strong>小孩(離 <code>x</code> 遠)= <code>w.left = 1(R)</code> → <strong>紅</strong> → <strong>情況 4(鏡像)</strong></li>
+</ul>
+<p><strong>情況 4(鏡像)</strong>(<code>x</code> 在右 → <strong>右旋 <code>P</code></strong>):</p>
+<ol>
+<li>對 <code>P([15])</code> <strong>右旋</strong></li>
+<li><code>w(5)</code> 接手 <code>P</code> 的顏色 → <strong>紅</strong></li>
+<li><code>P([15])</code> → <strong>黑</strong></li>
+<li><strong>遠</strong>小孩 <code>1</code> → <strong>黑</strong></li>
+</ol>
+<pre><code>       20(B)
+      /    \
+    5(R)   27(B)
+    /  \    /    \
+  1(B) 15(B) 25(R) 30(R)</code></pre>
+<p><strong>驗證</strong>:根黑 ✔;<code>5(R)</code> 父 <code>20(B)</code>、小孩 <code>1(B)</code>/<code>15(B)</code> ✔;四條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 1 次。</strong></p>
+
+<h3>Q11|<strong>鏡像</strong>情況 3 → 4</h3>
+<pre><code>        30(B)
+       /    \
+    20(B)   40(B)
+       \
+       25(R)</code></pre>
+<p><strong>刪除 <code>40</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:三條路徑黑數都是 2 ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 40</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>fixup</td><td><code>x</code> 在 <code>30</code> 的<strong>右</strong>邊 → <strong>鏡像</strong>。<code>w = P.left = 20(B)</code></td></tr>
+<tr><td></td><td><strong>遠</strong> = <code>w.left = NIL(黑)</code>;<strong>近</strong> = <code>w.right = 25(R)</code> → <strong>情況 3(鏡像)</strong></td></tr>
+</tbody></table></div>
+<p><strong>① 情況 3(鏡像)</strong>(要抬<strong>近</strong>小孩 <code>25</code>,它在 <code>w</code> 的<strong>右</strong>邊 → <strong>左旋 <code>w</code></strong>):對 <code>w(20)</code> <strong>左旋</strong>;<code>20</code> ↔ <code>25</code> 換色(<code>25</code>→黑、<code>20</code>→紅)</p>
+<pre><code>        30(B)
+       /    \
+     25(B)   x
+     /
+   20(R)</code></pre>
+<p>新 <code>w = 25(B)</code>。<strong>遠</strong> = <code>w.left = 20(R)</code> 紅 → <strong>情況 4(鏡像)</strong></p>
+<p><strong>② 情況 4(鏡像)</strong>(<code>x</code> 在右 → <strong>右旋 <code>P</code></strong>):對 <code>P(30)</code> <strong>右旋</strong>;<code>w(25)</code> 接手 <code>30</code> 的顏色(黑);<code>30</code>→黑;遠 <code>20</code>→黑</p>
+<pre><code>        25(B)
+       /    \
+    20(B)   30(B)</code></pre>
+<p><strong>驗證</strong>:兩條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 2 次。</strong></p>
+<blockquote><p><strong>鏡像的唯一改動:所有「左」換「右」。</strong> 判斷邏輯完全一樣。</p></blockquote>
+
+<h3>Q12|綜合大題:兩個小孩 + 情況 1 → 3 → 4</h3>
+<pre><code>                30(B)
+            /          \
+         15(B)          60(B)
+        /    \         /     \
+     10(B)  20(B)   40(B)    80(R)
+                            /     \
+                         70(B)   90(B)
+                         /
+                      65(R)</code></pre>
+<p><strong>刪除 <code>30</code>(根)。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:六條路徑黑數都是 <strong>3</strong> ✔;<code>80(R)</code> 父 <code>60(B)</code>、小孩皆黑 ✔;<code>65(R)</code> 父 <code>70(B)</code> ✔</p>
+<hr>
+<h4>步驟一|化簡</h4>
+<p><code>D = 30</code>(根)有<strong>兩個小孩</strong> → 找 <code>S</code>:</p>
+<pre><code>從 D.right = 60 出發,一路往左
+  60 → 40    (40 沒有左小孩)
+  ⇒ S = 40</code></pre>
+<p>把 <code>40</code> 的 key 抄進根節點(名牌變 <code>40</code>),<strong>改成去刪 <code>S = 40</code></strong>。</p>
+<p><code>S = 40</code> 是<strong>黑葉</strong> → <code>y = 40</code>,<code>x = NIL</code>(<code>60</code> 的左小孩位置)</p>
+<pre><code>                40(B)          ← 名牌 40
+            /          \
+         15(B)          60(B)
+        /    \         /     \
+     10(B)  20(B)    [x]     80(R)
+                            /     \
+                         70(B)   90(B)
+                         /
+                      65(R)</code></pre>
+<h4>步驟二|看顏色(兩個出口)</h4>
+<p><code>y</code> 是<strong>黑</strong>、<code>x</code> 是 NIL(<strong>黑</strong>)→ 都不通 → <strong><code>x</code> 背雙黑</strong></p>
+<h4>步驟三|雙黑修復</h4>
+<p><code>x</code> 在 <code>60</code> 的<strong>左</strong>邊 → <code>w = 60.right = 80(R)</code> <strong>紅</strong> → <strong>情況 1</strong></p>
+<p><strong>① 情況 1</strong>:對 <code>P(60)</code> <strong>左旋</strong>;<code>w(80)</code>→黑;<code>P(60)</code>→紅</p>
+<pre><code>                40(B)
+            /          \
+         15(B)          80(B)
+        /    \         /     \
+     10(B)  20(B)   60(R)    90(B)
+                    /    \
+                  [x]    70(B)
+                         /
+                      65(R)</code></pre>
+<p>新 <code>w = 70(B)</code>。<strong>遠</strong> = <code>w.right = NIL(黑)</code>;<strong>近</strong> = <code>w.left = 65(R)</code> → <strong>情況 3</strong></p>
+<p><strong>② 情況 3</strong>:對 <code>w(70)</code> <strong>右旋</strong>;<code>70</code> ↔ <code>65</code> 換色(<code>65</code>→黑、<code>70</code>→紅)</p>
+<pre><code>                40(B)
+            /          \
+         15(B)          80(B)
+        /    \         /     \
+     10(B)  20(B)   60(R)    90(B)
+                    /    \
+                  [x]    65(B)
+                             \
+                             70(R)</code></pre>
+<p>新 <code>w = 65(B)</code>。<strong>遠</strong> = <code>w.right = 70(R)</code> <strong>紅</strong> → <strong>情況 4</strong></p>
+<p><strong>③ 情況 4</strong>:對 <code>P(60)</code> <strong>左旋</strong>;<code>w(65)</code> 接手 <code>60</code> 的顏色(<strong>紅</strong>);<code>60</code>→黑;遠 <code>70</code>→黑</p>
+<pre><code>                40(B)
+            /          \
+         15(B)          80(B)
+        /    \         /     \
+     10(B)  20(B)   65(R)    90(B)
+                    /    \
+                 60(B)  70(B)</code></pre>
+<h4>驗證</h4>
+<ol>
+<li><strong>根黑</strong>:<code>40(B)</code> ✔</li>
+<li><strong>無紅接紅</strong>:<code>65(R)</code> 父 <code>80(B)</code>、小孩 <code>60(B)</code>/<code>70(B)</code> ✔</li>
+<li><strong>逐條路徑數黑色(含 NIL)</strong>:五條全部是 <strong>3</strong> ✔
+<ul>
+<li><code>40→15→10→NIL</code> = <code>15</code> + <code>10</code> + NIL = 3</li>
+<li><code>40→15→20→NIL</code> = 3</li>
+<li><code>40→80→65(R)→60→NIL</code> = <code>80</code> + <code>60</code> + NIL = 3</li>
+<li><code>40→80→65(R)→70→NIL</code> = 3</li>
+<li><code>40→80→90→NIL</code> = 3</li>
+</ul>
+</li>
+</ol>
+<p><strong>旋轉 3 次(上界)。</strong></p>
+
+<h3>Q13|情況 2 → <code>P</code> 是紅 → 染黑結束</h3>
+<pre><code>        30(B)
+       /    \
+    20(R)   40(B)
+    /   \
+  10(B) 25(B)</code></pre>
+<p><strong>刪除 <code>10</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:三條路徑黑數都是 2 ✔;<code>20(R)</code> 父 <code>30(B)</code>、小孩皆黑 ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 10</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>fixup</td><td><code>x</code> 在左,<code>w = 25(B)</code>,兩子皆 NIL(黑)→ <strong>情況 2</strong></td></tr>
+</tbody></table></div>
+<p><strong>情況 2</strong>:<code>w(25)</code> → 紅;<code>x</code> 上移到 <code>P(20)</code></p>
+<p><strong><code>P(20)</code> 是紅</strong> → <strong>染黑,結束</strong></p>
+<pre><code>        30(B)
+       /    \
+    20(B)   40(B)
+        \
+        25(R)</code></pre>
+<p><strong>驗證</strong>:根黑 ✔;<code>25(R)</code> 父 <code>20(B)</code> ✔;三條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 0 次。</strong></p>
+<blockquote><p><strong>情況 2 有三個出口:<code>P</code> 紅(染黑結束)、<code>P</code> 黑(繼續迴圈)、<code>P</code> 是根(結束)。</strong><br>Q3 和 Q8 演的是「撞根」,這題演「<code>P</code> 紅」。</p></blockquote>
+
+<h3>Q14|情況 1 → 情況 2 → 結束(<strong>證明情況 1 只能出現一次</strong>)</h3>
+<pre><code>        30(B)
+       /    \
+    20(B)   40(R)
+            /   \
+         35(B)  50(B)</code></pre>
+<p><strong>刪除 <code>20</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:三條路徑黑數都是 2 ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 20</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>fixup</td><td><code>x</code> 在左,<strong><code>w = 40(R)</code> 紅</strong> → <strong>情況 1</strong></td></tr>
+</tbody></table></div>
+<p><strong>① 情況 1</strong>:對 <code>P(30)</code> <strong>左旋</strong>;<code>w(40)</code>→黑;<strong><code>P(30)</code>→紅</strong></p>
+<pre><code>        40(B)
+       /    \
+    30(R)   50(B)
+    /   \
+   x    35(B)</code></pre>
+<p>新 <code>w = 35(B)</code>,兩子皆 NIL(黑)→ <strong>情況 2</strong></p>
+<p><strong>② 情況 2</strong>:<code>w(35)</code> → 紅;<code>x</code> 上移到 <code>P(30)</code></p>
+<p><strong><code>P(30)</code> 剛剛被情況 1 染成紅色</strong> → <strong>染黑,立刻結束</strong></p>
+<pre><code>        40(B)
+       /    \
+    30(B)   50(B)
+        \
+        35(R)</code></pre>
+<p><strong>驗證</strong>:根黑 ✔;<code>35(R)</code> 父 <code>30(B)</code> ✔;三條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 1 次。</strong></p>
+<blockquote><p><strong>這題就是「刪除旋轉 ≤ 3」的關鍵</strong></p>
+<p><strong>情況 1 會把 <code>P</code> 染紅。</strong> 之後若走情況 2,<code>x</code> 一上移就撞到紅色的 <code>P</code> → 立刻結束。<br><strong>所以情況 1 之後,最多只能再走「情況 3 → 情況 4」。</strong> 加起來 <code>1 + 1 + 1 = 3</code>。</p></blockquote>
+
+<h3>Q15|情況 2 → 情況 4(迴圈之後換了情況)</h3>
+<pre><code>              50(B)
+           /        \
+        25(B)       75(B)
+        /   \       /    \
+     15(B) 35(B) 65(B)  85(R)
+                         /  \
+                      80(B) 90(B)</code></pre>
+<p><strong>刪除 <code>15</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:五條路徑黑數都是 3 ✔;<code>85(R)</code> 父 <code>75(B)</code>、小孩皆黑 ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 15</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>fixup</td><td><code>x</code> 在左,<code>w = 35(B)</code>,兩子皆黑 → <strong>情況 2</strong></td></tr>
+</tbody></table></div>
+<p><strong>① 情況 2</strong>:<code>w(35)</code> → 紅;<code>x</code> 上移到 <code>P(25)</code></p>
+<p><code>P(25)</code> 是<strong>黑</strong>,而且<strong>不是根</strong> → <strong>回到第三步</strong></p>
+<pre><code>              50(B)
+           /        \
+        25(B)       75(B)      ← 25 現在是雙黑
+           \        /    \
+          35(R)  65(B)  85(R)
+                         /  \
+                      80(B) 90(B)</code></pre>
+<hr>
+<p>新的 <code>x = 25</code>,在 <code>50</code> 的<strong>左</strong>邊。<code>w = 75(B)</code>。<br><strong>遠</strong> = <code>w.right = 85(R)</code> → <strong>紅</strong> → <strong>情況 4</strong>(不是情況 2 了!)</p>
+<p><strong>② 情況 4</strong>:對 <code>P(50)</code> <strong>左旋</strong>;<code>w(75)</code> 接手 <code>50</code> 的顏色(黑);<code>50</code>→黑;遠 <code>85</code>→黑</p>
+<pre><code>              75(B)
+           /        \
+        50(B)       85(B)
+        /    \      /    \
+     25(B)  65(B) 80(B) 90(B)
+        \
+       35(R)</code></pre>
+<p><strong>驗證</strong>:根黑 ✔;<code>35(R)</code> 父 <code>25(B)</code> ✔;五條路徑黑數都是 3 ✔</p>
+<p><strong>旋轉 1 次。</strong></p>
+<blockquote><p><strong><code>x</code> 每上移一層,兄弟就換人。</strong> 新兄弟是什麼顏色、小孩什麼顏色,都要<strong>重新判斷</strong>。<br>不要以為第一輪是情況 2,後面就一直是情況 2。</p></blockquote>
+
+<h3>Q16|<strong>鏡像</strong>情況 1 → <strong>鏡像</strong>情況 2</h3>
+<pre><code>        30(B)
+       /    \
+    20(R)   40(B)
+    /   \
+  10(B) 25(B)
+   /
+ 5(R)</code></pre>
+<p><strong>刪除 <code>40</code>。</strong></p>
+<h4>▼ 詳解</h4>
+<p><strong>起始樹驗證</strong>:四條路徑黑數都是 2 ✔;<code>20(R)</code> 父 <code>30(B)</code>、小孩皆黑 ✔;<code>5(R)</code> 父 <code>10(B)</code> ✔</p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>判斷</th></tr></thead><tbody>
+<tr><td>化簡</td><td><code>y = 40</code>(黑葉),<code>x = NIL</code></td></tr>
+<tr><td>fixup</td><td><code>x</code> 在 <code>30</code> 的<strong>右</strong>邊 → <strong>鏡像</strong>。<code>w = P.left = 20(R)</code> <strong>紅</strong> → <strong>情況 1(鏡像)</strong></td></tr>
+</tbody></table></div>
+<p><strong>① 情況 1(鏡像)</strong>(要抬 <code>w = 20</code>,它在 <code>P</code> 的<strong>左</strong>邊 → <strong>右旋 <code>P</code></strong>):</p>
+<p>對 <code>P(30)</code> <strong>右旋</strong>;<code>w(20)</code>→黑;<strong><code>P(30)</code>→紅</strong></p>
+<p>右旋 <code>30</code>:<code>20</code> 上去,<code>30</code> 變 <code>20</code> 的右子,<code>20</code> 的右子 <code>25</code> 換邊到 <code>30</code> 的左邊</p>
+<pre><code>        20(B)
+       /    \
+    10(B)   30(R)
+    /       /   \
+  5(R)    25(B)  x</code></pre>
+<p>新 <code>w = P.left = 25(B)</code>,兩子皆 NIL(黑)→ <strong>情況 2(鏡像)</strong></p>
+<p><strong>② 情況 2(鏡像)</strong>:<code>w(25)</code> → 紅;<code>x</code> 上移到 <code>P(30)</code></p>
+<p><strong><code>P(30)</code> 是紅</strong>(剛被情況 1 染的)→ <strong>染黑,結束</strong></p>
+<pre><code>        20(B)
+       /    \
+    10(B)   30(B)
+    /       /
+  5(R)    25(R)</code></pre>
+<p><strong>驗證</strong>:根黑 ✔;<code>5(R)</code> 父 <code>10(B)</code> ✔;<code>25(R)</code> 父 <code>30(B)</code> ✔;四條路徑黑數都是 2 ✔</p>
+<p><strong>旋轉 1 次。</strong></p>
+<blockquote><p><strong>鏡像的唯一改動:所有「左」換「右」。</strong><br><code>w = P.left</code>(不是 <code>P.right</code>);情況 1 是<strong>右旋 <code>P</code></strong>(不是左旋)。<br><strong>判斷邏輯一字不改。</strong></p></blockquote>
+
+<hr>
+
+<h2>總表:16 題走過的所有分支</h2>
+<div class="tablewrap"><table><thead><tr><th>題</th><th>化簡</th><th>出口 / 情況鏈</th><th>旋轉</th></tr></thead><tbody>
+<tr><td>Q1</td><td>0 個小孩</td><td><strong><code>y</code> 紅</strong> → 結束</td><td>0</td></tr>
+<tr><td>Q2</td><td>1 個小孩</td><td><code>y</code> 黑 → <strong><code>x</code> 紅</strong> → 染黑結束</td><td>0</td></tr>
+<tr><td>Q3</td><td>0 個小孩</td><td><strong>情況 2</strong> → 撞根結束</td><td>0</td></tr>
+<tr><td>Q4</td><td>0 個小孩</td><td><strong>情況 4</strong></td><td>1</td></tr>
+<tr><td>Q5</td><td>0 個小孩</td><td><strong>情況 3 → 4</strong></td><td>2</td></tr>
+<tr><td>Q6</td><td>0 個小孩</td><td><strong>情況 1 → 4</strong></td><td>2</td></tr>
+<tr><td>Q7</td><td>0 個小孩</td><td><strong>情況 1 → 3 → 4</strong></td><td><strong>3(上界)</strong></td></tr>
+<tr><td>Q8</td><td>0 個小孩</td><td><strong>情況 2 → 情況 2</strong> → 撞根結束</td><td>0</td></tr>
+<tr><td>Q9</td><td><strong>2 個小孩</strong></td><td>後繼是紅葉 → <strong><code>y</code> 紅</strong> → 結束</td><td>0</td></tr>
+<tr><td>Q10</td><td><strong>2 個小孩</strong></td><td><strong>鏡像情況 4</strong></td><td>1</td></tr>
+<tr><td>Q11</td><td>0 個小孩</td><td><strong>鏡像情況 3 → 4</strong></td><td>2</td></tr>
+<tr><td>Q12</td><td><strong>2 個小孩</strong></td><td><strong>情況 1 → 3 → 4</strong></td><td><strong>3(上界)</strong></td></tr>
+<tr><td>Q13</td><td>0 個小孩</td><td><strong>情況 2 → <code>P</code> 紅</strong> → 染黑結束</td><td>0</td></tr>
+<tr><td>Q14</td><td>0 個小孩</td><td><strong>情況 1 → 情況 2</strong> → 結束</td><td>1</td></tr>
+<tr><td>Q15</td><td>0 個小孩</td><td><strong>情況 2 → 情況 4</strong></td><td>1</td></tr>
+<tr><td>Q16</td><td>0 個小孩</td><td><strong>鏡像情況 1 → 鏡像情況 2</strong></td><td>1</td></tr>
+</tbody></table></div>
+
+<h3>覆蓋矩陣:確認沒有漏</h3>
+
+<h4>① 化簡階段(三種 <code>y</code>)</h4>
+<div class="tablewrap"><table><thead><tr><th><code>y</code> 的長相</th><th>題目</th></tr></thead><tbody>
+<tr><td>紅葉</td><td><strong>Q1</strong>、<strong>Q9</strong>(從後繼來)</td></tr>
+<tr><td>黑,帶一個紅葉小孩</td><td><strong>Q2</strong></td></tr>
+<tr><td>黑葉</td><td>其餘 13 題</td></tr>
+</tbody></table></div>
+<blockquote><p>對照 SOP 的「<code>y</code> 只有三種長相」—— <strong>沒有第四種</strong>。</p></blockquote>
+
+<h4>② 兩個出口</h4>
+<div class="tablewrap"><table><thead><tr><th>出口</th><th>題目</th></tr></thead><tbody>
+<tr><td><code>y</code> 紅 → 結束</td><td><strong>Q1</strong>、<strong>Q9</strong></td></tr>
+<tr><td><code>x</code> 紅 → 染黑結束</td><td><strong>Q2</strong></td></tr>
+</tbody></table></div>
+
+<h4>③ 四種情況:第一步走到哪個</h4>
+<div class="tablewrap"><table><thead><tr><th>第一步</th><th>題目</th></tr></thead><tbody>
+<tr><td>情況 1</td><td><strong>Q6</strong>、<strong>Q7</strong>、<strong>Q12</strong>、<strong>Q14</strong>、<strong>Q16</strong>(鏡)</td></tr>
+<tr><td>情況 2</td><td><strong>Q3</strong>、<strong>Q8</strong>、<strong>Q13</strong>、<strong>Q15</strong></td></tr>
+<tr><td>情況 3</td><td><strong>Q5</strong>、<strong>Q11</strong>(鏡)</td></tr>
+<tr><td>情況 4</td><td><strong>Q4</strong>、<strong>Q10</strong>(鏡)</td></tr>
+</tbody></table></div>
+
+<h4>④ 情況 2 的三個出口</h4>
+<div class="tablewrap"><table><thead><tr><th>出口</th><th>題目</th></tr></thead><tbody>
+<tr><td><code>P</code> 是根 → 結束</td><td><strong>Q3</strong>、<strong>Q8</strong></td></tr>
+<tr><td><code>P</code> 紅 → 染黑結束</td><td><strong>Q13</strong>、<strong>Q14</strong>、<strong>Q16</strong>(鏡)</td></tr>
+<tr><td><code>P</code> 黑 → 繼續迴圈</td><td><strong>Q8</strong>、<strong>Q15</strong></td></tr>
+</tbody></table></div>
+
+<h4>⑤ 情況 1 的三個去向</h4>
+<div class="tablewrap"><table><thead><tr><th>之後走到</th><th>題目</th></tr></thead><tbody>
+<tr><td>情況 2</td><td><strong>Q14</strong>、<strong>Q16</strong>(鏡)</td></tr>
+<tr><td>情況 3(再進 4)</td><td><strong>Q7</strong>、<strong>Q12</strong></td></tr>
+<tr><td>情況 4</td><td><strong>Q6</strong></td></tr>
+</tbody></table></div>
+<blockquote><p>情況 1 <strong>不可能</strong>接情況 1(它把 <code>P</code> 染紅了,新兄弟必定是黑)。</p></blockquote>
+
+<h4>⑥ 鏡像(<code>x</code> 在右)</h4>
+<div class="tablewrap"><table><thead><tr><th>情況</th><th>題目</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>Q16</strong></td></tr>
+<tr><td>2</td><td><strong>Q16</strong></td></tr>
+<tr><td>3</td><td><strong>Q11</strong></td></tr>
+<tr><td>4</td><td><strong>Q10</strong></td></tr>
+</tbody></table></div>
+<p><strong>四種情況的鏡像版本都練過。</strong></p>
+
+<h3>五個必記結論</h3>
+<div class="tablewrap"><table><thead><tr><th>#</th><th></th></tr></thead><tbody>
+<tr><td>1</td><td><strong><code>y</code> 只有三種長相</strong>:紅葉 / 黑帶一個紅葉小孩 / 黑葉</td></tr>
+<tr><td>2</td><td><strong><code>y</code> 紅 → 直接結束;<code>x</code> 紅 → 染黑結束。</strong> 大部分刪除都在這裡收工</td></tr>
+<tr><td>3</td><td><strong>只有情況 2 會迴圈,而且一次都不轉</strong></td></tr>
+<tr><td>4</td><td><strong>情況 1 只能出現一次</strong>(它把 <code>P</code> 染紅,後面走不回情況 1)</td></tr>
+<tr><td>5</td><td><strong>旋轉最多 3 次</strong>:<code>情況 1 → 3 → 4</code>。這是唯一能打滿的路徑</td></tr>
+</tbody></table></div>
+
+<h3>三個最常見的錯</h3>
+<div class="tablewrap"><table><thead><tr><th>錯</th><th>對</th></tr></thead><tbody>
+<tr><td>一開始就跳進四情況</td><td><strong>先看 <code>y</code> 紅 / <code>x</code> 紅兩個出口</strong></td></tr>
+<tr><td>「兩個小孩」當成第三種刪除</td><td>它是<strong>降級機</strong>:抄 key → 改刪後繼 → 後繼只有 0 或 1 個小孩</td></tr>
+<tr><td><code>x</code> 上移後沿用上一輪的判斷</td><td><strong>兄弟換人了,顏色要重新看</strong>(見 Q15)</td></tr>
+<tr><td><code>x</code> 在右時把左右搞混</td><td><strong><code>x</code> 在右 → 所有左右對調</strong>(<code>w = P.left</code>、近 = <code>w.right</code>、遠 = <code>w.left</code>)</td></tr>
+</tbody></table></div>
+
+<footer class="foot">來源：_private/20260708/紅黑樹_刪除專練.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>
