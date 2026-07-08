@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜AVL樹</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;overflow-wrap:anywhere;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}th code{background:transparent;color:inherit;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">AVL Tree</p>
+<h1>AVL樹</h1>
+<blockquote><p>只收錄 AVL 樹「要背的」與「會錯的」考前重點:定義與平衡因子、四種旋轉判斷、插入／刪除流程,以及 <code>N(h)</code> 公式。</p></blockquote>
+<hr>
+<blockquote><p><strong>這張卡只放「要背的」和「會錯的」。</strong></p><p>完整推演見《AVL樹_圖解實作與考試速成》,刪除範例見《AVL樹_刪除專練》。</p></blockquote>
+<div class="tablewrap"><table><thead><tr><th></th><th>區塊</th><th>用途</th></tr></thead><tbody>
+<tr><td><strong>Ⅰ</strong></td><td>⓪ 定義　① 三句話</td><td>地基,不通後面全錯</td></tr>
+<tr><td><strong>Ⅱ</strong></td><td>② 旋轉公式　③ 判斷表　④ 四型圖</td><td><strong>考場核心</strong></td></tr>
+<tr><td><strong>Ⅲ</strong></td><td>⑤ 插入　⑥ 刪除　⑦ 兩者差異</td><td>流程</td></tr>
+<tr><td><strong>Ⅳ</strong></td><td>⑧ <code>N(h)</code> 公式　⑨ 陷阱　⑩ 實作　⑪ 60 秒</td><td>收尾</td></tr>
+</tbody></table></div>
+<hr>
+<h2>Ⅰ　地基</h2>
+<h3>⓪ 定義:高度與平衡因子【硬背】</h3>
+<h4>高度 <code>h(x)</code></h4>
+<blockquote><p><strong><code>h(x)</code> = 以 <code>x</code> 為根的那棵子樹的高度。</strong></p></blockquote>
+<p><strong>每個節點都是「某一棵子樹的根」→ 每個節點都有自己的高度。</strong>平常講的「樹高」,只是 <code>h(根節點)</code> 這個特例。</p>
+<div class="tablewrap"><table><thead><tr><th>寫法</th><th>意思</th><th>值</th></tr></thead><tbody>
+<tr><td><code>h(null)</code></td><td><strong>空樹</strong></td><td><strong>0</strong></td></tr>
+<tr><td><code>h(葉節點)</code></td><td>它自己就是一棵單節點的樹</td><td><strong>1</strong></td></tr>
+<tr><td><code>h(root)</code></td><td>整棵樹</td><td><strong>樹高</strong></td></tr>
+</tbody></table></div>
+<p><strong>遞迴式</strong></p>
+<pre><code>h(x) = 1 + max( h(x.left), h(x.right) )        基底:h(null) = 0
+        ↑                ↑
+     x 自己那一層     取比較深的那邊</code></pre>
+<blockquote><p><code>h(葉) = 1 + max(0, 0) = 1</code> ← <strong>不是規定,是「<code>h(null) = 0</code>」的必然推論。</strong></p></blockquote>
+<h4>平衡因子 <code>BF(x)</code></h4>
+<blockquote><p><strong><code>BF(x) = h(x.left) − h(x.right)</code></strong></p></blockquote>
+<p>合法值只有 <strong><code>−1</code> / <code>0</code> / <code>+1</code></strong>。出現 <strong><code>±2</code></strong> 就是失衡。<strong>正號 = 左邊高</strong>(<code>+2</code> → 左邊太重 → 往<strong>右</strong>扳)。</p>
+<h4>實際標一次</h4>
+<pre><code>        50 (h=3)
+      /         \
+   30 (h=2)    70 (h=1)
+   /      \
+20 (h=1)  40 (h=1)</code></pre>
+<div class="tablewrap"><table><thead><tr><th>節點</th><th>算式</th><th><strong>BF</strong></th></tr></thead><tbody>
+<tr><td><code>50</code></td><td><code>h(30) − h(70) = 2 − 1</code></td><td><strong>+1</strong></td></tr>
+<tr><td><code>30</code></td><td><code>h(20) − h(40) = 1 − 1</code></td><td><strong>0</strong></td></tr>
+<tr><td><code>20</code> <code>40</code> <code>70</code></td><td><code>h(null) − h(null) = 0 − 0</code></td><td><strong>0</strong></td></tr>
+</tbody></table></div>
+<p><strong>樹高 = <code>h(50)</code> = 3</strong></p>
+<blockquote><p>⚠️ <code>BF(50)</code> 用的是 <strong><code>30</code> 和 <code>70</code> 各自的高度</strong>,不是樹高。</p><p>這就是為什麼<strong>每個節點都要存一個 <code>height</code> 欄位</strong>。</p></blockquote>
+<pre><code class="language-ts">const h  = (n) =&gt; (n ? n.height : 0);          // ← h(null) = 0 在這裡實作
+const bf = (n) =&gt; (n ? h(n.left) - h(n.right) : 0);</code></pre>
+<h4>為什麼「葉 = 1」和「空 = 0」必須差 1?</h4>
+<p>BF 的作用就是分辨「這邊有一個節點」和「這邊什麼都沒有」。</p>
+<pre><code>   P
+  /
+ L        ← L 是葉,P 的右邊是空的</code></pre>
+<div class="tablewrap"><table><thead><tr><th></th><th><code>BF(P)</code></th><th>結果</th></tr></thead><tbody>
+<tr><td><strong>正確</strong>(葉=1、空=0)</td><td><code>1 − 0 = +1</code></td><td>判定左重 ✔</td></tr>
+<tr><td><strong>錯誤</strong>(葉也算 0)</td><td><code>0 − 0 = 0</code></td><td>誤判為完美平衡 ✗</td></tr>
+</tbody></table></div>
+<blockquote><p>用 <code>1/0</code> 還是 <code>0/−1</code> 都行 —— <strong>只要差 1。</strong></p><p>所以 <strong>BF 與旋轉判斷完全不受高度約定影響</strong>(見 ⑧)。</p></blockquote>
+<h4>高度 vs 深度</h4>
+<div class="tablewrap"><table><thead><tr><th></th><th>從哪量到哪</th><th>根</th><th>葉</th></tr></thead><tbody>
+<tr><td><strong>深度</strong> <code>depth(x)</code></td><td>從<strong>根</strong>往下數到 <code>x</code></td><td><strong>0</strong></td><td>最大</td></tr>
+<tr><td><strong>高度</strong> <code>h(x)</code></td><td>從 <code>x</code> 往下數到最遠的<strong>葉</strong></td><td>樹高</td><td><strong>1</strong></td></tr>
+</tbody></table></div>
+<p>方向相反、起點不同。「根的深度 = 0」和「根的高度 = 3」同時成立。</p>
+<hr>
+<h3>① 三句話定生死【理解】</h3>
+<ol>
+<li><strong>AVL 只管「何時該轉」</strong>(<code>|BF| ≥ 2</code> 就轉);<strong>「怎麼轉」是旋轉自己的規則</strong>,普通 BST 就有。</li>
+<li><strong>旋轉 = 父子上下對調</strong>,不是轉圈。</li>
+<li><strong>中序順序永遠不變</strong> —— 這是旋轉的鐵律,也是唯一的驗算工具。</li>
+</ol>
+<hr>
+<h2>Ⅱ　考場核心</h2>
+<h3>② 旋轉通用公式(只背這兩張圖)【硬背】</h3>
+<h4>右旋(修 <code>BF = +2</code>,左歪)</h4>
+<pre><code>        P                              L
+       / \                            / \
+      L   c    ──右旋(P)──►         a   P
+     / \                                / \
+    a   b                              b   c</code></pre>
+<p><strong>兩邊中序都是 <code>a &lt; L &lt; b &lt; P &lt; c</code></strong></p>
+<div class="tablewrap"><table><thead><tr><th>步驟</th><th>動作</th></tr></thead><tbody>
+<tr><td>①</td><td><strong><code>L</code> 升上來</strong>當家長(<code>L = P.left</code>)</td></tr>
+<tr><td>②</td><td><strong><code>P</code> 掉下去</strong>當 <code>L</code> 的右小孩 → 所以叫「右」旋</td></tr>
+<tr><td>③</td><td><strong><code>b</code> 換邊</strong>:<code>L.right</code> → <code>P.left</code></td></tr>
+</tbody></table></div>
+<h4>左旋(修 <code>BF = −2</code>,右歪)—— 完全鏡像</h4>
+<pre><code>        P                              R
+       / \                            / \
+      a   R    ──左旋(P)──►          P   c
+         / \                        / \
+        b   c                      a   b</code></pre>
+<p><strong>兩邊中序都是 <code>a &lt; P &lt; b &lt; R &lt; c</code></strong></p>
+<h4>左右對照【硬背】</h4>
+<div class="tablewrap"><table><thead><tr><th></th><th><strong>右旋</strong></th><th><strong>左旋</strong></th></tr></thead><tbody>
+<tr><td>誰升上去</td><td><strong>左</strong>小孩 <code>L</code></td><td><strong>右</strong>小孩 <code>R</code></td></tr>
+<tr><td><code>P</code> 往哪倒</td><td>往<strong>右</strong>倒</td><td>往<strong>左</strong>倒</td></tr>
+<tr><td><code>b</code> 是誰</td><td><code>L.right</code></td><td><code>R.left</code></td></tr>
+<tr><td><code>b</code> 換到哪</td><td><code>P</code> 的<strong>左</strong>邊</td><td><code>P</code> 的<strong>右</strong>邊</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>一句話統一</strong></p><p><strong><code>b</code> 永遠是「升上去那個節點,靠近 <code>P</code> 那一側的子樹」,永遠搬到「<code>P</code> 空出來的那一側」。</strong></p><p>把紙翻面,兩張圖是同一張。</p></blockquote>
+<h4><code>b</code> 的三個真相(最常誤解)</h4>
+<ol>
+<li><strong><code>b</code> 是一個「位置」,不是特定節點。</strong> 對誰旋轉,<code>b</code> 就換人。</li>
+<li><strong><code>b</code> 常常是 <code>null</code></strong> —— 三節點的小例子裡它全是空的,所以你看不見它,不代表它不存在。</li>
+<li><strong><code>b</code> 不需要動態判斷。</strong> 用指標抓(<code>L.right</code>),不比大小。<code>rotateRight</code> 裡連一個 <code>if</code> 都沒有。</li>
+</ol>
+<h4>⚠️ 名字的坑</h4>
+<blockquote><p><strong>右旋抬上去的是「左」小孩。</strong></p><p>名字講的是「<strong>舊家長往哪邊倒</strong>」,不是「你把東西移去哪邊」。</p></blockquote>
+<h4>具體對照(<code>b</code> 不是空的版本)</h4>
+<p><strong>右旋 LL</strong> —— <code>b = 25</code>,從 <code>20</code> 的右 → <code>30</code> 的左</p>
+<pre><code>      30 (+2)               20
+     /  \                  /  \
+   20    40    ──►       10    30
+  /  \                   /    /  \
+10    25                5   25    40
+/
+5</code></pre>
+<p><strong>左旋 RR</strong> —— <code>b = 35</code>,從 <code>40</code> 的左 → <code>30</code> 的右</p>
+<pre><code>      30 (−2)                 40
+     /  \                    /  \
+   20    40      ──►       30    50
+        /  \              /  \     \
+      35    50          20    35    55
+              \
+              55</code></pre>
+<p><strong>中序驗算</strong></p>
+<pre><code>右旋   5, 10, 20, 25, 30, 40    →   5, 10, 20, 25, 30, 40     ✔
+左旋   20, 30, 35, 40, 50, 55   →   20, 30, 35, 40, 50, 55    ✔</code></pre>
+<hr>
+<h3>③ 四種旋轉判斷表(全卡最重要)【硬背】</h3>
+<div class="tablewrap"><table><thead><tr><th>失衡點 BF</th><th>較高子 BF</th><th>類型</th><th>動作</th><th>基本旋轉次數</th></tr></thead><tbody>
+<tr><td><strong>+2</strong></td><td>+1 或 <strong>0</strong></td><td><strong>LL</strong></td><td>對失衡點<strong>右旋</strong></td><td>1</td></tr>
+<tr><td><strong>−2</strong></td><td>−1 或 <strong>0</strong></td><td><strong>RR</strong></td><td>對失衡點<strong>左旋</strong></td><td>1</td></tr>
+<tr><td><strong>+2</strong></td><td><strong>−1</strong></td><td><strong>LR</strong></td><td>先對<strong>左子左旋</strong> → 再對失衡點<strong>右旋</strong></td><td>2</td></tr>
+<tr><td><strong>−2</strong></td><td><strong>+1</strong></td><td><strong>RL</strong></td><td>先對<strong>右子右旋</strong> → 再對失衡點<strong>左旋</strong></td><td>2</td></tr>
+</tbody></table></div>
+<h4>一秒判斷法</h4>
+<blockquote><p><strong>同號 → 單旋　　異號 → 雙旋</strong></p><p><strong>單旋方向永遠跟「歪的那邊」相反</strong>(左歪往右轉)</p><p><strong>雙旋 = 先橋直(對子節點轉一次)、再單旋</strong></p></blockquote>
+<p><code>較高子 BF = 0</code> <strong>只會在刪除時出現</strong> → 歸單旋。(它還有隱藏意義,見 ⑥)</p>
+<hr>
+<h3>④ 四型迷你圖(標註失衡點)【練流程】</h3>
+<blockquote><p><code>★</code> = <strong>失衡點</strong>(從最低往上,第一個 <code>|BF| ≥ 2</code>)　　<code>◆</code> = <strong>較高子</strong></p><p><strong>旋轉一律對 <code>★</code> 動刀</strong>;雙旋要先對 <code>◆</code> 橋直。</p></blockquote>
+<h4>LL(路徑:<strong>左 → 左</strong>)　插入 <code>30 → 20 → 10</code></h4>
+<pre><code>  ★ 30   BF = +2
+    /
+  ◆ 20   BF = +1   ← 同號
+    /
+    10   BF =  0</code></pre>
+<p><strong>同號 → 單旋</strong>;左歪 → 對 <code>★30</code> <strong>右旋</strong></p>
+<h4>RR(路徑:<strong>右 → 右</strong>)　插入 <code>10 → 20 → 30</code></h4>
+<pre><code>  ★ 10   BF = −2
+      \
+      ◆ 20   BF = −1   ← 同號
+          \
+          30   BF =  0</code></pre>
+<p><strong>同號 → 單旋</strong>;右歪 → 對 <code>★10</code> <strong>左旋</strong></p>
+<h4>LR(路徑:<strong>左 → 右</strong>)　插入 <code>30 → 10 → 20</code></h4>
+<pre><code>  ★ 30   BF = +2
+    /
+  ◆ 10   BF = −1   ← 異號!
+      \
+      20   BF =  0</code></pre>
+<p><strong>異號 → 雙旋</strong>:① 對 <code>◆10</code> <strong>左旋</strong>(橋直成 LL)　② 對 <code>★30</code> <strong>右旋</strong></p>
+<h4>RL(路徑:<strong>右 → 左</strong>)　插入 <code>10 → 30 → 20</code></h4>
+<pre><code>  ★ 10   BF = −2
+      \
+      ◆ 30   BF = +1   ← 異號!
+        /
+      20   BF =  0</code></pre>
+<p><strong>異號 → 雙旋</strong>:① 對 <code>◆30</code> <strong>右旋</strong>(橋直成 RR)　② 對 <code>★10</code> <strong>左旋</strong></p>
+<h4>四者殊途同歸</h4>
+<pre><code>        20
+       /  \
+     10    30</code></pre>
+<blockquote><p>⚠️ 這四題只有三個節點,<code>★</code> 剛好都在根,而且 <code>b</code> 全是 <code>null</code>。</p><p><strong>真正的考題裡,<code>★</code> 通常不在根,<code>b</code> 通常不是空的。</strong></p></blockquote>
+<hr>
+<h2>Ⅲ　流程</h2>
+<h3>⑤ 插入流程【練流程】</h3>
+<ol>
+<li>照 BST 規則走到底(小往左、大往右),<strong>新節點掛在 <code>null</code> 的位置,一定是葉</strong>,<code>h = 1</code></li>
+<li><strong>沿著剛才走下來的那條路徑往回</strong>,逐層更新 <code>h</code>、算 BF(其他旁支完全不用碰)</li>
+<li>找<strong>最低的</strong>(第一個)<code>|BF| ≥ 2</code> 的節點 <code>★</code></li>
+<li>查表 ③ → 旋轉 → <strong>結束</strong></li>
+</ol>
+<blockquote><p><strong>插入最多 1 組旋轉。</strong> 修好 <code>★</code> 之後,子樹高度<strong>還原成插入前</strong> → 上層自動歸位。</p></blockquote>
+<hr>
+<h3>⑥ 刪除 SOP【練流程】</h3>
+<h4>第一步|找出「真正要刪的節點」</h4>
+<p>設 <code>D</code> = 你要刪的那個值所在的節點。</p>
+<div class="tablewrap"><table><thead><tr><th><code>D</code> 的小孩數</th><th>做什麼</th></tr></thead><tbody>
+<tr><td><strong>0</strong></td><td>移除 <code>D</code></td></tr>
+<tr><td><strong>1</strong></td><td>把那個小孩接到 <code>D</code> 原本的位置</td></tr>
+<tr><td><strong>2</strong></td><td>從 <code>D.right</code> 一路往<strong>左</strong>走到底,得到 <code>S</code>。把 <code>S</code> 的值抄進 <code>D</code>。<strong>改成去刪 <code>S</code></strong>(<code>S</code> 一定只有 0 或 1 個小孩,套上面兩列)</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>被移除節點的父親 = 你的起點。</strong></p></blockquote>
+<h4>第二步|從起點往上,一路做到根</h4>
+<p>對路徑上的<strong>每一個</strong>節點,依序做四件事:</p>
+<p><strong>① 重算高度</strong></p>
+<pre><code>h = 1 + max( h(左小孩), h(右小孩) )</code></pre>
+<p>左右小孩的高度<strong>直接讀</strong>,不用重算。空的算 <code>0</code>。</p>
+<p><strong>② 算 BF</strong></p>
+<pre><code>BF = h(左小孩) − h(右小孩)</code></pre>
+<p><strong>③ 判斷</strong></p>
+<ul>
+<li><code>|BF| ≤ 1</code> → <strong>不動</strong>,跳到 ④</li>
+<li><code>|BF| = 2</code> → 看<strong>較高的那個小孩</strong>的 BF,查表旋轉:</li>
+</ul>
+<div class="tablewrap"><table><thead><tr><th>這個節點 BF</th><th>較高子 BF</th><th>做什麼</th></tr></thead><tbody>
+<tr><td><strong>+2</strong></td><td><code>+1</code> 或 <code>0</code></td><td>對這個節點<strong>右旋</strong></td></tr>
+<tr><td><strong>+2</strong></td><td><code>−1</code></td><td>先對<strong>左小孩左旋</strong>,再對這個節點<strong>右旋</strong></td></tr>
+<tr><td><strong>−2</strong></td><td><code>−1</code> 或 <code>0</code></td><td>對這個節點<strong>左旋</strong></td></tr>
+<tr><td><strong>−2</strong></td><td><code>+1</code></td><td>先對<strong>右小孩右旋</strong>,再對這個節點<strong>左旋</strong></td></tr>
+</tbody></table></div>
+<p><strong>④ 往上一層,回到 ①</strong></p>
+<p>直到處理完根節點為止。</p>
+<hr>
+<h4>就這樣。</h4>
+<p>不用管「高度有沒有變」「要不要提早停」—— 那是省時間的優化。<strong>手算時一路做到根,答案一定對。</strong></p>
+<hr>
+<h4>(選配)提早停手的規則</h4>
+<p>考試時間不夠、或考卷問「連鎖到哪一層」才需要:</p>
+<div class="tablewrap"><table><thead><tr><th>這一層發生了什麼</th><th>子樹高度</th><th>可以停?</th></tr></thead><tbody>
+<tr><td>沒失衡,<code>h</code> 沒變</td><td>不變</td><td><strong>停</strong></td></tr>
+<tr><td>沒失衡,<code>h</code> 少 1</td><td>矮 1</td><td>往上</td></tr>
+<tr><td><strong>單旋</strong>,較高子 BF = <code>±1</code></td><td>矮 1</td><td>往上</td></tr>
+<tr><td><strong>單旋</strong>,較高子 BF = <strong><code>0</code></strong></td><td><strong>不變</strong></td><td><strong>停</strong></td></tr>
+<tr><td><strong>雙旋</strong>(LR / RL)</td><td>矮 1</td><td>往上</td></tr>
+</tbody></table></div>
+<blockquote><p>「較高子 BF = <code>0</code>」只發生在刪除。它同時代表<strong>歸單旋</strong>和<strong>連鎖到此為止</strong>。</p></blockquote>
+<hr>
+<h3>⑦ 插入 vs 刪除(超高頻)【理解】</h3>
+<div class="tablewrap"><table><thead><tr><th></th><th>修完一次之後</th><th>結果</th></tr></thead><tbody>
+<tr><td><strong>插入</strong></td><td>子樹高度<strong>還原成插入前</strong></td><td>上層無感 → <strong>收工</strong>,最多 <strong>1 組</strong></td></tr>
+<tr><td><strong>刪除</strong></td><td>子樹高度可能<strong>又矮一層</strong></td><td>上層要重算 → <strong>連鎖</strong>,最壞 <strong>O(log n) 組</strong></td></tr>
+</tbody></table></div>
+<p><strong>這是同一份程式碼跑出來的</strong>:<code>rebalance()</code> 寫在遞迴的<strong>回程</strong>,從動過的位置一路呼叫到根。插入時上層 BF 自然正常,不會轉;刪除時上層可能真的失衡,就會再轉。</p>
+<hr>
+<h2>Ⅳ　收尾</h2>
+<h3>⑧ 唯一要背的公式:<code>N(h)</code></h3>
+<blockquote><p><strong><code>N(h) = N(h−1) + N(h−2) + 1</code>　　<code>N(0) = 0</code>、<code>N(1) = 1</code></strong></p><p><strong>白話:前兩項相加,再 +1</strong></p></blockquote>
+<p>其他所有數字,都從這條式子(加上 <code>h(x) = 1 + max(左,右)</code> 和 <code>|BF| ≤ 1</code>)推出來。</p>
+<h4>一、<code>N</code> 是什麼?</h4>
+<p><code>N</code> 只是一個<strong>函數的名字</strong>,像數學課的 <code>f(x)</code>。</p>
+<blockquote><p><strong><code>N(h)</code> = 「高度是 <code>h</code> 的 AVL 樹,<strong>最少</strong>要幾個節點」</strong></p></blockquote>
+<ul>
+<li><code>N</code> 取自 <strong>N</strong>umber(節點數)</li>
+<li>括號裡是<strong>輸入</strong>(高度),算出來是<strong>輸出</strong>(節點數)</li>
+<li><code>N(h−1)</code>、<code>N(h−2)</code> 是<strong>同一個函數</strong>,只是餵不同高度進去</li>
+</ul>
+<div class="tablewrap"><table><thead><tr><th>寫法</th><th>唸成</th><th>值</th></tr></thead><tbody>
+<tr><td><code>N(4)</code></td><td>高度 4 的樹,最少幾個節點</td><td><strong>7</strong></td></tr>
+<tr><td><code>N(5)</code></td><td>高度 5 的樹,最少幾個節點</td><td><strong>12</strong></td></tr>
+</tbody></table></div>
+<blockquote><p>有些課本寫 <code>n(h)</code>、<code>T(h)</code>、<code>minNodes(h)</code> —— 同一個東西。</p></blockquote>
+<h4>二、遞迴式怎麼來的(用推的,不用背)</h4>
+<p>要撐出 <code>h</code> 層,根節點底下:</p>
+<pre><code>        根                  ← 那個 +1(根自己)
+       /   \
+   高 h−1   高 h−2
+   N(h−1)   N(h−2)</code></pre>
+<ul>
+<li><strong>一邊</strong>必須有 <code>h−1</code> 層(不然撐不到 <code>h</code> 層)→ 用最瘦的,<code>N(h−1)</code> 個</li>
+<li><strong>另一邊</strong>愈矮愈省料,但 <strong><code>|BF| ≤ 1</code> 只准差 1 層</strong> → 最矮只能是 <code>h−2</code> 層 → <code>N(h−2)</code> 個</li>
+</ul>
+<blockquote><p><strong>整條式子的靈魂只有一句:AVL 只准左右差一層,所以矮的那邊只能矮一層,不能更矮。</strong></p></blockquote>
+<p><strong>基底</strong>(直接從高度約定看出來)</p>
+<div class="tablewrap"><table><thead><tr><th></th><th>意思</th><th>節點數</th></tr></thead><tbody>
+<tr><td><code>N(0)</code></td><td>空樹</td><td><strong>0</strong></td></tr>
+<tr><td><code>N(1)</code></td><td>單一節點</td><td><strong>1</strong></td></tr>
+</tbody></table></div>
+<h4>三、看圖:一層一層長出來</h4>
+<pre><code>h = 1        h = 2        h = 3            h = 4
+(1 個)       (2 個)       (4 個)           (7 個)
+
+  1            2            3                5
+              /            / \             /   \
+             1            2   4           3     7
+                         /               / \   /
+                        1               2   4 6
+                                       /
+                                      1</code></pre>
+<p><code>h = 4</code> 那棵:<strong>左邊掛一棵 <code>h=3</code> 的(4 個)+ 右邊掛一棵 <code>h=2</code> 的(2 個)+ 根自己 1 個 = 7 個</strong></p>
+<p>正是 <code>N(4) = N(3) + N(2) + 1 = 4 + 2 + 1 = 7</code> ✔</p>
+<blockquote><p>這種樹叫 <strong>Fibonacci tree</strong>:<strong>每個節點的 BF 都恰好 <code>±1</code>,踩在合法邊緣,一碰就倒。</strong></p><p>刪除的連鎖旋轉考題,起始樹幾乎都是它。</p></blockquote>
+<h4>四、算表:考場現加,不用背</h4>
+<pre><code>N(0) = 0
+N(1) = 1
+N(2) = 1 + 0 + 1 = 2
+N(3) = 2 + 1 + 1 = 4
+N(4) = 4 + 2 + 1 = 7
+N(5) = 7 + 4 + 1 = 12
+N(6) = 12 + 7 + 1 = 20
+...</code></pre>
+<div class="tablewrap"><table><thead><tr><th>h</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr></thead><tbody>
+<tr><td><strong>N(h)</strong></td><td>1</td><td>2</td><td>4</td><td>7</td><td>12</td><td>20</td><td>33</td><td>54</td><td>88</td><td>143</td><td>232</td><td>376</td><td>609</td><td>986</td><td>1596</td></tr>
+</tbody></table></div>
+<p><strong>從 <code>0, 1</code> 開始加,加到超過題目給的 <code>n</code> 就停。</strong> 20 秒的事,不必背 15 項。</p>
+<h4>五、它就是 Fibonacci(少 1)</h4>
+<pre><code>Fib(k) = Fib(k−1) + Fib(k−2)          ← 前兩項相加
+N(h)   = N(h−1)  + N(h−2)  + 1        ← 前兩項相加,再 +1(那個 +1 = 根自己)</code></pre>
+<p><code>N(h) = Fib(h+2) − 1</code></p>
+<div class="tablewrap"><table><thead><tr><th>h</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr></thead><tbody>
+<tr><td><strong>N(h)</strong></td><td>1</td><td>2</td><td>4</td><td>7</td><td>12</td><td>20</td><td>33</td></tr>
+<tr><td><strong>Fib(h+2)</strong></td><td>2</td><td>3</td><td>5</td><td>8</td><td>13</td><td>21</td><td>34</td></tr>
+</tbody></table></div>
+<blockquote><p>⚠️ <strong>知道就好,考場別用。</strong> <code>Fib</code> 從哪一項起算容易記錯,差一格全錯。</p><p><strong>一律用「前兩項 +1」現加。</strong></p></blockquote>
+<h4>六、三種用法</h4>
+<h5>用法 ①|正問:高度 <code>h</code>,最少幾個節點?</h5>
+<blockquote><p>「高度為 6 的 AVL 樹,最少有幾個節點?」</p></blockquote>
+<p>查表 → <strong><code>N(6) = 20</code></strong></p>
+<h5>用法 ②|反問:<code>n</code> 個節點,最高幾層?(<strong>最常考</strong>)</h5>
+<blockquote><p>「一棵 AVL 樹有 1000 個節點,樹高最多是多少?」</p></blockquote>
+<p><strong>做法:找最大的 <code>h</code> 使 <code>N(h) ≤ n</code></strong></p>
+<pre><code>N(13) = 609  ≤ 1000  ✔
+N(14) = 986  ≤ 1000  ✔
+N(15) = 1596 &gt; 1000  ✘   ← 超過</code></pre>
+<p>→ <strong>最高 14 層</strong></p>
+<p><strong>原理</strong>:要長到 15 層,<strong>至少</strong>得有 1596 個節點。手上只有 1000 個,<strong>撐不起來</strong>。</p>
+<p>再練一次:<code>n = 100</code> → <code>N(9) = 88 ≤ 100</code>、<code>N(10) = 143 > 100</code> → <strong>最高 9 層</strong></p>
+<h5>用法 ③|判斷題:這棵樹可能存在嗎?</h5>
+<p><code>N(h)</code> 給下界,<code>2^h − 1</code>(滿二元樹)給上界:</p>
+<blockquote><p><strong>高度 <code>h</code> 的 AVL 樹,節點數必定滿足　<code>N(h) ≤ n ≤ 2^h − 1</code></strong></p></blockquote>
+<div class="tablewrap"><table><thead><tr><th>h</th><th>最少 <code>N(h)</code></th><th>最多 <code>2^h − 1</code></th><th>合法範圍</th></tr></thead><tbody>
+<tr><td>3</td><td>4</td><td>7</td><td><code>4 ≤ n ≤ 7</code></td></tr>
+<tr><td>4</td><td>7</td><td>15</td><td><code>7 ≤ n ≤ 15</code></td></tr>
+<tr><td>5</td><td>12</td><td>31</td><td><code>12 ≤ n ≤ 31</code></td></tr>
+<tr><td>6</td><td>20</td><td>63</td><td><code>20 ≤ n ≤ 63</code></td></tr>
+</tbody></table></div>
+<p><strong>例</strong>:「高度 5 的 AVL 樹有 10 個節點」→ <code>N(5) = 12 > 10</code> → 節點不夠 → <strong>錯</strong></p>
+<p><strong>例</strong>:「高度 4 的 AVL 樹有 7 個節點」→ 剛好等於下界 → <strong>對</strong>(就是那棵 Fibonacci tree)</p>
+<h4>七、其他數字全部用推的</h4>
+<div class="tablewrap"><table><thead><tr><th>項目</th><th>怎麼推</th><th>結果</th></tr></thead><tbody>
+<tr><td>高度 <code>h</code> <strong>最多</strong>幾節點</td><td>每層塞滿:<code>1+2+4+…+2^(h−1)</code> 等比級數</td><td><strong><code>2^h − 1</code></strong></td></tr>
+<tr><td>搜尋 / 插入 / 刪除</td><td><code>N(h)</code> 指數成長 → <code>h</code> 是 <code>n</code> 的對數;走下去 + 走回來</td><td><strong><code>O(log n)</code></strong></td></tr>
+<tr><td>插入最多 <strong>1 組</strong>旋轉</td><td>旋轉後子樹高度<strong>還原成插入前</strong> → 上層 BF 沒變 → 不可能失衡</td><td>—</td></tr>
+<tr><td>刪除可能<strong>連鎖</strong></td><td>旋轉後子樹<strong>又矮一層</strong> → 上層可能失衡</td><td><strong>O(log n) 組</strong></td></tr>
+<tr><td>每節點額外空間</td><td>看 struct:<code>{ key, left, right, height }</code></td><td><strong>一個整數</strong></td></tr>
+<tr><td>樹高上界常數 <code>1.44</code></td><td><code>N(h)</code> 成長率 = 黃金比例 <code>φ ≈ 1.618</code>,<code>1 / log₂φ ≈ 1.44</code></td><td><strong><code>h ≈ 1.44 log₂n</code></strong></td></tr>
+</tbody></table></div>
+<blockquote><p><strong><code>1.44</code> 幾乎用不到。</strong> 算「<code>n</code> 個節點最高幾層」一律用 <code>N(h)</code> 表(精確);<code>1.44 log₂n</code> 是近似值,邊界容易算錯。只有題目直接叫你寫「樹高上界公式」時才寫它。</p></blockquote>
+<h4>八、⚠️ 基底跟高度約定綁死</h4>
+<p><strong>遞迴式一模一樣,但起跑點差一格 → 答案整個位移。</strong></p>
+<div class="tablewrap"><table><thead><tr><th></th><th><code>N(0)</code></th><th><code>N(1)</code></th><th>「高度 4 最少幾節點?」</th></tr></thead><tbody>
+<tr><td><strong>約定 A</strong>(空 = 0、葉 = 1)</td><td><code>0</code></td><td><code>1</code></td><td><strong>7</strong></td></tr>
+<tr><td><strong>約定 B</strong>(葉 = 0、空 = −1)</td><td><code>1</code></td><td><code>2</code></td><td><strong>12</strong></td></tr>
+</tbody></table></div>
+<p>關係:<code>h_A = h_B + 1</code>,<code>N_B(h) = N_A(h+1)</code></p>
+<div class="tablewrap"><table><thead><tr><th></th><th><strong>BF / 旋轉判斷</strong></th><th>樹高數值 / <code>N(h)</code></th></tr></thead><tbody>
+<tr><td>受約定影響?</td><td><strong>完全不受影響</strong></td><td><strong>會差 1</strong></td></tr>
+</tbody></table></div>
+<p><strong>怎麼反推題目用哪個?找錨點:</strong></p>
+<div class="tablewrap"><table><thead><tr><th>題目出現這個</th><th>它在用</th></tr></thead><tbody>
+<tr><td>「root 為 level 1」「空樹高度 = 0」「<code>2^h − 1</code>」</td><td><strong>約定 A</strong></td></tr>
+<tr><td>「葉節點高度 = 0」「空子樹高度 = −1」「<code>2^(h+1) − 1</code>」</td><td><strong>約定 B</strong></td></tr>
+</tbody></table></div>
+<blockquote><p>台灣課本傳統(root 為 level 1)偏 <strong>約定 A</strong>;演算法課(CLRS / Weiss)用 <strong>約定 B</strong>。</p><p><strong>題目沒講就自己在卷上寫一行約定</strong>,不會扣分,自己也不會算亂。</p></blockquote>
+<hr>
+<h3>⑨ 七大陷阱【硬背】</h3>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>陷阱</th><th>正解</th></tr></thead><tbody>
+<tr><td>1</td><td>一看到根失衡就下手</td><td>從<strong>最低</strong>往上找<strong>第一個</strong> |BF| ≥ 2</td></tr>
+<tr><td>2</td><td>樹長得歪就以為失衡</td><td><strong>一定要算 BF</strong>,|BF| ≤ 1 就合法</td></tr>
+<tr><td>3</td><td><code>+2</code> 就直接右旋</td><td><strong>先看較高子的 BF</strong>,異號要先橋直</td></tr>
+<tr><td>4</td><td>雙旋只轉一次</td><td><strong>LR / RL 一定是 2 次</strong>基本旋轉</td></tr>
+<tr><td>5</td><td>以為右旋抬的是右小孩</td><td>抬的是<strong>左</strong>小孩</td></tr>
+<tr><td>6</td><td>刪除只修一層就收工</td><td><strong>一路回溯</strong>,可能連鎖</td></tr>
+<tr><td>7</td><td>以為 <code>b</code> 要看數值判斷搬哪</td><td><code>b</code> 固定 = <code>L.right</code>(右旋)/ <code>R.left</code>(左旋),<strong>零判斷</strong></td></tr>
+</tbody></table></div>
+<h4>高頻是非題</h4>
+<div class="tablewrap"><table><thead><tr><th>敘述</th><th>答案</th><th>理由</th></tr></thead><tbody>
+<tr><td>插入一定要旋轉</td><td>✗</td><td>沒失衡就不轉</td></tr>
+<tr><td>刪除一定要旋轉</td><td>✗</td><td>同上</td></tr>
+<tr><td>AVL 刪除最多一組旋轉</td><td>✗</td><td>那是<strong>插入</strong>的性質</td></tr>
+<tr><td>雙旋可用一次單旋取代</td><td>✗</td><td>之字形轉一次仍失衡</td></tr>
+<tr><td>旋轉會改變中序結果</td><td>✗</td><td>中序<strong>永不變</strong></td></tr>
+<tr><td>中序後繼可能有兩個小孩</td><td>✗</td><td>它是最左者,<strong>沒有左小孩</strong></td></tr>
+<tr><td>AVL 一定比紅黑樹快</td><td>✗</td><td>只有<strong>查詢</strong>通常較快</td></tr>
+</tbody></table></div>
+<hr>
+<h3>⑩ 實作 checklist(申論 / 程式題)【練流程】</h3>
+<pre><code class="language-ts">function rotateRight(P) {          function rotateLeft(P) {
+  const L = P.left;                  const R = P.right;
+  const b = L.right;   // 換邊       const b = R.left;    // 換邊
+  L.right = P;         // P 下來      R.left  = P;        // P 下來
+  P.left  = b;         // b 換邊      P.right = b;        // b 換邊
+  update(P);           // 先「下」     update(P);          // 先「下」
+  update(L);           // 再「上」     update(R);          // 再「上」
+  return L;            // 新根        return R;           // 新根
+}                                  }</code></pre>
+<p><strong><code>rebalance</code> 就是判斷表 ③ 的翻譯</strong></p>
+<pre><code>BF &gt; 1   → 若 bf(左子) &lt; 0  先左旋左子(LR)  → 再對自己右旋
+BF &lt; -1  → 若 bf(右子) &gt; 0  先右旋右子(RL)  → 再對自己左旋</code></pre>
+<div class="tablewrap"><table><thead><tr><th>檢查點</th><th>錯了會怎樣</th></tr></thead><tbody>
+<tr><td><code>update()</code> <strong>先下後上</strong></td><td>高度永遠錯,<strong>不報錯</strong>,樹會慢慢歪</td></tr>
+<tr><td>旋轉函式要 <strong><code>return</code> 新根</strong></td><td>子樹整棵斷線</td></tr>
+<tr><td><code>insert</code> / <code>remove</code> <strong>回程都 rebalance</strong></td><td>刪除的連鎖旋轉不會發生</td></tr>
+<tr><td>刪除兩個小孩時<strong>只搬 <code>key</code></strong></td><td>指標亂掉、子樹遺失</td></tr>
+<tr><td><code>h(null)</code> 回傳 <strong><code>0</code></strong>(不是 <code>-1</code>)</td><td>與 <code>height: 1</code> 的葉節點約定衝突</td></tr>
+</tbody></table></div>
+<hr>
+<h3>⑪ 考場最後 60 秒</h3>
+<ol>
+<li><strong>找失衡點 <code>★</code></strong>:從最低往上,第一個 <code>|BF| ≥ 2</code></li>
+<li><strong>判類型</strong>:<code>★</code> 與較高子 <code>◆</code> <strong>同號單旋、異號雙旋</strong></li>
+<li><strong>定方向</strong>:跟歪的那邊<strong>相反</strong>(左歪右轉)</li>
+<li><strong>畫旋轉</strong>:
+<ul>
+<li>右旋 → 填 <code>P</code> <code>L</code> <code>a</code> <code>b</code> <code>c</code>,<code>b</code>(<code>= L.right</code>)搬到 <code>P</code> 的左邊</li>
+<li>左旋 → 填 <code>P</code> <code>R</code> <code>a</code> <code>b</code> <code>c</code>,<code>b</code>(<code>= R.left</code>)搬到 <code>P</code> 的右邊</li>
+</ul>
+</li>
+<li><strong>驗算</strong>:唸一次中序,順序沒變就對了</li>
+<li><strong>刪除多做一步</strong>:子樹<strong>矮了往上</strong>,沒矮收工</li>
+</ol>
+<footer class="foot">來源：_private/20260708/AVL樹_考前速記卡.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>

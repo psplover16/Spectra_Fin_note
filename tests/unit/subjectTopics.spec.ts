@@ -121,7 +121,14 @@ const expectedComputerPrinciplesV2RouteTopicIds: readonly string[] = [
   'cpv2-supplemental-paging-segmentation',
   'cpv2-supplemental-oop-characteristics',
   'cpv2-supplemental-complexity-linear-structures',
-  'cpv2-supplemental-trees-hash-tables',
+  'cpv2-supplemental-basic-tree',
+  'cpv2-supplemental-expression-notation',
+  'cpv2-supplemental-avl-tree',
+  'cpv2-supplemental-avl-tree-deletion',
+  'cpv2-supplemental-red-black-tree',
+  'cpv2-supplemental-red-black-tree-deletion',
+  'cpv2-supplemental-hash-table',
+  'cpv2-supplemental-trees-hash-practice',
   'cpv2-architecture-computation-theory',
   'cpv2-machine-instruction-cycle',
   'cpv2-pipeline-hazard',
@@ -144,7 +151,14 @@ const expectedComputerPrinciplesV2RouteTitles: readonly string[] = [
   '分頁與分段記憶體管理',
   '物件導向特性',
   '複雜度與線性結構',
-  '樹與雜湊表',
+  '基礎樹',
+  '運算式表示法',
+  'AVL樹',
+  'AVL樹_刪除',
+  '紅黑樹',
+  '紅黑樹_刪除',
+  '雜湊表',
+  '樹與雜湊表_考題練習',
   '架構與計算理論',
   '機器指令與指令週期',
   'Pipeline 與 Hazard',
@@ -208,12 +222,60 @@ const splitCpv2SupplementalTopicExpectations = [
     htmlFilename: '基礎資料結構(上)_複雜度與線性結構.html'
   },
   {
-    id: 'cpv2-supplemental-trees-hash-tables',
-    title: '樹與雜湊表',
+    id: 'cpv2-supplemental-basic-tree',
+    title: '基礎樹',
     source: supplementalCpv2TreesHashSourceFile,
-    heading: '樹與雜湊表',
+    keyword: 'Tree',
+    htmlFilename: '基礎樹.html'
+  },
+  {
+    id: 'cpv2-supplemental-expression-notation',
+    title: '運算式表示法',
+    source: supplementalCpv2TreesHashSourceFile,
+    keyword: 'Postfix',
+    htmlFilename: '運算式表示法.html'
+  },
+  {
+    id: 'cpv2-supplemental-avl-tree',
+    title: 'AVL樹',
+    source: '_private/20260708/AVL樹_考前速記卡.md',
+    keyword: 'AVL Tree',
+    htmlFilename: 'AVL樹.html'
+  },
+  {
+    id: 'cpv2-supplemental-avl-tree-deletion',
+    title: 'AVL樹_刪除',
+    source: '_private/20260708/AVL樹_刪除專練.md',
+    keyword: 'AVL Deletion',
+    htmlFilename: 'AVL樹_刪除.html'
+  },
+  {
+    id: 'cpv2-supplemental-red-black-tree',
+    title: '紅黑樹',
+    source: '_private/20260708/紅黑樹_考前速記卡.md',
+    keyword: 'Red-Black Tree',
+    htmlFilename: '紅黑樹.html'
+  },
+  {
+    id: 'cpv2-supplemental-red-black-tree-deletion',
+    title: '紅黑樹_刪除',
+    source: '_private/20260708/紅黑樹_刪除專練.md',
+    keyword: 'Double Black',
+    htmlFilename: '紅黑樹_刪除.html'
+  },
+  {
+    id: 'cpv2-supplemental-hash-table',
+    title: '雜湊表',
+    source: supplementalCpv2TreesHashSourceFile,
     keyword: 'Hash Table',
-    htmlFilename: '基礎資料結構(下)_樹與雜湊表.html'
+    htmlFilename: '雜湊表.html'
+  },
+  {
+    id: 'cpv2-supplemental-trees-hash-practice',
+    title: '樹與雜湊表_考題練習',
+    source: supplementalCpv2TreesHashSourceFile,
+    keyword: 'Practice',
+    htmlFilename: '樹與雜湊表_考題練習.html'
   }
 ] as const;
 

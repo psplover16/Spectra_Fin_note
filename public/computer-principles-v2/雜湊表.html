@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜雜湊表</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;overflow-wrap:anywhere;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}th code{background:transparent;color:inherit;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">Hash Table</p>
+<h1>雜湊表</h1>
+<blockquote><p>本篇聚焦雜湊表:核心觀念與時間複雜度、雜湊函數設計、載入因子與重新雜湊、碰撞解決機制,以及歷屆經典考題實戰演練。</p></blockquote>
+<hr>
+<h2>雜湊表 (Hash Table)</h2>
+<h3>一、核心觀念與時間複雜度</h3>
+<p>雜湊表透過<strong>雜湊函數 (Hash Function)</strong> 將資料的鍵值 (Key) 轉換為陣列的索引值 (Index),達成極快速的資料存取。</p>
+<ul><li><strong>Key(鍵):</strong>尋找資料的唯一識別碼(如:學號、身分證字號)。</li><li><strong>Hash Function(雜湊函數):</strong>負責將 Key 轉換成 Index 的數學公式。</li><li><strong>Bucket / Slot(儲存格):</strong>雜湊表陣列中的位置。</li></ul>
+<h4>🌟 必考:時間複雜度 (Time Complexity)</h4>
+<div class="tablewrap"><table><thead><tr><th>運作情形</th><th>搜尋 (Search)</th><th>插入 (Insert)</th><th>刪除 (Delete)</th></tr></thead><tbody>
+<tr><td><strong>平均情況 (Average)</strong></td><td>O(1)</td><td>O(1)</td><td>O(1)</td></tr>
+<tr><td><strong>最差情況 (Worst)</strong></td><td>O(n)</td><td>O(n)</td><td>O(n)</td></tr></tbody></table></div>
+<blockquote><p><strong>最差情況成因:</strong>當所有 Key 經過計算都對應到同一個 Index(嚴重碰撞),雜湊表會退化成單向鏈結串列,必須從頭遍歷到尾。</p></blockquote>
+<h3>二、常見雜湊函數設計法(附詳細推導範例)</h3>
+<p>好的雜湊函數必須計算快速,且能將資料均勻分布以減少碰撞。</p>
+<h4>1. 除算法 (Division Method) 🌟 出題率最高</h4>
+<ul><li><strong>公式:</strong>h(k) = k mod m</li><li><strong>重要考點:</strong>表格大小 m 務必選擇<strong>質數(Prime Number)</strong>,避免接近 2 的次方。</li><li><strong>範例:</strong>設 m = 11, k = 35。計算:h(35) = 35 mod 11 = <strong>2</strong>。放入 Index 2。</li></ul>
+<h4>2. 乘算法 (Multiplication Method)</h4>
+<ul><li><strong>公式:</strong>h(k) = ⌊ m · (k · A mod 1) ⌋</li><li><strong>重要考點:</strong>此方法對 m 較不敏感,通常 m 可選用 2 的次方。常數 A 通常取 0 &lt; A &lt; 1(著名學者 Knuth 建議使用黃金比例的小數部分,約 0.618)。</li></ul>
+<p><strong>📝 具體推導範例:</strong>設雜湊表大小 m = 1000,常數 A = 0.618,給定關鍵字 k = 12345。</p>
+<ul><li>步驟 1(乘上常數):12345 · 0.618 = 7629.21。</li><li>步驟 2(取小數部分):提取小數部分 0.21。</li><li>步驟 3(乘上表大並向下取整):⌊ 1000 · 0.21 ⌋ = ⌊ 210 ⌋ = 210。</li><li><strong>結果:</strong>該資料將放入 Index <strong>210</strong>。</li></ul>
+<h4>3. 平方取中法 (Mid-Square Method)</h4>
+<ul><li><strong>作法:</strong>將 Key <strong>平方</strong>,擷取中間位數作為 Index。</li><li><strong>範例:</strong>設 m = 100 (需兩位數 Index),k = 45。計算:45² = 2025 → 取中間兩位數 <code>02</code>。放入 Index 2。</li></ul>
+<h4>4. 摺疊法 (Folding Method)</h4>
+<ul><li><strong>作法:</strong>將極長的 Key 分割成數個等長區段,再相加求 Index(超出表大則取餘數)。</li><li><strong>範例:</strong>設 m = 1000 (需三位數),k = 12345678。計算:12 + 345 + 678 = 1035 → 1035 mod 1000 = <strong>35</strong>。放入 Index 35。</li></ul>
+<h3>三、🌟 核心考區:載入因子與重新雜湊 (Rehashing)</h3>
+<p>當雜湊表不斷塞入資料,可用空間會越來越少,碰撞發生的機率會急遽上升。為了解決這個問題,我們需要了解「載入因子」與「重新雜湊」的運作機制。</p>
+<h4>1. 載入因子 (Load Factor, α)</h4>
+<p>這是用來評估雜湊表「有多擠」的指標。</p>
+<ul><li><strong>公式:</strong>α = n / m (n 為目前儲存的資料總數,m 為雜湊表的總格數)。</li><li><strong>物理意義:</strong>如果 α = 0.75,代表表格已經有 75% 被填滿了。</li><li><strong>國考重點(容忍度差異):</strong><ul><li><strong>開放定址法:</strong>α 絕對不能大於 1。通常當 α 超過 <strong>0.5 ~ 0.7</strong> 時,效能就會大幅滑落,必須進行擴充。</li><li><strong>鏈結法:</strong>α 可以大於 1(因為格子裡塞的是指標)。但 α 過高意味著 Linked List 變得很長,搜尋時間一樣會退化。</li></ul></li></ul>
+<h4>2. 重新雜湊 (Rehashing)</h4>
+<p>當 α 超過系統設定的危險閾值時,雜湊表必須進行「大搬家」,這個過程稱為 Rehashing。</p>
+<p><strong>運作步驟(極重要,不可直接把舊資料搬過去):</strong></p>
+<ol><li><strong>擴大表格:</strong>建立一個新的陣列,大小通常是原表格的<strong>兩倍大並尋找下一個質數</strong>(例如原本 m = 7,新表格可能是 m新 = 17)。</li><li><strong>改變雜湊函數:</strong>因為 m 變了,雜湊函數必須更新為 h新(k) = k mod 17。</li><li><strong>重新計算與搬移:</strong>走訪舊表格中的每一筆資料,用「新的雜湊函數」重新計算它們在新表格中的 Index,並一筆一筆插入。</li></ol>
+<p><strong>時間複雜度:</strong>因為要把 n 筆資料全部重新算過並搬移,所以 Rehashing 的時間複雜度為 <strong>O(n)</strong>。雖然是一項極度昂貴的操作,但因為不常發生(平攤分析 Amortized Analysis),整體而言平均搜尋時間仍能維持在 <strong>O(1)</strong>。</p>
+<h3>四、碰撞解決機制 (Collision Resolution)</h3>
+<p>當兩個不同的 Key 算出相同的 Index,即發生<strong>碰撞(Collision)</strong>。</p>
+<h4>陣營 A:開放定址法 (Open Addressing)</h4>
+<p>碰撞時,依據探測規則在表內尋找下一個空位。</p>
+<ol><li><strong>線性探測法 (Linear Probing)</strong><ul><li><strong>公式:</strong>hᵢ(k) = (h(k) + i) mod m</li><li><strong>缺點:</strong>易產生<strong>主要聚集 (Primary Clustering)</strong>,資料容易卡成一大塊。</li></ul></li><li><strong>二次探測法 (Quadratic Probing)</strong><ul><li><strong>公式:</strong>hᵢ(k) = (h(k) + i²) mod m</li><li><strong>缺點:</strong>解決主要聚集,但會產生<strong>次要聚集 (Secondary Clustering)</strong>。</li></ul></li><li><strong>雙重雜湊法 (Double Hashing)</strong><ul><li><strong>公式:</strong>hᵢ(k) = (h₁(k) + i · h₂(k)) mod m</li><li><strong>重點:</strong>效果最好。h₂(k) 絕對不能為 0,且必須與 m 互質。</li></ul></li></ol>
+<h4>陣營 B:鏈結法 (Chaining)</h4>
+<p>碰撞時,將資料串接在同一個儲存格的鏈結串列(Linked List)上。不會有「找不到空位」的問題。</p>
+<h3>五、高階觀念:雜湊表的陣列到底裝什麼?</h3>
+<h4>1. 鏈結法(陣列 = 指標集合庫)</h4>
+<ul><li><strong>儲存型態:</strong>陣列中的每一格,存放的都是一個<strong>指標(Pointer)</strong>,指向 Linked List 的開頭。</li><li><strong>C語言虛擬碼概念:</strong><code>Node* HashTable[100];</code></li></ul>
+<h4>2. 開放定址法(陣列 = 實體資料集合庫)</h4>
+<ul><li><strong>儲存型態:</strong>陣列的格子是直接用來存放「真實資料」或「結構體」,沒有任何指標。</li><li><strong>C語言虛擬碼概念:</strong><code>Data HashTable[100];</code></li></ul>
+<h3>六、開放定址法 vs. 鏈結法 終極比較表</h3>
+<div class="tablewrap"><table><thead><tr><th>比較項目</th><th>開放定址法 (Open Addressing)</th><th>鏈結法 (Chaining)</th></tr></thead><tbody>
+<tr><td><strong>陣列內容物</strong></td><td>實體資料 (Data)</td><td>指標 (Pointer)</td></tr>
+<tr><td><strong>空間使用</strong></td><td>只使用表格本身。</td><td>需額外的動態記憶體配置 (Nodes)。</td></tr>
+<tr><td><strong>載入因子 α</strong></td><td>必須 ≤ 1</td><td>可 &gt; 1</td></tr>
+<tr><td><strong>刪除操作</strong></td><td>困難,需標記為「已刪除 (Tombstone)」,不可直接清空。</td><td>簡單,直接移除 Linked List 中的節點。</td></tr>
+<tr><td><strong>聚集問題</strong></td><td>易發生 Primary/Secondary Clustering</td><td>絕對不會發生聚集問題</td></tr>
+<tr><td><strong>適用場景</strong></td><td>資料量固定、記憶體空間極度受限時。</td><td>資料量不可測、經常需要增刪資料時。</td></tr></tbody></table></div>
+<h3>七、歷屆經典考題實戰演練</h3>
+<h4>題目 1:除算法 ＋ 線性探測法</h4>
+<p><strong>條件:</strong>大小 m = 7,索引 0~6。h(k) = k mod 7。依序插入:<code>15, 22, 8, 29, 10</code>。</p>
+<p><strong>最終狀態:</strong></p>
+<div class="tablewrap"><table><thead><tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>
+<tr><td>空</td><td><strong>15</strong></td><td><strong>22</strong></td><td><strong>8</strong></td><td><strong>29</strong></td><td><strong>10</strong></td><td>空</td></tr></tbody></table></div>
+<h4>題目 2:除算法 ＋ 二次探測法</h4>
+<p><strong>條件:</strong>大小 m = 7。h(k) = k mod 7。探測 hᵢ(k) = (h(k) + i²) mod 7。依序插入:<code>15, 22, 8</code>。</p>
+<p><strong>最終狀態:</strong></p>
+<div class="tablewrap"><table><thead><tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>
+<tr><td>空</td><td><strong>15</strong></td><td><strong>22</strong></td><td>空</td><td>空</td><td><strong>8</strong></td><td>空</td></tr></tbody></table></div>
+<h4>題目 3:雙重雜湊法</h4>
+<p><strong>條件:</strong>大小 m = 7。h₁(k) = k mod 7。h₂(k) = 1 + (k mod 5)。依序插入:<code>8, 15</code>。</p>
+<p><strong>過程:</strong></p>
+<ul><li>8:8 mod 7 = 1 (放 Slot 1)。</li><li>15:15 mod 7 = 1 (碰撞) → h₂(15) = 1 + (15 mod 5) = 1 → (1 + 1 · 1) mod 7 = 2 (放 Slot 2)。</li></ul>
+<h4>題目 4:除算法 ＋ 鏈結法</h4>
+<p><strong>條件:</strong>大小 m = 5。h(k) = k mod 5。依序插入:<code>5, 12, 10, 22, 7</code>。(新節點插入前端)</p>
+<p><strong>結構圖:</strong></p>
+<pre><code>[Index]
+  0  ---> [ 10 ] ---> [ 5 ] ---> NULL
+  1  ---> NULL
+  2  ---> [ 7 ] ---> [ 22 ] ---> [ 12 ] ---> NULL
+  3  ---> NULL
+  4  ---> NULL</code></pre>
+<div class="foot">來源：_private/計概補充/基礎資料結構(下)_樹與雜湊表.md</div>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>

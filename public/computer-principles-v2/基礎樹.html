@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜基礎樹</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;overflow-wrap:anywhere;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}th code{background:transparent;color:inherit;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">Tree Fundamentals</p>
+<h1>基礎樹</h1>
+<blockquote><p>這份聚焦「樹 (Tree)」單一章節:從基本術語、二元樹與其性質公式,到走訪、重建、陣列表示法、二元搜尋樹 (BST)、堆積 (Heap) 與堆積排序 (Heap Sort),白話講解並附常考重點。</p></blockquote>
+<hr>
+<h2>樹 (Tree)</h2>
+<h3>基本術語</h3>
+<p><strong>階層式(一對多)結構</strong>:資料呈一層一層的父子關係。幾個基本名詞:</p>
+<ul><li><strong>根 (Root)</strong>:最上面、<strong>沒有父節點</strong>的那個節點,是整棵樹的入口。</li><li><strong>葉節點 (Leaf,又叫終端節點)</strong>:<strong>沒有任何子節點</strong>的節點(即<strong>分支度 = 0</strong>),也就是樹最末端、往下再沒有東西的點。</li><li><strong>內部節點 (Internal Node)</strong>:<strong>有</strong>子節點的節點(即非葉節點)。</li><li><strong>分支度 (Degree)</strong>:一個節點的子節點數。</li><li><strong>階層 (Level)</strong>:某個節點位在第幾層(根通常算第 1 層),講的是「<strong>單一節點</strong>」的深度。</li><li><strong>高度 (Height)</strong>:從根到最深葉節點的<strong>最長路徑</strong>,講的是「<strong>整棵樹</strong>」的最大深度。</li><li>(Level 是單一節點的、Height 是整棵樹的,兩者不同,別混用。)</li><li>重要性質:<strong>n 個節點的樹有 n − 1 條邊 (edge)</strong>。</li></ul>
+<p>拿後面走訪用的那棵樹來實際標一次:</p>
+<pre><code>              A        ← 第 1 層（根 root）
+            /   \
+          B       C    ← 第 2 層
+         / \
+        D   E          ← 第 3 層（最深）</code></pre>
+<ul><li><strong>分支度 (Degree)</strong> = 一個節點有幾個子節點:</li><li>A 有 B、C 兩個 → 分支度 <strong>2</strong>;B 有 D、E 兩個 → 分支度 <strong>2</strong>。</li><li>C、D、E 沒有子節點 → 分支度 <strong>0</strong>(分支度 0 的就是<strong>葉節點 leaf</strong>)。</li><li>(整棵樹的分支度 = 所有節點裡最大的 = <strong>2</strong>,所以它是「二元樹」。)</li><li><strong>階層 (Level)</strong> = 某節點在第幾層:A 在第 <strong>1</strong> 層;B、C 在第 <strong>2</strong> 層;D、E 在第 <strong>3</strong> 層。</li><li><strong>高度 (Height)</strong> = 從根到最深葉的最長路徑(整棵樹的最大深度):這棵最深到第 3 層 → 高度 <strong>3</strong>(用「層數」算);若改用「邊數」算(A→B→D 共 2 條邊)則為 <strong>2</strong>。</li></ul>
+<p>一句話:<strong>分支度看「一個節點有幾個小孩」、階層看「某節點在第幾層」、高度看「整棵樹最深幾層」。</strong>(這棵 5 個節點、4 條邊,符合 n−1。)</p>
+<h3>二元樹 (Binary Tree)</h3>
+<p>每個節點<strong>最多 2 個子節點</strong>。常見種類(<strong>Full 與 Perfect 的差別最愛考,務必分清</strong>):</p>
+<ul><li><strong>歪斜樹 (Skewed)</strong>:每個節點<strong>最多只有 1 個</strong>子節點(整棵樹沒有分岔),全往一邊長,退化成像鏈結串列。分左歪斜、右歪斜。→ BST 的最壞情況。</li><li><strong>完滿二元樹 (Full / 嚴格二元樹)</strong>:每個節點<strong>要嘛 0 個、要嘛 2 個</strong>子節點(<strong>不准只有 1 個</strong>)。注意:<strong>它不要求每層填滿</strong>,只要求「沒有只帶一個小孩的節點」。</li><li><strong>完美二元樹 (Perfect)</strong>:<strong>每一層都完全填滿</strong>、所有葉節點都在<strong>同一層</strong> → <strong>共 h 層時有 2ʰ − 1 個節點</strong>(h 指層數;若題目把高度定義成邊數,同一棵樹改用 2^(h+1) − 1)。</li><li><strong>完整二元樹 (Complete)</strong>:除最後一層外都滿,最後一層<strong>由左往右填</strong>(這是 <strong>heap 堆積</strong>的形狀)。</li></ul>
+<p><strong>Full vs Perfect 用圖看</strong>:</p>
+<pre><code>完滿 Full(但不完美)            完美 Perfect
+        A                          A
+       / \                        / \
+      B   C                      B   C
+     / \                        / \ / \
+    D   E                      D  E F  G
+
+每個節點都 0 或 2 個小孩 ✓      每層都填滿、葉子同一層 ✓
+但 C 那層沒填滿 → 不是完美      (它同時也是 Full)</code></pre>
+<ul><li>左邊每個節點都「0 或 2 個小孩」→ 是 <strong>Full</strong>;但沒填滿、葉子不同層 → <strong>不是 Perfect</strong>。</li><li><strong>關係:完美 ⊂ 完滿</strong>(完美一定是完滿,完滿不一定完美);<code>2ʰ − 1</code> 這公式<strong>只對完美成立</strong>。</li></ul>
+<div class="tablewrap"><table><thead><tr><th>類型</th><th>定義</th><th>重點</th></tr></thead><tbody><tr><td>歪斜 Skewed</td><td>每節點最多 1 個子節點</td><td>退化成串列,最壞情況</td></tr>
+<tr><td>完滿 Full</td><td>每節點是 <strong>0 或 2</strong> 個子節點</td><td><strong>不要求每層填滿</strong></td></tr>
+<tr><td>完美 Perfect</td><td>每層填滿、葉子同層</td><td>h 層共 <strong>2ʰ − 1</strong> 個節點</td></tr>
+<tr><td>完整 Complete</td><td>除最後層外都滿,最後層由左往右填</td><td><strong>heap 的形狀</strong></td></tr></tbody></table></div>
+<h3>二元樹的重要性質與公式(填空/選擇常考)</h3>
+<ul><li><strong>第 i 層最多有 2^(i-1) 個節點</strong>(根為第 1 層)。例:第 3 層最多 2² = 4 個。</li><li><strong>高度(層數)h 的二元樹,最多有 2ʰ − 1 個節點</strong>(填滿就是完美二元樹)。</li><li><strong>n 個節點的完整二元樹,高度 = ⌊log₂n⌋ + 1 層</strong>。</li><li><strong>葉節點數 = 分支度為 2 的節點數 + 1</strong>,即 <strong>n₀ = n₂ + 1</strong>(超常考的公式)。</li><li>驗證前面那棵樹:葉節點 C、D、E 共 3 個(n₀=3),分支度 2 的節點 A、B 共 2 個(n₂=2)→ 3 = 2 + 1 ✓。</li></ul>
+<h3>二元樹走訪 (Traversal)（最高頻,務必會)</h3>
+<p>四種走訪順序:</p>
+<ul><li><strong>前序 Preorder</strong>:<strong>根 → 左 → 右</strong>(N-L-R)</li><li><strong>中序 Inorder</strong>:<strong>左 → 根 → 右</strong>(L-N-R)</li><li><strong>後序 Postorder</strong>:<strong>左 → 右 → 根</strong>(L-R-N)</li><li><strong>層序 Level-order</strong>:一層一層由上而下</li></ul>
+<p>用這棵樹示範:</p>
+<pre><code>        A
+       / \
+      B   C
+     / \
+    D   E</code></pre>
+<div class="tablewrap"><table><thead><tr><th>走訪</th><th>口訣</th><th>順序</th></tr></thead><tbody><tr><td>前序</td><td>根左右</td><td><strong>A B D E C</strong></td></tr>
+<tr><td>中序</td><td>左根右</td><td><strong>D B E A C</strong></td></tr>
+<tr><td>後序</td><td>左右根</td><td><strong>D E B C A</strong></td></tr>
+<tr><td>層序</td><td>一層層</td><td><strong>A B C D E</strong></td></tr></tbody></table></div>
+<p>(推導前序:先根 A → 進左子樹 B(B→D→E)→ 再右子樹 C → A B D E C。其餘同理,差別只在「根」放在左、中、右哪個位置念。)</p>
+<p><strong>走訪的遞迴程式</strong>(三種幾乎一樣,差別只在 <code>print</code> 擺哪個位置)。先定義節點 <code>Node</code> 的資料格式——每個節點存一個資料 <code>data</code>,再加兩個指標 <code>left</code>、<code>right</code> 指向左、右子節點(沒有小孩時為 <code>null</code>):</p>
+<pre><code class="language-java">class Node {
+    int  data;    // 節點存的資料(這裡以整數為例)
+    Node left;    // 指向左子節點,沒有則為 null
+    Node right;   // 指向右子節點,沒有則為 null
+}</code></pre>
+<p>有了這個節點格式,三種走訪就能對 <code>n.data</code>、<code>n.left</code>、<code>n.right</code> 進行遞迴:</p>
+<pre><code class="language-java">void preorder(Node n) {   // 根左右
+    if (n == null) return;
+    print(n.data);            // ← 印在最前(根)
+    preorder(n.left);
+    preorder(n.right);
+}
+void inorder(Node n) {    // 左根右
+    if (n == null) return;
+    inorder(n.left);
+    print(n.data);            // ← 印在中間(根)
+    inorder(n.right);
+}
+void postorder(Node n) {  // 左右根
+    if (n == null) return;
+    postorder(n.left);
+    postorder(n.right);
+    print(n.data);            // ← 印在最後(根)
+}</code></pre>
+<p>前中後序都用<strong>遞迴</strong>(屬深度優先 DFS);<strong>層序 (Level-order) 則用佇列 (Queue) 做 BFS</strong>:</p>
+<pre><code class="language-java">void levelOrder(Node root) {
+    Queue&lt;Node&gt; q = new LinkedList&lt;&gt;();
+    q.offer(root);
+    while (!q.isEmpty()) {
+        Node n = q.poll();
+        print(n.data);
+        if (n.left  != null) q.offer(n.left);   // 左小孩排進佇列
+        if (n.right != null) q.offer(n.right);  // 右小孩排進佇列
+    }
+}</code></pre>
+<h3>由走訪結果重建二元樹(高頻計算題)</h3>
+<p>給你<strong>兩種</strong>走訪,可以<strong>倒推出整棵樹</strong>(進而求第三種走訪)。步驟:</p>
+<ol><li><strong>前序</strong>的第一個、或<strong>後序</strong>的最後一個 = <strong>根</strong>。</li><li>在<strong>中序</strong>裡找到這個根,根的<strong>左邊 = 左子樹、右邊 = 右子樹</strong>。</li><li>對左、右子樹<strong>遞迴</strong>重複。</li></ol>
+<p>例:前序 = <strong>A B D E C</strong>、中序 = <strong>D B E A C</strong>,求這棵樹:</p>
+<ul><li>前序第一個 <strong>A = 根</strong>;中序用 A 切開 → 左 <code>D B E</code>、右 <code>C</code>。</li><li>左子樹(前序取 <code>B D E</code>):第一個 <strong>B = 根</strong>;中序 <code>D B E</code> 用 B 切 → 左 <code>D</code>、右 <code>E</code> → B 左掛 D、右掛 E。</li><li>右子樹只有 <code>C</code>。</li></ul>
+<p>得到:</p>
+<pre><code>    A
+   / \
+  B   C
+ / \
+D   E</code></pre>
+<p>於是<strong>後序</strong> = <strong>D E B C A</strong>。</p>
+<p><strong>★ 陷阱</strong>:只有「<strong>前序+中序</strong>」或「<strong>後序+中序</strong>」能<strong>唯一</strong>決定一棵樹;<strong>「前序+後序」不行</strong>(分不出左右子樹,可能對應多棵樹)。</p>
+<h3>二元樹的陣列表示法(常考)</h3>
+<p>除了「節點 + 指標」,二元樹也能<strong>用一個陣列</strong>存(<strong>heap 就是這樣存的</strong>)。若根放在<strong>索引 1</strong>(1-based):</p>
+<ul><li>節點 i 的 <strong>左子 = 2i</strong>、<strong>右子 = 2i + 1</strong>、<strong>父節點 = ⌊i / 2⌋</strong>。</li></ul>
+<pre><code>      A(1)
+     /    \
+   B(2)    C(3)
+   /  \
+ D(4) E(5)
+
+陣列:  [ _, A, B, C, D, E ]
+索引:    0  1  2  3  4  5</code></pre>
+<ul><li>驗證:B 在索引 2 → 左子 2×2=4(D)、右子 2×2+1=5(E);D 的父 = ⌊4/2⌋=2(B)。✓</li><li>優點:完整/完美二元樹沒有空洞,存陣列超省;缺點:歪斜或很稀疏的樹會浪費很多空格。</li></ul>
+<h3>二元搜尋樹 (BST, Binary Search Tree)</h3>
+<p>規則:<strong>左子樹都比自己小、右子樹都比自己大</strong>。所以搜尋時每比一次就能砍掉一半。</p>
+<ul><li><strong>平均搜尋 O(log n)</strong>(因為左小右大、每次砍一半)。</li><li><strong>最壞 O(n)</strong>:當資料按順序插入,BST 退化成<strong>歪斜樹</strong>(像一條鏈結串列),就失去砍半的優勢。</li><li><strong>關鍵考題</strong>:對 BST 做<strong>中序走訪 (Inorder)</strong>,會得到<strong>由小到大排序</strong>的結果。</li><li><strong>改善退化</strong>:<strong>平衡樹(如 AVL、紅黑樹)</strong> 會透過旋轉維持左右高度平衡,避免退化成歪斜樹,<strong>保證 O(log n)</strong>。</li></ul>
+<p><strong>BST 的插入與刪除</strong>:</p>
+<ul><li><strong>插入</strong>:從根開始比大小,<strong>比目前節點小往左、大往右</strong>,一路走到空位就掛上去。</li><li><strong>刪除</strong>分三種情況:</li></ul>
+<ol><li><strong>葉節點</strong>(沒有子節點):直接刪掉。</li><li><strong>只有一個子節點</strong>:用那個子節點頂上來取代它。</li><li><strong>有兩個子節點</strong>:不能直接刪(刪了兩個小孩不知掛誰),要找一個「大小最接近它、且不會破壞左小右大規則」的節點<strong>頂上來取代</strong>,再回頭刪掉那個被搬走的節點。這個替身有兩個選擇——<strong>中序後繼</strong>(右子樹的最小值)或<strong>中序前驅</strong>(左子樹的最大值),兩者擇一即可。(<strong>這是申論常客。</strong>)</li></ol>
+<p><strong>為什麼是「右子樹最小」或「左子樹最大」?</strong> 因為對 BST 做中序走訪會由小到大排,要刪的節點在這串排序裡,<strong>緊接在它後面的(後繼)就是右子樹最小值、緊接在它前面的(前驅)就是左子樹最大值</strong>。用這兩個「鄰居」之一來頂替,排序順序幾乎不變,才不會破壞「左小右大」。</p>
+<p><strong>用例子走一遍(刪除有兩個小孩的節點 50)</strong>:</p>
+<pre><code>            50            ← 要刪的節點(有左、右兩個小孩)
+          /    \
+        30      70
+       /  \    /  \
+      20  40  60   80
+                \
+                 65</code></pre>
+<p><strong>做法一:用「中序後繼」= 右子樹的最小值</strong></p>
+<ul><li>到 50 的<strong>右子樹</strong>(根為 70),一路<strong>往左走到底</strong>找最小 → 70 → 60,60 沒有左小孩 → <strong>後繼 = 60</strong>。</li><li>把 <strong>60 的值搬去頂替 50</strong>,再刪掉原本的 60。60 只有一個右小孩 65,依「只有一個子節點」的規則讓 65 頂上來。</li></ul>
+<pre><code>            60            ← 60 頂替了 50
+          /    \
+        30      70
+       /  \    /  \
+      20  40  65   80     ← 原本的 60 被刪,其右小孩 65 補上</code></pre>
+<p><strong>做法二:用「中序前驅」= 左子樹的最大值</strong></p>
+<ul><li>到 50 的<strong>左子樹</strong>(根為 30),一路<strong>往右走到底</strong>找最大 → 30 → 40,40 沒有右小孩 → <strong>前驅 = 40</strong>。</li><li>把 <strong>40 搬去頂替 50</strong>,再刪掉原本的 40(它是葉節點,直接刪)。</li></ul>
+<pre><code>            40            ← 40 頂替了 50
+          /    \
+        30      70
+       /       /  \
+      20      60   80
+                \
+                 65</code></pre>
+<p>兩種做法都對,得到的樹雖然長得不同,但<strong>都仍是合法的 BST(中序走訪一樣是 20 30 40 60 65 70 80,只少了 50)</strong>。這就是「找後繼/前驅取代」能維持排序性質的原因。</p>
+<h3>堆積 (Heap)</h3>
+<p><strong>heap 是一棵「完整二元樹」</strong>,再加上父子大小規則:</p>
+<ul><li><strong>最大堆 (Max-Heap)</strong>:每個節點都 <strong>≥ 它的子節點</strong> → <strong>根最大</strong>。</li><li><strong>最小堆 (Min-Heap)</strong>:每個節點都 <strong>≤ 它的子節點</strong> → <strong>根最小</strong>。</li><li>注意:heap 只規定「<strong>父子</strong>」的大小關係,<strong>兄弟之間、左右子樹之間沒有順序</strong>(這點跟 BST 不同,別搞混)。</li><li>常用<strong>陣列表示</strong>(就是上面那套 2i、2i+1);用途:<strong>優先佇列 (Priority Queue)</strong>、<strong>堆積排序 (Heap Sort,O(n log n))</strong>。</li></ul>
+<p><strong>圖形範例:最大堆 vs 最小堆</strong>(注意兩者都只要求「父 ≥ 子」或「父 ≤ 子」,兄弟大小不管):</p>
+<pre><code>   最大堆 Max-Heap（根最大）        最小堆 Min-Heap（根最小）
+          90                              10
+         /  \                            /  \
+       70    80                        30    20
+      /  \   /                        /  \   /
+    40  60 75                       50  40 25
+
+  每個父節點都 ≥ 兩個小孩 ✓        每個父節點都 ≤ 兩個小孩 ✓</code></pre>
+<p>看最大堆:90≥70、90≥80;70≥40、70≥60;80≥75 → 全部「父≥子」成立,所以<strong>根 90 是最大值</strong>。注意 <strong>70 和 80 是兄弟卻沒有規定誰大</strong>(70&lt;80 也 OK),左子樹的 60 甚至比右子樹的 75 小 → <strong>heap 不管兄弟、不管左右子樹之間的大小</strong>(這正是跟 BST 最大的差別)。</p>
+<p><strong>陣列存法</strong>(根放索引 1,左子=2i、右子=2i+1):上面那個最大堆存成——</p>
+<pre><code>陣列: [ _, 90, 70, 80, 40, 60, 75 ]
+索引:   0   1   2   3   4   5   6
+
+  90(1) 的左子=2×1=2 → 70、右子=2×1+1=3 → 80 ✓
+  70(2) 的左子=2×2=4 → 40、右子=5 → 60 ✓</code></pre>
+<p><strong>反例(這不是 heap)</strong>:</p>
+<pre><code>        50
+       /  \
+     80    30      ← 80 > 50,父比子小,違反 max-heap
+</code></pre>
+<p>因為 80 比它的父 50 大,破壞了「父 ≥ 子」,所以這棵<strong>不是</strong>最大堆(要成立就得把 80 換到根)。</p>
+<p><strong>插入示範(往最大堆插入 85)——「先放尾端,再往上浮 (sift-up)」</strong>:</p>
+<pre><code>① 先把 85 放到「完整二元樹的下一個空位」(60 的右邊):
+          90
+         /  \
+       70    80
+      /  \   / \
+    40  60 75  85   ← 新來的 85 暫放尾端
+
+② 85 和父節點 80 比:85 > 80 → 互換(往上浮一層):
+          90
+         /  \
+       70    85      ← 85 浮上來、80 沉下去
+      /  \   / \
+    40  60 75  80
+
+③ 85 再和新的父節點 90 比:85 < 90 → 停,插入完成。</code></pre>
+<h4>堆積排序 (Heap Sort)</h4>
+<p><strong>功能與目的</strong>:Heap Sort 是一種<strong>比較式排序法</strong>,把一堆亂序的數字排成由小到大。它的三個特點:</p>
+<ul><li><strong>穩定的 O(n log n)</strong>:不論資料長什麼樣,最好、平均、最壞<strong>都是 O(n log n)</strong>(不像快速排序最壞會退化成 O(n²))。</li><li><strong>原地排序 (in-place)</strong>:直接在原陣列上換位置,<strong>幾乎不用額外記憶體</strong>(O(1) 額外空間)。</li><li>缺點:它<strong>不是穩定排序</strong>(相同值的前後順序可能被打亂),實務上的常數也比快排大一些。</li></ul>
+<p><strong>核心構想</strong>:借用 <strong>max-heap「根一定是最大值」</strong>這個特性 ——<strong>一直把根(最大值)挖走、放到陣列尾端</strong>,挖 n 次,最大的先被推到最後、次大的推到倒數第二…… 從左看回來自然就由小到大。所以整個演算法只需要兩件事:<strong>①把資料整理成 max-heap;②反覆取出根並修復。</strong></p>
+<p><strong>你只需要學會一個動作:往下沉 (sift-down)</strong>。當某個節點比它的小孩小(違反 max-heap)時,就<strong>把它跟「比較大的那個小孩」對調,一路往下換,直到它比小孩大或沉到底</strong>,heap 就修回合法:</p>
+<pre><code>根 1 比小孩小            1 跟較大的 5 對調         1 沉到底、沒小孩 → 停
+      1                        5                        5
+     / \    ──換 5──>         / \    ──到底──>         / \
+    5   3                    1   3                    1   3
+效果:根從 1 變回 5,新的最大值又浮回根</code></pre>
+<p>下面用 <code>4 10 3 5 1</code> 走一遍完整流程(目標:由小到大)。<strong>先記住:圖裡的「樹」和「陣列」是同一份資料的兩種畫法</strong> —— 陣列由上到下、由左到右對應樹的節點,排序時其實一直都在動同一個陣列。</p>
+<p><strong>第一步:建最大堆 (Build Max-Heap)</strong>——先把原始 <code>4 10 3 5 1</code> 照陣列順序塞成一棵完整二元樹(此時<strong>還不是 heap</strong>),再把它調整成 max-heap。<strong>先看「前 → 後」概觀,詳細步驟在下面一步步拆:</strong></p>
+<pre><code>原始資料當成完整二元樹        調整後的最大堆
+        4                          10
+       / \                        /  \
+     10   3         ──>          5    3
+     / \                        / \
+    5   1                      4   1
+
+陣列: [4,10,3,5,1]           陣列: [10,5,3,4,1]  ← 根 10 是最大</code></pre>
+<p><strong>詳細步驟</strong>——先把節點按陣列位置編號(索引 i 的小孩 = 2i、2i+1):</p>
+<pre><code>索引: 1  2  3  4  5
+值:   4  10 3  5  1
+
+          4  ←索引1
+         / \
+   索引2 10   3 索引3
+       / \
+索引4 5   1 索引5</code></pre>
+<p><strong>規則:從「最後一個有小孩的節點」開始,由後往前,對每個節點做一次 sift-down(往下沉)</strong>;葉節點(沒有小孩)直接跳過。這裡 n=5,索引 3、4、5 都是葉節點,<strong>最後一個有小孩的是索引 2</strong>,所以處理順序是 <strong>索引 2 → 索引 1</strong>:</p>
+<pre><code>【處理 索引2 = 10】小孩是 5、1
+   10 已經 ≥ 5、也 ≥ 1  →  已合法,不用動 ✔
+
+【處理 索引1 = 4】小孩是 10、3  →  4 比小孩小,跟「較大的小孩 10」對調,然後 4 繼續往下沉:
+
+      4                10                10
+     / \    ─換 10→   / \    ─換 5→     / \
+   10   3            4   3             5   3
+   / \              / \               / \
+  5   1            5   1             4   1
+              4 沉到索引2,        4 又比小孩 5 小,
+              小孩剩 5、1          再換 → 沉到底、停
+
+   陣列:[4,10,3,5,1]  →  [10,4,3,5,1]  →  [10,5,3,4,1]</code></pre>
+<p><strong>建堆完成</strong>,得到合法 max-heap <code>[10,5,3,4,1]</code>。逐一驗證「父 ≥ 子」:10≥5、10≥3、5≥4、5≥1 全部成立 → <strong>最大值 10 已坐上根</strong>,「隨手取最大」的舞台架好了,接著進入第二步反覆取出根。</p>
+<p><strong>第二步:反覆取出最大值</strong>。重複下面三個動作,直到 heap 只剩 1 個。<strong>每做一輪,就有一個數字被永久鎖定在尾端:</strong></p>
+<ul><li><strong>① 對調</strong>:把<strong>根(目前最大)和 heap 的最後一格對調</strong> → 最大值被丟到尾端。</li><li><strong>② 縮小</strong>:把剛丟到尾端的那格<strong>踢出 heap 範圍</strong>(它已排好,之後不再碰),圖裡用 <code>|</code> 這條線的右邊表示「已排序區」。</li><li><strong>③ 往下沉修復</strong>:剛換上來當根的是個小數字,對它做一次 <strong>sift-down</strong>,讓剩下的部分變回合法 max-heap,新的最大值又浮到根,準備下一輪。</li></ul>
+<p>看圖時抓住兩件事:<strong>每一小格(①②③…)左邊是「對調前」、右邊是「往下沉修復後」;那條 <code>|</code> 分隔線會一輪一輪往左移,右邊的已排序區逐漸長大。</strong></p>
+<pre><code>① 根 10 (最大) 與尾端 1 對調 → 10 歸位到最後,剩前 4 個重整:
+      10 ⇄ 1                        5
+      / \                          / \
+     5   3       取出10後          4   3      已排序區:[10]
+    / \          往下沉修復        /
+   4  (1)→尾                     1
+   陣列: [1,5,3,4 | 10]          陣列: [5,4,3,1 | 10]
+
+② 根 5 與尾端 1 對調 → 5 歸位,剩前 3 個重整:
+   取出 5 → 往下沉修復              4
+                                  / \
+                                 1   3       已排序區:[5,10]
+   陣列: [3,4,1 | 5,10]          陣列: [4,1,3 | 5,10]
+
+③ 根 4 與尾端 3 對調 → 4 歸位,剩前 2 個重整:
+   陣列: [3,1 | 4,5,10]  → 修復 → 陣列: [3,1 | 4,5,10]（3≥1 已合法)
+
+④ 根 3 與尾端 1 對調 → 3 歸位:
+   陣列: [1 | 3,4,5,10]
+
+⑤ 只剩 1 個,結束。最終:[1,3,4,5,10] ✓(由小到大)</code></pre>
+<p><strong>逐輪看「圖案怎麼變」</strong>(<code>|</code> 右邊 = 已鎖定的已排序區):</p>
+<ul><li><strong>① 取出 10</strong>:根 10 ⇄ 尾端 1,10 鎖進尾端;前 4 格 <code>[1,5,3,4]</code> 對新根 1 做 sift-down → <code>[5,4,3,1]</code>,5 浮上來當根。結果 <code>[5,4,3,1 | 10]</code>。</li><li><strong>② 取出 5</strong>:根 5 ⇄ 尾端,5 鎖進尾端;前 3 格修復 → 4 當根。結果 <code>[4,1,3 | 5,10]</code>。</li><li><strong>③ 取出 4</strong>:根 4 ⇄ 尾端 3,4 鎖進尾端;剩 <code>[3,1]</code> 本來就 3≥1 合法,不用動。結果 <code>[3,1 | 4,5,10]</code>。</li><li><strong>④ 取出 3</strong>:根 3 ⇄ 尾端 1,3 鎖進尾端。結果 <code>[1 | 3,4,5,10]</code>。</li><li><strong>⑤ 只剩 1 個</strong> → 結束。最終 <code>[1,3,4,5,10]</code> ✓ 由小到大。</li></ul>
+<p>可以看到<strong>已排序區的數字是 10 → 5 → 4 → 3 一路「由大到小」從右往左填進去的</strong>,填滿之後,整個陣列剛好就變成由小到大。</p>
+<blockquote><p><strong>重點:</strong>Heap Sort = <strong>建 max-heap(架好「隨時取最大」的舞台)+ 反覆「取根 → 丟尾端 → 縮小 → 往下沉修復」</strong>。取 n 次、每次修復 O(log n) → 合計 <strong>O(n log n)</strong>,而且是<strong>原地排序</strong>。用 <strong>max-heap 會排出「由小到大」</strong>(因為最大的先被丟到最後面)。</p></blockquote>
+<p><strong>Java 實作範例</strong>——把上面兩步驟(建堆 + 反覆取根)直接寫成程式,用同一組資料 <code>{4,10,3,5,1}</code> 驗證:</p>
+<pre><code>public class HeapSort {
+
+    // 對外:把整個陣列排成「由小到大」
+    public static void heapSort(int[] a) {
+        int n = a.length;
+
+        // 【第一步】建最大堆:從最後一個「有小孩的節點」往前,逐一往下沉
+        // 註:程式是 0-based,最後一個非葉節點 = n/2 - 1
+        //     (對應圖上 1-based 的索引 2,這裡就是 index 1)
+        for (int i = n / 2 - 1; i &gt;= 0; i--) {
+            siftDown(a, n, i);
+        }
+
+        // 【第二步】反覆取出根(最大值)放到尾端
+        for (int end = n - 1; end &gt; 0; end--) {
+            swap(a, 0, end);       // ① 根(最大)換到目前尾端 → 鎖定
+            siftDown(a, end, 0);   // ② 縮小範圍成 end + ③ 對新根往下沉修復
+        }
+    }
+
+    // 往下沉:把 index i 一路和「較大的小孩」對調,直到「父 ≥ 子」或到底
+    // n = 目前 heap 的有效大小(尾端已排序區不算在內)
+    private static void siftDown(int[] a, int n, int i) {
+        while (true) {
+            int largest = i;           // 先假設自己最大
+            int left  = 2 * i + 1;     // 0-based 左小孩
+            int right = 2 * i + 2;     // 0-based 右小孩
+
+            // 「&lt; n」是邊界檢查:確認這個小孩「存在且可碰」才去比較,擋住兩件事——
+            //   ① 索引越界:葉節點的 2i+1 會超過陣列 → 讀到不存在的小孩會當掉
+            //   ② 誤碰已排序區:n 是 heap 目前大小,index &gt;= n 是尾端排好的值,不能換回來
+            if (left  &lt; n &amp;&amp; a[left]  &gt; a[largest]) largest = left;   // 左小孩比目前最大還大?
+            if (right &lt; n &amp;&amp; a[right] &gt; a[largest]) largest = right;  // 右小孩比目前最大還大?
+
+            if (largest == i) break;   // 父已比兩個小孩都大 → 合法,停
+
+            swap(a, i, largest);       // 和較大的小孩對調
+            i = largest;               // 位置下移,繼續往下沉
+        }
+    }
+
+    private static void swap(int[] a, int i, int j) {
+        int t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+
+    public static void main(String[] args) {
+        int[] a = {4, 10, 3, 5, 1};
+        heapSort(a);
+        System.out.println(java.util.Arrays.toString(a));
+        // 輸出:[1, 3, 4, 5, 10]
+    }
+}</code></pre>
+<p>對照前面的圖:<code>heapSort</code> 裡第一個迴圈就是<strong>第一步(建堆)</strong>、第二個迴圈就是<strong>第二步(反覆取根)</strong>;而 <code>siftDown</code> 正是那個「一路和較大的小孩對調」的<strong>往下沉</strong>動作 —— 三處都對得上。</p>
+<blockquote><p><strong>小提醒:</strong>圖用 <strong>1-based</strong>(根在索引 1、小孩 = 2i、2i+1)方便講解;程式用 <strong>0-based</strong>(根在索引 0、小孩 = <strong>2i+1、2i+2</strong>、最後一個非葉節點 = <strong>n/2 − 1</strong>)。兩者只是編號起點不同,邏輯完全一樣。實務上若只是要用 heap(不是自己排序),也可以直接用 <code>java.util.PriorityQueue</code>(預設是 min-heap)。</p></blockquote>
+<p><strong>為什麼完整的 heapSort 是 O(n log n)?</strong> 拆成兩步看,「取根」那步主導整體:</p>
+<ul><li><strong>地基:一次 sift-down = O(log n)</strong>。往下沉最多從根換到葉,走過的層數 = 樹高;n 個節點的完整二元樹高度約 <strong>log₂n</strong>(n=100 萬 → 樹高才約 20),所以一次修復最多 O(log n)。</li><li><strong>第二步 反覆取根 = O(n log n)(主角)</strong>:迴圈跑 <strong>n−1 次</strong>,每圈 <code>swap</code> 是 O(1)、<code>siftDown</code> 是 O(log n) → (n−1) × O(log n) = <strong>O(n log n)</strong>。</li><li><strong>第一步 建堆(配角)</strong>:約 n/2 次 sift-down,用寬鬆上界 O(n log n) 就足以下結論;其實有更緊的分析是 <strong>O(n)</strong>(越底層的節點越多、但能往下沉的高度越矮,加權總和收斂成 O(n),考試常直接記「建堆 = O(n)」)。</li></ul>
+<pre><code>T(n) =   O(n)      +   O(n log n)     =   O(n log n)
+         ↑建堆           ↑取 n 次根          ↑取兩者中成長較快的那項</code></pre>
+<p>而且<strong>最好、平均、最壞都是 O(n log n)</strong>:不管資料原本長怎樣,樹高永遠是 log n、取根一定取 n 次,<strong>沒有「運氣好變快、運氣壞變慢」</strong>——這正是 heap sort 比快速排序(最壞 O(n²))穩定的地方。</p>
+<p><strong>★ 樹常考重點</strong>:</p>
+<ul><li>n 個節點 → <strong>n − 1 條邊</strong>;完美二元樹 h 層 → <strong>2ʰ − 1 個節點</strong>;第 i 層最多 <strong>2^(i-1)</strong> 個。</li><li><strong>葉節點數 = 分支度 2 的節點數 + 1(n₀ = n₂ + 1)</strong>。</li><li>三種走訪差別只在「根」的位置:前序=根在前、中序=根在中、後序=根在後;層序用<strong>佇列 (BFS)</strong>。</li><li><strong>重建樹</strong>:前序/後序找根 + 中序切左右;<strong>「前序+後序」無法唯一決定</strong>。</li><li><strong>陣列表示</strong>:節點 i → 左子 <strong>2i</strong>、右子 <strong>2i+1</strong>、父 <strong>⌊i/2⌋</strong>。</li><li><strong>BST 中序走訪 = 由小到大排序</strong>;平均 O(log n)、<strong>最壞 O(n)</strong>(退化,用<strong>平衡樹/AVL</strong> 解)。</li><li><strong>Heap</strong> = 完整二元樹 + 父子大小關係(max-heap 根最大);只管父子、不管兄弟。</li></ul>
+<hr>
+<footer class="foot">來源：_private/計概補充/基礎資料結構(下)_樹與雜湊表.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>

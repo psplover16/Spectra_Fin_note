@@ -814,10 +814,10 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
     ]
   }),
   createHtmlSupplementalTopic({
-    id: 'cpv2-supplemental-trees-hash-tables',
-    title: '樹與雜湊表',
-    summary: '連結資料結構下篇講義，保留 Tree、Binary Tree、Heap 與 Hash Table 內容。',
-    sourceSummary: '計概(v2) / 樹與雜湊表',
+    id: 'cpv2-supplemental-basic-tree',
+    title: '基礎樹',
+    summary: '連結基礎樹講義，保留術語、二元樹、走訪、BST、Heap 與 Heap Sort 內容。',
+    sourceSummary: '計概(v2) / 基礎樹',
     topicType: 'dataStructure',
     terms: [
       {
@@ -829,12 +829,143 @@ export const computerPrinciplesV2Topics: readonly ProfessionalSubjectTopic[] = [
         en: 'Binary Tree'
       },
       {
+        zh: '二元搜尋樹',
+        en: 'Binary Search Tree'
+      },
+      {
         zh: '堆積',
         en: 'Heap'
+      }
+    ]
+  }),
+  createHtmlSupplementalTopic({
+    id: 'cpv2-supplemental-expression-notation',
+    title: '運算式表示法',
+    summary: '連結運算式表示法講義，保留中序、前序、後序轉換與三題實戰。',
+    sourceSummary: '計概(v2) / 運算式表示法',
+    topicType: 'concept',
+    terms: [
+      {
+        zh: '中序',
+        en: 'Infix'
       },
+      {
+        zh: '前序',
+        en: 'Prefix'
+      },
+      {
+        zh: '後序',
+        en: 'Postfix'
+      }
+    ]
+  }),
+  createHtmlSupplementalTopic({
+    id: 'cpv2-supplemental-avl-tree',
+    title: 'AVL樹',
+    summary: '連結 AVL 樹考前速記卡，保留平衡因子、四種旋轉與插入流程。',
+    sourceSummary: '計概(v2) / AVL樹',
+    topicType: 'dataStructure',
+    terms: [
+      {
+        zh: 'AVL 樹',
+        en: 'AVL Tree'
+      },
+      {
+        zh: '平衡因子',
+        en: 'Balance Factor'
+      },
+      {
+        zh: '旋轉',
+        en: 'Rotation'
+      }
+    ]
+  }),
+  createHtmlSupplementalTopic({
+    id: 'cpv2-supplemental-avl-tree-deletion',
+    title: 'AVL樹_刪除',
+    summary: '連結 AVL 樹刪除專練，保留刪除 SOP、雙旋範例與練習詳解。',
+    sourceSummary: '計概(v2) / AVL樹_刪除',
+    topicType: 'dataStructure',
+    terms: [
+      {
+        zh: 'AVL 刪除',
+        en: 'AVL Deletion'
+      },
+      {
+        zh: '雙旋轉',
+        en: 'Double Rotation'
+      }
+    ]
+  }),
+  createHtmlSupplementalTopic({
+    id: 'cpv2-supplemental-red-black-tree',
+    title: '紅黑樹',
+    summary: '連結紅黑樹考前速記卡，保留五大性質、插入與刪除判斷表。',
+    sourceSummary: '計概(v2) / 紅黑樹',
+    topicType: 'dataStructure',
+    terms: [
+      {
+        zh: '紅黑樹',
+        en: 'Red-Black Tree'
+      },
+      {
+        zh: '黑高',
+        en: 'Black Height'
+      }
+    ]
+  }),
+  createHtmlSupplementalTopic({
+    id: 'cpv2-supplemental-red-black-tree-deletion',
+    title: '紅黑樹_刪除',
+    summary: '連結紅黑樹刪除專練，保留刪除 SOP、雙黑修復四情境與 16 題詳解。',
+    sourceSummary: '計概(v2) / 紅黑樹_刪除',
+    topicType: 'dataStructure',
+    terms: [
+      {
+        zh: '紅黑樹刪除',
+        en: 'Red-Black Deletion'
+      },
+      {
+        zh: '雙黑',
+        en: 'Double Black'
+      }
+    ]
+  }),
+  createHtmlSupplementalTopic({
+    id: 'cpv2-supplemental-hash-table',
+    title: '雜湊表',
+    summary: '連結雜湊表講義，保留雜湊函數、碰撞解決與開放定址對照。',
+    sourceSummary: '計概(v2) / 雜湊表',
+    topicType: 'dataStructure',
+    terms: [
       {
         zh: '雜湊表',
         en: 'Hash Table'
+      },
+      {
+        zh: '碰撞',
+        en: 'Collision'
+      },
+      {
+        zh: '開放定址法',
+        en: 'Open Addressing'
+      }
+    ]
+  }),
+  createHtmlSupplementalTopic({
+    id: 'cpv2-supplemental-trees-hash-practice',
+    title: '樹與雜湊表_考題練習',
+    summary: '連結樹與雜湊表考題練習，保留複雜度總表、高頻速記與選擇題解析。',
+    sourceSummary: '計概(v2) / 樹與雜湊表_考題練習',
+    topicType: 'concept',
+    terms: [
+      {
+        zh: '複雜度總表',
+        en: 'Complexity Summary'
+      },
+      {
+        zh: '考題練習',
+        en: 'Practice'
       }
     ]
   }),

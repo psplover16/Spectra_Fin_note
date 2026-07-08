@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜紅黑樹</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;overflow-wrap:anywhere;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}th code{background:transparent;color:inherit;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">Red-Black Tree</p>
+<h1>紅黑樹</h1>
+<blockquote><p>紅黑樹是一種以節點紅黑著色搭配五大性質、把樹高鎖在 O(log n) 的自平衡二元搜尋樹,這份速記卡只收考卷會出的定義、五大性質、插入、刪除與時間複雜度。</p></blockquote>
+<hr>
+<blockquote><p>只放考卷會出的五塊:<strong>定義 · 特性 · 插入 · 刪除 · 時間複雜度</strong></p><p>證明、2-3-4 對應、上界收緊 → 見《紅黑樹_深度講義》</p></blockquote>
+<div class="tablewrap"><table><thead><tr><th></th><th>區塊</th></tr></thead><tbody>
+<tr><td>①</td><td>定義與記號</td></tr>
+<tr><td>②</td><td>五大性質(特性)</td></tr>
+<tr><td>③</td><td>插入</td></tr>
+<tr><td>④</td><td>刪除</td></tr>
+<tr><td>⑤</td><td>時間複雜度與必背數字</td></tr>
+<tr><td>⑥</td><td>陷阱 · 60 秒複習</td></tr>
+</tbody></table></div>
+<hr>
+<h2>① 定義【硬背】</h2>
+<blockquote><h4>紅黑樹 = <strong>BST</strong> + 每個節點多帶一個<strong>顏色</strong>(紅 / 黑)</h4></blockquote>
+<ul><li>所有空指標都視為一個<strong>黑色的 <code>NIL</code> 哨兵</strong>。</li><li><strong><code>NIL</code> 就是紅黑樹的「葉節點」</strong>;有 key 的叫<strong>內部節點</strong>。</li><li>畫圖時 NIL 通常省略,但<strong>算黑高時一定要算進去</strong>。</li></ul>
+<h3>黑高 <code>bh(x)</code></h3>
+<blockquote><h4><code>bh(x)</code> = 從 <code>x</code> <strong>往下</strong>,到任一 NIL 的路徑上,黑節點的個數</h4><h4><strong>不含 <code>x</code> 自己,但含最底下那個 NIL。</strong></h4></blockquote>
+<div class="tablewrap"><table><thead><tr><th>例</th><th>bh</th></tr></thead><tbody>
+<tr><td>單獨一個黑根節點</td><td><strong>1</strong>(只有 NIL)</td></tr>
+<tr><td><code>20(B)</code> 底下掛 <code>10(B)</code>、<code>30(B)</code></td><td><code>bh(20) = 2</code>、<code>bh(10) = 1</code></td></tr>
+</tbody></table></div>
+<blockquote><p>⚠️ 算成 <code>0</code> 就是定義記錯。</p></blockquote>
+<hr>
+<h2>② 五大性質【硬背】</h2>
+<blockquote><ol><li>每個節點不是<strong>紅</strong>就是<strong>黑</strong>。</li><li><strong>根</strong>是<strong>黑</strong>。</li><li>每個葉節點(<strong>NIL</strong>)是<strong>黑</strong>。</li><li><strong>紅節點的兩個小孩都是黑</strong>(⇔ 不能「紅接紅」)。</li><li>從<strong>任一節點</strong>到其下方<strong>每一個 NIL</strong>,經過的<strong>黑節點數目相同</strong>。</li></ol></blockquote>
+<h3>兩條在幹嘛?【理解】</h3>
+<div class="tablewrap"><table><thead><tr><th></th><th>管什麼</th><th>效果</th></tr></thead><tbody>
+<tr><td><strong>性質 4</strong></td><td>不能太紅</td><td>任一路徑上,紅色最多佔一半</td></tr>
+<tr><td><strong>性質 5</strong></td><td>黑色要均勻</td><td>每條路徑黑數一樣多</td></tr>
+</tbody></table></div>
+<p>合起來 → <strong>最長路徑 ≤ 最短路徑的 2 倍</strong> → 樹高被鎖死。</p>
+<h3>檢查合法性:必做三件事</h3>
+<pre><code>① 根是黑?
+② 有沒有紅接紅?
+③ 逐條路徑數黑色 —— 每條都一樣多嗎?</code></pre>
+<blockquote><p>⚠️ <strong>第三件最容易漏。</strong> 有些樹根黑、沒紅接紅,但黑色不均勻,一樣是死。</p><pre><code>      20(B)        20→10(R)→NIL = 1 黑
+     /    \        20→30(B)→NIL = 2 黑   ✗ 違反性質 5
+   10(R)  30(B)</code></pre></blockquote>
+<h3>由性質推出來的結論</h3>
+<div class="tablewrap"><table><thead><tr><th>結論</th><th>說明</th></tr></thead><tbody>
+<tr><td>黑高 <code>b</code> → 節點數</td><td><code>2^b − 1</code> ~ <code>2^(2b) − 1</code></td></tr>
+<tr><td>樹高 <code>h</code>(層數)</td><td><code>b ≤ h ≤ 2b</code></td></tr>
+<tr><td><strong>含 NIL</strong> 時黑比紅多</td><td>✓(<code>n</code> 個內部節點 → 恰 <code>n+1</code> 個 NIL,全黑)</td></tr>
+<tr><td><strong>只算內部節點</strong>時黑比紅多</td><td>✗(紅最多可達黑的 <strong>2 倍</strong>)</td></tr>
+</tbody></table></div>
+<hr>
+<h2>③ 插入</h2>
+<h3>鐵則:新節點一律塗<strong>紅</strong>【理解】</h3>
+<div class="tablewrap"><table><thead><tr><th>塗什麼</th><th>後果</th></tr></thead><tbody>
+<tr><td>塗<strong>黑</strong></td><td>那條路徑黑數 +1 → <strong>一定</strong>違反性質 5(<strong>全域</strong>問題,難修)</td></tr>
+<tr><td>塗<strong>紅</strong></td><td>黑高不變 → 性質 5 永遠安全;頂多紅接紅(<strong>局部</strong>問題,好修)</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>紅色是免費的,它不佔黑高。</strong> 寧可製造好修的局部問題。</p></blockquote>
+<h3>四個角色</h3>
+<p><code>z</code>(新節點)、<code>P</code>(父)、<code>G</code>(祖父)、<code>U</code>(叔叔 = <code>P</code> 的兄弟,<strong>NIL 也算</strong>)</p>
+<h3>SOP</h3>
+<pre><code>新節點塗紅
+   ↓
+父 P 是黑? ──是──► 結束(連叔叔都不用看)
+   ↓ 否
+看叔叔 U 的顏色
+   ├─ U 紅  ──► 情況一:P、U 塗黑,G 塗紅,問題上移到 G(回到開頭)
+   └─ U 黑/NIL
+        ├─ z 在內側(折線) ──► 情況二:對 P 旋轉橋直 → 進情況三
+        └─ z 在外側(直線) ──► 情況三:對 G 反向旋轉 + 交換 P、G 顏色 → 結束</code></pre>
+<h3>判斷表【硬背】</h3>
+<div class="tablewrap"><table><thead><tr><th>父 <code>P</code></th><th>叔叔 <code>U</code></th><th><code>z</code> 位置</th><th>情況</th><th>動作</th><th>旋轉</th></tr></thead><tbody>
+<tr><td><strong>黑</strong></td><td>—</td><td>—</td><td>無違反</td><td>不用修</td><td>0</td></tr>
+<tr><td>紅</td><td><strong>紅</strong></td><td>任意</td><td><strong>一</strong></td><td><code>P</code>、<code>U</code> 塗黑,<code>G</code> 塗紅,問題上移到 <code>G</code></td><td>0</td></tr>
+<tr><td>紅</td><td><strong>黑/NIL</strong></td><td>內側(三角)</td><td><strong>二</strong></td><td>對 <code>P</code> 旋轉橋直 → 轉情況三</td><td>1</td></tr>
+<tr><td>紅</td><td><strong>黑/NIL</strong></td><td>外側(直線)</td><td><strong>三</strong></td><td>對 <code>G</code> 反向旋轉 + 交換 <code>P</code>、<code>G</code> 顏色</td><td>1</td></tr>
+</tbody></table></div>
+<blockquote><p>情況一「黑高沒變」的理由:原本「<code>G</code> 黑 + <code>P</code>/<code>U</code> 紅」= 1 黑;改完「<code>G</code> 紅 + <code>P</code>/<code>U</code> 黑」= 1 黑。<strong>只是把紅往上推一層。</strong></p><p><code>G</code> 若變成根 → 塗回黑。</p></blockquote>
+<h3>為什麼旋轉 ≤ 2 次?【理解】</h3>
+<div class="tablewrap"><table><thead><tr><th>情況</th><th>旋轉</th><th>出口</th></tr></thead><tbody>
+<tr><td>一</td><td><strong>0</strong></td><td>上移兩層,繼續迴圈(可重複 O(log n) 次)</td></tr>
+<tr><td>二</td><td><strong>1</strong></td><td><strong>必定</strong>進情況三</td></tr>
+<tr><td>三</td><td><strong>1</strong></td><td><code>P</code> 變黑 → 紅接紅消失 → <strong>結束</strong></td></tr>
+</tbody></table></div>
+<p>最壞路徑:<code>情況一 × 很多次(0 轉) → 情況二(1 轉) → 情況三(1 轉)</code> → <strong>≤ 2 次</strong></p>
+<hr>
+<h2>④ 刪除</h2>
+<h3>第一步|化簡:找出「真正要移除的節點 <code>y</code>」</h3>
+<p>設 <code>D</code> = 你要刪的節點。</p>
+<div class="tablewrap"><table><thead><tr><th><code>D</code> 的小孩數</th><th>動作</th><th><code>y</code> 是誰</th></tr></thead><tbody>
+<tr><td><strong>0 / 1</strong></td><td>直接移除 / 用那個小孩頂替</td><td><code>y = D</code></td></tr>
+<tr><td><strong>2</strong></td><td>找 <code>S = D.right</code> 一路往<strong>左</strong>到底;把 <code>S</code> 的 key 抄進 <code>D</code>;改成去刪 <code>S</code></td><td><strong><code>y = S</code></strong></td></tr>
+</tbody></table></div>
+<blockquote><p><strong><code>S</code> 是最左者 → 絕對沒有左小孩</strong> → <code>y</code> <strong>永遠只有 0 或 1 個小孩</strong>。</p><p>只搬 <code>key</code>,節點沒搬(<code>D</code> 留在原位換名牌)。</p></blockquote>
+<p><code>x</code> = <strong>頂替 <code>y</code> 位置的那個節點</strong>(可能是 NIL)。</p>
+<h3>第二步|看顏色,決定要不要修</h3>
+<pre><code>y 是紅色? ──是──► 結束(黑高不變,0 旋轉)
+   ↓ 否(y 是黑)
+x 是紅色? ──是──► 把 x 染黑,結束(0 旋轉)
+   ↓ 否(x 是黑,含 NIL)
+x 背上「雙黑」→ 跑下面的四情況 fixup</code></pre>
+<blockquote><p><strong>兩個提早結束的出口,先檢查它們,別急著套四情況。</strong></p></blockquote>
+<h3>第三步|雙黑 fixup(<code>x</code> 為<strong>左</strong>小孩版;右小孩鏡像)</h3>
+<p><strong>角色</strong>:<code>x</code>(雙黑)、<code>w</code>(<code>x</code> 的<strong>兄弟</strong>)、<code>P</code>(父親)<br><strong>近 / 遠</strong>:相對於 <code>x</code>。<code>x</code> 在左 → <code>w.left</code> 是<strong>近</strong>、<code>w.right</code> 是<strong>遠</strong>。</p>
+<pre><code>w 是紅? ──是──► 情況 1:對 P 左旋;w→黑、P→紅          (進 2/3/4)
+   ↓ 否
+w 兩個小孩都黑? ──是──► 情況 2:w→紅;x 上移到 P
+   ↓ 否                    (P 若紅 → 染黑結束;否則回到開頭)
+w 的「遠」小孩是黑(近的紅)? ──是──► 情況 3:對 w 右旋;w↔近小孩換色 (進 4)
+   ↓ 否
+情況 4:對 P 左旋;w 接手 P 的顏色;P→黑;遠小孩→黑  ──► 結束</code></pre>
+<h3>判斷表【硬背】</h3>
+<div class="tablewrap"><table><thead><tr><th>情況</th><th>條件</th><th>動作</th><th>旋轉</th><th>出口</th></tr></thead><tbody>
+<tr><td><strong>1</strong></td><td><code>w</code> 是<strong>紅</strong></td><td>對 <code>P</code> 左旋;<code>w</code>→黑、<code>P</code>→紅</td><td>1</td><td>必進 2/3/4</td></tr>
+<tr><td><strong>2</strong></td><td><code>w</code> 黑,<strong>兩小孩都黑</strong></td><td><code>w</code>→紅;<code>x</code> 上移到 <code>P</code></td><td>0</td><td><code>P</code> 紅 → 染黑結束;否則迴圈</td></tr>
+<tr><td><strong>3</strong></td><td><code>w</code> 黑,<strong>近</strong>紅、<strong>遠</strong>黑</td><td>對 <code>w</code> 右旋;<code>w</code> ↔ 近小孩換色</td><td>1</td><td>必進 4</td></tr>
+<tr><td><strong>4</strong></td><td><code>w</code> 黑,<strong>遠</strong>小孩紅</td><td>對 <code>P</code> 左旋;<code>w</code> 接手 <code>P</code> 的顏色;<code>P</code>→黑;遠小孩→黑</td><td>1</td><td><strong>結束</strong></td></tr>
+</tbody></table></div>
+<blockquote><p>【理解】記憶線索</p><ul><li><strong>1</strong>:兄弟太紅 → 先把它壓成黑(轉化用)</li><li><strong>2</strong>:兩邊一起少一個黑 → 公平 → 往上推。<strong>唯一會迴圈的情況</strong></li><li><strong>3</strong>:紅色長在近端不好用 → 甩到遠端</li><li><strong>4</strong>:遠端有紅可以借 → 一刀結束</li></ul></blockquote>
+<h3>為什麼旋轉 ≤ 3 次?【理解】</h3>
+<div class="tablewrap"><table><thead><tr><th>情況</th><th>旋轉</th><th>迴圈?</th></tr></thead><tbody>
+<tr><td>1</td><td>1</td><td>不迴圈,必進 2/3/4</td></tr>
+<tr><td>2</td><td><strong>0</strong></td><td><strong>會迴圈</strong>,但一次都不轉</td></tr>
+<tr><td>3</td><td>1</td><td>不迴圈,必進 4</td></tr>
+<tr><td>4</td><td>1</td><td>直接結束</td></tr>
+</tbody></table></div>
+<p><strong>關鍵觀察</strong>:情況 1 執行後 <code>P</code> 被染<strong>紅</strong> → 之後若進情況 2,<code>x</code> 上移到紅色的 <code>P</code>,迴圈立刻終止。</p>
+<p>所以最壞路徑:</p>
+<pre><code>情況 2 × k 次(0 轉) → 情況 1(1 轉) → 情況 3(1 轉) → 情況 4(1 轉) → 結束</code></pre>
+<p><strong>≤ 3 次</strong></p>
+<hr>
+<h2>⑤ 時間複雜度【硬背】</h2>
+<h3>樹高</h3>
+<blockquote><h4><code>h ≤ 2 log₂(n + 1)</code>　　(<code>n</code> = 內部節點數)</h4></blockquote>
+<p>推導主線:</p>
+<pre><code>①「黑色至少佔一半」    →  bh ≥ h / 2
+②「黑高決定節點數下界」→  n ≥ 2^bh − 1
+                       ⇒  h ≤ 2 log₂(n+1)</code></pre>
+<blockquote><p>⚠️ 這是<strong>上界</strong>,不保證達得到。AVL 的 <code>N(h)</code> 表給的才是<strong>精確</strong>最大值。</p></blockquote>
+<h3>三種操作</h3>
+<div class="tablewrap"><table><thead><tr><th>操作</th><th>複雜度</th><th>拆解</th></tr></thead><tbody>
+<tr><td>搜尋</td><td><strong>O(log n)</strong></td><td>就是走樹高</td></tr>
+<tr><td>插入</td><td><strong>O(log n)</strong></td><td>BST 插入 O(log n) + 變色 O(log n) + <strong>旋轉 ≤ 2 次</strong></td></tr>
+<tr><td>刪除</td><td><strong>O(log n)</strong></td><td>BST 刪除 O(log n) + 變色 O(log n) + <strong>旋轉 ≤ 3 次</strong></td></tr>
+</tbody></table></div>
+<blockquote><p><strong>旋轉次數是常數,變色次數是 O(log n)。</strong></p><p>旋轉要搬指標、動記憶體;變色只改 1 個 bit。<strong>這個交換就是紅黑樹存在的理由。</strong></p></blockquote>
+<h3>vs AVL 對照表【硬背】</h3>
+<div class="tablewrap"><table><thead><tr><th></th><th><strong>紅黑樹</strong></th><th><strong>AVL</strong></th></tr></thead><tbody>
+<tr><td>平衡條件</td><td>五大性質(<strong>寬鬆</strong>)</td><td>每節點 <code>|BF| ≤ 1</code>(<strong>嚴格</strong>)</td></tr>
+<tr><td>樹高</td><td><code>h ≤ 2 log₂(n+1)</code></td><td><code>h ≈ 1.44 log₂n</code></td></tr>
+<tr><td>最長 / 最短路徑</td><td>≤ 2 倍</td><td>高度差 ≤ 1</td></tr>
+<tr><td>搜尋 / 插入 / 刪除</td><td>都 <strong>O(log n)</strong></td><td>都 <strong>O(log n)</strong></td></tr>
+<tr><td><strong>插入旋轉</strong></td><td><strong>≤ 2 次</strong></td><td>≤ 1 組(單旋 1 / 雙旋 2)</td></tr>
+<tr><td><strong>刪除旋轉</strong></td><td><strong>≤ 3 次</strong></td><td><strong>O(log n) 組</strong>(可能連鎖)</td></tr>
+<tr><td>變色 / 高度更新</td><td>O(log n) 次變色</td><td>O(log n) 次更新</td></tr>
+<tr><td>每節點額外空間</td><td><strong>1 bit</strong>(顏色)</td><td>一個整數(高度或 BF)</td></tr>
+<tr><td>查詢速度</td><td>稍慢(樹較高)</td><td><strong>較快</strong></td></tr>
+<tr><td>適用</td><td><strong>插入刪除頻繁</strong></td><td>查詢遠多於改動</td></tr>
+<tr><td>實際應用</td><td><code>C++ std::map</code>/<code>set</code>、<code>Java TreeMap</code>、Linux <code>rbtree</code></td><td>資料庫 / 記憶體索引</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>一句話選用</strong>:查詢為主 → AVL;改動頻繁 → 紅黑樹。</p><p>標準函式庫全選紅黑樹,因為 <code>map</code> 的真實負載是混合的。</p></blockquote>
+<hr>
+<h2>⑥ 六大陷阱【硬背】</h2>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>陷阱</th><th>正解</th></tr></thead><tbody>
+<tr><td>1</td><td>檢查合法性只做兩件事</td><td>必做<strong>三件</strong>,第三件是<strong>逐條路徑數黑色</strong></td></tr>
+<tr><td>2</td><td>黑高忘記算 NIL</td><td><code>bh(單一黑根) = 1</code>,不是 0</td></tr>
+<tr><td>3</td><td>插入時搞錯判斷起點</td><td>起點永遠是「<strong>新節點的父親是不是紅的</strong>」。父黑 → 直接結束</td></tr>
+<tr><td>4</td><td>刪除急著套四情況</td><td>先看兩個出口:<strong><code>y</code> 是紅 → 結束</strong>;<strong><code>x</code> 是紅 → 染黑結束</strong></td></tr>
+<tr><td>5</td><td>把「上界」講成「最大值」</td><td><code>2 log₂(n+1)</code> 是上界,不保證可達</td></tr>
+<tr><td>6</td><td>「算不算 NIL」沒問清楚</td><td>黑高<strong>一定算</strong> NIL;「黑比紅多嗎」則要先問</td></tr>
+</tbody></table></div>
+<h3>高頻是非題</h3>
+<div class="tablewrap"><table><thead><tr><th>敘述</th><th>答案</th><th>理由</th></tr></thead><tbody>
+<tr><td>黑節點的兩個小孩必須是紅色</td><td>✗</td><td>性質 4 只管<strong>紅</strong>節點的小孩</td></tr>
+<tr><td>紅黑樹是高度最小的 BST</td><td>✗</td><td>只保證 <code>h ≤ 2log₂(n+1)</code>,AVL 才逼近最矮</td></tr>
+<tr><td>全部節點塗黑一定合法</td><td>✗</td><td>合法 <strong>⟺ 完美二元樹</strong></td></tr>
+<tr><td>插入一定要旋轉</td><td>✗</td><td>父黑就不用修;情況一只變色</td></tr>
+<tr><td>刪除一定要旋轉</td><td>✗</td><td><code>y</code> 紅或 <code>x</code> 紅都直接結束</td></tr>
+<tr><td>紅黑樹的旋轉次數是 O(log n)</td><td>✗</td><td><strong>旋轉是常數</strong>(插入 ≤2、刪除 ≤3);<strong>變色</strong>才是 O(log n)</td></tr>
+<tr><td>新節點可以塗黑</td><td>✗</td><td>一定破壞性質 5(全域問題)</td></tr>
+</tbody></table></div>
+<hr>
+<h2>⑦ 考場最後 60 秒</h2>
+<p><strong>檢查一棵樹合不合法</strong></p>
+<pre><code>根黑 → 無紅接紅 → 逐條路徑數黑色(含 NIL)</code></pre>
+<p><strong>插入</strong></p>
+<pre><code>塗紅 → 父黑就結束 → 看叔叔:紅→變色上移;黑→折線先橋直、直線就旋轉換色</code></pre>
+<p><strong>刪除</strong></p>
+<pre><code>兩個小孩 → 換後繼的 key,改刪後繼
+y 紅 → 結束 │ x 紅 → 染黑結束 │ 都黑 → 雙黑,跑四情況</code></pre>
+<p><strong>數字</strong></p>
+<pre><code>h ≤ 2log₂(n+1)　│　三種操作都 O(log n)
+插入旋轉 ≤ 2　│　刪除旋轉 ≤ 3　│　變色 O(log n)　│　每節點 1 bit</code></pre>
+<footer class="foot">來源：_private/20260708/紅黑樹_考前速記卡.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>

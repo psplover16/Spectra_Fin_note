@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>計概(v2)｜樹與雜湊表 考題練習</title>
+<style>
+:root{--paper:#FBFAF7;--ink:#23211C;--ink-soft:#5C574E;--accent:#163A52;--accent-tint:#E7EEF2;--line:#D9D5CC;--code:#F3F1EA;--font-body:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;--font-head:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.78;}
+.toolbar{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 20px;background:rgba(251,250,247,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.where{font-size:12px;color:var(--accent);font-weight:700;}
+.back{font-family:var(--font-body);background:transparent;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:left;font-weight:700;}
+.back:hover{text-decoration:underline;}
+.wrap{max-width:780px;margin:0 auto;padding:30px 22px 90px;}
+.eyebrow{font-size:12px;color:var(--accent);font-weight:700;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-head);color:var(--accent);line-height:1.35;}
+h1{font-size:32px;margin:.25em 0 .18em;}h2{font-size:24px;border-bottom:2px solid var(--accent);padding-bottom:7px;margin-top:34px;}h3{font-size:20px;margin-top:28px;}h4{font-size:18px;margin-top:24px;}
+.subtitle{color:var(--ink-soft);font-size:15px;font-style:italic;margin:0 0 18px;}
+p{margin:.58em 0;}strong{font-weight:700;}code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:var(--code);border-radius:4px;padding:.08em .28em;overflow-wrap:anywhere;}
+pre{overflow-x:auto;background:#1F2528;color:#F6F0E8;border-radius:8px;padding:14px 16px;line-height:1.55;}pre code{background:transparent;color:inherit;padding:0;}th code{background:transparent;color:inherit;}
+blockquote{border-left:4px solid var(--accent);background:var(--accent-tint);border-radius:0 8px 8px 0;margin:16px 0;padding:10px 16px;color:#34454D;}blockquote p{margin:.25em 0;}
+ul,ol{padding-left:1.5em;margin:.5em 0;}li{margin:.35em 0;}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;}table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px;}th{background:var(--accent);color:var(--paper);text-align:left;padding:9px 11px;}td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;}td:first-child{border-left:0;}tr:nth-child(even) td{background:#FAF6EF;}
+.foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
+@media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
+@media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
+<main class="wrap">
+<div class="eyebrow">計概(v2) 補充講義</div>
+<p class="subtitle">Trees &amp; Hash Tables — Practice</p>
+<h1>樹與雜湊表 考題練習</h1>
+<blockquote><p>這份把「基礎資料結構(下)」的複雜度總表、高頻考點速記與選擇題抽出來,方便考前一次刷完並對照答案解析。</p></blockquote>
+<hr>
+<h2>複雜度總表(考前掃這張)</h2>
+<div class="tablewrap"><table><thead><tr><th>結構</th><th>隨機存取</th><th>搜尋</th><th>插入/刪除(已知位置)</th></tr></thead><tbody><tr><td>陣列 Array</td><td><strong>O(1)</strong></td><td>O(n)</td><td>O(n)</td></tr>
+<tr><td>鏈結串列 Linked List</td><td>O(n)</td><td>O(n)</td><td><strong>O(1)</strong></td></tr>
+<tr><td>堆疊 Stack / 佇列 Queue</td><td>—</td><td>—</td><td><strong>O(1)</strong></td></tr>
+<tr><td>BST(平均)</td><td>—</td><td><strong>O(log n)</strong></td><td>O(log n)</td></tr>
+<tr><td>BST(最壞,歪斜)</td><td>—</td><td>O(n)</td><td>O(n)</td></tr>
+<tr><td>雜湊表(平均)</td><td>—</td><td><strong>O(1)</strong></td><td>O(1)</td></tr></tbody></table></div>
+<hr>
+<h2>高頻考點速記(直接背)</h2>
+<ul><li>Big-O 成長:<strong>O(1) &lt; O(log n) &lt; O(n) &lt; O(n log n) &lt; O(n²) &lt; O(2ⁿ) &lt; O(n!)</strong>。</li><li>陣列:<strong>隨機存取 O(1)、插入刪除 O(n)</strong>、連續固定。</li><li>二維位址:Row-major <code>i×C + j</code>;Column-major <code>j×R + i</code>。</li><li>鏈結串列:<strong>插入刪除 O(1)、走訪 O(n)</strong>;分單向/雙向/環狀。</li><li><strong>陣列存取快增刪慢;串列增刪快存取慢。</strong></li><li>Stack = <strong>LIFO</strong>(函式呼叫、上一頁、運算式轉換);Queue = <strong>FIFO</strong>(排程、緩衝)。</li><li><strong>環狀佇列</strong>解決線性佇列的<strong>假溢位</strong>。</li><li>二元樹走訪:前序=根左右、中序=左根右、後序=左右根。</li><li><strong>BST 中序走訪 = 由小到大</strong>;BST 平均 O(log n)、<strong>最壞 O(n)</strong>。</li><li>n 個節點的樹有 <strong>n−1 條邊</strong>;完美二元樹 h 層有 <strong>2ʰ−1 個節點</strong>。</li><li>前/中/後序運算式 ↔ 運算式樹的前/中/後序走訪;用堆疊轉換求值。</li><li>雜湊表平均 <strong>O(1)</strong>,問題是<strong>碰撞</strong>。</li></ul>
+<hr>
+<h2>小試身手(選擇題)</h2>
+<p><strong>1.</strong> 下列時間複雜度,何者成長<strong>最快</strong>(資料量大時最慢)?<br>(A) O(n log n)　(B) O(n²)　(C) O(2ⁿ)　(D) O(log n)</p>
+<p><strong>2.</strong> 陣列 (Array) 的「隨機存取(依索引取值)」時間複雜度為?<br>(A) O(1)　(B) O(log n)　(C) O(n)　(D) O(n²)</p>
+<p><strong>3.</strong> 二維陣列 <code>A[5][6]</code>(索引從 0)以<strong>列為主 (row-major)</strong> 存放,起始位址 2000,每個元素 2 bytes,則 <code>A[2][3]</code> 的位址為?<br>(A) 2015　(B) 2026　(C) 2030　(D) 2000</p>
+<p><strong>4.</strong> 關於鏈結串列 (Linked List),下列何者正確?<br>(A) 隨機存取為 O(1)<br>(B) 已知位置的插入/刪除為 O(1)<br>(C) 記憶體必須連續<br>(D) 大小固定</p>
+<p><strong>5.</strong> 「後進先出 (LIFO)」是下列哪種結構的特性?<br>(A) 佇列　(B) 堆疊　(C) 陣列　(D) 樹</p>
+<p><strong>6.</strong> 印表機的列印工作、作業排程,最適合用下列哪種結構?<br>(A) 堆疊 Stack　(B) 佇列 Queue　(C) 二元樹　(D) 雜湊表</p>
+<p><strong>7.</strong> 下列哪個應用<strong>最適合</strong>用堆疊 (Stack) 來實作?<br>(A) 印表機列印佇列<br>(B) 函式呼叫的返回、中序轉後序<br>(C) 先到先服務排隊<br>(D) 網路封包緩衝</p>
+<p><strong>8.</strong> 環狀佇列 (Circular Queue) 主要解決線性佇列的什麼問題?<br>(A) 碰撞　(B) 假溢位 (False Overflow)　(C) 遞迴過深　(D) 記憶體不連續</p>
+<p><strong>9.</strong> 已知二元樹如下,其<strong>後序 (postorder)</strong> 走訪結果為?</p>
+<pre><code>      1
+     / \
+    2   3
+   / \
+  4   5</code></pre>
+<p>(A) 1 2 4 5 3　(B) 4 5 2 3 1　(C) 4 2 5 1 3　(D) 1 2 3 4 5</p>
+<p><strong>10.</strong> 對一棵二元搜尋樹 (BST) 做<strong>中序 (inorder)</strong> 走訪,會得到?<br>(A) 由大到小排序　(B) 由小到大排序　(C) 隨機順序　(D) 層級順序</p>
+<p><strong>11.</strong> 二元搜尋樹 (BST) 的<strong>最壞情況</strong>搜尋時間複雜度為?<br>(A) O(1)　(B) O(log n)　(C) O(n)　(D) O(n²)</p>
+<p><strong>12.</strong> 中序運算式 <code>A + B * C</code> 的<strong>後序 (postfix)</strong> 表示法為?<br>(A) A B C * +　(B) A B + C *　(C) + A * B C　(D) A B * C +</p>
+<p><strong>13.</strong> 一棵有 n 個節點的樹,共有幾條邊 (edge)?<br>(A) n　(B) n − 1　(C) n + 1　(D) 2n</p>
+<p><strong>14.</strong> 階層數為 h 的<strong>完美二元樹 (perfect binary tree)</strong>,節點總數為?<br>(A) 2ʰ − 1　(B) 2ʰ　(C) 2h　(D) h²</p>
+<p><strong>15.</strong> 關於陣列與鏈結串列的比較,下列何者正確?<br>(A) 陣列增刪快、串列存取快<br>(B) 陣列存取快、串列增刪快<br>(C) 兩者存取都是 O(1)<br>(D) 兩者增刪都是 O(1)</p>
+<p><strong>16.</strong> 雜湊表 (Hash Table) 平均的搜尋時間複雜度,以及其主要問題分別為?<br>(A) O(n);遞迴　(B) O(log n);溢位　(C) O(1);碰撞 (collision)　(D) O(1);假溢位</p>
+<p><strong>17.</strong> 某二元樹的前序走訪為 <code>1 2 3 4 5</code>、中序走訪為 <code>2 1 4 3 5</code>,則其<strong>後序</strong>走訪為?<br>(A) 2 4 5 3 1　(B) 1 2 3 4 5　(C) 2 1 4 3 5　(D) 2 4 3 5 1</p>
+<p><strong>18.</strong> 一棵二元樹有 10 個葉節點(分支度 0),則分支度為 2 的節點有幾個?<br>(A) 8　(B) 9　(C) 10　(D) 11</p>
+<p><strong>19.</strong> 二元樹以陣列儲存(根放在索引 1),索引 5 的節點,其<strong>左子節點</strong>在哪個索引?<br>(A) 6　(B) 10　(C) 11　(D) 25</p>
+<p><strong>20.</strong> 一棵二元樹的<strong>第 4 層</strong>最多有幾個節點?<br>(A) 4　(B) 8　(C) 16　(D) 7</p>
+<p><strong>21.</strong> 關於堆積 (Heap),下列敘述何者正確?<br>(A) heap 是一種二元搜尋樹<br>(B) 最大堆 (max-heap) 的根是最大值<br>(C) heap 規定兄弟節點之間要有大小順序<br>(D) heap 一定是歪斜樹</p>
+<p><strong>22.</strong> 下列哪一組走訪結果,<strong>無法</strong>唯一決定一棵二元樹?<br>(A) 前序 + 中序　(B) 後序 + 中序　(C) 前序 + 後序　(D) 以上都可以</p>
+<p><strong>23.</strong> 刪除二元搜尋樹 (BST) 中「有兩個子節點」的節點時,通常用下列何者取代它?<br>(A) 根節點<br>(B) 中序後繼(右子樹最小值)或中序前驅<br>(C) 任一葉節點<br>(D) 它的父節點</p>
+<hr>
+<h3>答案與解析</h3>
+<div class="tablewrap"><table><thead><tr><th>題</th><th>答</th><th>解析</th></tr></thead><tbody><tr><td>1</td><td><strong>C</strong></td><td>成長速度 O(2ⁿ) &gt; O(n²) &gt; O(n log n) &gt; O(log n)。</td></tr>
+<tr><td>2</td><td><strong>A</strong></td><td>陣列靠索引一算就到,隨機存取 O(1)。</td></tr>
+<tr><td>3</td><td><strong>C</strong></td><td>Row-major:2000 + (2×6 + 3)×2 = 2000 + 30 = 2030。</td></tr>
+<tr><td>4</td><td><strong>B</strong></td><td>串列已知位置插入/刪除只改指標 = O(1);其餘皆為陣列特性。</td></tr>
+<tr><td>5</td><td><strong>B</strong></td><td>LIFO 是堆疊;佇列是 FIFO。</td></tr>
+<tr><td>6</td><td><strong>B</strong></td><td>先到先做 = FIFO = 佇列。</td></tr>
+<tr><td>7</td><td><strong>B</strong></td><td>函式呼叫返回、運算式轉換都靠 LIFO 的堆疊。</td></tr>
+<tr><td>8</td><td><strong>B</strong></td><td>環狀佇列讓空間循環利用,解決假溢位。</td></tr>
+<tr><td>9</td><td><strong>B</strong></td><td>後序=左右根:左子樹(4,5,2)、右(3)、根(1) → 4 5 2 3 1。</td></tr>
+<tr><td>10</td><td><strong>B</strong></td><td>BST 中序走訪 = 由小到大排序。</td></tr>
+<tr><td>11</td><td><strong>C</strong></td><td>資料按序插入退化成歪斜樹,最壞 O(n)。</td></tr>
+<tr><td>12</td><td><strong>A</strong></td><td>* 優先,B C * 先,再與 A 相加:A B C * +。</td></tr>
+<tr><td>13</td><td><strong>B</strong></td><td>n 個節點的樹有 n−1 條邊。</td></tr>
+<tr><td>14</td><td><strong>A</strong></td><td>h 層完美二元樹共 2ʰ−1 個節點(如 h=3 → 7)。</td></tr>
+<tr><td>15</td><td><strong>B</strong></td><td>陣列存取快增刪慢;串列增刪快存取慢。</td></tr>
+<tr><td>16</td><td><strong>C</strong></td><td>雜湊表平均 O(1),主要問題是碰撞。</td></tr>
+<tr><td>17</td><td><strong>A</strong></td><td>前序首 1=根;中序 <code>2│1│4 3 5</code> 切左右;右子樹根 3(左 4、右 5)→ 後序 2 4 5 3 1。</td></tr>
+<tr><td>18</td><td><strong>B</strong></td><td>公式 n₀ = n₂ + 1 → 10 = n₂ + 1 → n₂ = <strong>9</strong>。</td></tr>
+<tr><td>19</td><td><strong>B</strong></td><td>左子 = 2i = 2×5 = <strong>10</strong>(右子 2i+1、父 ⌊i/2⌋)。</td></tr>
+<tr><td>20</td><td><strong>B</strong></td><td>第 i 層最多 2^(i-1) = 2³ = <strong>8</strong>。</td></tr>
+<tr><td>21</td><td><strong>B</strong></td><td>max-heap 根最大;heap 是完整二元樹(非 BST),只管父子、不管兄弟。</td></tr>
+<tr><td>22</td><td><strong>C</strong></td><td>前序+後序分不出左右子樹,無法唯一決定;需「前序/後序 + 中序」。</td></tr>
+<tr><td>23</td><td><strong>B</strong></td><td>用中序後繼(右子樹最小)或中序前驅取代,才能維持 BST 排序性質。</td></tr></tbody></table></div>
+<footer class="foot">來源：_private/計概補充/基礎資料結構(下)_樹與雜湊表.md</footer>
+</main>
+<script>
+function resolveComputerPrinciplesV2IndexPath(){
+  var marker='/computer-principles-v2/';
+  var markerIndex=window.location.pathname.indexOf(marker);
+  if(markerIndex<0){
+    return '/computer-principles-v2';
+  }
+  return window.location.pathname.slice(0,markerIndex+marker.length-1);
+}
+function backToComputerPrinciplesV2(){
+  if(window.history.length>1){
+    window.history.back();
+    return;
+  }
+  window.location.href=resolveComputerPrinciplesV2IndexPath();
+}
+</script>
+</body>
+</html>

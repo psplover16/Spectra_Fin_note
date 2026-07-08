@@ -96,3 +96,99 @@ updated: 2026-07-08
 code:
   - _private/discuss.txt
 -->
+
+---
+### Requirement: Split trees and hash-table lessons exclude balanced-tree content
+
+The four HTML lessons split from `基礎資料結構(下)_樹與雜湊表.html` SHALL preserve the learner-facing section structure of their source chapters and SHALL NOT include the source lesson's balanced-tree (AVL / 紅黑樹) chapter. The 基礎樹 lesson SHALL cover the tree chapter through Heap and Heap Sort and SHALL retain the tree-chapter summary block. The 運算式表示法 lesson SHALL cover the expression-notation chapter. The 雜湊表 lesson SHALL cover the hash-table chapter. The 樹與雜湊表_考題練習 lesson SHALL cover only the complexity summary, high-frequency review, and multiple-choice practice chapters with their answer explanations.
+
+#### Scenario: Balanced-tree content is absent from split lessons
+
+- **WHEN** the four split CPv2 lessons are inspected
+- **THEN** none of `基礎樹.html`, `運算式表示法.html`, `雜湊表.html`, or `樹與雜湊表_考題練習.html` contains the AVL or 紅黑樹 balanced-tree chapter
+- **AND** `基礎樹.html` contains the tree terminology, binary tree, traversal, BST, Heap, and Heap Sort sections
+- **AND** `基礎樹.html` retains the tree-chapter summary block
+- **AND** `樹與雜湊表_考題練習.html` contains only the complexity summary, high-frequency review, and multiple-choice practice sections
+
+
+<!-- @trace
+source: split-trees-hash-table-cards
+updated: 2026-07-08
+code:
+  - public/computer-principles-v2/紅黑樹.html
+  - .agents/skills/spectra-propose/SKILL.md
+  - public/computer-principles-v2/紅黑樹_刪除.html
+  - public/computer-principles-v2/AVL樹_刪除.html
+  - public/computer-principles-v2/樹與雜湊表_考題練習.html
+  - .agents/skills/spectra-discuss/SKILL.md
+  - _private/discuss.txt
+  - .agents/skills/spectra-drift/SKILL.md
+  - public/computer-principles-v2/雜湊表.html
+  - .agents/skills/spectra-apply/SKILL.md
+  - src/modules/computerPrinciplesV2/data/computerPrinciplesV2HtmlPages.ts
+  - .agents/skills/spectra-debug/SKILL.md
+  - _private/20260708/紅黑樹_刪除專練.md
+  - _private/20260708/紅黑樹_考前速記卡.md
+  - .agents/skills/spectra-archive/SKILL.md
+  - .agents/skills/spectra-audit/SKILL.md
+  - _private/20260708/AVL樹_考前速記卡.md
+  - public/computer-principles-v2/基礎樹.html
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - public/computer-principles-v2/AVL樹.html
+  - .agents/skills/spectra-ingest/SKILL.md
+  - _private/20260708/AVL樹_刪除專練.md
+  - public/computer-principles-v2/運算式表示法.html
+  - .agents/skills/spectra-commit/SKILL.md
+  - .agents/skills/spectra-ask/SKILL.md
+tests:
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+-->
+
+---
+### Requirement: AVL and red-black tree lessons preserve ASCII diagrams
+
+The four HTML lessons generated from `_private/20260708/` Markdown SHALL render the source Markdown structure as semantic HTML, and SHALL preserve every ASCII-art tree diagram inside a preformatted code block so its alignment is not broken.
+
+#### Scenario: ASCII diagrams render inside preformatted blocks
+
+- **WHEN** an AVL or 紅黑樹 CPv2 lesson generated from `_private/20260708/` is rendered
+- **THEN** each ASCII-art tree diagram from the source Markdown appears inside a `<pre>` preformatted code block
+- **AND** the source Markdown tables render as HTML tables
+- **AND** the source Markdown blockquotes render as HTML blockquotes
+
+<!-- @trace
+source: split-trees-hash-table-cards
+updated: 2026-07-08
+code:
+  - public/computer-principles-v2/紅黑樹.html
+  - .agents/skills/spectra-propose/SKILL.md
+  - public/computer-principles-v2/紅黑樹_刪除.html
+  - public/computer-principles-v2/AVL樹_刪除.html
+  - public/computer-principles-v2/樹與雜湊表_考題練習.html
+  - .agents/skills/spectra-discuss/SKILL.md
+  - _private/discuss.txt
+  - .agents/skills/spectra-drift/SKILL.md
+  - public/computer-principles-v2/雜湊表.html
+  - .agents/skills/spectra-apply/SKILL.md
+  - src/modules/computerPrinciplesV2/data/computerPrinciplesV2HtmlPages.ts
+  - .agents/skills/spectra-debug/SKILL.md
+  - _private/20260708/紅黑樹_刪除專練.md
+  - _private/20260708/紅黑樹_考前速記卡.md
+  - .agents/skills/spectra-archive/SKILL.md
+  - .agents/skills/spectra-audit/SKILL.md
+  - _private/20260708/AVL樹_考前速記卡.md
+  - public/computer-principles-v2/基礎樹.html
+  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
+  - public/computer-principles-v2/AVL樹.html
+  - .agents/skills/spectra-ingest/SKILL.md
+  - _private/20260708/AVL樹_刪除專練.md
+  - public/computer-principles-v2/運算式表示法.html
+  - .agents/skills/spectra-commit/SKILL.md
+  - .agents/skills/spectra-ask/SKILL.md
+tests:
+  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
+  - tests/unit/professionalTopics.spec.ts
+  - tests/unit/subjectTopics.spec.ts
+-->

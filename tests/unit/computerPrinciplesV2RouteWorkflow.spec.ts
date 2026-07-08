@@ -75,11 +75,60 @@ const topicCases = [
     htmlFilename: '基礎資料結構(上)_複雜度與線性結構.html'
   },
   {
-    id: 'cpv2-supplemental-trees-hash-tables',
-    title: '樹與雜湊表',
+    id: 'cpv2-supplemental-basic-tree',
+    title: '基礎樹',
+    source: supplementalTreesHashSourceFile,
+    keyword: 'Binary Search Tree',
+    htmlFilename: '基礎樹.html'
+  },
+  {
+    id: 'cpv2-supplemental-expression-notation',
+    title: '運算式表示法',
+    source: supplementalTreesHashSourceFile,
+    keyword: 'Postfix',
+    htmlFilename: '運算式表示法.html'
+  },
+  {
+    id: 'cpv2-supplemental-avl-tree',
+    title: 'AVL樹',
+    source: '_private/20260708/AVL樹_考前速記卡.md',
+    keyword: 'AVL Tree',
+    htmlFilename: 'AVL樹.html'
+  },
+  {
+    id: 'cpv2-supplemental-avl-tree-deletion',
+    title: 'AVL樹_刪除',
+    source: '_private/20260708/AVL樹_刪除專練.md',
+    keyword: 'AVL Deletion',
+    htmlFilename: 'AVL樹_刪除.html'
+  },
+  {
+    id: 'cpv2-supplemental-red-black-tree',
+    title: '紅黑樹',
+    source: '_private/20260708/紅黑樹_考前速記卡.md',
+    keyword: 'Red-Black Tree',
+    htmlFilename: '紅黑樹.html'
+  },
+  {
+    id: 'cpv2-supplemental-red-black-tree-deletion',
+    title: '紅黑樹_刪除',
+    source: '_private/20260708/紅黑樹_刪除專練.md',
+    keyword: 'Double Black',
+    htmlFilename: '紅黑樹_刪除.html'
+  },
+  {
+    id: 'cpv2-supplemental-hash-table',
+    title: '雜湊表',
     source: supplementalTreesHashSourceFile,
     keyword: 'Hash Table',
-    htmlFilename: '基礎資料結構(下)_樹與雜湊表.html'
+    htmlFilename: '雜湊表.html'
+  },
+  {
+    id: 'cpv2-supplemental-trees-hash-practice',
+    title: '樹與雜湊表_考題練習',
+    source: supplementalTreesHashSourceFile,
+    keyword: 'Practice',
+    htmlFilename: '樹與雜湊表_考題練習.html'
   },
   {
     id: 'cpv2-architecture-computation-theory',
@@ -283,8 +332,8 @@ describe('computer principles v2 route workflow', () => {
   it('keeps the supplemental practice content as the first route-visible topic card', () => {
     const topics = getSubjectTopics(subjectKey);
     const practiceTopic = topics[0];
-    const supplementalTopics = topics.slice(1, 8);
-    const architectureTopic = topics[8];
+    const supplementalTopics = topics.slice(1, 15);
+    const architectureTopic = topics[15];
     const lessonArticle = practiceTopic?.blocks[0];
 
     expect(practiceTopic?.id).toBe('cpv2-supplemental-practice');
@@ -296,7 +345,14 @@ describe('computer principles v2 route workflow', () => {
       'cpv2-supplemental-paging-segmentation',
       'cpv2-supplemental-oop-characteristics',
       'cpv2-supplemental-complexity-linear-structures',
-      'cpv2-supplemental-trees-hash-tables'
+      'cpv2-supplemental-basic-tree',
+      'cpv2-supplemental-expression-notation',
+      'cpv2-supplemental-avl-tree',
+      'cpv2-supplemental-avl-tree-deletion',
+      'cpv2-supplemental-red-black-tree',
+      'cpv2-supplemental-red-black-tree-deletion',
+      'cpv2-supplemental-hash-table',
+      'cpv2-supplemental-trees-hash-practice'
     ]);
     expect(
       topics.some(
@@ -325,27 +381,12 @@ describe('computer principles v2 route workflow', () => {
     expect(serializedPracticeTopic).toContain('資管題目:');
   });
 
-  it('keeps Amdahl inline and links the six HTML-backed supplemental cards', () => {
+  it('keeps Amdahl inline and links the thirteen HTML-backed supplemental cards', () => {
     const topics = getSubjectTopics(subjectKey);
     const inlineAmdahlTopic = topics[1];
-    const htmlSupplementalTopics = topics.slice(2, 8);
-    const htmlProfessionalSupplementalTopics = v2Topics().slice(2, 8);
-    const [
-      schedulingTopic,
-      deadlockTopic,
-      pagingSegmentationTopic,
-      oopTopic,
-      complexityLinearTopic,
-      treesHashTopic
-    ] = htmlProfessionalSupplementalTopics;
-    const [
-      routeSchedulingTopic,
-      routeDeadlockTopic,
-      routePagingSegmentationTopic,
-      routeOopTopic,
-      routeComplexityLinearTopic,
-      routeTreesHashTopic
-    ] = htmlSupplementalTopics;
+    const htmlSupplementalTopics = topics.slice(2, 15);
+    const htmlProfessionalSupplementalTopics = v2Topics().slice(2, 15);
+    const professionalById = (id: string) => htmlProfessionalSupplementalTopics.find((topic) => topic.id === id);
     const amdahlLessonArticle = inlineAmdahlTopic?.blocks[0];
 
     expect(inlineAmdahlTopic?.title).toBe('阿姆達爾定律');
@@ -357,17 +398,27 @@ describe('computer principles v2 route workflow', () => {
       '分頁與分段記憶體管理',
       '物件導向特性',
       '複雜度與線性結構',
-      '樹與雜湊表'
+      '基礎樹',
+      '運算式表示法',
+      'AVL樹',
+      'AVL樹_刪除',
+      '紅黑樹',
+      '紅黑樹_刪除',
+      '雜湊表',
+      '樹與雜湊表_考題練習'
     ]);
-    expect([routeSchedulingTopic, routeDeadlockTopic, routePagingSegmentationTopic, routeOopTopic, routeComplexityLinearTopic, routeTreesHashTopic].map((topic) => topic?.id)).toEqual(
+    expect(htmlSupplementalTopics.map((topic) => topic?.id)).toEqual(
       htmlProfessionalSupplementalTopics.map((topic) => topic.id)
     );
-    expect(schedulingTopic?.sourceFiles).toEqual([supplementalCpuSchedulingSourceFile]);
-    expect(deadlockTopic?.sourceFiles).toEqual([supplementalDeadlockSourceFile]);
-    expect(pagingSegmentationTopic?.sourceFiles).toEqual([supplementalPagingSegmentationSourceFile]);
-    expect(oopTopic?.sourceFiles).toEqual([supplementalOopSourceFile]);
-    expect(complexityLinearTopic?.sourceFiles).toEqual([supplementalComplexityLinearSourceFile]);
-    expect(treesHashTopic?.sourceFiles).toEqual([supplementalTreesHashSourceFile]);
+    expect(professionalById('cpv2-supplemental-cpu-scheduling')?.sourceFiles).toEqual([supplementalCpuSchedulingSourceFile]);
+    expect(professionalById('cpv2-supplemental-deadlock')?.sourceFiles).toEqual([supplementalDeadlockSourceFile]);
+    expect(professionalById('cpv2-supplemental-paging-segmentation')?.sourceFiles).toEqual([supplementalPagingSegmentationSourceFile]);
+    expect(professionalById('cpv2-supplemental-oop-characteristics')?.sourceFiles).toEqual([supplementalOopSourceFile]);
+    expect(professionalById('cpv2-supplemental-complexity-linear-structures')?.sourceFiles).toEqual([supplementalComplexityLinearSourceFile]);
+    expect(professionalById('cpv2-supplemental-basic-tree')?.sourceFiles).toEqual([supplementalTreesHashSourceFile]);
+    expect(professionalById('cpv2-supplemental-avl-tree')?.sourceFiles).toEqual(['_private/20260708/AVL樹_考前速記卡.md']);
+    expect(professionalById('cpv2-supplemental-red-black-tree-deletion')?.sourceFiles).toEqual(['_private/20260708/紅黑樹_刪除專練.md']);
+    expect(professionalById('cpv2-supplemental-trees-hash-practice')?.sourceFiles).toEqual([supplementalTreesHashSourceFile]);
 
     for (const topic of htmlSupplementalTopics) {
       const professionalTopic = htmlProfessionalSupplementalTopics.find((candidate) => candidate.id === topic?.id);
@@ -399,7 +450,7 @@ describe('computer principles v2 route workflow', () => {
 
   it('uses the refreshed v2 floating point source after the supplemental topics', () => {
     const topics = getSubjectTopics(subjectKey);
-    const floatingPointTopic = topics[17];
+    const floatingPointTopic = topics[24];
 
     expect(floatingPointTopic?.id).toBe('cpv2-floating-point-conversion');
     expect(floatingPointTopic?.title).toBe('浮點數轉換');
@@ -418,7 +469,7 @@ describe('computer principles v2 route workflow', () => {
     expect(lessonArticle.sourceFiles).not.toContain(supplementalDataSourceFile);
     expect(lessonArticle.sourceFiles).not.toContain(supplementalCpuSchedulingSourceFile);
     expect(getSubjectTopics(subjectKey).map((topic) => topic.id)).toEqual(topicCases.map((topicCase) => topicCase.id));
-    expect(topics.map((topic) => topic.id).slice(16, 19)).toEqual([
+    expect(topics.map((topic) => topic.id).slice(23, 26)).toEqual([
       'cpv2-complement-conversion',
       'cpv2-floating-point-conversion',
       'cpv2-codes-and-character-sets'

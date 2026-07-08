@@ -59,9 +59,51 @@ export const computerPrinciplesV2HtmlPages = [
     '基礎資料結構(上)_複雜度與線性結構.html'
   ),
   createComputerPrinciplesV2HtmlPage(
-    'cpv2-supplemental-trees-hash-tables',
-    '樹與雜湊表',
+    'cpv2-supplemental-basic-tree',
+    '基礎樹',
     '_private/計概補充/基礎資料結構(下)_樹與雜湊表.md',
-    '基礎資料結構(下)_樹與雜湊表.html'
+    '基礎樹.html'
+  ),
+  createComputerPrinciplesV2HtmlPage(
+    'cpv2-supplemental-expression-notation',
+    '運算式表示法',
+    '_private/計概補充/基礎資料結構(下)_樹與雜湊表.md',
+    '運算式表示法.html'
+  ),
+  createComputerPrinciplesV2HtmlPage(
+    'cpv2-supplemental-avl-tree',
+    'AVL樹',
+    '_private/20260708/AVL樹_考前速記卡.md',
+    'AVL樹.html'
+  ),
+  createComputerPrinciplesV2HtmlPage(
+    'cpv2-supplemental-avl-tree-deletion',
+    'AVL樹_刪除',
+    '_private/20260708/AVL樹_刪除專練.md',
+    'AVL樹_刪除.html'
+  ),
+  createComputerPrinciplesV2HtmlPage(
+    'cpv2-supplemental-red-black-tree',
+    '紅黑樹',
+    '_private/20260708/紅黑樹_考前速記卡.md',
+    '紅黑樹.html'
+  ),
+  createComputerPrinciplesV2HtmlPage(
+    'cpv2-supplemental-red-black-tree-deletion',
+    '紅黑樹_刪除',
+    '_private/20260708/紅黑樹_刪除專練.md',
+    '紅黑樹_刪除.html'
+  ),
+  createComputerPrinciplesV2HtmlPage(
+    'cpv2-supplemental-hash-table',
+    '雜湊表',
+    '_private/計概補充/基礎資料結構(下)_樹與雜湊表.md',
+    '雜湊表.html'
+  ),
+  createComputerPrinciplesV2HtmlPage(
+    'cpv2-supplemental-trees-hash-practice',
+    '樹與雜湊表_考題練習',
+    '_private/計概補充/基礎資料結構(下)_樹與雜湊表.md',
+    '樹與雜湊表_考題練習.html'
   )
 ] as const satisfies readonly ComputerPrinciplesV2HtmlPage[];

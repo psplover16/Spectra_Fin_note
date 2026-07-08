@@ -1,10 +1,4 @@
-# computer-principles-v2-route Specification
-
-## Purpose
-
-本規格定義計概 v2（`/computer-principles-v2`）路由的主題契約：共 21 個主題，前段為加強練習等補充卡（部分連結 standalone HTML），其後為 catalog manifest 支撐的主題，標題與順序遵循 manifest，並涵蓋浮點數練習與 IEEE 754 特殊值。
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Computer principles v2 route uses catalog-backed topics
 
@@ -63,43 +57,6 @@ The app SHALL expose an independent Computer Principles v2 route at `/computer-p
 | 15 | `cpv2-supplemental-trees-hash-practice` | `樹與雜湊表_考題練習` | linked HTML |
 | 16 | `cpv2-architecture-computation-theory` | `架構與計算理論` | inline lessonArticle |
 
-
-<!-- @trace
-source: split-trees-hash-table-cards
-updated: 2026-07-08
-code:
-  - public/computer-principles-v2/紅黑樹.html
-  - .agents/skills/spectra-propose/SKILL.md
-  - public/computer-principles-v2/紅黑樹_刪除.html
-  - public/computer-principles-v2/AVL樹_刪除.html
-  - public/computer-principles-v2/樹與雜湊表_考題練習.html
-  - .agents/skills/spectra-discuss/SKILL.md
-  - _private/discuss.txt
-  - .agents/skills/spectra-drift/SKILL.md
-  - public/computer-principles-v2/雜湊表.html
-  - .agents/skills/spectra-apply/SKILL.md
-  - src/modules/computerPrinciplesV2/data/computerPrinciplesV2HtmlPages.ts
-  - .agents/skills/spectra-debug/SKILL.md
-  - _private/20260708/紅黑樹_刪除專練.md
-  - _private/20260708/紅黑樹_考前速記卡.md
-  - .agents/skills/spectra-archive/SKILL.md
-  - .agents/skills/spectra-audit/SKILL.md
-  - _private/20260708/AVL樹_考前速記卡.md
-  - public/computer-principles-v2/基礎樹.html
-  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
-  - public/computer-principles-v2/AVL樹.html
-  - .agents/skills/spectra-ingest/SKILL.md
-  - _private/20260708/AVL樹_刪除專練.md
-  - public/computer-principles-v2/運算式表示法.html
-  - .agents/skills/spectra-commit/SKILL.md
-  - .agents/skills/spectra-ask/SKILL.md
-tests:
-  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
-  - tests/unit/professionalTopics.spec.ts
-  - tests/unit/subjectTopics.spec.ts
--->
-
----
 ### Requirement: Computer principles v2 titles follow the catalog manifest
 
 The app SHALL use the catalog manifest as the title and order source for the catalog-backed Computer Principles v2 topic segment. Catalog-backed topic titles SHALL come from the catalog title column and MUST NOT include filename sequence prefixes or H1 chapter prefixes. Approved non-catalog topics SHALL keep their explicit learner-facing titles.
@@ -132,85 +89,6 @@ The app SHALL use the catalog manifest as the title and order source for the cat
 - **THEN** no topic title starts with `00_`, `01_`, `02_`, `基本計概 01`, `一、`, `二、`, `三、`, `四、`, `五、`, or `六、`
 - **AND** the first catalog-backed visible topic title is `架構與計算理論`
 
-
-<!-- @trace
-source: split-trees-hash-table-cards
-updated: 2026-07-08
-code:
-  - public/computer-principles-v2/紅黑樹.html
-  - .agents/skills/spectra-propose/SKILL.md
-  - public/computer-principles-v2/紅黑樹_刪除.html
-  - public/computer-principles-v2/AVL樹_刪除.html
-  - public/computer-principles-v2/樹與雜湊表_考題練習.html
-  - .agents/skills/spectra-discuss/SKILL.md
-  - _private/discuss.txt
-  - .agents/skills/spectra-drift/SKILL.md
-  - public/computer-principles-v2/雜湊表.html
-  - .agents/skills/spectra-apply/SKILL.md
-  - src/modules/computerPrinciplesV2/data/computerPrinciplesV2HtmlPages.ts
-  - .agents/skills/spectra-debug/SKILL.md
-  - _private/20260708/紅黑樹_刪除專練.md
-  - _private/20260708/紅黑樹_考前速記卡.md
-  - .agents/skills/spectra-archive/SKILL.md
-  - .agents/skills/spectra-audit/SKILL.md
-  - _private/20260708/AVL樹_考前速記卡.md
-  - public/computer-principles-v2/基礎樹.html
-  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
-  - public/computer-principles-v2/AVL樹.html
-  - .agents/skills/spectra-ingest/SKILL.md
-  - _private/20260708/AVL樹_刪除專練.md
-  - public/computer-principles-v2/運算式表示法.html
-  - .agents/skills/spectra-commit/SKILL.md
-  - .agents/skills/spectra-ask/SKILL.md
-tests:
-  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
-  - tests/unit/professionalTopics.spec.ts
-  - tests/unit/subjectTopics.spec.ts
--->
-
----
-### Requirement: Computer principles v2 uses lessonArticle content
-
-Computer Principles v2 inline topic content SHALL be represented through existing `lessonArticle` blocks. The app MUST NOT add a runtime raw Markdown renderer for this route. HTML-linked supplemental cards SHALL preserve source-authored Markdown structure through standalone static HTML pages referenced by `htmlPage` data. Inline supplemental and catalog-backed cards SHALL continue to use supported `lessonArticle` block types.
-
-#### Scenario: Inline topic Markdown structure is converted to supported blocks
-
-- **WHEN** a Computer Principles v2 inline topic is loaded from formal app data
-- **THEN** the topic contains one `lessonArticle` block
-- **AND** the lessonArticle contains non-empty sections converted from the source Markdown headings and content
-- **AND** paragraphs, lists, tables, worked calculation steps, and practice explanations from the source Markdown are preserved as supported lessonArticle content blocks
-
-#### Scenario: HTML-linked topic renders through static page link
-
-- **WHEN** a Computer Principles v2 topic has `htmlPage.href`
-- **THEN** the topic remains route-visible even when it has no non-empty `lessonArticle` block
-- **AND** activating the title control opens the static HTML page referenced by `htmlPage.href`
-- **AND** activating the title control does not expand an inline detail panel for that topic
-
-#### Scenario: Raw Markdown renderer is not required
-
-- **WHEN** the v2 route renders a topic
-- **THEN** inline topics render through `SubjectTopicPage` and existing lessonArticle block rendering
-- **AND** HTML-linked topics render through committed static HTML files
-- **AND** the route does not require fetching or parsing Markdown files at runtime
-
-#### Scenario: CPU scheduling source structure is preserved in linked HTML
-
-- **WHEN** the `cpv2-supplemental-cpu-scheduling` topic is inspected
-- **THEN** the topic traces `_private/計概補充/CPU排班演算法_國考完整講義.md`
-- **AND** the topic `htmlPage.sourceFilename` is `CPU排班演算法_國考完整講義.html`
-- **AND** the linked static HTML preserves the CPU scheduling Markdown structure as learner-facing content
-- **AND** the topic remains lecture-only and does not expose quiz-only fields or an interactive answer-submission flow
-
-
-<!-- @trace
-source: link-cpv2-supplemental-cards-to-html
-updated: 2026-07-08
-code:
-  - _private/discuss.txt
--->
-
----
 ### Requirement: Floating point conversion topic uses refreshed v2 source
 
 The Computer Principles v2 route SHALL keep the existing `cpv2-floating-point-conversion` topic in the tenth catalog position and SHALL render its learner-facing content from `_private/MD/計算機概論v2/10_浮點數轉換.md`. The topic SHALL keep the title `浮點數轉換`, the `computerPrinciplesV2` subject key, and the existing `/computer-principles-v2` route ownership. The topic SHALL NOT expose the deprecated floating point conversion lesson content as learner-facing content after the refresh.
@@ -234,43 +112,6 @@ The Computer Principles v2 route SHALL keep the existing `cpv2-floating-point-co
 | `0.1(10) = 0.0001100110011…(2)` | Rendered in the decimal precision explanation |
 | `練習 6（兩種表示法對照）` | Rendered in the practice exercise section |
 
-
-<!-- @trace
-source: split-trees-hash-table-cards
-updated: 2026-07-08
-code:
-  - public/computer-principles-v2/紅黑樹.html
-  - .agents/skills/spectra-propose/SKILL.md
-  - public/computer-principles-v2/紅黑樹_刪除.html
-  - public/computer-principles-v2/AVL樹_刪除.html
-  - public/computer-principles-v2/樹與雜湊表_考題練習.html
-  - .agents/skills/spectra-discuss/SKILL.md
-  - _private/discuss.txt
-  - .agents/skills/spectra-drift/SKILL.md
-  - public/computer-principles-v2/雜湊表.html
-  - .agents/skills/spectra-apply/SKILL.md
-  - src/modules/computerPrinciplesV2/data/computerPrinciplesV2HtmlPages.ts
-  - .agents/skills/spectra-debug/SKILL.md
-  - _private/20260708/紅黑樹_刪除專練.md
-  - _private/20260708/紅黑樹_考前速記卡.md
-  - .agents/skills/spectra-archive/SKILL.md
-  - .agents/skills/spectra-audit/SKILL.md
-  - _private/20260708/AVL樹_考前速記卡.md
-  - public/computer-principles-v2/基礎樹.html
-  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
-  - public/computer-principles-v2/AVL樹.html
-  - .agents/skills/spectra-ingest/SKILL.md
-  - _private/20260708/AVL樹_刪除專練.md
-  - public/computer-principles-v2/運算式表示法.html
-  - .agents/skills/spectra-commit/SKILL.md
-  - .agents/skills/spectra-ask/SKILL.md
-tests:
-  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
-  - tests/unit/professionalTopics.spec.ts
-  - tests/unit/subjectTopics.spec.ts
--->
-
----
 ### Requirement: Floating point topic exposes practice and IEEE 754 special-value sections
 
 The `computerPrinciplesV2` route SHALL render a route-visible topic card titled `加強練習` as the first item in the unfinished topic list, the inline `阿姆達爾定律` supplemental card as the second item, and thirteen HTML-linked supplemental topic cards as the next thirteen items. All approved non-catalog cards SHALL use the same `SubjectTopicCard` architecture as the route topic card titled `架構與計算理論`. The route SHALL keep the existing 13 catalog topics in their original relative order after the approved non-catalog cards, and `cpv2-floating-point-conversion` SHALL remain between `cpv2-complement-conversion` and `cpv2-codes-and-character-sets`. The refreshed floating-point lessonArticle SHALL include an independent IEEE 754 special-value section immediately after the root floating-point section. The route SHALL NOT create a separate route-visible topic for the IEEE 754 special-values source file.
@@ -307,38 +148,3 @@ The `computerPrinciplesV2` route SHALL render a route-visible topic card titled 
 - **AND** its `sourceBatch` remains `computer-principles-v2-route`
 - **AND** its title remains `浮點數轉換`
 - **AND** no route-visible topic is created for the IEEE 754 special-values source file
-
-<!-- @trace
-source: split-trees-hash-table-cards
-updated: 2026-07-08
-code:
-  - public/computer-principles-v2/紅黑樹.html
-  - .agents/skills/spectra-propose/SKILL.md
-  - public/computer-principles-v2/紅黑樹_刪除.html
-  - public/computer-principles-v2/AVL樹_刪除.html
-  - public/computer-principles-v2/樹與雜湊表_考題練習.html
-  - .agents/skills/spectra-discuss/SKILL.md
-  - _private/discuss.txt
-  - .agents/skills/spectra-drift/SKILL.md
-  - public/computer-principles-v2/雜湊表.html
-  - .agents/skills/spectra-apply/SKILL.md
-  - src/modules/computerPrinciplesV2/data/computerPrinciplesV2HtmlPages.ts
-  - .agents/skills/spectra-debug/SKILL.md
-  - _private/20260708/紅黑樹_刪除專練.md
-  - _private/20260708/紅黑樹_考前速記卡.md
-  - .agents/skills/spectra-archive/SKILL.md
-  - .agents/skills/spectra-audit/SKILL.md
-  - _private/20260708/AVL樹_考前速記卡.md
-  - public/computer-principles-v2/基礎樹.html
-  - src/modules/subjectTopics/data/computerPrinciplesV2Topics.ts
-  - public/computer-principles-v2/AVL樹.html
-  - .agents/skills/spectra-ingest/SKILL.md
-  - _private/20260708/AVL樹_刪除專練.md
-  - public/computer-principles-v2/運算式表示法.html
-  - .agents/skills/spectra-commit/SKILL.md
-  - .agents/skills/spectra-ask/SKILL.md
-tests:
-  - tests/unit/computerPrinciplesV2RouteWorkflow.spec.ts
-  - tests/unit/professionalTopics.spec.ts
-  - tests/unit/subjectTopics.spec.ts
--->
