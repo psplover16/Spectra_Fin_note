@@ -27,7 +27,21 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
 .foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
 @media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
 @media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
-</style>
+.avlflow{--card:#faf9f5;--text:#24231f;--text2:#57564f;--border:#e5e3da;--line:#8a887f;--teal-bg:#e1f5ee;--teal-bd:#1d9e75;--teal-tx:#085041;--amber-bg:#faeeda;--amber-bd:#ba7517;--amber-tx:#633806;--purple-bg:#eeedfe;--purple-bd:#534ab7;--purple-tx:#3c3489;--blue-bg:#e6f1fb;--blue-bd:#185fa5;--blue-tx:#0c447c;--green-bg:#eaf3de;--green-bd:#3b6d11;--green-tx:#27500a;--coral-bg:#faece7;--coral-bd:#993c1d;--coral-tx:#712b13;--gray-bg:#f1efe8;--gray-bd:#5f5e5a;--gray-tx:#2c2c2a;}
+.avlflow svg{width:100%;height:auto;display:block;margin:10px 0 6px;}
+.avlflow .bt{font-size:13.5px;font-weight:500;}
+.avlflow .bd{font-size:11px;}
+.avlflow .lbl{font-size:11.5px;fill:var(--text2);}
+.avlflow .stage{font-size:13px;fill:var(--text2);font-weight:500;}
+.avlflow .legend{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-top:20px;}
+.avlflow .legend h2{font-size:16px;font-weight:500;margin:0 0 10px;border:0;padding:0;color:var(--ink);}
+.avlflow .legend table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:0;}
+.avlflow .legend td{padding:5px 0;vertical-align:top;border:0;background:none;}
+.avlflow .legend td:first-child{width:120px;font-weight:500;white-space:nowrap;}
+.avlflow .legend tr:nth-child(even) td{background:none;}
+.avlflow .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:middle;border:1px solid;}
+.avlflow .kw{font-size:13.5px;margin:4px 0;}
+.avlflow .note{font-size:13px;color:var(--text2);margin-top:14px;padding-top:12px;border-top:1px dashed var(--border);}</style>
 </head>
 <body>
 <nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
@@ -216,6 +230,125 @@ const bf = (n) =&gt; (n ? h(n.left) - h(n.right) : 0);</code></pre>
 <li>查表 ③ → 旋轉 → <strong>結束</strong></li>
 </ol>
 <blockquote><p><strong>插入最多 1 組旋轉。</strong> 修好 <code>★</code> 之後,子樹高度<strong>還原成插入前</strong> → 上層自動歸位。</p></blockquote>
+<h4>插入 SOP(圖解流程)</h4>
+<p class="subtitle">跟刪除同一套回溯;差別只在:插入碰到失衡就轉 1 組、轉完立刻收工,不會連鎖。</p>
+<div class="avlflow">
+  <svg viewBox="0 0 680 700" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>AVL 樹插入流程圖</title>
+    <defs>
+      <marker id="aiar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="var(--line)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+      <marker id="aiarc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="var(--coral-bd)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <text class="stage" x="16" y="20">前置:BST 插入</text>
+
+    <rect x="160" y="30" width="360" height="62" rx="8" fill="var(--gray-bg)" stroke="var(--gray-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="52" text-anchor="middle" fill="var(--gray-tx)">照 BST 規則走到底,掛上新節點</text>
+    <text class="bd" x="340" y="68" text-anchor="middle" fill="var(--gray-tx)">小往左、大往右,遇到 null 就掛上</text>
+    <text class="bd" x="340" y="83" text-anchor="middle" fill="var(--gray-tx)">新節點一定是葉 → 起始 h = 1</text>
+    <line x1="340" y1="92" x2="340" y2="108" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+
+    <rect x="210" y="108" width="260" height="42" rx="8" fill="var(--gray-bg)" stroke="var(--gray-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="134" text-anchor="middle" fill="var(--gray-tx)">起點 = 新葉的父親</text>
+    <line x1="340" y1="150" x2="340" y2="172" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+
+    <text class="stage" x="16" y="166">主迴圈(沿插入路徑往上)</text>
+
+    <rect x="210" y="172" width="260" height="44" rx="8" fill="var(--gray-bg)" stroke="var(--gray-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="192" text-anchor="middle" fill="var(--gray-tx)">① 更新高度</text>
+    <text class="bd" x="340" y="208" text-anchor="middle" fill="var(--gray-tx)">h = 1 + max(左, 右)</text>
+    <line x1="340" y1="216" x2="340" y2="232" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+
+    <rect x="210" y="232" width="260" height="44" rx="8" fill="var(--gray-bg)" stroke="var(--gray-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="252" text-anchor="middle" fill="var(--gray-tx)">② 算 BF</text>
+    <text class="bd" x="340" y="268" text-anchor="middle" fill="var(--gray-tx)">BF = h(左) − h(右)</text>
+    <line x1="340" y1="276" x2="340" y2="292" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+
+    <rect x="228" y="292" width="224" height="44" rx="8" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="319" text-anchor="middle" fill="var(--amber-tx)">|BF| ≤ 1 ?</text>
+    <text class="lbl" x="150" y="306" text-anchor="middle">是·仍平衡</text>
+    <path d="M228 314 L18 314 L18 584 L30 584" fill="none" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+    <line x1="340" y1="336" x2="340" y2="354" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+    <text class="lbl" x="350" y="349" text-anchor="start">否(|BF| = 2 → 失衡點 ★)</text>
+
+    <rect x="210" y="354" width="260" height="44" rx="8" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="374" text-anchor="middle" fill="var(--amber-tx)">看較高子 ◆ 的 BF,查表</text>
+    <text class="bd" x="340" y="390" text-anchor="middle" fill="var(--amber-tx)">同號單旋 · 異號雙旋</text>
+
+    <line x1="340" y1="398" x2="340" y2="414" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="104" y1="414" x2="578" y2="414" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="104" y1="414" x2="104" y2="430" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+    <line x1="262" y1="414" x2="262" y2="430" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+    <line x1="420" y1="414" x2="420" y2="430" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+    <line x1="578" y1="414" x2="578" y2="430" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+
+    <rect x="30" y="430" width="148" height="66" rx="8" fill="var(--blue-bg)" stroke="var(--blue-bd)" stroke-width="1"/>
+    <text class="lbl" x="104" y="451" text-anchor="middle">BF +2 · ◆ +1/0</text>
+    <text class="bt" x="104" y="470" text-anchor="middle" fill="var(--blue-tx)">右旋 ★</text>
+    <text class="bd" x="104" y="486" text-anchor="middle" fill="var(--blue-tx)">LL 單旋</text>
+    <rect x="188" y="430" width="148" height="66" rx="8" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1"/>
+    <text class="lbl" x="262" y="451" text-anchor="middle">BF +2 · ◆ −1</text>
+    <text class="bt" x="262" y="470" text-anchor="middle" fill="var(--purple-tx)">LR 雙旋</text>
+    <text class="bd" x="262" y="486" text-anchor="middle" fill="var(--purple-tx)">左子左旋 → 對 ★ 右旋</text>
+    <rect x="346" y="430" width="148" height="66" rx="8" fill="var(--blue-bg)" stroke="var(--blue-bd)" stroke-width="1"/>
+    <text class="lbl" x="420" y="451" text-anchor="middle">BF −2 · ◆ −1/0</text>
+    <text class="bt" x="420" y="470" text-anchor="middle" fill="var(--blue-tx)">左旋 ★</text>
+    <text class="bd" x="420" y="486" text-anchor="middle" fill="var(--blue-tx)">RR 單旋</text>
+    <rect x="504" y="430" width="148" height="66" rx="8" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1"/>
+    <text class="lbl" x="578" y="451" text-anchor="middle">BF −2 · ◆ +1</text>
+    <text class="bt" x="578" y="470" text-anchor="middle" fill="var(--purple-tx)">RL 雙旋</text>
+    <text class="bd" x="578" y="486" text-anchor="middle" fill="var(--purple-tx)">右子右旋 → 對 ★ 左旋</text>
+
+    <line x1="104" y1="496" x2="104" y2="512" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="262" y1="496" x2="262" y2="512" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="420" y1="496" x2="420" y2="512" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="578" y1="496" x2="578" y2="512" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="104" y1="512" x2="578" y2="512" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="340" y1="512" x2="340" y2="650" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+    <text class="lbl" x="350" y="540" text-anchor="start">旋轉後高度還原 → 最多 1 組 → 收工</text>
+
+    <rect x="30" y="560" width="180" height="48" rx="8" fill="var(--coral-bg)" stroke="var(--coral-bd)" stroke-width="1"/>
+    <text class="bt" x="120" y="580" text-anchor="middle" fill="var(--coral-tx)">③ 往上一層</text>
+    <text class="bd" x="120" y="596" text-anchor="middle" fill="var(--coral-tx)">回到 ①(還沒到根)</text>
+
+    <path d="M120 608 L120 628 L6 628 L6 194 L210 194" fill="none" stroke="var(--coral-bd)" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aiarc)"/>
+    <text class="lbl" x="24" y="384" text-anchor="start" fill="var(--coral-bd)">還沒到根:迴圈回 ①</text>
+
+    <path d="M210 584 L230 584 L230 672 L250 672" fill="none" stroke="var(--line)" stroke-width="1.2" marker-end="url(#aiar)"/>
+    <text class="lbl" x="196" y="642" text-anchor="middle">到根:收工</text>
+
+    <rect x="250" y="650" width="180" height="44" rx="8" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="677" text-anchor="middle" fill="var(--teal-tx)">結束</text>
+  </svg>
+
+  <div class="legend">
+    <h2>顏色的意思</h2>
+    <table>
+      <tr><td><span class="sw" style="background:var(--gray-bg);border-color:var(--gray-bd)"></span>灰</td><td>前置 / 計算(BST 插入、更新高度與 BF)</td></tr>
+      <tr><td><span class="sw" style="background:var(--amber-bg);border-color:var(--amber-bd)"></span>琥珀</td><td>判斷(是否平衡、查表分型)</td></tr>
+      <tr><td><span class="sw" style="background:var(--blue-bg);border-color:var(--blue-bd)"></span>藍</td><td>單旋(LL 右旋 / RR 左旋)</td></tr>
+      <tr><td><span class="sw" style="background:var(--purple-bg);border-color:var(--purple-bd)"></span>紫</td><td>雙旋(LR / RL,先橋直再轉)</td></tr>
+      <tr><td><span class="sw" style="background:var(--coral-bg);border-color:var(--coral-bd)"></span>珊瑚</td><td>仍平衡 → 往上一層,迴圈回 ①</td></tr>
+      <tr><td><span class="sw" style="background:var(--teal-bg);border-color:var(--teal-bd)"></span>青</td><td>旋轉後 or 走到根 → 結束</td></tr>
+    </table>
+  </div>
+
+  <div class="legend">
+    <h2>四型旋轉速查</h2>
+    <table>
+      <tr><td>+2 / 較高子 +1 或 0</td><td><b>右旋</b>(LL,單旋)</td></tr>
+      <tr><td>+2 / 較高子 −1</td><td><b>LR</b>:先對左小孩左旋,再對失衡點右旋</td></tr>
+      <tr><td>−2 / 較高子 −1 或 0</td><td><b>左旋</b>(RR,單旋)</td></tr>
+      <tr><td>−2 / 較高子 +1</td><td><b>RL</b>:先對右小孩右旋,再對失衡點左旋</td></tr>
+    </table>
+  </div>
+
+  <div class="note">和刪除最大的差異:插入修好失衡點後,子樹高度<b>還原成插入前</b> → 上層 BF 不變、不可能再失衡 → <b>最多 1 組旋轉、絕不連鎖</b>。圖中只有「仍平衡」那條路會往上迴圈;一旦旋轉就直接收工。</div>
+</div>
 <hr>
 <h3>⑥ 刪除 SOP【練流程】</h3>
 <h4>第一步|找出「真正要刪的節點」</h4>

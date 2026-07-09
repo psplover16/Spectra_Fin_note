@@ -1,3 +1,6 @@
 {
-  "includeGitInstructions": false
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "skipDangerousModePermissionPrompt": true
 }

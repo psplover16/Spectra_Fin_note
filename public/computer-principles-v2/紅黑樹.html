@@ -27,7 +27,21 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
 .foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;}
 @media (max-width:520px){.wrap{padding:24px 16px 70px;}h1{font-size:26px;}h2{font-size:21px;}body{font-size:15.5px;}.toolbar{padding:8px 14px;}}
 @media print{.toolbar{display:none;}body{background:#fff;font-size:11.5pt;line-height:1.55;}.tablewrap,blockquote,pre{break-inside:avoid;}}
-</style>
+.avlflow{--card:#faf9f5;--text:#24231f;--text2:#57564f;--border:#e5e3da;--line:#8a887f;--teal-bg:#e1f5ee;--teal-bd:#1d9e75;--teal-tx:#085041;--amber-bg:#faeeda;--amber-bd:#ba7517;--amber-tx:#633806;--purple-bg:#eeedfe;--purple-bd:#534ab7;--purple-tx:#3c3489;--blue-bg:#e6f1fb;--blue-bd:#185fa5;--blue-tx:#0c447c;--green-bg:#eaf3de;--green-bd:#3b6d11;--green-tx:#27500a;--coral-bg:#faece7;--coral-bd:#993c1d;--coral-tx:#712b13;--gray-bg:#f1efe8;--gray-bd:#5f5e5a;--gray-tx:#2c2c2a;}
+.avlflow svg{width:100%;height:auto;display:block;margin:10px 0 6px;}
+.avlflow .bt{font-size:13.5px;font-weight:500;}
+.avlflow .bd{font-size:11px;}
+.avlflow .lbl{font-size:11.5px;fill:var(--text2);}
+.avlflow .stage{font-size:13px;fill:var(--text2);font-weight:500;}
+.avlflow .legend{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-top:20px;}
+.avlflow .legend h2{font-size:16px;font-weight:500;margin:0 0 10px;border:0;padding:0;color:var(--ink);}
+.avlflow .legend table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:0;}
+.avlflow .legend td{padding:5px 0;vertical-align:top;border:0;background:none;}
+.avlflow .legend td:first-child{width:120px;font-weight:500;white-space:nowrap;}
+.avlflow .legend tr:nth-child(even) td{background:none;}
+.avlflow .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:middle;border:1px solid;}
+.avlflow .kw{font-size:13.5px;margin:4px 0;}
+.avlflow .note{font-size:13px;color:var(--text2);margin-top:14px;padding-top:12px;border-top:1px dashed var(--border);}</style>
 </head>
 <body>
 <nav class="toolbar" aria-label="頁面導覽"><button class="back" type="button" onclick="backToComputerPrinciplesV2()">← 返回計概(v2)</button><span class="where">COMPUTER PRINCIPLES V2</span></nav>
@@ -100,6 +114,104 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0;}
    └─ U 黑/NIL
         ├─ z 在內側(折線) ──► 情況二:對 P 旋轉橋直 → 進情況三
         └─ z 在外側(直線) ──► 情況三:對 G 反向旋轉 + 交換 P、G 顏色 → 結束</code></pre>
+<h4>SOP(圖解流程)</h4>
+<p class="subtitle">起點永遠是「父 P 是不是黑」;父黑直接收工。只有情況一會往上迴圈,情況二、三各轉一次就結束。</p>
+<div class="avlflow">
+  <svg viewBox="0 0 680 545" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>紅黑樹插入流程圖</title>
+    <defs>
+      <marker id="riar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="var(--line)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+      <marker id="riarc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="var(--coral-bd)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <text class="stage" x="16" y="20">前置</text>
+
+    <rect x="160" y="30" width="360" height="58" rx="8" fill="var(--gray-bg)" stroke="var(--gray-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="54" text-anchor="middle" fill="var(--gray-tx)">BST 插入新節點 → 一律塗紅</text>
+    <text class="bd" x="340" y="72" text-anchor="middle" fill="var(--gray-tx)">紅不佔黑高,性質 5 永遠安全</text>
+    <line x1="340" y1="88" x2="340" y2="104" stroke="var(--line)" stroke-width="1.2" marker-end="url(#riar)"/>
+
+    <rect x="230" y="104" width="220" height="44" rx="8" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="131" text-anchor="middle" fill="var(--amber-tx)">父 P 是黑?</text>
+    <text class="lbl" x="456" y="120" text-anchor="start">是 → 完成(免修)</text>
+    <path d="M450 126 L656 126 L656 492 L610 492" fill="none" stroke="var(--line)" stroke-width="1.2" marker-end="url(#riar)"/>
+    <line x1="340" y1="148" x2="340" y2="164" stroke="var(--line)" stroke-width="1.2" marker-end="url(#riar)"/>
+    <text class="lbl" x="350" y="161" text-anchor="start">否(P 紅 → 紅接紅)</text>
+
+    <rect x="230" y="164" width="220" height="44" rx="8" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="184" text-anchor="middle" fill="var(--amber-tx)">看叔叔 U 的顏色</text>
+    <text class="bd" x="340" y="200" text-anchor="middle" fill="var(--amber-tx)">(NIL 也算黑)</text>
+
+    <line x1="340" y1="208" x2="340" y2="224" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="128" y1="224" x2="340" y2="224" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="128" y1="224" x2="128" y2="254" stroke="var(--line)" stroke-width="1.2" marker-end="url(#riar)"/>
+    <line x1="340" y1="224" x2="340" y2="254" stroke="var(--line)" stroke-width="1.2" marker-end="url(#riar)"/>
+    <text class="lbl" x="128" y="242" text-anchor="middle">U 紅</text>
+    <text class="lbl" x="350" y="242" text-anchor="start">U 黑 / NIL</text>
+
+    <rect x="30" y="254" width="196" height="64" rx="8" fill="var(--blue-bg)" stroke="var(--blue-bd)" stroke-width="1"/>
+    <text class="lbl" x="128" y="274" text-anchor="middle">U 紅 → 情況一</text>
+    <text class="bt" x="128" y="292" text-anchor="middle" fill="var(--blue-tx)">P、U 塗黑,G 塗紅</text>
+    <text class="bd" x="128" y="308" text-anchor="middle" fill="var(--blue-tx)">問題上移到 G</text>
+    <path d="M128 254 L128 126 L230 126" fill="none" stroke="var(--coral-bd)" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#riarc)"/>
+    <text class="lbl" x="36" y="210" text-anchor="start" fill="var(--coral-bd)">上移到 G:迴圈</text>
+
+    <rect x="230" y="254" width="220" height="44" rx="8" fill="var(--amber-bg)" stroke="var(--amber-bd)" stroke-width="1"/>
+    <text class="bt" x="340" y="274" text-anchor="middle" fill="var(--amber-tx)">z 在內側(折線)?</text>
+    <text class="bd" x="340" y="290" text-anchor="middle" fill="var(--amber-tx)">折線 = 三角 · 直線 = 外側</text>
+
+    <line x1="340" y1="298" x2="340" y2="314" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="260" y1="314" x2="520" y2="314" stroke="var(--line)" stroke-width="1.2"/>
+    <line x1="260" y1="314" x2="260" y2="330" stroke="var(--line)" stroke-width="1.2" marker-end="url(#riar)"/>
+    <line x1="520" y1="314" x2="520" y2="330" stroke="var(--line)" stroke-width="1.2" marker-end="url(#riar)"/>
+    <text class="lbl" x="252" y="328" text-anchor="end">是·內側</text>
+    <text class="lbl" x="528" y="328" text-anchor="start">否·外側(直線)</text>
+
+    <rect x="160" y="330" width="200" height="64" rx="8" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1"/>
+    <text class="lbl" x="260" y="350" text-anchor="middle">內側 → 情況二</text>
+    <text class="bt" x="260" y="368" text-anchor="middle" fill="var(--purple-tx)">對 P 旋轉橋直</text>
+    <text class="bd" x="260" y="384" text-anchor="middle" fill="var(--purple-tx)">→ 轉成情況三</text>
+    <line x1="360" y1="362" x2="400" y2="362" stroke="var(--line)" stroke-width="1.2" marker-end="url(#riar)"/>
+    <text class="lbl" x="380" y="354" text-anchor="middle">必進</text>
+
+    <rect x="400" y="330" width="240" height="64" rx="8" fill="var(--purple-bg)" stroke="var(--purple-bd)" stroke-width="1"/>
+    <text class="lbl" x="520" y="350" text-anchor="middle">外側 → 情況三</text>
+    <text class="bt" x="520" y="368" text-anchor="middle" fill="var(--purple-tx)">對 G 反向旋轉 + P、G 換色</text>
+    <text class="bd" x="520" y="384" text-anchor="middle" fill="var(--purple-tx)">紅接紅消失</text>
+    <line x1="520" y1="394" x2="520" y2="470" stroke="var(--line)" stroke-width="1.2" marker-end="url(#riar)"/>
+
+    <rect x="430" y="470" width="180" height="44" rx="8" fill="var(--teal-bg)" stroke="var(--teal-bd)" stroke-width="1"/>
+    <text class="bt" x="520" y="497" text-anchor="middle" fill="var(--teal-tx)">結束</text>
+  </svg>
+
+  <div class="legend">
+    <h2>顏色的意思</h2>
+    <table>
+      <tr><td><span class="sw" style="background:var(--gray-bg);border-color:var(--gray-bd)"></span>灰</td><td>前置(BST 插入、新節點塗紅)</td></tr>
+      <tr><td><span class="sw" style="background:var(--amber-bg);border-color:var(--amber-bd)"></span>琥珀</td><td>判斷(父黑?、叔叔顏色、z 位置)</td></tr>
+      <tr><td><span class="sw" style="background:var(--blue-bg);border-color:var(--blue-bd)"></span>藍</td><td>情況一:三方變色(不旋轉)</td></tr>
+      <tr><td><span class="sw" style="background:var(--purple-bg);border-color:var(--purple-bd)"></span>紫</td><td>旋轉(情況二橋直 / 情況三收尾)</td></tr>
+      <tr><td><span class="sw" style="background:var(--coral-bg);border-color:var(--coral-bd)"></span>珊瑚</td><td>問題上移到 G → 迴圈回開頭</td></tr>
+      <tr><td><span class="sw" style="background:var(--teal-bg);border-color:var(--teal-bd)"></span>青</td><td>結束(免修或修完)</td></tr>
+    </table>
+  </div>
+
+  <div class="legend">
+    <h2>三情況速查</h2>
+    <table>
+      <tr><td>父 P 黑</td><td>不用修(<b>0</b> 轉)</td></tr>
+      <tr><td>情況一 · U 紅</td><td><code>P</code>、<code>U</code> 塗黑,<code>G</code> 塗紅,上移到 <code>G</code>(<b>0</b> 轉,會迴圈)</td></tr>
+      <tr><td>情況二 · U 黑內側</td><td>對 <code>P</code> 旋轉橋直 → 進情況三(<b>1</b> 轉)</td></tr>
+      <tr><td>情況三 · U 黑外側</td><td>對 <code>G</code> 反向旋轉 + <code>P</code>、<code>G</code> 換色 → 結束(<b>1</b> 轉)</td></tr>
+    </table>
+  </div>
+
+  <div class="note">只有情況一會往上迴圈(可重複 O(log n) 次,但一次都不轉);一旦進到情況二 / 三,最多再轉 2 次就結束 → <b>插入旋轉 ≤ 2 次</b>。</div>
+</div>
 <h3>判斷表【硬背】</h3>
 <div class="tablewrap"><table><thead><tr><th>父 <code>P</code></th><th>叔叔 <code>U</code></th><th><code>z</code> 位置</th><th>情況</th><th>動作</th><th>旋轉</th></tr></thead><tbody>
 <tr><td><strong>黑</strong></td><td>—</td><td>—</td><td>無違反</td><td>不用修</td><td>0</td></tr>
