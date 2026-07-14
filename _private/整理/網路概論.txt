@@ -1,0 +1,9 @@
+PDU
+實體層，Bit位元
+資料連結層，Frame訊框
+網路層，packet封包
+---OSI4層以下
+傳輸層，Segment(TCP)/Datagram(UDP)
+會議層，Data(資料)
+表現層，Data(資料)
+應用層，Data(資料)
