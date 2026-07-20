@@ -208,5 +208,89 @@ public class ExamTSP {
 
 
 
+// 環狀佇列，額外用計數器
+public class MyCircularQueue {
+    private int[] arr;      // 裝資料的陣列
+    private int front;      // 指向準備要拿出去的資料
+    private int rear;       // 指向下一個空位
+    private int size;       // 記錄現在有幾個元素
+    private int capacity;   // 陣列最大容量
+
+    // 建構子：初始化佇列
+    public MyCircularQueue(int k) {
+        this.capacity = k;
+        this.arr = new int[capacity];
+        this.front = 0;
+        this.rear = 0;
+        this.size = 0;
+    }
+
+    // 加入元素 (Enqueue)
+    public boolean enqueue(int value) {
+        if (size == capacity) {
+            return false; // 佇列滿了，加不進去
+        }
+        arr[rear] = value;                      // 把資料放在 rear 指的地方
+        rear = (rear + 1) % capacity;           // rear 往前走一步，到底就自動繞回 0
+        size++;                                 // 人數 +1
+        return true;
+    }
+
+    // 取出元素 (Dequeue)
+    public int dequeue() {
+        if (size == 0) {
+            throw new RuntimeException("佇列是空的！");
+        }
+        int value = arr[front];                 // 拿出 front 指向的資料
+        front = (front + 1) % capacity;         // front 往前走一步，到底就自動繞回 0
+        size--;                                 // 人數 -1
+        return value;
+    }
+}
 
 
+// 環狀佇列，犧牲一格
+public class TraditionalCircularQueue {
+    private int[] arr;
+    private int front;
+    private int rear;
+    private int capacity; // 這是陣列「實際」的長度
+
+    // 假設你希望這個佇列最多能裝 k 個元素
+    public TraditionalCircularQueue(int k) {
+        this.capacity = k + 1;           // 【關鍵】為了犧牲一格，陣列必須多開一格
+        this.arr = new int[this.capacity];
+        this.front = 0;
+        this.rear = 0;
+    }
+
+    // 判斷空：頭尾重疊
+    public boolean isEmpty() {
+        return front == rear;
+    }
+
+    // 判斷滿：尾巴的「下一步」會撞到頭
+    public boolean isFull() {
+        return (rear + 1) % capacity == front;
+    }
+
+    // 加入元素
+    public boolean enqueue(int value) {
+        if (isFull()) {
+            return false; // 滿了，拒絕加入
+        }
+        arr[rear] = value;
+        rear = (rear + 1) % capacity;    // 尾巴往前走，自動繞回
+        return true;
+    }
+
+    // 取出元素
+    public int dequeue() {
+        if (isEmpty()) {
+            throw new RuntimeException("佇列是空的！");
+        }
+        int value = arr[front];
+        front = (front + 1) % capacity;  // 頭往前走，自動繞回
+        return value;
+    }
+}
