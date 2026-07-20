@@ -1,0 +1,212 @@
+費式數列：求第n個 數列的值
+public class Fibonacci {
+    public static long fibRecursive(int n) {
+        // 基礎情況 (Base Case)
+        if (n <= 1) {
+            return n;
+        }
+        // 遞迴步驟：自我呼叫
+        return fibRecursive(n - 1) + fibRecursive(n - 2);
+    }
+}
+
+public class Fibonacci {
+    public static long fibIterative(int n) {
+        if (n <= 1) return n;
+
+        long prev = 0; // F(n-2)
+        long curr = 1; // F(n-1)
+
+        for (int i = 2; i <= n; i++) {
+            long next = prev + curr; // 計算當前項
+            prev = curr;             // 更新狀態 F(n-2)
+            curr = next;             // 更新狀態 F(n-1)
+        }
+        return curr;
+    }
+}
+
+
+河內塔問題
+public class TowerOfHanoi {
+    // 參數說明：
+    // n: 盤子數量
+    // from: 出發地 (Source)
+    // aux: 暫停區/輔助柱 (Auxiliary)
+    // to: 目的地 (Destination)
+    public static void solve(int n, char from, char aux, char to) {
+        
+        // 【終止條件 (Base Case)】老闆親自搬最後一個
+        if (n == 1) {
+            System.out.println("移動盤子 1 從 " + from + " 到 " + to);
+            return;
+        }
+        
+        // 【步驟一】下屬任務一：清空上面的阻礙 (把n-1個盤子放到aux)
+        solve(n - 1, from, to, aux);
+        
+        // 【步驟二】老闆出馬：搬動最大的盤子
+        System.out.println("移動盤子 " + n + " 從 " + from + " 到 " + to);
+        
+        // 【步驟三】下屬任務二：把阻礙搬回大盤子上面 (把n-1個盤子，從暫存區放回目的地)
+        solve(n - 1, aux, from, to);
+    }
+}
+
+
+import java.util.Stack;
+stack 常用方法
+push(E item)：將元素壓入堆疊最頂端。
+pop()：移除並回傳堆疊最頂端的元素。
+peek()：只回傳頂端元素，不移除它。
+empty()：檢查堆疊是否為空，傳回布林值。
+
+public class HanoiStraightforward {
+    public static void main(String[] args) {
+        // 盤子數量
+        int numDisks = 3;
+        // 幫電腦算好「終點」在哪裡，跑幾步要停下 2^n - 1 步
+        int totalMoves = (int) (Math.pow(2, numDisks) - 1);
+
+        // 為了方便計算「下一個柱子」，我們把 A, B, C 用陣列的 0, 1, 2 來代表
+        Stack<Integer>[] pegs = new Stack[3];
+        for (int i = 0; i < 3; i++) {
+            // 每個柱子都是堆疊陣列
+            pegs[i] = new Stack<>();
+        }
+        String[] pegNames = {"A", "B", "C"};
+
+        // 初始化 A 柱 (也就是 pegs[0])，把盤子由大到小放進去
+        for (int i = numDisks; i >= 1; i--) {
+            pegs[0].push(i);
+        }
+
+        // ================= 重點 1：定義規則 =================
+
+        // 記錄最小的 1 號盤子現在在哪裡（一開始在 0，也就是 A 柱）
+        int smallestDiskPos = 0; 
+
+        // 決定 1 號盤子的移動方向（0->1->2 還是 0->2->1）
+        // 偶數盤子：A -> B -> C -> A (對應陣列 +1)
+        // 奇數盤子：A -> C -> B -> A (對應陣列 +2)  因為 視為 ABCABCABC 不停執行下去
+        int direction = (numDisks % 2 == 0) ? 1 : 2;  // +1 或 +2
+
+        // ================= 重點 2：開始搬運 =================
+        for (int move = 1; move <= totalMoves; move++) {
+            // 奇數步
+            if (move % 2 != 0) {
+                // 🟡 規則 1：奇數步，只移動 1 號盤
+                int nextPos = (smallestDiskPos + direction) % 3; // 算出它該去哪
+                
+                int disk = pegs[smallestDiskPos].pop(); // 最小盤從柱子移除
+                pegs[nextPos].push(disk); // 最小盤放入指定柱
+                System.out.println("第 " + move + " 步：把盤子 " + disk + 
+                                   " 從 " + pegNames[smallestDiskPos] + 
+                                   " 移到 " + pegNames[nextPos]);
+                
+                // 更新 1 號盤的新位置，方便下一步找它
+                smallestDiskPos = nextPos; 
+                
+            } else {
+                // 🟢 規則 2：偶數步，不碰 1 號盤，只動另外兩根柱子
+                // 算出另外兩根柱子的編號
+                int otherPeg1 = (smallestDiskPos + 1) % 3; // 第2根柱子
+                int otherPeg2 = (smallestDiskPos + 2) % 3;
+
+                // 看看這兩根柱子最上面的盤子是幾號（空的就當作無限大，因為空的上面可以放任一盤子）
+                int top1 = pegs[otherPeg1].isEmpty() ? Integer.MAX_VALUE : pegs[otherPeg1].peek(); // 查看「最頂端元素」
+                int top2 = pegs[otherPeg2].isEmpty() ? Integer.MAX_VALUE : pegs[otherPeg2].peek();
+
+                // 做出「唯一合法」的動作：把較小的盤子，疊到較大的盤子（或空柱子）上
+                if (top1 < top2) {
+                    int disk = pegs[otherPeg1].pop();
+                    pegs[otherPeg2].push(disk);
+                    System.out.println("第 " + move + " 步：把盤子 " + disk + 
+                                       " 從 " + pegNames[otherPeg1] + 
+                                       " 移到 " + pegNames[otherPeg2]);
+                } else {
+                    int disk = pegs[otherPeg2].pop();
+                    pegs[otherPeg1].push(disk);
+                    System.out.println("第 " + move + " 步：把盤子 " + disk + 
+                                       " 從 " + pegNames[otherPeg2] + 
+                                       " 移到 " + pegNames[otherPeg1]);
+                }
+            }
+        }
+    }
+}
+
+
+n!
+// 疊代版 (使用 for 迴圈)
+// 邏輯：準備一個籃子(result)，把 1 到 N 一個一個乘進去 (從1開始)
+public static long factorialIterative(int n) {
+    long result = 1;
+    for (int i = 1; i <= n; i++) {
+        result *= i; // 相當於 result = result * i
+    }
+    return result;
+}
+// 遞迴版 (使用自己呼叫自己)
+// 邏輯：數學定義 n! = n * (n-1)!
+public static long factorialRecursive(int n) {
+    if (n <= 1) return 1; // 終止條件：1! 是 1
+    return n * factorialRecursive(n - 1); // 像剝洋蔥一樣，一層層往內乘
+}
+
+
+
+// 旅行推銷員問題
+public class ExamTSP {
+    // 距離矩陣 (地圖)
+    static int[][] dist = {
+        {0, 10, 15, 20},
+        {10, 0, 35, 25},
+        {15, 35, 0, 30},
+        {20, 25, 30, 0}
+    };
+    static int minPath = Integer.MAX_VALUE;
+
+    public static void main(String[] args) {
+        // 從城市 0 出發，窮舉 1, 2, 3 的所有排列
+        permute(new int[]{1, 2, 3}, 0);
+        System.out.println("最短距離是: " + minPath);
+    }
+
+    // 產生全排列
+    public static void permute(int[] cities, int k) {
+        // 1. 終止條件：路線排好了，開始計算這條路線的距離
+        if (k == cities.length) {
+            // 加上頭尾：從 0 到第一站，以及從最後一站回到 0
+            int currentDist = dist[0][cities[0]] + dist[cities[cities.length - 1]][0];
+            
+            // 加上中間各站的距離
+            for (int i = 0; i < cities.length - 1; i++) {
+                currentDist += dist[cities[i]][cities[i + 1]];
+            }
+            
+            // 更新最短距離紀錄
+            minPath = Math.min(minPath, currentDist);
+            return;
+        }
+
+        // 2. 遞迴與回溯：讓剩下的每個城市輪流排在第 k 個位置
+        for (int i = k; i < cities.length; i++) {
+            swap(cities, i, k);      // 試穿
+            permute(cities, k + 1);  // 遞迴排下一個位置
+            swap(cities, i, k);      // 脫下 (回溯)
+        }
+    }
+
+    // 交換陣列元素的輔助方法
+    public static void swap(int[] arr, int i, int j) {
+        int temp = arr[i]; 
+        arr[i] = arr[j]; 
+        arr[j] = temp;
+    }
+}
+
+
+
+
+
