@@ -388,7 +388,8 @@ describe('subject topic route data helpers', () => {
       '最大公因數(Greatest Common Divisor)',
       '二元搜尋法(Binary Search)',
       '插入排序法(Insertion Sort)',
-      '桶裝排序法(Bucket Sort)'
+      '桶裝排序法(Bucket Sort)',
+      "堆積排序法(Heap Sort)",
     ]);
   });
 
