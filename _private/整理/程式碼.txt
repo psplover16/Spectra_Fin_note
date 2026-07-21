@@ -294,3 +294,88 @@ public class TraditionalCircularQueue {
         return value;
     }
 }
+
+// 前序
+void preorder(Node n) {   // 根左右
+    if (n == null) return;
+    print(n.data);            // ← 印在最前(根)
+    preorder(n.left);
+    preorder(n.right);
+}
+
+// 層序
+void levelOrder(Node root) {
+    Queue<Node> q = new LinkedList<>();
+    q.offer(root);
+    while (!q.isEmpty()) {
+        Node n = q.poll();
+        print(n.data);
+        if (n.left  != null) q.offer(n.left);   // 左小孩排進佇列
+        if (n.right != null) q.offer(n.right);  // 右小孩排進佇列
+    }
+}
+
+
+
+public class HeapSortTarget {
+
+    // 🏆 主戰場：堆積排序主函數
+    public static void heapSort(int[] arr) {
+        int n = arr.length;
+
+        // 【步驟一：建構最大堆積 (Build Max Heap)】
+        // 邏輯：從「最後一個有小孩的父節點」開始，一路往回走到 Root (index 0) 進行調整。
+        // 建立初期紀律。 從最底層的主管開始，「反覆多次呼叫 heapify」，一路往上修復，最終把全場最大值推到 Root。
+        // 最後一個有小孩的父節點索引剛好會是 (n / 2) - 1。
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(arr, n, i);
+        }
+
+        // 【步驟二：執行排序 (Extract Max)】
+        // 邏輯：Root 絕對是最大值，把它拔出來跟最後一個元素交換，然後重新調整剩下的樹。
+        for (int i = n - 1; i > 0; i--) {
+            // 1. 把 Root (最大的數, index 0) 換到陣列最後面 (index i)
+            swap(arr, 0, i);
+            
+            // 2. 陣列長度「邏輯上」縮小了 (傳入的邊界變成 i)
+            // 3. 把剛換上來、坐在 Root 位置的「假王」往下調整，重新維持 Max Heap
+            heapify(arr, i, 0);
+        }
+    }
+
+    // 🛠 核心引擎：向下調整維持 Max Heap 性質 (Sift Down / Adjust)
+    //  針對「單一節點」，不斷把它往下推，直到符合規矩。
+    // 參數說明：arr (陣列), n (目前 Heap 的有效長度), i (要檢查的父節點索引)
+    private static void heapify(int[] arr, int n, int i) {
+        int largest = i;          // 預設：目前這個父節點就是最大值
+        int left = 2 * i + 1;     // 左小孩的陣列索引
+        int right = 2 * i + 2;    // 右小孩的陣列索引
+
+        // 規則 1：如果左小孩沒越界，且左小孩比「目前的王」還大，王位換人做
+        if (left < n && arr[left] > arr[largest]) {
+            largest = left;
+        }
+
+        // 規則 2：如果右小孩沒越界，且右小孩比「目前的王」還大，王位換人做
+        if (right < n && arr[right] > arr[largest]) {
+            largest = right;
+        }
+
+        // 如果經過上面兩關，王位換人了 (代表有小孩犯上作亂，爸爸不是最大的)
+        if (largest != i) {
+            // 把最大的小孩跟爸爸交換位置
+            swap(arr, i, largest);
+            
+            // 【重要遞迴】：爸爸被降級換到下面去了，怕他比新的小孩還要小，
+            // 所以要順著他被換下去的位置 (largest)，繼續往下遞迴檢查！
+            heapify(arr, n, largest); 
+        }
+    }
+
+    // 輔助工具：交換陣列中的兩個元素
+    private static void swap(int[] arr, int a, int b) {
+        int temp = arr[a];
+        arr[a] = arr[b];
+        arr[b] = temp;
+    }
+}
