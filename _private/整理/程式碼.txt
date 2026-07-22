@@ -323,7 +323,7 @@ public class HeapSortTarget {
     public static void heapSort(int[] arr) {
         int n = arr.length;
 
-        // 【步驟一：建構最大堆積 (Build Max Heap)】
+        // 【步驟一：建構最大堆積 (Build Max Heap)】，要讓 所有的父節點，一定大於（或等於）它的子節點。
         // 邏輯：從「最後一個有小孩的父節點」開始，一路往回走到 Root (index 0) 進行調整。
         // 建立初期紀律。 從最底層的主管開始，「反覆多次呼叫 heapify」，一路往上修復，最終把全場最大值推到 Root。
         // 最後一個有小孩的父節點索引剛好會是 (n / 2) - 1。
@@ -345,7 +345,9 @@ public class HeapSortTarget {
 
     // 🛠 核心引擎：向下調整維持 Max Heap 性質 (Sift Down / Adjust)
     //  針對「單一節點」，不斷把它往下推，直到符合規矩。
-    // 參數說明：arr (陣列), n (目前 Heap 的有效長度), i (要檢查的父節點索引)
+    // 參數說明：arr (陣列)
+    // n (目前 Heap 的有效長度)
+    // i (要檢查的父節點索引)
     private static void heapify(int[] arr, int n, int i) {
         int largest = i;          // 預設：目前這個父節點就是最大值
         int left = 2 * i + 1;     // 左小孩的陣列索引
