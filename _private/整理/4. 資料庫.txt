@@ -77,32 +77,36 @@ X → Y ⇒ XZ → YZ，兩邊同時加入屬性，相依仍成立
 (X → Y、Y → Z) ⇒ X → Z
 ---------------------------------------------------------------------------
 資料庫設計概念：
-A. 實體關聯模型：
-1. 實體：資料庫要儲存的對象
-  1. (強)實體：矩形(橢圓邊的長方形)
-  2. 弱實體：雙線矩形，需依附其他實體
-2. 屬性：描述實體的特徵
-  1. 一般屬性：橢圓
-  2. 多值屬性：雙線橢圓，ex. 電話
-  3. 導出屬性：虛線橢圓，可由其他值推算 ex. 年齡
-  4. 主鍵屬性：橢圓內的文字加底線。
-3. 關係：實體與實體之間的關聯
-  1. 關係：菱形，實體間的關聯
-  2. 識別關係：雙線菱形，連接弱實體
+A. 實體關聯模型(ERD)：
+  1. 實體：資料庫要儲存的對象
+    1. 實體：矩形(橢圓邊的長方形)
+    2. 弱實體：雙線矩形，需依附其他實體。 ex. 公司人員分布表中，員工家屬
+  2. 屬性：描述實體的特徵
+    1. 一般屬性：橢圓
+    2. 多值屬性：雙線橢圓，ex. 電話
+    3. 導出屬性：虛線橢圓，可由其他值推算 ex. 年齡
+    4. 主鍵屬性：橢圓內的文字加底線。
+  3. 關係：實體與實體之間的關聯
+    1. 關係：菱形，實體間的關聯
+    2. 識別關係：雙線菱形，連接弱實體
 ----
 B. 轉換成 關聯表的規則：
-一. 實體：
-  1. 強實體：直接轉換成一個獨立的資料表。實體中的屬性變成欄位，原本的鍵值屬性 (Key Attribute) 變成該表的主鍵 (Primary Key, PK)。
-  2. 弱實體：轉換成資料表，但它的主鍵必須由「自己的部分鍵 (Partial Key)」加上「所依附之強實體的主鍵」合併組成（複合主鍵）。
-二. 屬性：
-  1. 單值屬性：直接變成資料表的欄位。
-  2. 複合屬性：必須拆解成獨立欄位。例如：「地址」不該是一個欄位，要拆成「縣市」、「區」、「街道」等三個欄位。
-  3. 多值屬性：必須為它建立一個「新的資料表」，新表的主鍵由「原實體的主鍵」加上「多值屬性本身」共同組成。
-  4. 衍生屬性：通常不存入資料庫中（例如：「年齡」可由「生日」計算得出）。
-三. 關係：
-  1. 1:1：將其中一方的主鍵 (PK) 放入另一方作為外鍵 (FK)
-  2. 1:N：永遠將「1」那一方的主鍵，放進「N」那一方的資料表中作為外鍵。
-  3. M:N：必須建立一張新的「中介表」。將兩方的主鍵都拉進這張新表作為外鍵，且這兩個外鍵通常會共同組成新表的複合主鍵。
+  一. 實體：
+    1. 強實體：直接轉換成一個獨立的資料表。實體中的屬性變成欄位，原本的鍵值屬性(主屬性，組成候選鍵的欄位)變成該表的主鍵。
+    2. 弱實體：轉換成資料表，但它的主鍵必須由「自己的部分鍵 (Partial Key)」加上「所依附之強實體的主鍵」合併組成（複合主鍵）。
+      ex. 員工眷屬表：員工編號、眷屬姓名 兩者複合主鍵，員工編號是外鍵
+  二. 屬性：
+    1. 單值屬性：直接變成資料表的欄位。
+    2. 複合屬性：必須拆解成獨立欄位。例如：「地址」不該是一個欄位，要拆成「縣市」、「區」、「街道」等三個欄位。
+    3. 多值屬性：必須為它建立一個「新的資料表」，新表的主鍵由「原實體的主鍵」加上「多值屬性本身」共同組成。
+    4. 衍生屬性：通常不存入資料庫中（例如：「年齡」可由「生日」計算得出）。
+  三. 關係：
+    1. 1:1：將其中一方的主鍵 (PK) 放入另一方作為外鍵 (FK)
+    2. 1:N：永遠將「1」那一方的主鍵，放進「N」那一方的資料表中作為外鍵。
+      ex. 顧客表：訂單表
+    3. M:N：必須建立一張新的「中介表」。將兩方的主鍵都拉進這張新表作為外鍵，且這兩個外鍵通常會共同組成新表的複合主鍵。
+      ex. 專案表(專案代號、專案名稱)-一個專案可以有很多員工參與，一個員工也能參與多個專案。
+        所以需要 參與專案表，(員工編號、專案代號)都是主鍵
 ----
 C. 界定功能相依性：將文字轉化為嚴謹的FD方程式，利用箭頭表示 一對一 或 一對多的關係
 ex. FD1(小寫1): 醫生代號 → {姓名, 診間號碼}，表示醫生代號決定 姓名、診間號碼
@@ -155,15 +159,226 @@ ABCD
     1. 讀取時機多、但寫入時機少；
     2. 需要頻反存取"衍生欄位"，比如訂單系統的總金額，若嚴格遵守，每次查詢動態計算，太耗費資源。
 ---------------------------------------------------------------------------
+資料庫語法注意事項
+1. 關鍵字本身（大寫 / 小寫）：沒差，但習慣大寫
+2. 資料庫名稱、表格名稱、欄位名稱（自訂名稱）：有差
+
+---------------------------------------------------------------------------
+資料庫物件
+1. 表格 (Table)：資料庫中最基本、用來實體儲存資料的二維結構，由「欄位 (Column)」與「資料列 (Row)」組成。
+-- 建立一個名為「員工表」的表格，包含編號、姓名與薪水欄位
+CREATE TABLE Employees (
+    -- 欄位名稱 | 型別 | 其他
+    EmpID INT PRIMARY KEY, -- EmpID 是欄位名稱 | INT 代表整數 | PRIMARY KEY 代表主鍵（唯一且不能空白）
+    EmpName VARCHAR(50),   -- EmpName 是欄位名稱 | VARCHAR(50) 代表最多 50 個字的字串
+    Salary DECIMAL(10, 2)  -- Salary 是欄位名稱 | DECIMAL(10,2) 代表總共 10 位數、含 2 位小數的數字
+);
+2. 檢視表 (View)：一個不儲存實體資料的「虛擬表格」，其內容是由一段預先寫好的 SELECT 查詢語句即時產生的結果。
+  用法：
+    1. 資安控管：隱藏機密欄位（如薪水、密碼），只開放特定欄位給使用者看。
+    2. 簡化複雜度：將非常複雜的跨表查詢（JOIN）包裝成一個 View，以後查詢就變得很簡單。
+-- 建立一個只包含姓名，隱藏薪水的員工檢視表
+CREATE VIEW Safe_Employees_View AS -- 建立一個名叫 Safe_Employees_View 的虛擬表格，內容來源是...
+SELECT EmpID, EmpName              -- 只挑選這兩個欄位（刻意把薪水 Salary 藏起來）
+FROM Employees;                    -- 來源是 Employees 表格
+WHERE EmpID >= 60;                 -- 且ID要在60之後
+
+3. 索引 (Index)：一種附加在表格欄位上的資料結構（通常是 B-Tree），用來大幅加快資料檢索的速度。
+  用法：當表格資料量極大時，建立在常被用來查詢（WHERE 條件）的欄位上，可以避免全表掃描，提升查詢效能。
+  -- 在員工表的「姓名」欄位上建立一個加速搜尋的索引
+CREATE INDEX idx_emp_name -- 建立一個名叫 idx_emp_name 的索引（加速搜尋用）
+ON Employees (EmpName);   -- 把這個加速器安裝在 Employees 表格的 EmpName 欄位上
+
+4. 預存程序 (Stored Procedure)：將一段或多段 SQL 語句集合打包、編譯並儲存在資料庫中的程式區塊，可接受傳入參數。
+  用法：將複雜的商業邏輯（例如：月底結算、扣庫存加開發票）寫在資料庫端，減少應用程式與資料庫之間的網路傳輸，並提升執行效率。
+-- 建立一個幫特定員工加薪的預存程序
+CREATE PROCEDURE GiveRaise (       -- 建立一個名為 GiveRaise 的預存程序（類似自訂的 SOP 指令）
+    IN p_EmpID INT,                    -- 輸入參數 1：要幫哪位員工加薪
+    IN p_RaiseAmount DECIMAL(10, 2)    -- 輸入參數 2：要加多少錢
+    IN p_RaiseAmount DECIMAL(10, 2)  -- 輸入參數 2：要加多少薪水（填入數字）
+)
+BEGIN                              -- 以下開始執行內部的動作
+    UPDATE Employees               -- 去修改 Employees 表格
+    SET Salary = Salary + p_RaiseAmount -- 把原本的薪水加上要加的金額
+    WHERE EmpID = p_EmpID;         -- 指定條件：只修改對應的那位員工編號
+END;                               -- 結束這個預存程序
+
+-- 呼叫 GiveRaise 這個預存程序，並依序帶入參數：員工編號 7、加薪 5000
+CALL GiveRaise(7, 5000);
+
+5. 觸發器 (Trigger)：一種特殊的預存程序，它不能被手動呼叫，而是綁定在某個 Table 上。當該 Table 發生 INSERT、UPDATE 或 DELETE 事件時，就會「被動」自動執行。
+  用法：強制執行資料稽核（例如：誰在什麼時候刪除了資料，自動寫入 Log 表）、自動計算連動數據。
+-- 建立一個觸發器，當新增員工時，自動在日誌表新增一筆紀錄
+CREATE TRIGGER trg_AfterInsertEmployee -- 建立一個名為 trg_AfterInsertEmployee 的觸發器（自動警報器）
+AFTER INSERT ON Employees          -- 觸發時機：當 Employees 表格被成功「新增資料 (INSERT)」的「之後 (AFTER)」
+FOR EACH ROW                       -- 每一筆新增的資料都要觸發一次
+BEGIN                              -- 觸發後開始執行以下動作
+    INSERT INTO AuditLog (ActionText, ActionTime) -- 自動在日誌表新增一筆紀錄
+    VALUES ('一位新員工被新增了', CURRENT_TIMESTAMP); -- 填入提示文字與當下的系統時間
+END;                               -- 結束觸發器
+
+6. 序列 (Sequence)：一個獨立的資料庫物件，專門用來產生連續不斷、保證不重複的整數數值。
+  用法： 產生流水號（如訂單編號、收據號碼）。即使在極高併發的環境下，也能確保編號的唯一性。（註：有些資料庫如 MySQL 習慣用 AUTO_INCREMENT 欄位屬性來替代此功能）。
+-- 建立一個名為訂單編號的發號機，從 1 開始，每次加 1
+CREATE SEQUENCE OrderID_Seq  -- 建立一個名為 OrderID_Seq 的序列（像是抽號碼牌機）
+    START WITH 1             -- 從數字 1 開始發號碼
+    INCREMENT BY 1;          -- 每次發號碼，數字就自動加 1（1, 2, 3...）
+---------------------------------------------------------------------------
+SQL四大種類
+1. DDL(資料定義語言)：定義／修改資料庫結構
+  1. CREATE：建立物件（表、檢視表、索引等）
+  
+  2. ALTER：修改物件結構（如新增欄位）
+-- 在 Employees 表格中新增一個 Email 欄位
+ALTER TABLE Employees 
+ADD Email VARCHAR(100), -- 增加EMAIL欄位、最大100個字串
+RENAME COLUMN Email TO _deprecated_Email, -- 把欄位 EMAIL名稱改成 _deprecated_Email
+ALTER COLUMN Email SET INVISIBLE,
+DROP COLUMN Email;
+
+  3. DROP：刪除整個物件（含結構與資料）
+-- 直接刪除 Employees 這張表，如果這張表有被其他表關聯（例如有外來鍵 Foreign Key 綁著），直接刪會失敗，資料庫會拒絕，保護你不會不小心害其他系統崩潰。
+DROP TABLE Employees;
+-- 如果 Employees 這張表存在，就刪除它；如果不存在就算了，不會報錯
+DROP TABLE IF EXISTS Employees;
+
+  * View 與 預存程序(PROCEDURE)比較安全，可以直接刪除
+
+  4. TRUNCATE：清空表中"所有"資料，但保留表結構，速度快，不可加 WHERE
+  -- 清空Employees 表格資料
+  TRUNCATE TABLE Employees;
+
+***** DDL 指令通常會自動提交（auto-commit），執行後即生效。
+資料庫裡修改資料，通常是暫時存在記憶體或暫存區裡，唯有下了 COMMIT 才會永久寫入硬碟。
+*****「不能 rollback」（因視為 DDL、自動提交）
+Rollback 是將資料庫尚未永久存檔（未 Commit）的所有變更全部作廢並還原到初始狀態的「後悔/復原」機制。
+  1. 必須在「交易（Transaction）」的保護傘之內
+  2. 資料尚未被提交（Not Committed）
+  3. 該操作必須支援復原（例如 DML，而非 DDL）
+  
+2. DML(資料操作語言)：對表中的資料進行存取	
+  1. INSERT 新增
+  2. UPDATE 修改
+  3. DELETE 刪除
+  4. SELECT 查詢
+
+DCL(資料控制語言)：控制使用者權限
+	1. GRANT
+  -- 賦予使用者在可以從任何外部 IP 對 username 對 employees 這張表進行查詢與新增、修改、刪除
+  GRANT SELECT,INSERT,UPDATE,DELETE ON employees TO 'username'@'%';
+-- 賦予使用者 username 在本地端對 employees 這張資料庫表的所有操作權限
+GRANT ALL PRIVILEGES ON employees TO 'username'@'localhost';
+-- 賦予使用者 username 在特定IP連線進入，才能對 employees 這張資料庫表的所有操作權限。且還能把這些權限轉發給其他人
+GRANT ALL PRIVILEGES ON employees TO 'username'@'l192.168.1.50' WITH GRANT OPTION;
+
+  2. REVOKE
+  -- 收回使用者 username 對 employees 表的新增權限
+  REVOKE INSERT ON employees FROM 'username'@'localhost';
+-- 徹底清除該帳號的特定存取與轉發權力
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'username'@'localhost';
+-- 收回使用者 username 對 employees 表權限轉發給他人的權利
+REVOKE GRANT OPTION FOR SELECT ON employees FROM 'username'@'localhost';
+
+*** '帳號名稱'@'主機來源' 是一個不可分割的「完整帳號身分（Identity）」
+
+TCL(交易控制語言)：管理交易
+1. START TRANSACTION / BEGIN (開啟交易)：標記一個新交易的開始，讓後續的 DML 操作被包在同一個安全防護網內。
+2. COMMIT(提交)：將交易期間所有的 DML 變更永久寫入資料庫硬碟中，無法再反悔。
+3. ROLLBACK（回滾/復原）： 將交易期間所有尚未提交的變更全部作廢，回到交易開始前的狀態。
+
+4. SAVEPOINT（儲存點）： 在交易中設定一個中繼檢查點，允許在發生錯誤時部分回滾(把進度退到該檢查點上)，不用全部重來。
+
+ex1. (若中間發生錯誤，則執行 ROLLBACK; 將金額扣款與加款全部作廢)
+START TRANSACTION; -- 開始交易
+UPDATE accounts SET balance = balance - 500 WHERE id = 1;
+UPDATE accounts SET balance = balance + 500 WHERE id = 2;
+-- 檢查一切順利，永久存檔
+COMMIT;
+
+ex2.
+START TRANSACTION;
+INSERT INTO logs (action) VALUES ('Step 1');
+
+SAVEPOINT sp1; -- 設定儲存點 1
+
+-- 新增一筆資料到 logs 表中，指定填寫 action 欄位，內容是字串 'Step 2 (Failed)'。
+INSERT INTO logs (action) VALUES ('Step 2 (Failed)');
+-- 發現 Step 2 有問題，但想保留 Step 1
+ROLLBACK TO sp1; 
+
+COMMIT; -- 最後只會永久保留 Step 1
+
+
+DELETE vs TRUNCATE vs DROP：DELETE 擦字、TRUNCATE 撕頁、DROP 燒書
+---------------------------------------------------------------------------
+建表：
+*** CHAR VS VARCHAR
+1. 資料短，CHAR省空間；資料長，VARCHAR省空間。
+2. 更新資料，CHAR原地更新，速度極快；VARCHAR則可能會將整筆資料搬到合適的儲存位置，需要動整筆資料
+3. 運算速度，CHAR有規律，查詢極快。
+
 CREATE TABLE student_profile (
-  profile_id  INT           PRIMARY KEY,                         -- 整數＋主鍵
-  student_id  CHAR(8)      NOT NULL UNIQUE,                      -- 一欄多約束
-  name        VARCHAR(20)  NOT NULL,                             -- 變長文字＋非空
+  -- 【INT】: 整數型別。
+  -- 【PRIMARY KEY (主鍵約束)】: 代表此欄位是表格每一筆資料的「唯一識別碼」。它自動具備「不可重複 (UNIQUE)」且「不可為空 (NOT NULL)」的特性。
+  profile_id  INT           PRIMARY KEY,                         
+
+  -- 【CHAR(8)】: 固定占8格的定長文字（如果輸入不到8字元，系統會補空白；若超過則可能報錯）。
+  -- 【NOT NULL (非空約束)】: 此欄位必須有值，不能存入 NULL（空值）。
+  -- 【UNIQUE (唯一約束)】: 此欄位的值在整張表中不可重複，確保每個 student_id 都是獨一無二的。
+  student_id  CHAR(8)      NOT NULL UNIQUE,                      
+
+  -- 【VARCHAR(20)】: 最大長度為 20 的變長文字（與 CHAR 不同，輸入幾個字就占多少空間，較節省容量）。
+  name        VARCHAR(20)  NOT NULL,                             
+
+  -- 【DEFAULT (預設值約束)】: 如果新增資料時沒有特別填寫這個欄位，系統會自動幫它填入 'F'。
+  -- 【CHECK (檢查約束)】: 限定這個欄位能被輸入的值。這裡限制只能輸入 'M' 或 'F'，輸入其他字元會被資料庫拒絕。
   gender      CHAR(1)      DEFAULT 'F' CHECK (gender IN ('M', 'F')),
+
+  -- 【DECIMAL(5,2)】: 精確的小數數值。「5」代表總共可容納五個數字，「2」代表小數點後佔兩位。也就是說最大可輸入 999.99。
+  -- 【CHECK (檢查約束)】: 限制輸入的分數必須落在 0 到 100 之間（包含 0 與 100）。
   score       DECIMAL(5,2) DEFAULT 0 CHECK (score BETWEEN 0 AND 100),
+
+  -- 【DATE】: 日期型別，格式通常為 YYYY-MM-DD（僅有年月日，不含時間）。
   birth_date  DATE          NOT NULL,
+
+  -- 【DATETIME】: 日期與時間型別，包含年月日與時分秒（YYYY-MM-DD HH:MM:SS）。
+  -- 【DEFAULT (預設值約束)】: 實務上也常使用 DEFAULT CURRENT_TIMESTAMP 讓系統自動抓取當下時間）
   created_at  DATETIME      DEFAULT '2026-01-01 09:00:00',
-  FOREIGN KEY (student_id) REFERENCES student(id) 
- ON DELETE CASCADE（子表一起刪）、SET NULL（子表設為空）、RESTRICT（禁止刪除）。
+
+  -- 【FOREIGN KEY (外來鍵約束)】: 建立兩張表格之間的關聯。這裡規定本表的 `student_id` 欄位，其值必須存在於另一張父表 `student` 的 `id` 欄位中，確保「沒有憑空捏造的學生」。
+  -- 【ON DELETE 行為設定】: 決定當父表 (student) 中的某一筆學生資料被刪除時，這張子表 (student_profile) 該如何應對：
+  --   1. CASCADE：連動刪除（父表資料刪除了，這張表裡的對應資料也自動跟著一起刪除）。
+  --   2. SET NULL：設為空值（父表資料刪除了，這張表裡的 student_id 會變成 NULL，但前提是該欄位沒有 NOT NULL 約束）。
+  --   3. RESTRICT：限制刪除（只要這張子表裡還有該學生的資料，資料庫就會「禁止」你刪除父表的那筆學生資料，這也是預設行為）。
+  FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE
 );
 ---------------------------------------------------------------------------
+
+
+
+
+
+
+模組一：資料庫鍵值與限制 (Keys & Constraints)
+
+* 1-2 資料完整性限制 (Integrity Constraints)：實體完整性 (Entity Integrity)、參照完整性 (Referential Integrity)、網域完整性 (Domain Integrity)。
+
+模組二：SQL 語法與 CRUD 實作 (SQL & CRUD)
+* 2-1 DDL (資料定義語言)：CREATE, ALTER, DROP, TRUNCATE (快速複習與比較)。
+* 2-2 DML (資料操作語言) 與 CRUD：
+    - Create (新增)：INSERT 語法。
+    - Read (讀取)：SELECT 語法 (包含基礎的 JOIN 概念與 GROUP BY)。
+    - Update (更新)：UPDATE 語法。
+    - Delete (刪除)：DELETE 語法與 TRUNCATE 的差異。
+* 2-3 DCL (資料控制語言)：權限管理 GRANT (授權)、REVOKE (撤銷)。
+
+模組三：交易管理核心 (Transaction)
+* 3-1 ACID 四大特性：原子性 (Atomicity)、一致性 (Consistency)、隔離性 (Isolation)、持久性 (Durability)。
+
+模組四：非關聯式資料庫 (NoSQL)
+* 4-1 NoSQL 核心特性：什麼是 NoSQL？與傳統關聯式資料庫 (RDBMS) 的核心差異為何？
+* 4-2 BASE 特性：對比傳統的 ACID，NoSQL 強調的 Basically Available, Soft state, Eventual consistency。
+* 4-3 NoSQL 的四大種類與應用情境：鍵值對 (Key-Value)、文件型 (Document)、列柱型 (Column-family)、圖形 (Graph)。
+
+模組五：進階正規化 (Advanced Normalization - 概念補充)
+* 5-1 4NF 與 5NF 基礎概念：多值相依 (Multivalued Dependency) 與合併相依 (Join Dependency) 的基本定義。
