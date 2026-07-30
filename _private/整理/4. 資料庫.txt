@@ -311,41 +311,68 @@ COMMIT; -- 最後只會永久保留 Step 1
 
 DELETE vs TRUNCATE vs DROP：DELETE 擦字、TRUNCATE 撕頁、DROP 燒書
 ---------------------------------------------------------------------------
+*** NULL，代表不存在；尚未填寫，代表"未知"
 建表：
 *** CHAR VS VARCHAR
 1. 資料短，CHAR省空間；資料長，VARCHAR省空間。
 2. 更新資料，CHAR原地更新，速度極快；VARCHAR則可能會將整筆資料搬到合適的儲存位置，需要動整筆資料
 3. 運算速度，CHAR有規律，查詢極快。
+4. 型別
+INT
+  整數，如年齡、數量
+DECIMAL(p,s)
+  精確小數
+  p＝總位數、s＝小數位數。
+CHAR(n) 
+  定長文字，固定佔 n 格，不足補空白
+VARCHAR(n)	
+  最多 n 個字元，存多長就佔多長
+DATE / DATETIME	
+  日期 / 日期＋時間
+  YYYY-MM-DD / YYYY-MM-DD HH:MM:SS
+  3bytes / 8bytes
+  把時間塞進DATE，會自動把時間截掉
+  把純日期塞進DATETIME，會自動把時間補零
+  實務常用 DEFAULT CURRENT_TIMESTAMP 讓預設時間為當下時間
 
+5. 約束
+  PRIMARY KEY
+    1. 主鍵	每列的唯一身分，不可重複(UNIQUE)、不可空(NOT NULL)
+    2. id CHAR(8) PRIMARY KEY
+  FOREIGN KEY
+    1. 外來鍵	指向另一張表的主鍵，確保關聯有效
+    2. FOREIGN KEY (sid) REFERENCES student(id)
+    3. 通常會搭配 ON DELETE 用，詳細請看範例的說明。
+  NOT NULL
+    1. 非空	此欄一定要有值，不能留白	
+    2. name VARCHAR(20) NOT NULL
+  UNIQUE
+    1. 唯一	此欄不可重複（但可留空(null，可以有多個null)）	
+    2. email VARCHAR(50) UNIQUE
+  CHECK
+    1. 檢查	值必須滿足自訂條件	
+    2. CHECK (score BETWEEN 0 AND 100)
+  DEFAULT
+    1. 預設	沒給值時自動填入預設值
+    2. status VARCHAR(10) DEFAULT '在學'
+
+
+6. 範例，一律先欄位名稱，再來型別，之後得順序無所謂
 CREATE TABLE student_profile (
-  -- 【INT】: 整數型別。
-  -- 【PRIMARY KEY (主鍵約束)】: 代表此欄位是表格每一筆資料的「唯一識別碼」。它自動具備「不可重複 (UNIQUE)」且「不可為空 (NOT NULL)」的特性。
-  profile_id  INT           PRIMARY KEY,                         
-
-  -- 【CHAR(8)】: 固定占8格的定長文字（如果輸入不到8字元，系統會補空白；若超過則可能報錯）。
-  -- 【NOT NULL (非空約束)】: 此欄位必須有值，不能存入 NULL（空值）。
-  -- 【UNIQUE (唯一約束)】: 此欄位的值在整張表中不可重複，確保每個 student_id 都是獨一無二的。
+  profile_id  INT        PRIMARY KEY,                         
   student_id  CHAR(8)      NOT NULL UNIQUE,                      
-
-  -- 【VARCHAR(20)】: 最大長度為 20 的變長文字（與 CHAR 不同，輸入幾個字就占多少空間，較節省容量）。
   name        VARCHAR(20)  NOT NULL,                             
+  created_at  DATETIME      DEFAULT CURRENT_TIMESTAMP,
 
   -- 【DEFAULT (預設值約束)】: 如果新增資料時沒有特別填寫這個欄位，系統會自動幫它填入 'F'。
   -- 【CHECK (檢查約束)】: 限定這個欄位能被輸入的值。這裡限制只能輸入 'M' 或 'F'，輸入其他字元會被資料庫拒絕。
+  -- 檢查約束 放的 其實就是 WHERE的語法
   gender      CHAR(1)      DEFAULT 'F' CHECK (gender IN ('M', 'F')),
-
-  -- 【DECIMAL(5,2)】: 精確的小數數值。「5」代表總共可容納五個數字，「2」代表小數點後佔兩位。也就是說最大可輸入 999.99。
-  -- 【CHECK (檢查約束)】: 限制輸入的分數必須落在 0 到 100 之間（包含 0 與 100）。
   score       DECIMAL(5,2) DEFAULT 0 CHECK (score BETWEEN 0 AND 100),
 
-  -- 【DATE】: 日期型別，格式通常為 YYYY-MM-DD（僅有年月日，不含時間）。
-  birth_date  DATE          NOT NULL,
 
-  -- 【DATETIME】: 日期與時間型別，包含年月日與時分秒（YYYY-MM-DD HH:MM:SS）。
-  -- 【DEFAULT (預設值約束)】: 實務上也常使用 DEFAULT CURRENT_TIMESTAMP 讓系統自動抓取當下時間）
-  created_at  DATETIME      DEFAULT '2026-01-01 09:00:00',
-
-  -- 【FOREIGN KEY (外來鍵約束)】: 建立兩張表格之間的關聯。這裡規定本表的 `student_id` 欄位，其值必須存在於另一張父表 `student` 的 `id` 欄位中，確保「沒有憑空捏造的學生」。
+  -- 【FOREIGN KEY (外來鍵約束)】: 建立兩張表格之間的關聯。
+  --  本表的 `student_id` 欄位，其值必須存在於另一張父表 `student` 的 `id` 欄位中，確保「沒有憑空捏造學生」。
   -- 【ON DELETE 行為設定】: 決定當父表 (student) 中的某一筆學生資料被刪除時，這張子表 (student_profile) 該如何應對：
   --   1. CASCADE：連動刪除（父表資料刪除了，這張表裡的對應資料也自動跟著一起刪除）。
   --   2. SET NULL：設為空值（父表資料刪除了，這張表裡的 student_id 會變成 NULL，但前提是該欄位沒有 NOT NULL 約束）。
@@ -353,12 +380,11 @@ CREATE TABLE student_profile (
   FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE
 );
 ---------------------------------------------------------------------------
+CRUD
 
 
 
-
-
-
+---------------------------------------------------------------------------
 模組一：資料庫鍵值與限制 (Keys & Constraints)
 
 * 1-2 資料完整性限制 (Integrity Constraints)：實體完整性 (Entity Integrity)、參照完整性 (Referential Integrity)、網域完整性 (Domain Integrity)。
