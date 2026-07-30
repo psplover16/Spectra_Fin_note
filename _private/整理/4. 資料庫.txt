@@ -229,12 +229,14 @@ SQL四大種類
   1. CREATE：建立物件（表、檢視表、索引等）
   
   2. ALTER：修改物件結構（如新增欄位）
--- 在 Employees 表格中新增一個 Email 欄位
+-- 下列範例無法執行，原因是 進行ALTER看的是舊表，下面是新增EMAIL又修改EMAIL，所以無法修改。
+-- 是整段無法執行，原因是一個 ";"前所有當作一個動作。
 ALTER TABLE Employees 
 ADD Email VARCHAR(100), -- 增加EMAIL欄位、最大100個字串
-RENAME COLUMN Email TO _deprecated_Email, -- 把欄位 EMAIL名稱改成 _deprecated_Email
-ALTER COLUMN Email SET INVISIBLE,
-DROP COLUMN Email;
+AUTO_INCREMENT = 3, -- 將自動跳號重置為 3 (這是資料表層級的設定，可以直接用逗號接在後面)
+RENAME COLUMN Email_Test TO _deprecated_Email_Test2, -- 把欄位 Email_Test 名稱改成 _deprecated_Email_Test2
+ALTER COLUMN Email SET INVISIBLE, -- 將 Email 欄位設定為「隱藏狀態」
+DROP COLUMN Email; -- 徹底把 Email 這個欄位，連同裡面的資料一起刪除
 
   3. DROP：刪除整個物件（含結構與資料）
 -- 直接刪除 Employees 這張表，如果這張表有被其他表關聯（例如有外來鍵 Foreign Key 綁著），直接刪會失敗，資料庫會拒絕，保護你不會不小心害其他系統崩潰。
@@ -356,10 +358,18 @@ DATE / DATETIME
     1. 預設	沒給值時自動填入預設值
     2. status VARCHAR(10) DEFAULT '在學'
 
+6. 特殊
+  1. AUTO_INCREMENT：
+    1. 1個表只能有1個AUTO_INCREMENT
+    2. 只支援整數
+    3. ALTER可以指定計數器，但設定的值只能比現在表裡最大的數字還要大。小於會無視。
+    4. 就算是AUTO_INCREMENT的欄位，使用者也可以手動指定。
+  2. 在WHERE、WHEN可以添加 () 方便閱讀
 
-6. 範例，一律先欄位名稱，再來型別，之後得順序無所謂
+7. 範例，一律先欄位名稱，再來型別，之後得順序無所謂
 CREATE TABLE student_profile (
-  profile_id  INT        PRIMARY KEY,                         
+  -- AUTO_INCREMENT，表示自動新增，在建表時指定欄位讓他自動新增
+  id INT AUTO_INCREMENT PRIMARY KEY,                        
   student_id  CHAR(8)      NOT NULL UNIQUE,                      
   name        VARCHAR(20)  NOT NULL,                             
   created_at  DATETIME      DEFAULT CURRENT_TIMESTAMP,
@@ -381,8 +391,97 @@ CREATE TABLE student_profile (
 );
 ---------------------------------------------------------------------------
 CRUD
+1. CREATE： INSERT INTO 表的名稱 (欄位名稱A, 欄位名稱B) VALUES (值A\, 值B);
+INSERT INTO orders (user_id, category, price, amount, status)
+VALUES 
+    (101, '3C', 1200, 1, 'Completed'),    -- 新增第一筆資料
+    (102, 'Clothing', 500, 2, 'Pending'); -- 新增第二筆資料
+    
+-- 💡 註解說明：
+-- 1. 欄位沒寫到 `id` (主鍵通常設為自動遞增 AUTO_INCREMENT)。
+-- 2. 欄位沒寫到 `created_at` (因為我們有設 DEFAULT CURRENT_TIMESTAMP，資料庫會自動補上)。
+----------
+2. Read： SELECT 欄位名稱A, 欄位名稱B FROM 表名 WHERE 條件 ORDER BY 欄位;
+  ** SELECT * 表示所有欄位
+  ** 沒加WHERE表示"沒有設定任何過濾條件"
+  ** 以下程式順序不能改，但執行的順序並非程式的順序
+SELECT
+    user_id,                           -- 1. 顯示會員 ID
+    COUNT(id) AS total_orders,         -- 2. 計算這個人買了幾張單，並取別名為 total_orders
+    SUM(price * amount) AS total_spent, -- 3. 計算單價乘數量的總和，取別名為 total_spent
+    -- 沒有加AS，欄位名稱是 AVG(price * amount)
+    AVG(price * amount),  -- 算出「平均一筆訂單」的總花費是多少。    
+    MAX(price * amount),  -- 找出今天「單筆消費金額最高」的那一單是多少錢（尋找傳說中的大戶！）。
+    MIN(price * amount) -- 找出今天「單筆消費金額最低」的那一單是多少錢。
 
+FROM orders                            -- 4-1. 從 orders 表格撈資料
+JOIN users ON orders.user_id = users.id -- 4-2. 把 orders 跟 users 這兩張表併在一起，牽線的橋樑是orders裡的 user_id 要等於會員表裡的 id
+WHERE category = '3C' AND status = 'Completed' -- 5. 【第一關篩選】：在分組前，先剔除不要F的資料
 
+GROUP BY user_id, category                       -- 6. 【分組】：先用 user_id 分組，再根據user_id分出來的各組別內部依照 category分組
+HAVING total_spent >= 1500 AND total_spent < 3000    -- 7. 【第二關篩選】：在分組計算後，只保留總花費大於 1500 且 小於3000 的群組
+-- ASC = Ascending (升序 / 由小到大)
+-- DESC = Descending (降序(down) / 由大到小)
+ORDER BY total_spent DESC, user_id ASC              -- 8. 【排序】：依照總花費由高到低 (DESC) 排序。後面那個欄位，只有在前面平手時才會上場
+LIMIT 3;                               -- 9. 【限制筆數】：只取前 3 名
+-- LIMIT 3, 4; -- (表示LIMIT 3 OFFSET 4，跳過前 4 筆資料，然後往後抓 3 筆(從1開啟，而非0))
+----------
+3. UPDATE 表名 SET 欄位 = 值 WHERE 條件;
+直接賦值：
+UPDATE orders
+SET 
+    status = 'Canceled',               -- 修改第一個欄位，賦予新字串
+    price = 0,                         -- 修改第二個欄位，賦予數字 0 (欄位之間用逗號 , 隔開)
+    amount = amount - 1                -- 可以在 SET 裡面直接做數學運算 (將原本的數量減 1)
+WHERE user_id = 102 AND status = 'Pending'; -- 若省略 WHERE，會修改「整張表所有列」
+
+條件賦值：
+UPDATE students 
+SET 
+    NAME = CASE 
+        WHEN (ID BETWEEN 2 AND 6) AND (created_at < '2009-06-05 07:50:03') THEN 'AA' -- 添加()方便閱讀
+        WHEN ID IN (7, 8, 9, 10, 11) THEN 'BB' -- 多重等於的意思，與(ID BETWEEN 7 AND 11)相同
+        WHEN ID = 12 THEN 'CC'
+        WHEN NAME LIKE '%王%' THEN '王' -- 字串比對，此次表示 只要字串有"王"就會撈出來
+        WHEN email IS NULL THEN 'null'  -- email沒有資料
+        WHEN email2 IS NOT NULL THEN 'not null' -- email有資料
+        ELSE NAME  -- 如果都不符合，就保持原本的名字
+    END,
+    
+    SCORE = CASE 
+        WHEN ID BETWEEN 2 AND 6 THEN 20
+        WHEN ID BETWEEN 7 AND 11 THEN 60
+        WHEN ID = 12 THEN 70
+        ELSE SCORE -- 如果都不符合，就保持原本的分數
+    END
+WHERE (ID > 1) AND (ID <= 12); -- 添加()方便閱讀
+
+4. DELETE：DELETE FROM 表名 WHERE 條件;
+-- 會刪除搜尋條件結果的全部資料。
+-- 如果沒有加 WHERE，整張表的資料就會被清空
+DELETE FROM orders
+WHERE status = 'Canceled' 
+  AND created_at < '2025-01-01'; -- 可以直接用比較運算子對日期進行篩選
+---------------------------------------------------------------------------
+小數的型態與計算
+1. 
+  FLOAT，浮點數、較快、不準確
+  DECIMAL，定點數、精準
+
+  與錢、成績有關，用DECIMAL。
+2. 
+ROUND(x, n) -- 把 x 四捨五入到 n 位小數。
+ROUND(14.567, 2) ➔ 結果為 14.57
+ROUND(14.567, 0) ➔ 結果為 15 (捨入到整數)
+
+CEILING(x); -- 把 x 無條件進位到整數
+CEILING(14.1) ➔ 結果為 15
+
+FLOOR(x); -- 把 x 無條件捨去到整數
+FLOOR(14.9) ➔ 結果為 14
+
+TRUNCATE(x, n); -- 把 x 無條件捨去到 n 位。
+TRUNCATE(14.567, 2) ➔ 結果為 14.56 (直接把第三位小數切掉)
 
 ---------------------------------------------------------------------------
 模組一：資料庫鍵值與限制 (Keys & Constraints)
