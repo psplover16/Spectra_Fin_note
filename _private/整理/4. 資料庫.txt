@@ -420,7 +420,7 @@ WHERE category = '3C' AND status = 'Completed' -- 5. 【第一關篩選】：在
 
 GROUP BY user_id, category                       -- 6. 【分組】：先用 user_id 分組，再根據user_id分出來的各組別內部依照 category分組
 HAVING total_spent >= 1500 AND total_spent < 3000    -- 7. 【第二關篩選】：在分組計算後，只保留總花費大於 1500 且 小於3000 的群組
--- ASC = Ascending (升序 / 由小到大)
+-- ASC = Ascending (升序 / 由小到大)，如果ORDER BY 不加，預設是ASC
 -- DESC = Descending (降序(down) / 由大到小)
 ORDER BY total_spent DESC, user_id ASC              -- 8. 【排序】：依照總花費由高到低 (DESC) 排序。後面那個欄位，只有在前面平手時才會上場
 LIMIT 3;                               -- 9. 【限制筆數】：只取前 3 名
@@ -482,28 +482,283 @@ FLOOR(14.9) ➔ 結果為 14
 
 TRUNCATE(x, n); -- 把 x 無條件捨去到 n 位。
 TRUNCATE(14.567, 2) ➔ 結果為 14.56 (直接把第三位小數切掉)
+---------------------------------------------------------------------------
+JOIN分類：JOIN後沒資料的，用null表示。JOIN要配ON，把關聯的鍵 綁再一起
+JOIN：交集，只找配對的
+  SELECT user_id FROM orders JOIN users ON orders.user_id = users.id
+LEFT JOIN：左邊全部列出來，右邊補充
+  SELECT user_id FROM orders LEFT JOIN users ON orders.user_id = users.id
+RIGHT JOIN：右邊全列出來，左邊補充
+FULL JOIN：全部列出來
+---
+CROSS JOIN	笛卡兒積：每列兩兩相配，無 ON 條件
+SELECT 顏色, 尺寸 FROM Colors CROSS JOIN Sizes;
+ex. 電商建立「商品規格矩陣」，所有尺寸與規格的組合。顏色+尺寸
+ex. 連續日期底稿 (員工上班出勤日)
+---------------------------------------------------------------------------
+彙總函式：COUNT 計數、SUM 總和、AVG 平均、MAX 最大、MIN 最小。
+ 1.  放在SELECT當作 計算 欄位
+ 2.  針對「計算後的結果」設定條件，必須搭配 HAVING。
+   HAVING SUM(消費金額) > 10000;
+ 3.  放在 ORDER BY (拿結果來排序)
+   ORDER BY COUNT(員工ID) DESC;
+ 4.  "禁止"放在WHERE，因為 資料庫是先做WHERE篩選，再聚合
+
+SELECT 
+    部門名稱,
+    COUNT(員工ID) AS 總人數,      -- 計算：這個部門有幾個人？
+    SUM(薪資) AS 總薪資支出,      -- 計算：老闆每個月要發多少錢給這個部門？
+    AVG(薪資) AS 平均薪資,        -- 計算：這個部門的平均水準在哪？
+    MAX(薪資) AS 最高薪,          -- 計算：這個部門裡的最高薪（通常是主管）是多少？
+    MIN(薪資) AS 最低薪           -- 計算：這個部門裡的最低薪（通常是菜鳥）是多少？
+FROM 員工表
+GROUP BY 部門名稱
+HAVING COUNT(員工ID) >= 5       -- 篩選：我只想看「規模大於等於 5 人」的部門 (行政部會被踢掉)
+ORDER BY 平均薪資 DESC;          -- 排序：最後的結果，請依照「平均薪資」由高到低 (DESC) 排列
+---------------------------------------------------------------------------
+子查詢.
+ex.
+員工表 (欄位：名字、部門ID)
+部門表 (欄位：部門ID、所在城市)
+任務目標：找出「在台北上班」的員工名單。
+
+
+寫法1，JOIN關聯
+  SELECT e.名字 
+  FROM 員工表 AS e 
+  JOIN 部門表 AS d 
+      ON e.部門ID = d.部門ID 
+  WHERE d.所在城市 = '台北';
+
+** 先集合，再WHERE篩選，最後再抽出 名字
+
+寫法2，WHERE 裡的子查詢 (IN)
+  SELECT 名字 
+  FROM 員工表 
+  WHERE 部門ID IN (
+      SELECT 部門ID 
+      FROM 部門表 
+      WHERE 所在城市 = '台北'
+  );
+
+****** 先抓括弧內的問題，取得 哪些部門 ID 是位在台北的
+** 請去員工表幫我挑人，只要他的部門 ID 是 [1, 3] 其中一個，就把名字列出來。
+
+寫法3，FROM 裡的子查詢 (寫法1的進階版)
+  SELECT e.名字 
+  FROM 員工表 AS e 
+  JOIN (
+      SELECT 部門ID 
+      FROM 部門表 
+      WHERE 所在城市 = '台北'
+  ) d 
+      ON e.部門ID = d.部門ID;
+
+** 將部門表瘦身成"台北專屬虛擬表"
+** 將"台北專屬虛擬表"與原本的員工表 做 JOIN
+
+寫法4，EXISTS (存在性驗證)
+  SELECT e.名字 
+  FROM 員工表 e 
+  WHERE EXISTS (
+      SELECT 1 
+      FROM 部門表 d 
+      WHERE e.部門ID = d.部門ID 
+        AND d.所在城市 = '台北'
+  );
+** 與寫法2不同，先從員工表e抓第1位員工，帶著該員工的 部門ID，執行括號內的探索
+** 去部門表找找看，能不能找到一筆資料，它的部門ID剛好等於「現在這位員工」的部門ID，而且城市剛好是「台北」？
+------
+寫法2是從 內部括弧開始，寫法4是從外部括弧開始
+括號內是「獨立」的，從內部開始。
+有牽連/關聯，則是從外部開始。
+---------------------------------------------------------------------------
+集合運算，把 兩個獨立的 表的搜尋結果，揉合再一起
+1. 欄位數量必須一模一樣
+2. 對應位置的「資料型別」必須相容
+3. 種類：
+  1. UNION	合併兩查詢結果，去除重複
+  2. UNION ALL	合併但保留重複（較快）
+  3. INTERSECT	交集（兩邊都有的列）
+  4. EXCEPT	差集（上有下無的列）
+
+SELECT 員工ID, 名字 FROM 上半年優秀員工
+EXCEPT
+SELECT 員工ID, 名字 FROM 下半年優秀員工
+ORDER BY 員工ID DESC;
+---------------------------------------------------------------------------
+常用運算子
+SELECT DISTINCT city 
+FROM 員工表
+WHERE salary BETWEEN 30000 AND 50000 -- 薪水剛好落在 30,000 到 50,000 元之間（包含 3 萬和 5 萬整）的人
+  AND dept_id IN (1, 2, 3) -- 再篩選出屬於「1號、2號，或者 3號部門」的員工。
+  AND name LIKE '_大%' -- 名字第1個字隨便(_) + 第2個字是大 + 後面隨便幾個字(%)
+  AND addr IS NULL; -- 檢查這些人的詳細地址是不是「沒有填寫」
+---------------------------------------------------------------------------
+資料庫資料更新流程
+1. 發送 UPDATE 命令與「搜尋核對」
+2. 在記憶體中修改資料
+3. 發送 COMMIT 命令給資料庫，宣告交易準備結束。
+4. 寫入交易記錄檔（Transaction Log），該步驟完成的這一瞬間，交易結束。
+5. 背景非同步寫回硬碟
+---------------------------------------------------------------------------
+交易（Transaction）是資料庫中一個不可分割的工作單位，由一連串操作組成。核心精神為 全部成功 或 全部失敗。
+ACID四大特性：
+  1. 原子性，交易中所有操作"全部完成"或"全部不做"；失敗時以 ROLLBACK 復原。
+  2. 隔離性，多個交易並行時互不干擾，一交易的中間結果不被其他交易看見；以鎖定（Locking）或 MVCC 達成。
+    負責處理「時間順序與併發排隊」，把「同時發生」的混亂交易，強制排成一條有秩序的單行道。
+  3. 持久性，交易一旦 COMMIT，變更即永久保存，即使系統故障也不遺失；以交易記錄檔（log）達成。
+  4. 一致性，交易執行前後，資料庫都維持在符合所有完整性限制的合法狀態。(此為終極目標)
+  ***原子性 (A) + 隔離性 (I) + 持久性 (D) = 一致性 (C)***
+
+隔離性延伸：
+1. 併發控制機制 (Concurrency Control)：
+  1. 鎖定（Locking）(悲觀鎖)：資料庫用來控制多個使用者同時存取同一筆資料的基礎防護機制總稱。(傳統的「公廁排隊」模式，缺點是，排隊，效率差。)
+     一種「先上鎖再做事」的策略，假設衝突一定會發生，所以讀取時就立刻獨佔資源（如 FOR UPDATE），適用於高衝突場景。
+  2. 樂觀鎖：不是鎖，屬於一種「不鎖門，做事後才檢查」的策略，假設衝突很少發生，直到更新（UPDATE）時才核對資料有沒有被別人改過，適用於低衝突場景。
+     缺點：因為是最後一步才檢查，所以如果海量資料，伺服器會一瞬間收到一堆失敗的UPDATE，且會有大量使用者，會在最後一步交易失敗；使用者體驗不好。
+2. MVCC（多版本併發控制）是一種透過『保留資料歷史版本快照』來達成『讀寫互不阻塞』的底層機制。
+    它讓讀取操作不需要等待寫入鎖定，大幅提升了資料庫在高併發環境下的效能。(如果不加FOR UPDATE會自動套用)
+3. 交易記錄檔：用來記錄所有已提交（COMMIT）但尚未寫入資料檔的變更，以確保系統崩潰時能還原資料（實現持久性 Durability）。」 (SQL內部自行處理)
+MVCC（多版本併發控制）：(SQL內部自行處理)
+
+
+ex. 悲觀鎖、樂觀鎖範例
+有一張 accounts（帳戶）資料表。
+你要提款 500 元，目前資料庫裡的狀態是：
+id = 1（你的帳戶）
+balance = 1000（餘額 1000 元）
+version = 1（資料版本號，這是給樂觀鎖用的，預設是 1）
+
+-- 悲觀鎖
+-- 1. 開啟交易防護罩
+START TRANSACTION;
+
+-- 2. 查詢餘額，並【強制上鎖】 (此時別人完全不能動這筆資料，只能排隊乾等)
+SELECT balance 
+FROM accounts 
+WHERE id = 1 
+FOR UPDATE;
+
+---------------------------------------------------
+-- [後端程式邏輯]
+-- 程式拿到 balance = 1000
+-- 判斷 1000 >= 500 (餘額充足，允許提款)
+---------------------------------------------------
+
+-- 3. 執行扣款
+UPDATE accounts 
+SET balance = balance - 500 
+WHERE id = 1;
+
+-- 4. 提交交易，並【自動解鎖】
+COMMIT;
+
+
+-- 樂觀鎖：是一種「不用鎖的應對策略」其實不是鎖
+-- 1. 查詢餘額與【當前版本號】 (一般 SELECT，不加鎖，大家都可以同時查)
+SELECT balance, version 
+FROM accounts 
+WHERE id = 1;
+
+---------------------------------------------------
+-- [後端程式邏輯]
+-- 程式拿到 balance = 1000, version = 1
+-- 判斷 1000 >= 500 (餘額充足，準備提款)
+---------------------------------------------------
+
+-- 2. 執行扣款，但把剛剛拿到的 version = 1 當作【核對條件】
+-- 同時將 version 升級 (+1)
+UPDATE accounts 
+SET balance = balance - 500,
+    version = version + 1
+WHERE id = 1 
+  AND version = 1;  -- 👈 關鍵防線：必須還是第 1 版，我才要更新！
+
+---------------------------------------------------
+-- [後端程式邏輯 - 驗證結果]
+-- 資料庫會回傳「影響了幾筆資料 (Affected rows)」：
+-- 
+-- 狀況 A：回傳 1 筆 -> 代表沒人動過，提款成功！(自動 COMMIT)
+-- 狀況 B：回傳 0 筆 -> 代表在你操作的瞬間，別人已經改過這筆資料 (version 已經不是 1 了)。
+--                   這時後端程式就要拋出錯誤訊息給使用者：「資料已變更，請重新整理」。
+---------------------------------------------------
+
+---
+交易控制指令（TCL）
+-- 🚪 開啟交易防護罩
+START TRANSACTION;
+UPDATE users SET balance = balance - 10000 WHERE id = 1;
+
+-- 💾 ★ 設立存檔點 (SAVEPOINT)，在此之前的狀態、記錄存起來
+SAVEPOINT point_flight;
+
+INSERT INTO orders (user_id, item, status) VALUES (1, '機票', '成功');
+-- ⏪ ★ 回復到指定存檔點 (部分 ROLLBACK)
+ROLLBACK TO SAVEPOINT point_flight;
+
+-- ROLLBACK，把全部的操作徹底撤銷 (ROLLBACK對應 交易的原子性：全有或全無)
+ROLLBACK;
+-- ✅ ★ 永久寫入 (COMMIT，對應持久性)
+COMMIT;
+---
+隔離性是確保多筆並發交易互不干擾，使其宛如獨立執行以維持資料一致性的核心機制。
+隔離等級則是資料庫提供的設定規範，讓開發者根據業務需求，在「資料嚴謹度」與「系統併發效能」之間進行權衡與取捨。
+隔離等級，幾乎都是為了決定 SELECT 該如何表現而設計的。至於WRITE，所有等級的防護底線都一樣嚴格。
+---
+三種讀取異常：
+髒讀（Dirty Read）：讀到另一交易尚未提交的資料。
+不可重複讀（Non-repeatable Read）：在同一交易內前後讀取同一筆資料，卻因其他交易在期間內完成「更新 (Update) 或刪除 (Delete)」，導致兩次讀取的數值或狀態不一致。
+幻讀（Phantom Read）：在同一交易內前後執行相同的範圍查詢，卻因其他交易在期間內「新增 (Insert)」或 「刪除 (Delete)」了符合條件的紀錄，導致第二次查詢得到的資與之前不相同。
+---
+隔離等級：
+Read Uncommitted	讀未提交，完全無防禦力
+Read Committed	讀已提交
+Repeatable Read	可重複讀，確保交易內針對同一筆紀錄的多次讀取結果恆定 (MYSQL預設)
+Serializable	序列化 / 串行化，最高隔離層級，強制所有並發交易必須循序排隊執行。
+
+** Serializable 最嚴格，但效能極差，但能防止全部讀取異常。
+** 讀取異常的難以預防的程度： 幻讀(僅靠序列化才能防) > 不可重複讀 > 髒讀
+
+** Serializable 屬於 「隔離等級 (Isolation Levels)」 的範疇，探討的是系統整體的狀態。
+** FOR UPDATE 屬於 「鎖定機制 (Locking Mechanisms) / 悲觀鎖」 的範疇，探討的是開發者如何手動控制併發。
+
+
+
+
+---------------
+資料庫必須符合 ACID 特性，其中 Isolation (隔離性) 最難維護，容易產生併發異常。
+為了確保隔離性，資料庫採用了併發控制機制。
+最常見的機制就是基於悲觀鎖 (Pessimistic Locking) 的 S-Lock / X-Lock。
+為了讓這些鎖完美運作、不出錯，交易必須嚴格遵守 2PL (二階段鎖定協議)。
+併發控制機制，
+二階段鎖定協定（two-phase locking protocol）可以保證有衝突的交易在更新資料時仍保持資料的正確性。請說明什麼是二階段鎖定協定，並解釋為什麼二階段鎖定能使有衝突的交易仍能被正確的執行。
+---------
+
+
+
+
+
+
+
+
+
 
 ---------------------------------------------------------------------------
-模組一：資料庫鍵值與限制 (Keys & Constraints)
+變數
+-- 相當於 JS 的: let a = (SELECT SUM(amount) FROM expenses);
+SELECT SUM(amount) INTO @a FROM expenses;
 
-* 1-2 資料完整性限制 (Integrity Constraints)：實體完整性 (Entity Integrity)、參照完整性 (Referential Integrity)、網域完整性 (Domain Integrity)。
+-- 把變數拿出來看，或是做後續運算
+SELECT @a; 
+SELECT @a * 1.05; -- 例如加上 5% 稅金
 
-模組二：SQL 語法與 CRUD 實作 (SQL & CRUD)
-* 2-1 DDL (資料定義語言)：CREATE, ALTER, DROP, TRUNCATE (快速複習與比較)。
-* 2-2 DML (資料操作語言) 與 CRUD：
-    - Create (新增)：INSERT 語法。
-    - Read (讀取)：SELECT 語法 (包含基礎的 JOIN 概念與 GROUP BY)。
-    - Update (更新)：UPDATE 語法。
-    - Delete (刪除)：DELETE 語法與 TRUNCATE 的差異。
-* 2-3 DCL (資料控制語言)：權限管理 GRANT (授權)、REVOKE (撤銷)。
+---------------------------------------------------
+DECLARE a INT;  -- 先宣告一個整數變數 a (類似 let a;)
+SELECT SUM(amount) INTO a FROM expenses; -- 把結果塞進去
 
-模組三：交易管理核心 (Transaction)
-* 3-1 ACID 四大特性：原子性 (Atomicity)、一致性 (Consistency)、隔離性 (Isolation)、持久性 (Durability)。
 
-模組四：非關聯式資料庫 (NoSQL)
-* 4-1 NoSQL 核心特性：什麼是 NoSQL？與傳統關聯式資料庫 (RDBMS) 的核心差異為何？
-* 4-2 BASE 特性：對比傳統的 ACID，NoSQL 強調的 Basically Available, Soft state, Eventual consistency。
-* 4-3 NoSQL 的四大種類與應用情境：鍵值對 (Key-Value)、文件型 (Document)、列柱型 (Column-family)、圖形 (Graph)。
 
-模組五：進階正規化 (Advanced Normalization - 概念補充)
-* 5-1 4NF 與 5NF 基礎概念：多值相依 (Multivalued Dependency) 與合併相依 (Join Dependency) 的基本定義。
+
+
+---------------------------------------------------------------------------
