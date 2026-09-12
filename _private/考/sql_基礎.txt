@@ -1,0 +1,142 @@
+ANSI/SPARC 是一種三層式資料庫架構，核心目的在於將「使用者應用程式」與「實體資料儲存」完全分離，藉此達成「資料獨立性」（Data Independence）。
+由使用者端至實體儲存端劃分為三層：
+    1. 外部層，又稱「視界層」。
+        最接近使用者。僅呈現特定使用者所需要的局部資料，隱藏其餘無權或不須知道的部分，以簡化操作並提升安全性。
+    2. 概念層，又稱「邏輯層」。
+        描述整個資料庫的邏輯全貌（包含資料實體、關聯性與限制條件）。它整合了所有外部需求，隱藏底層儲存細節，通常由資料庫管理員負責設計。
+    3. 內部層，又稱「實體層」。
+        最接近硬體。描述資料在磁碟上的實際儲存方式，包含檔案結構、資料壓縮、存取路徑與索引技術，以追求系統效能最佳化。
+系統透過層與層之間的「對應機制」來達成資料獨立性：
+    1. 外部/概念對應，
+        1. 欲達成目標為「邏輯資料獨立性」。
+        2. 當「概念層」的邏輯結構發生變更（如新增資料表或欄位）時，只需修改此對應關係，使用者的「外部層」與應用程式皆無須修改。
+    2. 概念/內部對應 (Conceptual/Internal Mapping)
+        1. 欲達成目標為「實體資料獨立性」。
+        2. 當「內部層」的實體儲存結構變更（如更換儲存設備、更改索引方式）時，只需修改此對應關係，「概念層」與「外部層」皆無須修改。此種獨立性較易達成。
+
+資料庫的種類
+1. 階層式資料庫
+    1. 樹狀
+    2. 一對多，1:N
+    3. 以指標沿樹狀路徑存取。
+    4. 結構簡單、查詢快；但無法表達 M:N、結構僵硬、資料易重複。
+2. 網路式資料庫
+    1. 圖狀
+    2. 可M:N
+    3. 以指標連結。
+    4. 較階層式靈活；但結構更複雜、指標維護困難、程式與結構耦合高。
+3. 關聯式資料庫
+    1. 二維表格
+    2. 以「值」（外來鍵）建立表間關聯，而非指標。
+    3. 簡單直覺、理論嚴謹、資料獨立性高、查詢彈性強；
+    4. 但複雜關聯需大量 JOIN、不擅長非結構化資料、大規模水平擴展較難。
+4. 物件導向式資料庫
+    1. 以物件儲存
+    2. 支援封裝、繼承、多型，每個物件有唯一識別碼。
+    3. 直接對應物件導向程式、解決阻抗不匹配、擅長複雜資料；但標準不統一、學習曲線高、市場接受度低。
+(阻抗不匹配，物件導向程式的「物件」與關聯式的「表格」結構不一致，存取時須來回轉換)
+
+
+0. 產生資料異動 → 交易中 →
+    COMMIT   → 確認交易，正式提交異動 → DB保留結果
+    ROLLBACK → 撤銷尚未提交的異動
+1. DDL (資料定義語言)：定義／修改資料庫結構
+DDL 指令通常會自動提交（auto-commit），執行後即生效。
+種類
+    1.CREATE：建立物件
+    2.ALTER：修改物件結構（如新增欄位）
+    ALTER TABLE Employees 
+        ADD COLUMN Email VARCHAR(100) AFTER EmpName,    -- 1. ADD: 新增欄位 (利用 AFTER 指定位置)
+        ADD COLUMN DeptID INT,                          -- 2. ADD: 新增另一個準備做關聯的欄位
+        MODIFY COLUMN Salary DECIMAL(10, 2) NOT NULL,   -- 3. MODIFY: 只改資料型態與屬性 (INT 變 DECIMAL，並加上不可為空)
+        CHANGE COLUMN EmpName FullName VARCHAR(100),    -- 4. CHANGE: 連名帶姓一起改 (EmpName 改為 FullName)
+        DROP COLUMN Age,                                -- 5. DROP: 刪除不再需要的欄位
+        DROP FOREIGN KEY fk_old_dept,                   -- 6. DROP CONSTRAINT: 刪除舊的外部鍵限制 (需指定原限制名稱)
+        ADD CONSTRAINT fk_emp_dept                      -- 7. ADD CONSTRAINT: 建立新的外部鍵限制
+            FOREIGN KEY (DeptID) REFERENCES Departments(DeptID), 
+        RENAME TO Staff;                                -- 8. RENAME: 最後將整張資料表改名為 Staff
+    3.DROP：刪除整個物件（表格、View、預存程序 (PROCEDURE)都可刪除）
+    DELETE是DML，不會自動觸發COMMIT，所以無法ROLLBACK。
+        DROP TABLE IF EXISTS Employees;
+    4.TRUNCATE：清空表格資料，但保留表結構，速度快，不可加 WHERE
+        TRUNCATE TABLE Employees;
+2. DML (資料操作語言)：對表中的資料進行存取。
+MySQL 預設 autocommit = 1，自動提交。
+    1. INSERT 新增
+    2. UPDATE 修改
+    3. DELETE 刪除
+    4. SELECT 查詢
+3. DCL (資料控制語言)：控制使用者權限
+    -- 賦予 username 可從任何 IP 對資料庫 company 當中的 employees 表進行查詢、新增、修改、刪除
+    GRANT SELECT, INSERT, UPDATE, DELETE ON company.employees TO 'username'@'%';
+
+    -- 賦予 username 可從本機對資料庫 company 當中的 employees 表進行所有操作
+    GRANT ALL PRIVILEGES ON company.employees TO 'username'@'localhost';
+
+    -- 賦予 username 可從 192.168.1.50 對資料庫 company 當中的 employees 表進行所有操作，
+    -- WITH GRANT OPTION = 「被授予權限的人，還可以把自己被授予的權限再授予其他人」。
+    GRANT ALL PRIVILEGES ON company.employees TO 'username'@'192.168.1.50' WITH GRANT OPTION;
+
+    -- 收回 username 從任何 IP 對資料庫 company 當中的 employees 表進行新增的權限
+    REVOKE INSERT ON company.employees FROM 'username'@'%';
+
+    -- 收回 username 從 192.168.1.50 對資料庫 company 當中的 employees 表的所有權限
+    REVOKE ALL PRIVILEGES ON company.employees FROM 'username'@'192.168.1.50';
+
+    -- 收回 username 從 IP 192.168.1.50 連線時，將 company.employees 表上的權限再授予其他使用者的權利。
+    REVOKE GRANT OPTION ON company.employees FROM 'username'@'192.168.1.50';
+4. TCL (交易控制語言)：管理交易
+
+
+
+
+
+小數的型態與計算
+FLOAT，浮點數、較快、不準確
+DECIMAL(p, s); 總共p位數字、s位小數
+
+ROUND(x, n) -- 把 x 四捨五入到 n 位小數。
+ROUND(14.567, 2) -- ➔ 結果為 14.57
+
+CEILING(x); -- 把 x 無條件進位到整數
+CEILING(14.1) -- ➔ 結果為 15
+
+FLOOR(x); -- 把 x 無條件捨去到整數
+FLOOR(14.9) -- ➔ 結果為 14
+
+TRUNCATE(x, n); -- 把 x 無條件捨去到 n 位。
+TRUNCATE(14.567, 2) -- ➔ 結果為 14.56 (直接把第三位小數切掉)
+
+
+SELECT 
+    部門名稱,
+    COUNT(員工ID) AS 總人數,           -- 計算：這個部門有幾個人？
+    ROUND(SUM(薪資), 2) AS 總薪資支出,   -- 計算：老闆每個月要發多少錢給這個部門？
+    AVG(薪資) AS 平均薪資,             -- 計算：這個部門的平均水準在哪？
+    MAX(薪資) AS 最高薪,               -- 計算：這個部門裡的最高薪（通常是主管）是多少？
+    MIN(薪資) AS 最低薪,               -- 計算：這個部門裡的最低薪（通常是菜鳥）是多少？
+    
+    -- 【新增：算術運算子示範 (+, -, *, /, %)】
+    MAX(薪資) - MIN(薪資) AS 薪資高低差,                 -- [- 減法]：高低薪水差多少
+    AVG(薪資 * 12 + 考核獎金) AS 預估平均年薪,             -- [* 乘法, + 加法]：月薪乘12個月加獎金
+    SUM(薪資) / COUNT(員工ID) AS 驗算平均薪,             -- [/ 除法]：總薪資除以人數
+    MAX(薪資 % 1000) AS 最高薪的尾數零頭                 -- [% 取餘數]：除以 1000 剩下的零頭
+    
+FROM 員工表
+
+-- 【新增：比較與邏輯運算子示範】
+WHERE 職級 NOT IN ('實習生', '工讀生')          -- [NOT IN]：排除這兩個特定身分
+  AND 薪資 BETWEEN 30000 AND 150000            -- [BETWEEN AND]：薪水必須落在 3萬 到 15萬 之間
+  AND 員工姓名 LIKE '王%'                       -- [LIKE]：模糊搜尋，只找姓「王」的 ( % 代表後面接任意字元)
+  AND 離職日期 IS NULL                          -- [IS NULL]：檢查欄位是否為空 (沒有離職日期 = 仍在職)
+  AND (績效分數 >= 80 OR 年資 > 3)              -- [>=, OR, >]：績效80分以上，或者年資大於3年 (用括號包住優先運算)
+  AND 部門代號 <> 999                           -- [<> 或 !=]：不等於 999 (管理高層的隱藏代號)
+
+-- 使用了 GROUP BY，SELECT 清單裡面「只能」出現 放在 GROUP BY 後面的欄位 和 聚合函數
+GROUP BY 部門名稱   -- 把資料按照 各部門名稱 分組(相同部門名稱捏成一團)
+
+-- 檢查捏好的群組，篩選出符合條件的群組
+HAVING COUNT(員工ID) >= 5               -- [>=]：我只想看「規模大於等於 5 人」的部門
+   AND AVG(薪資) < 80000                -- [<]：且該部門平均薪資不能超過 8 萬
+
+ORDER BY 平均薪資 DESC;          -- 排序：最後的結果，請依照「平均薪資」由高到低 (DESC) 排列
