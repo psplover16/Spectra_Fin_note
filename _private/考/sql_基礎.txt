@@ -51,9 +51,19 @@ DDL 指令通常會自動提交（auto-commit），執行後即生效。
         MODIFY COLUMN Salary DECIMAL(10, 2) NOT NULL,   -- 3. MODIFY: 只改資料型態與屬性 (INT 變 DECIMAL，並加上不可為空)
         CHANGE COLUMN EmpName FullName VARCHAR(100),    -- 4. CHANGE: 連名帶姓一起改 (EmpName 改為 FullName)
         DROP COLUMN Age,                                -- 5. DROP: 刪除不再需要的欄位
+
         DROP FOREIGN KEY fk_old_dept,                   -- 6. DROP CONSTRAINT: 刪除舊的外部鍵限制 (需指定原限制名稱)
+                                                        -- 6. 再刪除時，若知道名稱，則可以省略
         ADD CONSTRAINT fk_emp_dept                      -- 7. ADD CONSTRAINT: 建立新的外部鍵限制
             FOREIGN KEY (DeptID) REFERENCES Departments(DeptID), 
+
+        ADD CONSTRAINT pk_emp_id PRIMARY KEY (emp_id);
+        DROP PRIMARY KEY;
+
+        ADD CONSTRAINT uq_emp_email UNIQUE (email);
+        DROP INDEX uq_emp_email;
+        ADD CONSTRAINT chk_emp_age CHECK (age >= 18);
+        DROP CONSTRAINT chk_emp_age;
         RENAME TO Staff;                                -- 8. RENAME: 最後將整張資料表改名為 Staff
     3.DROP：刪除整個物件（表格、View、預存程序 (PROCEDURE)都可刪除）
     DELETE是DML，不會自動觸發COMMIT，所以無法ROLLBACK。
